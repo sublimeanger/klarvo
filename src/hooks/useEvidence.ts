@@ -197,6 +197,7 @@ export function useUpdateEvidenceStatus() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["evidence-files"] });
+      queryClient.invalidateQueries({ queryKey: ["pending-approvals"] });
       toast.success("Status updated");
     },
     onError: (error) => {
@@ -221,5 +222,161 @@ export function useDownloadEvidence() {
     onError: (error) => {
       toast.error("Failed to download", { description: error.message });
     },
+  });
+}
+
+/**
+ * Get pending evidence for approval queue
+ */
+export function usePendingApprovals() {
+  const { profile } = useAuth();
+
+  return useQuery({
+    queryKey: ["pending-approvals", profile?.organization_id],
+    queryFn: async () => {
+      if (!profile?.organization_id) return [];
+
+      const { data, error } = await supabase
+        .from("evidence_files")
+        .select(`
+          *,
+          ai_systems:ai_system_id(name),
+          vendors:vendor_id(name),
+          uploader:profiles!uploaded_by(full_name)
+        `)
+        .eq("organization_id", profile.organization_id)
+        .eq("status", "draft")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data as (EvidenceFile & { uploader: { full_name: string | null } | null })[];
+    },
+    enabled: !!profile?.organization_id,
+  });
+}
+
+/**
+ * Approve evidence with audit logging
+ */
+export function useApproveEvidence() {
+  const { user, profile } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      notes,
+    }: {
+      id: string;
+      notes?: string;
+    }) => {
+      if (!user?.id) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("evidence_files")
+        .update({
+          status: "approved",
+          approved_by: user.id,
+          approved_at: new Date().toISOString(),
+        })
+        .eq("id", id)
+        .select(`*, ai_systems:ai_system_id(name)`)
+        .single();
+
+      if (error) throw error;
+
+      // Log the approval
+      if (profile?.organization_id) {
+        logEvidenceEvent(
+          profile.organization_id,
+          user.id,
+          "evidence.approved",
+          id,
+          data.name,
+          data.ai_system_id
+        );
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["evidence-files"] });
+      queryClient.invalidateQueries({ queryKey: ["pending-approvals"] });
+      toast.success("Evidence approved");
+    },
+    onError: (error) => {
+      toast.error("Failed to approve evidence", { description: error.message });
+    },
+  });
+}
+
+/**
+ * Reject evidence (set back to draft with notes)
+ */
+export function useRejectEvidence() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      reason,
+    }: {
+      id: string;
+      reason: string;
+    }) => {
+      // For now, we keep as draft. In future could add rejection_reason field
+      const { data, error } = await supabase
+        .from("evidence_files")
+        .update({
+          status: "draft",
+          // Could add rejection notes to description or a dedicated field
+        })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["evidence-files"] });
+      queryClient.invalidateQueries({ queryKey: ["pending-approvals"] });
+      toast.success("Evidence returned for revision");
+    },
+    onError: (error) => {
+      toast.error("Failed to reject evidence", { description: error.message });
+    },
+  });
+}
+
+/**
+ * Get approval history (recently approved evidence)
+ */
+export function useApprovalHistory(limit = 20) {
+  const { profile } = useAuth();
+
+  return useQuery({
+    queryKey: ["approval-history", profile?.organization_id, limit],
+    queryFn: async () => {
+      if (!profile?.organization_id) return [];
+
+      const { data, error } = await supabase
+        .from("evidence_files")
+        .select(`
+          *,
+          ai_systems:ai_system_id(name),
+          vendors:vendor_id(name),
+          approver:profiles!approved_by(full_name)
+        `)
+        .eq("organization_id", profile.organization_id)
+        .eq("status", "approved")
+        .not("approved_at", "is", null)
+        .order("approved_at", { ascending: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return data as (EvidenceFile & { approver: { full_name: string | null } | null })[];
+    },
+    enabled: !!profile?.organization_id,
   });
 }

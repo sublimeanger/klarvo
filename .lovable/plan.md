@@ -60,12 +60,18 @@
 
 ## Upcoming Features
 
-### Phase AH: Evidence Approval Workflow
-- Approval queue for pending evidence
-- Approver assignment and notifications
-- Approval history tracking
+### Phase AH: Evidence Approval Workflow ✅
+- Created `usePendingApprovals`, `useApproveEvidence`, `useRejectEvidence`, `useApprovalHistory` hooks
+- Built `ApprovalQueue` component with approve/reject actions and rejection reason dialog
+- Built `ApprovalHistory` component showing recently approved evidence with approver details
+- Added tabbed interface to Evidence page: All Files | Approval Queue (with pending count badge) | Approval History
+- Approval actions log to audit trail
 
 ### Phase AI: Policy Version Control
 - Version history for policies
 - Diff view between versions
 - Rollback capability
+
+### Phase AJ: Scheduled Compliance Digests
+- Cron job for automatic daily/weekly digest emails
+- Configurable schedule per user
