@@ -28,12 +28,12 @@ interface Step11DataPrivacyProps {
 
 export function Step11DataPrivacy({ data, onChange, members }: Step11DataPrivacyProps) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 flex gap-3">
-        <Database className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <Database className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Data & Privacy</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Data & Privacy</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             These questions help ensure GDPR alignment and identify data governance 
             requirements for the AI system.
           </p>
@@ -79,9 +79,9 @@ export function Step11DataPrivacy({ data, onChange, members }: Step11DataPrivacy
         layout="horizontal"
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label>Data retention period for inputs</Label>
+          <Label className="text-sm">Data retention period for inputs</Label>
           <Select
             value={data.input_retention_period}
             onValueChange={(value) => onChange({ input_retention_period: value })}
@@ -100,7 +100,7 @@ export function Step11DataPrivacy({ data, onChange, members }: Step11DataPrivacy
         </div>
 
         <div className="space-y-2">
-          <Label>Data retention period for outputs</Label>
+          <Label className="text-sm">Data retention period for outputs</Label>
           <Select
             value={data.output_retention_period}
             onValueChange={(value) => onChange({ output_retention_period: value })}
@@ -120,7 +120,7 @@ export function Step11DataPrivacy({ data, onChange, members }: Step11DataPrivacy
       </div>
 
       <div className="space-y-2">
-        <Label>DPIA status</Label>
+        <Label className="text-sm">DPIA status</Label>
         <Select
           value={data.dpia_status}
           onValueChange={(value) => onChange({ dpia_status: value })}
@@ -140,7 +140,7 @@ export function Step11DataPrivacy({ data, onChange, members }: Step11DataPrivacy
 
       {data.dpia_status === "completed" && (
         <div className="space-y-2">
-          <Label htmlFor="dpia_url">Link/upload DPIA</Label>
+          <Label htmlFor="dpia_url" className="text-sm">Link/upload DPIA</Label>
           <Input
             id="dpia_url"
             type="url"
@@ -152,7 +152,7 @@ export function Step11DataPrivacy({ data, onChange, members }: Step11DataPrivacy
       )}
 
       <div className="space-y-2">
-        <Label>Privacy owner (DPO or responsible person)</Label>
+        <Label className="text-sm">Privacy owner (DPO or responsible person)</Label>
         <Select
           value={data.privacy_owner_id}
           onValueChange={(value) => onChange({ privacy_owner_id: value })}

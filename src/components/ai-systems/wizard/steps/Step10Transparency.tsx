@@ -20,12 +20,12 @@ export function Step10Transparency({ data, onChange }: Step10TransparencyProps) 
   const showOutputsMarked = data.transparency_synthetic_content === "yes";
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border border-primary/50 bg-primary/5 p-4 flex gap-3">
-        <Eye className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border border-primary/50 bg-primary/5 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Transparency Obligations (Article 50)</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Transparency Obligations (Article 50)</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Article 50 requires disclosure when people interact with AI, when content is 
             AI-generated, and in other specific scenarios.
           </p>
@@ -97,7 +97,7 @@ export function Step10Transparency({ data, onChange }: Step10TransparencyProps) 
         layout="horizontal"
       />
 
-      <div className="border-t pt-6">
+      <div className="border-t pt-4 sm:pt-6">
         <RadioGroupField
           label="Transparency implementation status"
           options={TRANSPARENCY_STATUS_OPTIONS}
@@ -107,19 +107,19 @@ export function Step10Transparency({ data, onChange }: Step10TransparencyProps) 
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="transparency_notes">Notes</Label>
+        <Label htmlFor="transparency_notes" className="text-sm">Notes</Label>
         <Textarea
           id="transparency_notes"
           placeholder="Describe how transparency obligations are being addressed..."
           value={data.transparency_notes}
           onChange={(e) => onChange({ transparency_notes: e.target.value })}
-          className="min-h-[80px]"
+          className="min-h-[70px] sm:min-h-[80px]"
         />
       </div>
 
       {data.transparency_status === "gaps_exist" && (
-        <div className="rounded-lg border border-warning bg-warning/10 p-4">
-          <p className="text-sm">
+        <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4">
+          <p className="text-xs sm:text-sm">
             <strong>Action required:</strong> Tasks will be created to implement missing 
             transparency disclosures.
           </p>

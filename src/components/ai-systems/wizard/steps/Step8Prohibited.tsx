@@ -51,12 +51,12 @@ export function Step8Prohibited({ data, onChange }: Step8ProhibitedProps) {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4 flex gap-3">
-        <ShieldX className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <ShieldX className="h-4 w-4 sm:h-5 sm:w-5 text-destructive shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Prohibited Practices Screening (Article 5)</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Prohibited Practices Screening (Article 5)</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             The EU AI Act prohibits certain AI practices. If any apply, the system cannot 
             be deployed in the EU without legal review and potential redesign.
           </p>
@@ -76,7 +76,7 @@ export function Step8Prohibited({ data, onChange }: Step8ProhibitedProps) {
 
       {hasAnyYesOrUnsure && (
         <div className="space-y-2">
-          <Label htmlFor="prohibited_screening_notes">
+          <Label htmlFor="prohibited_screening_notes" className="text-sm">
             Describe context & safeguards
           </Label>
           <Textarea
@@ -84,12 +84,12 @@ export function Step8Prohibited({ data, onChange }: Step8ProhibitedProps) {
             placeholder="If any answer is Yes or Unsure, describe the context and any safeguards in place..."
             value={data.prohibited_screening_notes}
             onChange={(e) => onChange({ prohibited_screening_notes: e.target.value })}
-            className="min-h-[100px]"
+            className="min-h-[80px] sm:min-h-[100px]"
           />
         </div>
       )}
 
-      <div className="border-t pt-6">
+      <div className="border-t pt-4 sm:pt-6">
         <RadioGroupField
           label="Prohibited practices screening conclusion"
           options={PROHIBITED_SCREENING_RESULTS}
@@ -99,13 +99,13 @@ export function Step8Prohibited({ data, onChange }: Step8ProhibitedProps) {
       </div>
 
       {data.prohibited_screening_result === "potential_prohibited" && (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 flex gap-3">
-          <AlertTriangle className="h-5 w-5 text-destructive shrink-0" />
+        <div className="rounded-lg border border-destructive bg-destructive/10 p-3 sm:p-4 flex gap-2 sm:gap-3">
+          <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-destructive shrink-0" />
           <div>
-            <p className="text-sm font-medium text-destructive">
+            <p className="text-xs sm:text-sm font-medium text-destructive">
               Potential prohibited practice detected
             </p>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               This system will be blocked until legal review is completed. A task will 
               be created for your compliance team.
             </p>
