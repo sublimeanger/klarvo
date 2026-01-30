@@ -51,6 +51,7 @@ import Press from "@/pages/marketing/Press";
 import Status from "@/pages/marketing/Status";
 import Changelog from "@/pages/marketing/Changelog";
 import Docs from "@/pages/marketing/Docs";
+import DocsArticle from "@/pages/marketing/DocsArticle";
 import FAQ from "@/pages/marketing/FAQ";
 import Blog from "@/pages/marketing/Blog";
 import APIReference from "@/pages/marketing/APIReference";
@@ -98,6 +99,7 @@ const App = () => (
             <Route path="/status" element={<Status />} />
             <Route path="/changelog" element={<Changelog />} />
             <Route path="/docs" element={<Docs />} />
+            <Route path="/docs/:slug" element={<DocsArticle />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/api" element={<APIReference />} />
