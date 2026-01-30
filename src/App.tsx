@@ -14,6 +14,8 @@ import ClassificationWizard from "@/pages/ClassificationWizard";
 import Vendors from "@/pages/Vendors";
 import Evidence from "@/pages/Evidence";
 import Tasks from "@/pages/Tasks";
+import Policies from "@/pages/Policies";
+import Training from "@/pages/Training";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import BillingSettings from "@/pages/Settings/Billing";
@@ -67,8 +69,8 @@ const App = () => (
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/assessments" element={<Placeholder />} />
               <Route path="/evidence" element={<Evidence />} />
-              <Route path="/policies" element={<Placeholder />} />
-              <Route path="/training" element={<Placeholder />} />
+              <Route path="/policies" element={<Policies />} />
+              <Route path="/training" element={<Training />} />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/incidents" element={<Placeholder />} />
               <Route path="/exports" element={<Placeholder />} />

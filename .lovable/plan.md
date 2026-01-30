@@ -49,7 +49,29 @@
 - `useEvidence.ts` - upload, download, delete, status update hooks
 - `Evidence.tsx` - Full UI with upload dialog, file list, status management
 
-## Next Steps (Core Modules)
-- Tasks management for compliance tracking
-- Policies & Templates module
-- Dashboard updates with classification metrics
+## ✅ Phase K: Tasks Module
+- Database: `tasks` table with priority, status, due dates, linkages
+- `useTasks.ts` - CRUD operations with filtering
+- `Tasks.tsx` - Full UI with task list, status updates, creation dialog, overdue detection
+
+## ✅ Phase L: Dashboard Updates
+- `useDashboardMetrics.ts` - Extended to include classification breakdown, evidence stats, task stats
+- `Dashboard.tsx` - Updated with:
+  - Classification breakdown (high-risk, limited, minimal, not classified)
+  - Real evidence and task progress
+  - Live pending tasks from database
+
+## ✅ Phase M: Policies & Templates Module
+- Database: `policies` table with type, status, versioning, approval workflow
+- `usePolicies.ts` - CRUD operations with approve/archive
+- `Policies.tsx` - Card grid UI with filtering, create/edit dialogs, approval workflow
+
+## ✅ Phase N: Training/AI Literacy Module
+- Database: `training_records` table with training types, status, expiration
+- `useTraining.ts` - CRUD operations with status updates
+- `Training.tsx` - Table UI with completion tracking, assignment dialog, progress bar
+
+## Next Steps (Remaining Modules)
+- Incident management
+- Export packs (PDF/ZIP generation)
+- Settings page enhancements
