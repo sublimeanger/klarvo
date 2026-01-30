@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Shield,
   CheckCircle,
@@ -9,6 +9,9 @@ import {
   Play,
   Loader2,
   FileCheck,
+  CheckSquare,
+  Square,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,13 +34,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   useAISystemControls,
   useApplicableControls,
   useInitializeControls,
   useUpdateControlStatus,
+  useBulkUpdateControlStatus,
   type ControlImplementation,
 } from "@/hooks/useControls";
 import { useControlsEvidenceCounts } from "@/hooks/useControlEvidence";
@@ -55,6 +59,9 @@ interface ControlCardProps {
   aiSystemId: string;
   evidenceCount: number;
   onStatusChange: (id: string, status: string) => void;
+  isSelectionMode: boolean;
+  isSelected: boolean;
+  onToggleSelect: (id: string) => void;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; variant: "draft" | "pending" | "success" | "warning"; icon: typeof Clock }> = {
@@ -80,7 +87,10 @@ function ControlCard({
   implementation, 
   aiSystemId,
   evidenceCount,
-  onStatusChange 
+  onStatusChange,
+  isSelectionMode,
+  isSelected,
+  onToggleSelect,
 }: ControlCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const control = implementation.control;
@@ -90,12 +100,21 @@ function ControlCard({
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className="rounded-lg border bg-card">
+    <div className={`rounded-lg border bg-card ${isSelected ? "ring-2 ring-primary" : ""}`}>
       <div 
         className="flex items-start justify-between p-3 hover:bg-muted/30 transition-colors cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => isSelectionMode ? onToggleSelect(implementation.id) : setIsExpanded(!isExpanded)}
       >
         <div className="flex items-start gap-3 flex-1">
+          {isSelectionMode && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <Checkbox
+                checked={isSelected}
+                onCheckedChange={() => onToggleSelect(implementation.id)}
+                className="mt-1"
+              />
+            </div>
+          )}
           <div className={`p-1.5 rounded-md ${
             implementation.status === "implemented" ? "bg-success/10 text-success" :
             implementation.status === "in_progress" ? "bg-warning/10 text-warning" :
@@ -122,28 +141,32 @@ function ControlCard({
           </div>
         </div>
         <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-          <Select
-            value={implementation.status}
-            onValueChange={(value) => onStatusChange(implementation.id, value)}
-          >
-            <SelectTrigger className="w-[140px] h-8 text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="not_started">Not Started</SelectItem>
-              <SelectItem value="in_progress">In Progress</SelectItem>
-              <SelectItem value="implemented">Implemented</SelectItem>
-              <SelectItem value="not_applicable">N/A</SelectItem>
-            </SelectContent>
-          </Select>
-          {isExpanded ? (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          {!isSelectionMode && (
+            <Select
+              value={implementation.status}
+              onValueChange={(value) => onStatusChange(implementation.id, value)}
+            >
+              <SelectTrigger className="w-[140px] h-8 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="not_started">Not Started</SelectItem>
+                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="implemented">Implemented</SelectItem>
+                <SelectItem value="not_applicable">N/A</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+          {!isSelectionMode && (
+            isExpanded ? (
+              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            )
           )}
         </div>
       </div>
-      {isExpanded && (
+      {isExpanded && !isSelectionMode && (
         <div className="px-3 pb-3 pt-1 border-t">
           <ControlEvidenceSection
             controlImplementationId={implementation.id}
@@ -161,24 +184,50 @@ function CategorySection({
   controls,
   aiSystemId,
   evidenceCounts,
-  onStatusChange 
+  onStatusChange,
+  isSelectionMode,
+  selectedIds,
+  onToggleSelect,
+  onSelectAllInCategory,
 }: { 
   category: string;
   controls: ControlImplementation[];
   aiSystemId: string;
   evidenceCounts: Record<string, number>;
   onStatusChange: (id: string, status: string) => void;
+  isSelectionMode: boolean;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onSelectAllInCategory: (ids: string[], select: boolean) => void;
 }) {
   const [isOpen, setIsOpen] = useState(true);
   
   const implemented = controls.filter(c => c.status === "implemented").length;
   const total = controls.filter(c => c.status !== "not_applicable").length;
   const progress = total > 0 ? (implemented / total) * 100 : 0;
+  
+  const categoryControlIds = controls.map(c => c.id);
+  const selectedInCategory = categoryControlIds.filter(id => selectedIds.has(id)).length;
+  const allSelected = selectedInCategory === controls.length && controls.length > 0;
+  const someSelected = selectedInCategory > 0 && selectedInCategory < controls.length;
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-muted/50 transition-colors">
         <div className="flex items-center gap-3">
+          {isSelectionMode && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <Checkbox
+                checked={allSelected}
+                ref={(el) => {
+                  if (el) (el as unknown as HTMLInputElement).indeterminate = someSelected;
+                }}
+                onCheckedChange={(checked) => {
+                  onSelectAllInCategory(categoryControlIds, checked === true);
+                }}
+              />
+            </div>
+          )}
           {isOpen ? (
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
@@ -188,6 +237,9 @@ function CategorySection({
             <p className="font-medium text-sm">{CATEGORY_LABELS[category] || category}</p>
             <p className="text-xs text-muted-foreground">
               {implemented}/{total} implemented
+              {isSelectionMode && selectedInCategory > 0 && (
+                <span className="ml-2 text-primary">({selectedInCategory} selected)</span>
+              )}
             </p>
           </div>
         </div>
@@ -206,10 +258,56 @@ function CategorySection({
             aiSystemId={aiSystemId}
             evidenceCount={evidenceCounts[implementation.id] || 0}
             onStatusChange={onStatusChange}
+            isSelectionMode={isSelectionMode}
+            isSelected={selectedIds.has(implementation.id)}
+            onToggleSelect={onToggleSelect}
           />
         ))}
       </CollapsibleContent>
     </Collapsible>
+  );
+}
+
+function BulkActionToolbar({
+  selectedCount,
+  onBulkStatusChange,
+  onClearSelection,
+  isLoading,
+}: {
+  selectedCount: number;
+  onBulkStatusChange: (status: string) => void;
+  onClearSelection: () => void;
+  isLoading: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between bg-primary/10 border border-primary/20 rounded-lg p-3 mb-4">
+      <div className="flex items-center gap-2">
+        <CheckSquare className="h-4 w-4 text-primary" />
+        <span className="text-sm font-medium">{selectedCount} selected</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Select onValueChange={onBulkStatusChange} disabled={isLoading}>
+          <SelectTrigger className="w-[160px] h-8 text-xs">
+            <SelectValue placeholder="Set status..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="not_started">Not Started</SelectItem>
+            <SelectItem value="in_progress">In Progress</SelectItem>
+            <SelectItem value="implemented">Implemented</SelectItem>
+            <SelectItem value="not_applicable">N/A</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onClearSelection}
+          disabled={isLoading}
+        >
+          <X className="h-4 w-4 mr-1" />
+          Cancel
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -219,10 +317,14 @@ export function AISystemControls({
   hasVendor,
   isClassified 
 }: AISystemControlsProps) {
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  
   const { data: implementations, isLoading } = useAISystemControls(aiSystemId);
   const applicableControls = useApplicableControls(riskLevel, hasVendor);
   const initializeControls = useInitializeControls();
   const updateStatus = useUpdateControlStatus();
+  const bulkUpdateStatus = useBulkUpdateControlStatus();
   
   // Fetch evidence counts for all controls
   const controlIds = implementations?.map((impl) => impl.id) || [];
@@ -237,13 +339,70 @@ export function AISystemControls({
     updateStatus.mutate({ id, status });
   };
 
+  const handleToggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      // Exit selection mode if nothing selected
+      if (next.size === 0) {
+        setIsSelectionMode(false);
+      } else if (!isSelectionMode) {
+        setIsSelectionMode(true);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAllInCategory = (ids: string[], select: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      ids.forEach(id => {
+        if (select) {
+          next.add(id);
+        } else {
+          next.delete(id);
+        }
+      });
+      if (next.size === 0) {
+        setIsSelectionMode(false);
+      } else if (!isSelectionMode) {
+        setIsSelectionMode(true);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (!implementations) return;
+    const allIds = implementations.map(i => i.id);
+    setSelectedIds(new Set(allIds));
+    setIsSelectionMode(true);
+  };
+
+  const handleClearSelection = () => {
+    setSelectedIds(new Set());
+    setIsSelectionMode(false);
+  };
+
+  const handleBulkStatusChange = async (status: string) => {
+    const ids = Array.from(selectedIds);
+    await bulkUpdateStatus.mutateAsync({ ids, status });
+    handleClearSelection();
+  };
+
   // Group implementations by category
-  const groupedControls = implementations?.reduce((acc, impl) => {
-    const category = impl.control?.category || "OTHER";
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(impl);
-    return acc;
-  }, {} as Record<string, ControlImplementation[]>);
+  const groupedControls = useMemo(() => {
+    return implementations?.reduce((acc, impl) => {
+      const category = impl.control?.category || "OTHER";
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(impl);
+      return acc;
+    }, {} as Record<string, ControlImplementation[]>);
+  }, [implementations]);
 
   // Calculate overall stats
   const totalImplemented = implementations?.filter(c => c.status === "implemented").length || 0;
@@ -330,16 +489,36 @@ export function AISystemControls({
               Track implementation status for applicable controls
             </CardDescription>
           </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold">{Math.round(overallProgress)}%</p>
-            <p className="text-xs text-muted-foreground">
-              {totalImplemented}/{totalApplicable} implemented
-            </p>
+          <div className="flex items-center gap-4">
+            {!isSelectionMode && (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleSelectAll}
+              >
+                <Square className="h-4 w-4 mr-2" />
+                Bulk Edit
+              </Button>
+            )}
+            <div className="text-right">
+              <p className="text-2xl font-bold">{Math.round(overallProgress)}%</p>
+              <p className="text-xs text-muted-foreground">
+                {totalImplemented}/{totalApplicable} implemented
+              </p>
+            </div>
           </div>
         </div>
         <Progress value={overallProgress} className="h-2 mt-2" />
       </CardHeader>
       <CardContent className="space-y-2">
+        {isSelectionMode && (
+          <BulkActionToolbar
+            selectedCount={selectedIds.size}
+            onBulkStatusChange={handleBulkStatusChange}
+            onClearSelection={handleClearSelection}
+            isLoading={bulkUpdateStatus.isPending}
+          />
+        )}
         {Object.entries(groupedControls || {}).map(([category, controls]) => (
           <CategorySection
             key={category}
@@ -348,6 +527,10 @@ export function AISystemControls({
             aiSystemId={aiSystemId}
             evidenceCounts={evidenceCounts}
             onStatusChange={handleStatusChange}
+            isSelectionMode={isSelectionMode}
+            selectedIds={selectedIds}
+            onToggleSelect={handleToggleSelect}
+            onSelectAllInCategory={handleSelectAllInCategory}
           />
         ))}
       </CardContent>

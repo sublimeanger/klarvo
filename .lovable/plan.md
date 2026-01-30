@@ -43,12 +43,8 @@
 - Configurable notification preferences per user
 - Integration with email service provider (Resend)
 
-### Phase AD: Audit Log & Activity Feed
-- Track all key actions (classification, evidence uploads, control status changes)
-- Display activity feed on AI system detail page
-- Exportable audit trail for compliance reporting
-
-### Phase AE: Bulk Operations
-- Bulk status updates for controls
-- Bulk task assignment
-- Bulk evidence linking
+### Phase AE: Bulk Operations ✅
+- Added `useBulkUpdateControlStatus` hook for batch status updates
+- Updated `AISystemControls` with selection mode, checkboxes, and bulk action toolbar
+- Users can select multiple controls (individually or by category) and update status in one action
+- Bulk task assignment and evidence linking planned for future iteration
