@@ -1,16 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+import { ArrowRight, ChevronDown } from "lucide-react";
 
 const productLinks = [
   {
@@ -68,9 +60,61 @@ const companyLinks = [
   { title: "Contact", href: "/contact" },
 ];
 
+interface DropdownProps {
+  label: string;
+  children: React.ReactNode;
+  isOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+}
+
+function NavDropdown({ label, children, isOpen, onToggle, onClose }: DropdownProps) {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen, onClose]);
+
+  return (
+    <div ref={dropdownRef} className="relative">
+      <button
+        onClick={onToggle}
+        className={cn(
+          "inline-flex h-9 items-center gap-1 rounded-md px-3 text-sm font-medium transition-colors",
+          isOpen
+            ? "bg-muted text-foreground"
+            : "text-foreground/70 hover:text-foreground hover:bg-muted/50"
+        )}
+      >
+        {label}
+        <ChevronDown
+          className={cn(
+            "h-3.5 w-3.5 transition-transform duration-200",
+            isOpen && "rotate-180"
+          )}
+        />
+      </button>
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-2 z-50 animate-in fade-in-0 zoom-in-95 duration-150">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function MarketingHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -83,18 +127,25 @@ export function MarketingHeader() {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setOpenDropdown(null);
   }, [location.pathname]);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isMobileMenuOpen]);
+
+  const handleDropdownToggle = (name: string) => {
+    setOpenDropdown(openDropdown === name ? null : name);
+  };
+
+  const closeDropdown = () => setOpenDropdown(null);
 
   return (
     <header
@@ -118,126 +169,120 @@ export function MarketingHeader() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:block">
-            <NavigationMenu delayDuration={0}>
-              <NavigationMenuList className="gap-0">
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-9 px-3 bg-transparent text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted data-[state=open]:bg-muted data-[state=open]:text-foreground">
-                    Product
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-1 p-2 md:w-[500px] md:grid-cols-2">
-                      {productLinks.map((link) => (
-                        <li key={link.title}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to={link.href}
-                              className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-muted focus:bg-muted"
-                            >
-                              <div className="text-sm font-medium leading-none mb-1">
-                                {link.title}
-                              </div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {link.description}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+          <div className="hidden lg:flex items-center gap-1">
+            {/* Product Dropdown */}
+            <NavDropdown
+              label="Product"
+              isOpen={openDropdown === "product"}
+              onToggle={() => handleDropdownToggle("product")}
+              onClose={closeDropdown}
+            >
+              <div className="w-[480px] rounded-xl border border-border bg-popover p-2 shadow-xl">
+                <div className="grid grid-cols-2 gap-1">
+                  {productLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      onClick={closeDropdown}
+                      className="block rounded-lg p-3 hover:bg-muted transition-colors"
+                    >
+                      <div className="text-sm font-medium mb-1">{link.title}</div>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {link.description}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </NavDropdown>
 
-                <NavigationMenuItem>
-                  <Link
-                    to="/features"
-                    className="inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-muted"
-                  >
-                    Features
-                  </Link>
-                </NavigationMenuItem>
+            {/* Features Link */}
+            <Link
+              to="/features"
+              className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors"
+            >
+              Features
+            </Link>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-9 px-3 bg-transparent text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted data-[state=open]:bg-muted data-[state=open]:text-foreground">
-                    Solutions
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-1 p-2 md:grid-cols-2">
-                      {solutionLinks.map((link) => (
-                        <li key={link.title}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to={link.href}
-                              className="block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-muted focus:bg-muted"
-                            >
-                              <div className="text-sm font-medium leading-none mb-1">
-                                {link.title}
-                              </div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                                {link.description}
-                              </p>
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+            {/* Solutions Dropdown */}
+            <NavDropdown
+              label="Solutions"
+              isOpen={openDropdown === "solutions"}
+              onToggle={() => handleDropdownToggle("solutions")}
+              onClose={closeDropdown}
+            >
+              <div className="w-[400px] rounded-xl border border-border bg-popover p-2 shadow-xl">
+                <div className="grid grid-cols-2 gap-1">
+                  {solutionLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      onClick={closeDropdown}
+                      className="block rounded-lg p-3 hover:bg-muted transition-colors"
+                    >
+                      <div className="text-sm font-medium mb-1">{link.title}</div>
+                      <p className="text-sm text-muted-foreground line-clamp-2">
+                        {link.description}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </NavDropdown>
 
-                <NavigationMenuItem>
-                  <Link
-                    to="/pricing"
-                    className="inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-muted"
-                  >
-                    Pricing
-                  </Link>
-                </NavigationMenuItem>
+            {/* Pricing Link */}
+            <Link
+              to="/pricing"
+              className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors"
+            >
+              Pricing
+            </Link>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-9 px-3 bg-transparent text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted data-[state=open]:bg-muted data-[state=open]:text-foreground">
-                    Resources
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[180px] gap-0.5 p-2">
-                      {resourceLinks.map((link) => (
-                        <li key={link.title}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to={link.href}
-                              className="block select-none rounded-md px-3 py-2 text-sm font-medium leading-none no-underline outline-none transition-colors hover:bg-muted focus:bg-muted"
-                            >
-                              {link.title}
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
+            {/* Resources Dropdown */}
+            <NavDropdown
+              label="Resources"
+              isOpen={openDropdown === "resources"}
+              onToggle={() => handleDropdownToggle("resources")}
+              onClose={closeDropdown}
+            >
+              <div className="w-[200px] rounded-xl border border-border bg-popover p-2 shadow-xl">
+                <div className="space-y-0.5">
+                  {resourceLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      onClick={closeDropdown}
+                      className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </NavDropdown>
 
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="h-9 px-3 bg-transparent text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted data-[state=open]:bg-muted data-[state=open]:text-foreground">
-                    Company
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[160px] gap-0.5 p-2">
-                      {companyLinks.map((link) => (
-                        <li key={link.title}>
-                          <NavigationMenuLink asChild>
-                            <Link
-                              to={link.href}
-                              className="block select-none rounded-md px-3 py-2 text-sm font-medium leading-none no-underline outline-none transition-colors hover:bg-muted focus:bg-muted"
-                            >
-                              {link.title}
-                            </Link>
-                          </NavigationMenuLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            {/* Company Dropdown */}
+            <NavDropdown
+              label="Company"
+              isOpen={openDropdown === "company"}
+              onToggle={() => handleDropdownToggle("company")}
+              onClose={closeDropdown}
+            >
+              <div className="w-[180px] rounded-xl border border-border bg-popover p-2 shadow-xl">
+                <div className="space-y-0.5">
+                  {companyLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      onClick={closeDropdown}
+                      className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </NavDropdown>
           </div>
 
           {/* Desktop CTA */}
@@ -261,122 +306,156 @@ export function MarketingHeader() {
             aria-expanded={isMobileMenuOpen}
           >
             <div className="relative w-5 h-5">
-              <span className={cn(
-                "absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200",
-                isMobileMenuOpen ? "top-2.5 rotate-45" : "top-1"
-              )} />
-              <span className={cn(
-                "absolute left-0 top-2.5 block h-0.5 w-5 bg-current transition-all duration-200",
-                isMobileMenuOpen ? "opacity-0" : "opacity-100"
-              )} />
-              <span className={cn(
-                "absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200",
-                isMobileMenuOpen ? "top-2.5 -rotate-45" : "top-4"
-              )} />
+              <span
+                className={cn(
+                  "absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200",
+                  isMobileMenuOpen ? "top-2.5 rotate-45" : "top-1"
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute left-0 top-2.5 block h-0.5 w-5 bg-current transition-all duration-200",
+                  isMobileMenuOpen ? "opacity-0" : "opacity-100"
+                )}
+              />
+              <span
+                className={cn(
+                  "absolute left-0 block h-0.5 w-5 bg-current transition-all duration-200",
+                  isMobileMenuOpen ? "top-2.5 -rotate-45" : "top-4"
+                )}
+              />
             </div>
           </button>
         </nav>
       </div>
 
       {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 top-[72px] bg-background z-40 overflow-y-auto">
-          <div className="container mx-auto px-4 py-6">
-            <div className="space-y-6">
-              {/* Product */}
-              <div>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                  Product
-                </h3>
-                <div className="space-y-0.5">
-                  {productLinks.map((link) => (
-                    <Link
-                      key={link.title}
-                      to={link.href}
-                      className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
-                    >
-                      {link.title}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-px bg-border" />
-
-              {/* Solutions */}
-              <div>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                  Solutions
-                </h3>
-                <div className="space-y-0.5">
-                  {solutionLinks.map((link) => (
-                    <Link
-                      key={link.title}
-                      to={link.href}
-                      className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
-                    >
-                      {link.title}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-px bg-border" />
-
-              {/* Resources & Company */}
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                    Resources
-                  </h3>
-                  <div className="space-y-0.5">
-                    {resourceLinks.map((link) => (
-                      <Link
-                        key={link.title}
-                        to={link.href}
-                        className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                      >
-                        {link.title}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                    Company
-                  </h3>
-                  <div className="space-y-0.5">
-                    {companyLinks.map((link) => (
-                      <Link
-                        key={link.title}
-                        to={link.href}
-                        className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                      >
-                        {link.title}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="h-px bg-border" />
-
-              {/* Mobile CTAs */}
-              <div className="space-y-3 pt-2">
-                <Button asChild className="w-full h-12 text-base font-semibold" size="lg">
-                  <Link to="/auth/signup">
-                    Start Free
-                    <ArrowRight className="ml-2 h-4 w-4" />
+      <div
+        className={cn(
+          "lg:hidden fixed inset-x-0 top-[72px] bottom-0 bg-background z-40 transition-all duration-300 overflow-hidden",
+          isMobileMenuOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        )}
+      >
+        <div className="h-full overflow-y-auto">
+          <div className="container mx-auto px-4 py-6 space-y-6">
+            {/* Product */}
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                Product
+              </h3>
+              <div className="space-y-1">
+                {productLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    to={link.href}
+                    className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
+                  >
+                    {link.title}
                   </Link>
-                </Button>
-                <Button asChild variant="outline" className="w-full h-12 text-base font-semibold" size="lg">
-                  <Link to="/auth/login">Log in</Link>
-                </Button>
+                ))}
               </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Core Links */}
+            <div className="flex flex-col gap-1">
+              <Link
+                to="/features"
+                className="py-2.5 text-base font-medium hover:text-primary transition-colors"
+              >
+                Features
+              </Link>
+              <Link
+                to="/pricing"
+                className="py-2.5 text-base font-medium hover:text-primary transition-colors"
+              >
+                Pricing
+              </Link>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Solutions */}
+            <div>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                Solutions
+              </h3>
+              <div className="space-y-1">
+                {solutionLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    to={link.href}
+                    className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Resources & Company Grid */}
+            <div className="grid grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  Resources
+                </h3>
+                <div className="space-y-1">
+                  {resourceLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      className="block py-2 text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  Company
+                </h3>
+                <div className="space-y-1">
+                  {companyLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      className="block py-2 text-sm font-medium hover:text-primary transition-colors"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Mobile CTAs */}
+            <div className="space-y-3 pt-2 pb-8">
+              <Button asChild className="w-full h-12 text-base font-semibold" size="lg">
+                <Link to="/auth/signup">
+                  Start Free
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full h-12 text-base font-semibold"
+                size="lg"
+              >
+                <Link to="/auth/login">Log in</Link>
+              </Button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }
