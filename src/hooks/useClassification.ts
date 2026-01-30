@@ -26,6 +26,11 @@ export interface Classification {
   classified_at: string | null;
   reviewed_by: string | null;
   reviewed_at: string | null;
+  // Reassessment fields
+  reassessment_needed: boolean;
+  reassessment_reason: string | null;
+  reassessment_triggered_at: string | null;
+  last_material_change_at: string | null;
   created_at: string;
   updated_at: string;
 }

@@ -31,9 +31,13 @@ export type Database = {
           id: string
           is_ai_system: boolean | null
           is_high_risk_candidate: boolean | null
+          last_material_change_at: string | null
           organization_id: string
           prohibited_notes: string | null
           prohibited_screening_completed: boolean | null
+          reassessment_needed: boolean | null
+          reassessment_reason: string | null
+          reassessment_triggered_at: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           risk_level: Database["public"]["Enums"]["risk_level"]
@@ -57,9 +61,13 @@ export type Database = {
           id?: string
           is_ai_system?: boolean | null
           is_high_risk_candidate?: boolean | null
+          last_material_change_at?: string | null
           organization_id: string
           prohibited_notes?: string | null
           prohibited_screening_completed?: boolean | null
+          reassessment_needed?: boolean | null
+          reassessment_reason?: string | null
+          reassessment_triggered_at?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           risk_level?: Database["public"]["Enums"]["risk_level"]
@@ -83,9 +91,13 @@ export type Database = {
           id?: string
           is_ai_system?: boolean | null
           is_high_risk_candidate?: boolean | null
+          last_material_change_at?: string | null
           organization_id?: string
           prohibited_notes?: string | null
           prohibited_screening_completed?: boolean | null
+          reassessment_needed?: boolean | null
+          reassessment_reason?: string | null
+          reassessment_triggered_at?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           risk_level?: Database["public"]["Enums"]["risk_level"]
