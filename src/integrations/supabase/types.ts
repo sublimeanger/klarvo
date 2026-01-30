@@ -269,6 +269,129 @@ export type Database = {
           },
         ]
       }
+      control_implementations: {
+        Row: {
+          ai_system_id: string
+          control_id: string
+          created_at: string
+          id: string
+          last_reviewed_at: string | null
+          next_review_date: string | null
+          notes: string | null
+          organization_id: string
+          owner_id: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          ai_system_id: string
+          control_id: string
+          created_at?: string
+          id?: string
+          last_reviewed_at?: string | null
+          next_review_date?: string | null
+          notes?: string | null
+          organization_id: string
+          owner_id?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          ai_system_id?: string
+          control_id?: string
+          created_at?: string
+          id?: string
+          last_reviewed_at?: string | null
+          next_review_date?: string | null
+          notes?: string | null
+          organization_id?: string
+          owner_id?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "control_implementations_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_implementations_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "control_library"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_implementations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_implementations_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_implementations_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      control_library: {
+        Row: {
+          applies_to: string[]
+          article_reference: string | null
+          category: string
+          code: string
+          created_at: string
+          description: string | null
+          evidence_requirements: string | null
+          id: string
+          name: string
+          review_frequency: string | null
+          updated_at: string
+        }
+        Insert: {
+          applies_to?: string[]
+          article_reference?: string | null
+          category: string
+          code: string
+          created_at?: string
+          description?: string | null
+          evidence_requirements?: string | null
+          id?: string
+          name: string
+          review_frequency?: string | null
+          updated_at?: string
+        }
+        Update: {
+          applies_to?: string[]
+          article_reference?: string | null
+          category?: string
+          code?: string
+          created_at?: string
+          description?: string | null
+          evidence_requirements?: string | null
+          id?: string
+          name?: string
+          review_frequency?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       evidence_files: {
         Row: {
           ai_system_id: string | null

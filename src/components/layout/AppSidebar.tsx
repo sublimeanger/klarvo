@@ -35,6 +35,7 @@ const navigation = [
   { name: "AI Systems", href: "/ai-systems", icon: Cpu },
   { name: "Vendors", href: "/vendors", icon: Building2 },
   { name: "Assessments", href: "/assessments", icon: ClipboardCheck },
+  { name: "Controls", href: "/controls", icon: Shield },
   { name: "Evidence", href: "/evidence", icon: FileCheck },
   { name: "Policies", href: "/policies", icon: FileText },
   { name: "Training", href: "/training", icon: GraduationCap },

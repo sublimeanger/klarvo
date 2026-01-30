@@ -113,6 +113,13 @@
   - FRIAs tab: filterable table by status with conclusion badges
 - Links to AI system detail and FRIA wizard
 
+## ✅ Phase T: Control Library
+- Database: `control_library` (master definitions), `control_implementations` (per-AI-system status)
+- Seeded 30+ EU AI Act controls across 9 categories (GOV, CLS, TRN, DEP, LOG, DATA, VEN, LIT, MON)
+- `useControls.ts` - hooks for control library, applicable controls by risk level, implementations
+- `Controls.tsx` - browsable control library with search, category filtering, accordion view
+- Controls mapped by risk level (all, high_risk, limited_risk, vendor_based)
+
 ## Next Steps (Remaining Enhancements)
-- Control library implementation
 - Vendor attestation tracking
+- Control implementation UI per AI system
