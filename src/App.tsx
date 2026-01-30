@@ -10,6 +10,7 @@ import Dashboard from "@/pages/Dashboard";
 import AISystems from "@/pages/AISystems";
 import AISystemWizard from "@/pages/AISystemWizard";
 import AISystemDetail from "@/pages/AISystemDetail";
+import ClassificationWizard from "@/pages/ClassificationWizard";
 import Vendors from "@/pages/Vendors";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="/ai-systems" element={<AISystems />} />
               <Route path="/ai-systems/:id" element={<AISystemDetail />} />
               <Route path="/ai-systems/new" element={<AISystemWizard />} />
+              <Route path="/ai-systems/:id/classify" element={<ClassificationWizard />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/assessments" element={<Placeholder />} />
               <Route path="/evidence" element={<Placeholder />} />

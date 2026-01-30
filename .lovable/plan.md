@@ -32,8 +32,19 @@
 - `Vendors.tsx` - Full vendor management with CRUD, due diligence status tracking
 - Added useUpdateVendor and useDeleteVendor hooks
 
+## ✅ Phase I: Classification Engine
+- Database schema: `ai_system_classifications`, `assessment_answers` tables
+- Enums: `risk_level`, `assessment_type`, `assessment_status`
+- `useClassification.ts` - CRUD operations for classification data
+- `ClassificationWizard.tsx` - 4-step wizard:
+  1. Prohibited Practices Screening (Article 5)
+  2. High-Risk Screening (Annex III categories)
+  3. Transparency Obligations (Article 50)
+  4. Result with risk level determination
+- `AISystemDetail.tsx` - Updated to show classification status with re-classify option
+
 ## Next Steps (Core Modules)
-- Classification Engine (prohibited screening, Annex III, risk level determination)
 - Evidence vault module with file uploads
 - Tasks management for compliance tracking
 - Policies & Templates module
+- Dashboard updates with classification metrics
