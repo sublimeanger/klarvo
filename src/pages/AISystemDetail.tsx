@@ -20,6 +20,7 @@ import {
   Eye,
   XCircle,
   Scale,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -48,6 +49,7 @@ import {
 import { useAISystem, useUpdateAISystem, useDeleteAISystem } from "@/hooks/useAISystems";
 import { useClassification } from "@/hooks/useClassification";
 import { useFRIA } from "@/hooks/useFRIA";
+import { AISystemControls } from "@/components/ai-systems/AISystemControls";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import type { Database } from "@/integrations/supabase/types";
@@ -537,6 +539,14 @@ export default function AISystemDetail() {
               </CardContent>
             </Card>
           )}
+
+          {/* Controls Section */}
+          <AISystemControls
+            aiSystemId={id!}
+            riskLevel={classification?.risk_level}
+            hasVendor={!!system.vendor_id}
+            isClassified={!!classification && classification.risk_level !== "not_classified"}
+          />
         </div>
 
         {/* Sidebar */}
