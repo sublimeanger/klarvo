@@ -27,6 +27,13 @@
 - Integrated into AI System Detail page - detects vendor changes and lifecycle transitions
 - Material changes (vendor added/changed, going live) trigger reassessment prompts
 
+### Phase AD: Audit Log & Activity Feed ✅
+- Created `audit_logs` table with RLS policies for tracking key actions
+- Built `useAuditLog` hook with mutations for logging and queries for fetching
+- Created `ActivityFeed` component displaying timeline of actions
+- Integrated into AI System Detail page sidebar
+- Supports entity-specific feeds and org-wide recent activity
+
 ## Next Phases
 
 ### Phase AC: Email Notifications
