@@ -65,21 +65,21 @@ export default function Dashboard() {
     .slice(0, 3);
 
   return (
-    <div className="space-y-8 animate-fade-up">
+    <div className="space-y-6 sm:space-y-8 animate-fade-up">
       {/* Trial Banner */}
       {isTrialing && daysRemaining > 0 && (
         <TrialBanner daysRemaining={daysRemaining} />
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
             Your EU AI Act compliance overview
           </p>
         </div>
-        <Button asChild>
+        <Button asChild size="sm" className="w-full sm:w-auto">
           <Link to="/ai-systems/new">
             <Plus className="mr-2 h-4 w-4" />
             Add AI System
@@ -88,45 +88,47 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
         {metricsLoading ? (
           <>
-            <Skeleton className="h-32 rounded-lg" />
-            <Skeleton className="h-32 rounded-lg" />
-            <Skeleton className="h-32 rounded-lg" />
-            <Skeleton className="h-32 rounded-lg" />
+            <Skeleton className="h-28 sm:h-32 rounded-xl" />
+            <Skeleton className="h-28 sm:h-32 rounded-xl" />
+            <Skeleton className="h-28 sm:h-32 rounded-xl" />
+            <Skeleton className="h-28 sm:h-32 rounded-xl" />
+            <Skeleton className="h-28 sm:h-32 rounded-xl col-span-2 lg:col-span-1" />
           </>
         ) : (
           <>
             <MetricCard
               title="Total AI Systems"
               value={metrics.totalSystems}
-              subtitle={`${metrics.activeSystems} active, ${metrics.draftSystems} draft`}
+              subtitle={`${metrics.activeSystems} active`}
               icon={Cpu}
             />
             <MetricCard
-              title="High-Risk Systems"
+              title="High-Risk"
               value={metrics.highRiskCount}
-              subtitle="Require deployer obligations"
+              subtitle="Deployer duties"
               icon={AlertTriangle}
             />
             <MetricCard
-              title="Pending Classification"
+              title="Pending"
               value={metrics.notClassifiedCount}
-              subtitle="Need risk assessment"
+              subtitle="Need assessment"
               icon={HelpCircle}
             />
             <MetricCard
               title="Open Tasks"
               value={metrics.tasksTodo}
-              subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "All on track"}
+              subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "On track"}
               icon={CheckSquare}
             />
             <MetricCard
               title="Alerts"
               value={alertsCount}
-              subtitle={criticalCount > 0 ? `${criticalCount} critical` : "Items needing attention"}
+              subtitle={criticalCount > 0 ? `${criticalCount} critical` : "Attention needed"}
               icon={Bell}
+              className="col-span-2 lg:col-span-1"
             />
           </>
         )}
@@ -135,21 +137,21 @@ export default function Dashboard() {
       {/* Audit Readiness Score */}
       <AuditReadinessCard />
 
-      {/* Classification Breakdown */}
+      {/* Classification Breakdown - Mobile friendly */}
       {metrics.totalSystems > 0 && (
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
               Classification Breakdown
             </CardTitle>
-            <CardDescription>Risk level distribution of your AI systems</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">Risk level distribution of your AI systems</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 md:grid-cols-4">
-              <div className="space-y-2">
+            <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">High Risk</span>
+                  <span className="text-xs sm:text-sm font-medium">High Risk</span>
                   <StatusBadge variant="high">{metrics.highRiskCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -159,9 +161,9 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Limited Risk</span>
+                  <span className="text-xs sm:text-sm font-medium">Limited</span>
                   <StatusBadge variant="limited">{metrics.limitedRiskCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -171,9 +173,9 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Minimal Risk</span>
+                  <span className="text-xs sm:text-sm font-medium">Minimal</span>
                   <StatusBadge variant="minimal">{metrics.minimalRiskCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -183,9 +185,9 @@ export default function Dashboard() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Not Classified</span>
+                  <span className="text-xs sm:text-sm font-medium">Unclassified</span>
                   <StatusBadge variant="draft">{metrics.notClassifiedCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -200,125 +202,80 @@ export default function Dashboard() {
         </Card>
       )}
 
-      {/* Progress Section */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <Shield className="h-4 w-4 text-muted-foreground" />
-              Classification
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{classificationProgress}%</span>
-                <StatusBadge 
-                  variant={classificationProgress === 100 ? "success" : classificationProgress > 50 ? "warning" : "draft"} 
-                  dot
-                >
-                  {classificationProgress === 100 ? "Complete" : "In Progress"}
-                </StatusBadge>
-              </div>
-              <Progress value={classificationProgress} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                {classifiedCount} of {metrics.totalSystems} classified
-              </p>
+      {/* Progress Section - Mobile 2-col grid */}
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+        <Card className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs sm:text-sm font-medium">Classification</span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xl sm:text-2xl font-bold">{classificationProgress}%</span>
             </div>
-          </CardContent>
+            <Progress value={classificationProgress} className="h-1.5 sm:h-2" />
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {classifiedCount}/{metrics.totalSystems} done
+            </p>
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
-              Controls
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{controlsProgress}%</span>
-                <StatusBadge 
-                  variant={controlsProgress === 100 ? "success" : controlsProgress > 50 ? "warning" : "draft"} 
-                  dot
-                >
-                  {metrics.controlsInProgress > 0 ? `${metrics.controlsInProgress} in progress` : "Tracking"}
-                </StatusBadge>
-              </div>
-              <Progress value={controlsProgress} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                {metrics.controlsImplemented} of {metrics.controlsTotal} implemented
-              </p>
+        <Card className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs sm:text-sm font-medium">Controls</span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xl sm:text-2xl font-bold">{controlsProgress}%</span>
             </div>
-          </CardContent>
+            <Progress value={controlsProgress} className="h-1.5 sm:h-2" />
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {metrics.controlsImplemented}/{metrics.controlsTotal} impl
+            </p>
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-              Vendor Attestations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{metrics.attestationsTotal}</span>
-                {metrics.attestationsExpired > 0 ? (
-                  <StatusBadge variant="destructive" dot>
-                    {metrics.attestationsExpired} expired
-                  </StatusBadge>
-                ) : (
-                  <StatusBadge variant="success" dot>
-                    {metrics.attestationsVerified} verified
-                  </StatusBadge>
-                )}
-              </div>
-              <Progress 
-                value={metrics.attestationsTotal > 0 ? (metrics.attestationsVerified / metrics.attestationsTotal) * 100 : 0} 
-                className="h-2" 
-              />
-              <p className="text-xs text-muted-foreground">
-                {metrics.attestationsVerified} verified, {metrics.attestationsTotal - metrics.attestationsVerified - metrics.attestationsExpired} pending
-              </p>
+        <Card className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Building2 className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs sm:text-sm font-medium">Attestations</span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xl sm:text-2xl font-bold">{metrics.attestationsTotal}</span>
             </div>
-          </CardContent>
+            <Progress 
+              value={metrics.attestationsTotal > 0 ? (metrics.attestationsVerified / metrics.attestationsTotal) * 100 : 0} 
+              className="h-1.5 sm:h-2" 
+            />
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {metrics.attestationsVerified} verified
+            </p>
+          </div>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              Evidence
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{metrics.evidenceCount}</span>
-                <StatusBadge 
-                  variant={evidenceProgress === 100 ? "success" : "warning"} 
-                  dot
-                >
-                  {metrics.approvedEvidenceCount} approved
-                </StatusBadge>
-              </div>
-              <Progress value={evidenceProgress} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                {metrics.approvedEvidenceCount} of {metrics.evidenceCount} approved
-              </p>
+        <Card className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <FileText className="h-4 w-4 text-muted-foreground" />
+            <span className="text-xs sm:text-sm font-medium">Evidence</span>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xl sm:text-2xl font-bold">{metrics.evidenceCount}</span>
             </div>
-          </CardContent>
+            <Progress value={evidenceProgress} className="h-1.5 sm:h-2" />
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {metrics.approvedEvidenceCount} approved
+            </p>
+          </div>
         </Card>
       </div>
 
       {/* Analytics Charts */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <ComplianceTrendChart />
-        <div className="space-y-6">
-          <RiskDistributionChart />
-        </div>
+        <RiskDistributionChart />
       </div>
 
       {/* Department Distribution */}
@@ -328,32 +285,32 @@ export default function Dashboard() {
       <ComplianceAlerts />
 
       {/* Two Column Layout */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* EU AI Act Timeline */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
+          <CardHeader className="pb-3 sm:pb-6">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
               EU AI Act Timeline
             </CardTitle>
-            <CardDescription>Key compliance deadlines</CardDescription>
+            <CardDescription className="text-xs sm:text-sm">Key compliance deadlines</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {upcomingDeadlines.map((deadline, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                    <Calendar className="h-5 w-5 text-muted-foreground" />
+                <div key={index} className="flex items-start gap-3 sm:gap-4">
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                   </div>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium">{deadline.event}</p>
-                    <p className="text-sm text-muted-foreground">{deadline.date}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium">{deadline.event}</p>
+                    <p className="text-[10px] sm:text-sm text-muted-foreground">{deadline.date}</p>
                   </div>
                   <StatusBadge 
                     variant={deadline.type === "critical" ? "destructive" : deadline.type} 
-                    dot
+                    className="shrink-0 text-[10px] sm:text-xs"
                   >
-                    {deadline.type === "critical" ? "Critical" : deadline.type === "warning" ? "Upcoming" : "Future"}
+                    {deadline.type === "critical" ? "Critical" : deadline.type === "warning" ? "Soon" : "Later"}
                   </StatusBadge>
                 </div>
               ))}
@@ -363,38 +320,38 @@ export default function Dashboard() {
 
         {/* Pending Tasks */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-row items-center justify-between pb-3 sm:pb-6">
             <div>
-              <CardTitle>Pending Tasks</CardTitle>
-              <CardDescription>Actions requiring attention</CardDescription>
+              <CardTitle className="text-base sm:text-lg">Pending Tasks</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">Actions requiring attention</CardDescription>
             </div>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="ghost" size="sm" asChild className="text-xs sm:text-sm">
               <Link to="/tasks">
                 View all
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
               </Link>
             </Button>
           </CardHeader>
           <CardContent>
             {pendingTasks.length === 0 ? (
-              <div className="text-center py-6 text-muted-foreground">
-                <CheckSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">No pending tasks</p>
+              <div className="text-center py-4 sm:py-6 text-muted-foreground">
+                <CheckSquare className="h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-xs sm:text-sm">No pending tasks</p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {pendingTasks.map((task) => (
-                  <div key={task.id} className="flex items-start gap-4">
+                  <div key={task.id} className="flex items-start gap-3 sm:gap-4">
                     <div 
-                      className={`h-2 w-2 mt-2 rounded-full ${
+                      className={`h-2 w-2 mt-1.5 sm:mt-2 rounded-full shrink-0 ${
                         task.priority === "urgent" || task.priority === "high" 
                           ? "bg-destructive" 
                           : "bg-warning"
                       }`} 
                     />
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium">{task.title}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium line-clamp-1">{task.title}</p>
+                      <p className="text-[10px] sm:text-sm text-muted-foreground">
                         {task.due_date 
                           ? `Due ${new Date(task.due_date).toLocaleDateString()}`
                           : "No due date"

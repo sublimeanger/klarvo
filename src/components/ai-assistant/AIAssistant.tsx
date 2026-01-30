@@ -152,10 +152,10 @@ export function AIAssistant() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-2xl bg-gradient-to-r from-primary to-accent hover:scale-110 transition-transform"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-2xl bg-gradient-to-r from-primary to-accent hover:scale-110 transition-transform"
         size="icon"
       >
-        <MessageCircle className="h-6 w-6" />
+        <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
         <span className="sr-only">Open AI Assistant</span>
       </Button>
     );
@@ -166,40 +166,40 @@ export function AIAssistant() {
       className={cn(
         "fixed z-50 flex flex-col shadow-2xl border-border/50 bg-background/95 backdrop-blur-xl transition-all duration-300",
         isExpanded
-          ? "bottom-4 right-4 left-4 top-4 md:left-auto md:w-[600px] md:h-[80vh]"
-          : "bottom-6 right-6 w-[380px] h-[560px] max-h-[80vh]"
+          ? "inset-2 sm:bottom-4 sm:right-4 sm:left-auto sm:top-4 sm:w-[600px]"
+          : "bottom-4 right-4 left-4 sm:left-auto w-auto sm:w-[380px] h-[70vh] sm:h-[560px] max-h-[calc(100vh-2rem)]"
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border/50 bg-gradient-to-r from-primary/10 to-accent/10">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between p-3 sm:p-4 border-b border-border/50 bg-gradient-to-r from-primary/10 to-accent/10">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="relative">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
-              <Bot className="h-5 w-5 text-primary-foreground" />
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
+              <Bot className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
             </div>
-            <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-success border-2 border-background" />
+            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-success border-2 border-background" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm">Klarvo AI</h3>
-            <p className="text-xs text-muted-foreground">EU AI Act Expert</p>
+            <h3 className="font-semibold text-xs sm:text-sm">Klarvo AI</h3>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">EU AI Act Expert</p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1">
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-7 w-7 sm:h-8 sm:w-8"
             onClick={() => setIsExpanded(!isExpanded)}
           >
-            {isExpanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+            {isExpanded ? <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="h-7 w-7 sm:h-8 sm:w-8"
             onClick={() => setIsOpen(false)}
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </Button>
         </div>
       </div>

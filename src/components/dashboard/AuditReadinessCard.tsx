@@ -70,15 +70,15 @@ export function AuditReadinessCard() {
 
   return (
     <Card className="col-span-full">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className="pb-3 sm:pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
               Audit Readiness Score
             </CardTitle>
-            <CardDescription>
-              Overall compliance posture based on classification, controls, evidence, and training
+            <CardDescription className="text-xs sm:text-sm">
+              Overall compliance posture
             </CardDescription>
           </div>
           <StatusBadge variant={getStatusVariant()} dot>
@@ -87,36 +87,36 @@ export function AuditReadinessCard() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-6 md:grid-cols-[200px_1fr]">
+        <div className="grid gap-4 sm:gap-6 md:grid-cols-[160px_1fr] lg:grid-cols-[200px_1fr]">
           {/* Score Circle */}
-          <div className="flex flex-col items-center justify-center">
-            <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-4 border-muted bg-muted/30">
+          <div className="flex flex-row md:flex-col items-center justify-center gap-4 md:gap-0">
+            <div className="relative flex h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 items-center justify-center rounded-full border-4 border-muted bg-muted/30">
               <div className="text-center">
-                <span className={cn("text-4xl font-bold", getScoreColor())}>
+                <span className={cn("text-2xl sm:text-3xl md:text-4xl font-bold", getScoreColor())}>
                   {overallScore}
                 </span>
-                <span className="text-lg text-muted-foreground">/100</span>
+                <span className="text-sm sm:text-base md:text-lg text-muted-foreground">/100</span>
               </div>
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">Overall Score</p>
+            <p className="text-xs sm:text-sm text-muted-foreground md:mt-2">Overall Score</p>
           </div>
 
           {/* Breakdown */}
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {breakdownItems.map((item) => (
               <div key={item.key} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
                   <span className="font-medium">{item.label}</span>
                   <span className="text-muted-foreground">
-                    {item.score}/{item.max} pts
+                    {item.score}/{item.max}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Progress 
                     value={(item.score / item.max) * 100} 
-                    className="h-2 flex-1" 
+                    className="h-1.5 sm:h-2 flex-1" 
                   />
-                  <span className="w-24 text-right text-xs text-muted-foreground">
+                  <span className="hidden sm:block w-20 text-right text-xs text-muted-foreground">
                     {item.detail}
                   </span>
                 </div>
