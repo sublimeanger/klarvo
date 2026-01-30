@@ -127,6 +127,12 @@
 - `VendorDetail.tsx` - Vendor detail page with info, linked AI systems, and attestations
 - 10 attestation types: AI Act compliance, SOC2, ISO27001, model card, DPA, etc.
 
+## ✅ Phase V: Control Implementation UI
+- `AISystemControls.tsx` - Control tracking component for AI system detail page
+- Grouped by category with collapsible sections
+- Status dropdowns (Not Started, In Progress, Implemented, N/A)
+- Progress tracking per category and overall
+- Auto-initialize controls based on classification
+
 ## Next Steps (Remaining Enhancements)
-- Control implementation UI per AI system
 - Dashboard enhancements with control/attestation stats
