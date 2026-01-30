@@ -113,7 +113,7 @@ export default function FintechUseCase() {
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link to="/demo">Book Fintech Demo</Link>
+                  <Link to="/features">See How It Works</Link>
                 </Button>
               </div>
             </div>

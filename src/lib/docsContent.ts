@@ -250,7 +250,7 @@ If you get stuck at any point:
 
 - Check our [FAQ](/faq) for common questions
 - [Contact Support](/contact) for personalized assistance
-- [Book a Demo](/demo) for a guided walkthrough
+- [Explore Features](/features) to see how it works
     `
   },
   "dashboard-overview": {

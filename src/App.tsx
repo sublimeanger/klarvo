@@ -43,7 +43,7 @@ import LandingPage from "@/pages/marketing/LandingPage";
 import Features from "@/pages/marketing/Features";
 import About from "@/pages/marketing/About";
 import Contact from "@/pages/marketing/Contact";
-import Demo from "@/pages/marketing/Demo";
+// Demo page removed - system is self-explanatory
 import Resources from "@/pages/marketing/Resources";
 import Integrations from "@/pages/marketing/Integrations";
 import Partners from "@/pages/marketing/Partners";
@@ -91,7 +91,7 @@ const App = () => (
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/demo" element={<Demo />} />
+            {/* Demo route removed - system is self-explanatory */}
             <Route path="/resources" element={<Resources />} />
             <Route path="/integrations" element={<Integrations />} />
             <Route path="/partners" element={<Partners />} />

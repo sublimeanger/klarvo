@@ -255,7 +255,7 @@ export default function Features() {
         title="See It In Action"
         subtitle="Start for free and classify your first AI system in under 10 minutes."
         primaryCta={{ label: "Start Free", href: "/auth/signup" }}
-        secondaryCta={{ label: "Book a Demo", href: "/demo" }}
+        secondaryCta={{ label: "View Pricing", href: "/pricing" }}
         variant="gradient"
       />
     </MarketingLayout>

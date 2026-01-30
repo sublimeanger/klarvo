@@ -370,7 +370,7 @@ export default function EUAIActGuide() {
         title="Ready to Get Compliant?"
         subtitle="Klarvo makes EU AI Act compliance simple. Start documenting your AI systems today."
         primaryCta={{ label: "Start Free", href: "/auth/signup" }}
-        secondaryCta={{ label: "Book a Demo", href: "/demo" }}
+        secondaryCta={{ label: "Learn More", href: "/features" }}
         variant="gradient"
       />
     </MarketingLayout>

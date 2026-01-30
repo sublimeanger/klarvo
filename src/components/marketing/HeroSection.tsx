@@ -34,7 +34,7 @@ export function HeroSection({
   title,
   subtitle,
   primaryCta = { label: "Start Free", href: "/auth/signup" },
-  secondaryCta = { label: "Book Demo", href: "/demo" },
+  secondaryCta = { label: "See How It Works", href: "/features" },
   variant = "default",
   showTrustBadges = true,
   className,
