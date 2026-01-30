@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { logEvidenceEvent } from "@/lib/auditLogger";
 
 export interface EvidenceFile {
   id: string;
@@ -113,8 +114,24 @@ export function useUploadEvidence() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["evidence-files"] });
+      // Log audit event
+      if (data && variables.metadata) {
+        const profile = supabase.auth.getUser().then(({ data: userData }) => {
+          if (userData?.user) {
+            // Get org from the returned data since it's stored there
+            logEvidenceEvent(
+              data.organization_id,
+              userData.user.id,
+              "evidence.uploaded",
+              data.id,
+              variables.metadata.name,
+              variables.metadata.ai_system_id
+            );
+          }
+        });
+      }
       toast.success("Evidence uploaded successfully");
     },
     onError: (error) => {

@@ -33,6 +33,8 @@
 - Created `ActivityFeed` component displaying timeline of actions
 - Integrated into AI System Detail page sidebar
 - Supports entity-specific feeds and org-wide recent activity
+- Created `src/lib/auditLogger.ts` with helper functions for logging events
+- Wired audit logging into: classification completion, FRIA completion, evidence uploads, task completion
 
 ## Next Phases
 

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { logTaskEvent } from "@/lib/auditLogger";
 
 export interface Task {
   id: string;
@@ -226,9 +227,20 @@ export function useUpdateTask() {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+      // Log task completion
+      if (variables.status === "done" && data) {
+        logTaskEvent(
+          data.organization_id,
+          data.assigned_to || undefined,
+          "task.completed",
+          data.id,
+          data.title,
+          data.ai_system_id || undefined
+        );
+      }
       toast.success("Task updated");
     },
     onError: (error) => {

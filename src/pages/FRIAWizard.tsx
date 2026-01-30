@@ -33,6 +33,8 @@ import { toast } from "sonner";
 import { useAISystem } from "@/hooks/useAISystems";
 import { useFRIA, useCreateFRIA, useUpdateFRIA, useCompleteFRIA, type FRIARisk } from "@/hooks/useFRIA";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
+import { useAuth } from "@/contexts/AuthContext";
+import { logFRIAEvent } from "@/lib/auditLogger";
 
 const STEPS = [
   { id: 1, title: "Overview", icon: FileCheck },
@@ -119,6 +121,7 @@ export default function FRIAWizard() {
   const createFRIA = useCreateFRIA();
   const updateFRIA = useUpdateFRIA();
   const completeFRIA = useCompleteFRIA();
+  const { profile, user } = useAuth();
 
   // Initialize from existing FRIA
   useEffect(() => {
@@ -229,6 +232,19 @@ export default function FRIAWizard() {
       final_conclusion: finalConclusion,
       notify_authority: notifyAuthority,
     });
+
+    // Log audit event
+    if (profile?.organization_id && id) {
+      logFRIAEvent(
+        profile.organization_id,
+        user?.id,
+        "fria.completed",
+        existingFRIA.id,
+        existingFRIA.title,
+        id,
+        finalConclusion
+      );
+    }
 
     toast.success("FRIA completed successfully!");
     navigate(`/ai-systems/${id}`);
