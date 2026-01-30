@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Building2,
   ClipboardCheck,
+  Bell,
 } from "lucide-react";
 import { MetricCard } from "@/components/ui/metric-card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -25,6 +26,8 @@ import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { useSubscription } from "@/hooks/useSubscription";
 import { TrialBanner } from "@/components/billing/TrialBanner";
 import { useTasks } from "@/hooks/useTasks";
+import { ComplianceAlerts } from "@/components/dashboard/ComplianceAlerts";
+import { useComplianceAlerts } from "@/hooks/useComplianceAlerts";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -36,6 +39,7 @@ export default function Dashboard() {
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
   const { isTrialing, daysRemaining } = useSubscription();
   const { data: recentTasks = [] } = useTasks({ status: "all" });
+  const { totalCount: alertsCount, criticalCount } = useComplianceAlerts();
 
   // Calculate percentages
   const classifiedCount = metrics.highRiskCount + metrics.limitedRiskCount + metrics.minimalRiskCount;
@@ -113,6 +117,12 @@ export default function Dashboard() {
               value={metrics.tasksTodo}
               subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "All on track"}
               icon={CheckSquare}
+            />
+            <MetricCard
+              title="Alerts"
+              value={alertsCount}
+              subtitle={criticalCount > 0 ? `${criticalCount} critical` : "Items needing attention"}
+              icon={Bell}
             />
           </>
         )}
@@ -295,6 +305,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Compliance Alerts */}
+      <ComplianceAlerts />
 
       {/* Two Column Layout */}
       <div className="grid gap-6 lg:grid-cols-2">
