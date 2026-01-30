@@ -83,12 +83,19 @@
 - Can be called by external cron service (e.g., cron-job.org) on hourly/daily schedule
 - Logs all sent notifications to notification_logs table
 
-## Upcoming Features
+### Phase AK: Dashboard Analytics Charts ✅
+- Created `useComplianceTrends` hook with trend data, risk distribution, and department breakdown queries
+- Built `ComplianceTrendChart` with selectable metrics and configurable time range (7/14/30/90 days)
+- Built `RiskDistributionChart` pie chart showing risk level breakdown
+- Built `DepartmentRiskChart` stacked bar chart showing risk by department
+- Integrated all charts into Dashboard page
 
-### Phase AK: Dashboard Analytics Charts
-- Add trend charts for compliance metrics over time
-- Visual risk distribution by department/category
+## Upcoming Features
 
 ### Phase AL: AI System Comparison
 - Side-by-side comparison of multiple AI systems
 - Compare risk levels, controls status, evidence coverage
+
+### Phase AM: Template Library
+- Pre-built EU AI Act policy templates
+- One-click policy creation from templates
