@@ -50,6 +50,12 @@ import Careers from "@/pages/marketing/Careers";
 import Press from "@/pages/marketing/Press";
 import Status from "@/pages/marketing/Status";
 import Changelog from "@/pages/marketing/Changelog";
+import Docs from "@/pages/marketing/Docs";
+import FAQ from "@/pages/marketing/FAQ";
+import Blog from "@/pages/marketing/Blog";
+import APIReference from "@/pages/marketing/APIReference";
+import Templates from "@/pages/marketing/Templates";
+import EUAIActGuide from "@/pages/marketing/EUAIActGuide";
 
 // Use case pages
 import SMEUseCase from "@/pages/use-cases/SME";
@@ -91,6 +97,12 @@ const App = () => (
             <Route path="/press" element={<Press />} />
             <Route path="/status" element={<Status />} />
             <Route path="/changelog" element={<Changelog />} />
+            <Route path="/docs" element={<Docs />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/api" element={<APIReference />} />
+            <Route path="/templates" element={<Templates />} />
+            <Route path="/eu-ai-act" element={<EUAIActGuide />} />
             
             {/* Use case pages */}
             <Route path="/use-cases/sme" element={<SMEUseCase />} />
