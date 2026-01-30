@@ -287,15 +287,19 @@ export function MarketingHeader() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-2 shrink-0">
-            <Button variant="ghost" asChild className="h-9 px-4 text-sm font-medium">
-              <Link to="/auth/login">Log in</Link>
-            </Button>
-            <Button asChild className="h-9 px-4 text-sm font-semibold rounded-lg">
-              <Link to="/auth/signup">
-                Start Free
-                <ArrowRight className="ml-1.5 h-4 w-4" />
-              </Link>
-            </Button>
+            <Link
+              to="/auth/login"
+              className="inline-flex h-9 items-center px-4 text-sm font-medium rounded-md text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors"
+            >
+              Log in
+            </Link>
+            <Link
+              to="/auth/signup"
+              className="inline-flex h-9 items-center gap-1.5 px-4 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Start Free
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -438,20 +442,19 @@ export function MarketingHeader() {
 
             {/* Mobile CTAs */}
             <div className="space-y-3 pt-2 pb-8">
-              <Button asChild className="w-full h-12 text-base font-semibold" size="lg">
-                <Link to="/auth/signup">
-                  Start Free
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="w-full h-12 text-base font-semibold"
-                size="lg"
+              <Link
+                to="/auth/signup"
+                className="flex items-center justify-center w-full h-12 text-base font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                <Link to="/auth/login">Log in</Link>
-              </Button>
+                Start Free
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+              <Link
+                to="/auth/login"
+                className="flex items-center justify-center w-full h-12 text-base font-semibold rounded-lg border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
+                Log in
+              </Link>
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Play, Sparkles, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -124,27 +123,20 @@ export function HeroSection({
               variant === "centered" ? "justify-center" : ""
             )}
           >
-            <Button
-              asChild
-              size="lg"
-              className="h-14 px-8 text-base font-semibold rounded-2xl shadow-colored-primary hover:shadow-glow-lg transition-all duration-300 hover:-translate-y-0.5 btn-shimmer relative overflow-hidden group"
+            <Link
+              to={primaryCta.href}
+              className="inline-flex items-center justify-center h-14 px-8 text-base font-semibold rounded-2xl shadow-colored-primary hover:shadow-glow-lg transition-all duration-300 hover:-translate-y-0.5 btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90"
             >
-              <Link to={primaryCta.href}>
-                {primaryCta.label}
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="h-14 px-8 text-base font-semibold rounded-2xl border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 group"
+              {primaryCta.label}
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <Link
+              to={secondaryCta.href}
+              className="inline-flex items-center justify-center h-14 px-8 text-base font-semibold rounded-2xl border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 group border-input bg-background"
             >
-              <Link to={secondaryCta.href}>
-                {secondaryCta.icon || <Play className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />}
-                {secondaryCta.label}
-              </Link>
-            </Button>
+              {secondaryCta.icon || <Play className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />}
+              {secondaryCta.label}
+            </Link>
           </div>
 
           {/* Trust Badges */}

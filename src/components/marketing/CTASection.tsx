@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -101,33 +100,28 @@ export function CTASection({
           )}
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-200">
-            <Button
-              asChild
-              size="lg"
+            <Link
+              to={primaryCta.href}
               className={cn(
-                "h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5 btn-shimmer relative overflow-hidden group",
+                "inline-flex items-center justify-center h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5 btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90",
                 variant === "gradient" && "bg-white text-primary hover:bg-white/90 shadow-dramatic",
                 variant === "dark" && "bg-background text-foreground hover:bg-background/90 shadow-dramatic"
               )}
             >
-              <Link to={primaryCta.href}>
-                {primaryCta.label}
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
+              {primaryCta.label}
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Link>
             {secondaryCta && (
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
+              <Link
+                to={secondaryCta.href}
                 className={cn(
-                  "h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5",
+                  "inline-flex items-center justify-center h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5 border border-input bg-background hover:bg-accent hover:text-accent-foreground",
                   variant === "gradient" && "bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white/50",
                   variant === "dark" && "bg-transparent border-background/30 text-background hover:bg-background/10"
                 )}
               >
-                <Link to={secondaryCta.href}>{secondaryCta.label}</Link>
-              </Button>
+                {secondaryCta.label}
+              </Link>
             )}
           </div>
           
