@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Shield, Check, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PlanCard } from "@/components/billing/PlanCard";
@@ -7,6 +7,8 @@ import { BillingToggle } from "@/components/billing/BillingToggle";
 import { AddonCard } from "@/components/billing/AddonCard";
 import { ServiceCard } from "@/components/billing/ServiceCard";
 import { FAQSection } from "@/components/billing/FAQSection";
+import { useAuth } from "@/contexts/AuthContext";
+import { useBilling } from "@/hooks/useBilling";
 import { 
   PLANS, 
   ADDONS, 
@@ -18,10 +20,44 @@ import {
 
 export default function Pricing() {
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('annual');
+  const { user, profile } = useAuth();
+  const { createCheckoutSession, isLoading } = useBilling();
+  const navigate = useNavigate();
 
   const handlePlanSelect = (planId: string) => {
-    // TODO: Implement plan selection / checkout flow
-    console.log('Selected plan:', planId, billingPeriod);
+    const plan = planId as PlanId;
+    
+    if (plan === "free") {
+      // Redirect to signup or dashboard
+      if (user) {
+        navigate("/");
+      } else {
+        navigate("/auth/signup");
+      }
+      return;
+    }
+    
+    if (plan === "enterprise") {
+      // Open contact sales (placeholder)
+      window.open("mailto:sales@klarvo.com?subject=Enterprise%20Inquiry", "_blank");
+      return;
+    }
+    
+    // For paid plans, check if user is authenticated
+    if (!user) {
+      // Redirect to signup, then they can upgrade after
+      navigate("/auth/signup");
+      return;
+    }
+    
+    if (!profile?.organization_id) {
+      // Need to complete onboarding first
+      navigate("/onboarding");
+      return;
+    }
+    
+    // Start checkout
+    createCheckoutSession(plan, billingPeriod);
   };
 
   const orderedPlans: PlanId[] = ['free', 'starter', 'growth', 'pro', 'enterprise'];
@@ -97,6 +133,7 @@ export default function Pricing() {
                 plan={PLANS[planId]}
                 billingPeriod={billingPeriod}
                 onSelect={handlePlanSelect}
+                isLoading={isLoading}
               />
             ))}
           </div>

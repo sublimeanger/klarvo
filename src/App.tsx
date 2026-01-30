@@ -10,6 +10,7 @@ import Dashboard from "@/pages/Dashboard";
 import AISystems from "@/pages/AISystems";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
+import BillingSettings from "@/pages/Settings/Billing";
 import NotFound from "@/pages/NotFound";
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
@@ -65,7 +66,7 @@ const App = () => (
               <Route path="/incidents" element={<Placeholder />} />
               <Route path="/exports" element={<Placeholder />} />
               <Route path="/settings" element={<Placeholder />} />
-              <Route path="/settings/billing" element={<Placeholder />} />
+              <Route path="/settings/billing" element={<BillingSettings />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />

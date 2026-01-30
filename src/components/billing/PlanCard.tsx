@@ -5,14 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Plan, BillingPeriod } from "@/lib/billing-constants";
 
-interface PlanCardProps {
+export interface PlanCardProps {
   plan: Plan;
   billingPeriod: BillingPeriod;
   currentPlan?: boolean;
   onSelect: (planId: string) => void;
+  isLoading?: boolean;
 }
 
-export function PlanCard({ plan, billingPeriod, currentPlan, onSelect }: PlanCardProps) {
+export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading }: PlanCardProps) {
   const price = billingPeriod === 'annual' ? plan.priceAnnual : plan.priceMonthly;
   const monthlyEquivalent = billingPeriod === 'annual' && plan.priceAnnual > 0 
     ? Math.round(plan.priceAnnual / 12) 
@@ -101,7 +102,7 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect }: PlanCar
             )}
             variant={plan.popular ? "default" : "secondary"}
             onClick={() => onSelect(plan.id)}
-            disabled={currentPlan}
+            disabled={currentPlan || isLoading}
           >
             {currentPlan ? 'Current Plan' : isEnterprise ? 'Contact Sales' : plan.trialDays > 0 ? `Start ${plan.trialDays}-day trial` : isFree ? 'Start Free' : `Start ${plan.name}`}
           </Button>

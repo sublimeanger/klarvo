@@ -1,62 +1,83 @@
-import { useState, useCallback } from "react";
-import { PLAN_ENTITLEMENTS, PLANS, type PlanId } from "@/lib/billing-constants";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { PLAN_ENTITLEMENTS, PLANS, type PlanId, type BillingPeriod } from "@/lib/billing-constants";
 
-interface SubscriptionState {
-  planId: PlanId;
-  status: 'trialing' | 'active' | 'past_due' | 'canceled' | 'downgraded';
-  billingPeriod: 'monthly' | 'annual';
-  trialEnd?: Date;
-  currentPeriodEnd?: Date;
+interface Subscription {
+  id: string;
+  organization_id: string;
+  plan_id: string;
+  status: "trialing" | "active" | "past_due" | "canceled";
+  billing_period: BillingPeriod;
+  trial_end: string | null;
+  current_period_end: string | null;
+  current_period_start: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  cancel_at_period_end: boolean;
 }
-
-// Mock subscription for demo purposes
-const mockSubscription: SubscriptionState = {
-  planId: 'growth',
-  status: 'trialing',
-  billingPeriod: 'annual',
-  trialEnd: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
-};
 
 /**
  * Hook to manage subscription state
- * In production, this would fetch from the database
+ * Fetches real subscription data from Supabase
  */
 export function useSubscription() {
-  const [subscription, setSubscription] = useState<SubscriptionState>(mockSubscription);
+  const { profile } = useAuth();
 
-  const isTrialing = subscription.status === 'trialing';
+  const { data: subscription, isLoading, error, refetch } = useQuery({
+    queryKey: ["subscription", profile?.organization_id],
+    queryFn: async () => {
+      if (!profile?.organization_id) return null;
+
+      const { data, error } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("organization_id", profile.organization_id)
+        .single();
+
+      if (error) {
+        // No subscription found is okay - they might be on free
+        if (error.code === "PGRST116") {
+          return null;
+        }
+        throw error;
+      }
+
+      return data as Subscription;
+    },
+    enabled: !!profile?.organization_id,
+    staleTime: 1000 * 60, // 1 minute
+    refetchOnWindowFocus: true,
+  });
+
+  const planId = (subscription?.plan_id || "free") as PlanId;
+  const isTrialing = subscription?.status === "trialing";
   
-  const daysRemaining = subscription.trialEnd 
-    ? Math.max(0, Math.ceil((subscription.trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+  const daysRemaining = subscription?.trial_end 
+    ? Math.max(0, Math.ceil((new Date(subscription.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : 0;
 
-  const plan = PLANS[subscription.planId];
-  const entitlements = PLAN_ENTITLEMENTS[subscription.planId];
+  const plan = PLANS[planId] || PLANS.free;
+  const entitlements = PLAN_ENTITLEMENTS[planId] || PLAN_ENTITLEMENTS.free;
 
-  const upgrade = useCallback((newPlanId: PlanId) => {
-    setSubscription(prev => ({
-      ...prev,
-      planId: newPlanId,
-      status: 'active',
-      trialEnd: undefined,
-    }));
-  }, []);
-
-  const downgrade = useCallback((newPlanId: PlanId) => {
-    setSubscription(prev => ({
-      ...prev,
-      planId: newPlanId,
-      status: newPlanId === 'free' ? 'downgraded' : 'active',
-    }));
-  }, []);
+  const currentPeriodEnd = subscription?.current_period_end 
+    ? new Date(subscription.current_period_end) 
+    : null;
 
   return {
     subscription,
     plan,
+    planId,
     entitlements,
     isTrialing,
     daysRemaining,
-    upgrade,
-    downgrade,
+    currentPeriodEnd,
+    billingPeriod: subscription?.billing_period || "monthly",
+    status: subscription?.status || "active",
+    cancelAtPeriodEnd: subscription?.cancel_at_period_end || false,
+    hasStripeCustomer: !!subscription?.stripe_customer_id,
+    isLoading,
+    error,
+    refetch,
   };
 }
