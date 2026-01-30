@@ -32,10 +32,10 @@ export function WizardProgress({ steps, currentStep, className }: WizardProgress
   ].filter((s, i, arr) => arr.findIndex(x => x.id === s.id) === i);
 
   return (
-    <div className={cn("space-y-4", className)}>
-      <Progress value={progress} className="h-2" />
+    <div className={cn("space-y-3 sm:space-y-4", className)}>
+      <Progress value={progress} className="h-1.5 sm:h-2" />
       
-      <div className="flex justify-between items-center overflow-x-auto pb-2">
+      <div className="flex justify-between items-center overflow-x-auto pb-2 gap-1">
         {(steps.length <= 8 ? steps : visibleSteps).map((step) => {
           const IconComponent = iconMap[step.icon] || Cpu;
           const isActive = step.id === currentStep;
@@ -45,14 +45,14 @@ export function WizardProgress({ steps, currentStep, className }: WizardProgress
             <div
               key={step.id}
               className={cn(
-                "flex items-center gap-1.5 text-xs whitespace-nowrap px-1",
+                "flex items-center gap-1 sm:gap-1.5 text-xs whitespace-nowrap px-0.5 sm:px-1",
                 isActive && "text-primary font-medium",
                 isCompleted && "text-muted-foreground",
                 !isActive && !isCompleted && "text-muted-foreground/50"
               )}
             >
               <IconComponent className={cn(
-                "h-4 w-4 shrink-0",
+                "h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0",
                 isActive && "text-primary",
                 isCompleted && "text-success"
               )} />
@@ -62,7 +62,7 @@ export function WizardProgress({ steps, currentStep, className }: WizardProgress
         })}
       </div>
       
-      <div className="text-sm text-muted-foreground">
+      <div className="text-xs sm:text-sm text-muted-foreground">
         Step {currentStep + 1} of {steps.length}
         {steps.length > 6 && (
           <span className="ml-2">• {steps[currentStep]?.title}</span>
