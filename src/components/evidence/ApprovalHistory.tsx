@@ -52,80 +52,121 @@ export function ApprovalHistory() {
   }
 
   return (
-    <div className="rounded-lg border bg-card">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Evidence</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Linked To</TableHead>
-            <TableHead>Approved By</TableHead>
-            <TableHead>Approved Date</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {history.map((evidence) => (
-            <TableRow key={evidence.id}>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10">
-                    <FileText className="h-4 w-4 text-success" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{evidence.name}</p>
-                    {evidence.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
-                        {evidence.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                {evidence.evidence_type ? (
-                  <Badge variant="outline" className="text-xs">
-                    {EVIDENCE_TYPES[evidence.evidence_type] || evidence.evidence_type}
-                  </Badge>
-                ) : (
-                  <span className="text-muted-foreground">—</span>
-                )}
-              </TableCell>
-              <TableCell>
-                <div className="text-sm">
-                  {evidence.ai_systems?.name && (
-                    <span className="text-primary">{evidence.ai_systems.name}</span>
+    <div className="space-y-3">
+      {/* Mobile cards */}
+      <div className="md:hidden space-y-3">
+        {history.map((evidence) => (
+          <Card key={evidence.id} className="p-3">
+            <div className="flex items-start gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10 shrink-0">
+                <FileText className="h-4 w-4 text-success" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-sm truncate">{evidence.name}</p>
+                <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                  {evidence.evidence_type && (
+                    <Badge variant="outline" className="text-[10px]">
+                      {EVIDENCE_TYPES[evidence.evidence_type] || evidence.evidence_type}
+                    </Badge>
                   )}
-                  {evidence.vendors?.name && (
-                    <span className="text-muted-foreground">
-                      {evidence.ai_systems?.name ? " • " : ""}
-                      {evidence.vendors.name}
+                  {evidence.ai_systems?.name && (
+                    <span className="text-xs text-primary">{evidence.ai_systems.name}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <User className="h-2.5 w-2.5" />
+                    {evidence.approver?.full_name || "Unknown"}
+                  </span>
+                  {evidence.approved_at && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-2.5 w-2.5" />
+                      {format(new Date(evidence.approved_at), "MMM d, yyyy")}
                     </span>
                   )}
-                  {!evidence.ai_systems?.name && !evidence.vendors?.name && (
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block rounded-lg border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Evidence</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Linked To</TableHead>
+              <TableHead>Approved By</TableHead>
+              <TableHead>Approved Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {history.map((evidence) => (
+              <TableRow key={evidence.id}>
+                <TableCell>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10">
+                      <FileText className="h-4 w-4 text-success" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{evidence.name}</p>
+                      {evidence.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-1">
+                          {evidence.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {evidence.evidence_type ? (
+                    <Badge variant="outline" className="text-xs">
+                      {EVIDENCE_TYPES[evidence.evidence_type] || evidence.evidence_type}
+                    </Badge>
+                  ) : (
                     <span className="text-muted-foreground">—</span>
                   )}
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2 text-sm">
-                  <User className="h-3 w-3 text-muted-foreground" />
-                  {evidence.approver?.full_name || "Unknown"}
-                </div>
-              </TableCell>
-              <TableCell>
-                {evidence.approved_at ? (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-3 w-3" />
-                    {format(new Date(evidence.approved_at), "MMM d, yyyy")}
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm">
+                    {evidence.ai_systems?.name && (
+                      <span className="text-primary">{evidence.ai_systems.name}</span>
+                    )}
+                    {evidence.vendors?.name && (
+                      <span className="text-muted-foreground">
+                        {evidence.ai_systems?.name ? " • " : ""}
+                        {evidence.vendors.name}
+                      </span>
+                    )}
+                    {!evidence.ai_systems?.name && !evidence.vendors?.name && (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </div>
-                ) : (
-                  <span className="text-muted-foreground">—</span>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2 text-sm">
+                    <User className="h-3 w-3 text-muted-foreground" />
+                    {evidence.approver?.full_name || "Unknown"}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {evidence.approved_at ? (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-3 w-3" />
+                      {format(new Date(evidence.approved_at), "MMM d, yyyy")}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
