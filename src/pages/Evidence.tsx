@@ -17,13 +17,17 @@ import {
   File,
   FileImage,
   FileSpreadsheet,
+  ClipboardCheck,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -71,9 +75,12 @@ import {
   useDeleteEvidence,
   useDownloadEvidence,
   useUpdateEvidenceStatus,
+  usePendingApprovals,
 } from "@/hooks/useEvidence";
 import { useAISystems } from "@/hooks/useAISystems";
 import { useVendors } from "@/hooks/useVendors";
+import { ApprovalQueue } from "@/components/evidence/ApprovalQueue";
+import { ApprovalHistory } from "@/components/evidence/ApprovalHistory";
 
 const EVIDENCE_TYPES = [
   { value: "vendor_doc", label: "Vendor Documentation" },
@@ -123,12 +130,15 @@ export default function Evidence() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: files = [], isLoading } = useEvidenceFiles();
+  const { data: pendingApprovals = [] } = usePendingApprovals();
   const { systems } = useAISystems();
   const { vendors } = useVendors();
   const uploadEvidence = useUploadEvidence();
   const deleteEvidence = useDeleteEvidence();
   const downloadEvidence = useDownloadEvidence();
   const updateStatus = useUpdateEvidenceStatus();
+
+  const pendingCount = pendingApprovals.length;
 
   const filteredFiles = files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -200,22 +210,45 @@ export default function Evidence() {
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search evidence..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-        <Button variant="outline" size="sm">
-          <Filter className="mr-2 h-4 w-4" />
-          Filters
-        </Button>
-      </div>
+      {/* Tabs */}
+      <Tabs defaultValue="all" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="all" className="gap-2">
+            <FileText className="h-4 w-4" />
+            All Files
+          </TabsTrigger>
+          <TabsTrigger value="approval" className="gap-2">
+            <ClipboardCheck className="h-4 w-4" />
+            Approval Queue
+            {pendingCount > 0 && (
+              <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
+                {pendingCount}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="history" className="gap-2">
+            <History className="h-4 w-4" />
+            Approval History
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="space-y-6">
+          {/* Filters */}
+          <div className="flex items-center gap-4">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search evidence..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Button variant="outline" size="sm">
+              <Filter className="mr-2 h-4 w-4" />
+              Filters
+            </Button>
+          </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4">
@@ -390,6 +423,16 @@ export default function Evidence() {
           </Table>
         </div>
       )}
+        </TabsContent>
+
+        <TabsContent value="approval">
+          <ApprovalQueue />
+        </TabsContent>
+
+        <TabsContent value="history">
+          <ApprovalHistory />
+        </TabsContent>
+      </Tabs>
 
       {/* Upload Dialog */}
       <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
