@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { pdf } from "@react-pdf/renderer";
 import {
   Dialog,
   DialogContent,
@@ -24,10 +25,15 @@ import {
   Calendar,
   Loader2,
   X,
+  Download,
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 import { useAISystemComparison, type ComparisonSystemData } from "@/hooks/useAISystemComparison";
 import { AISystem } from "@/hooks/useAISystems";
+import { useAuth } from "@/contexts/AuthContext";
+import { useOrganization } from "@/hooks/useOrganization";
+import { ComparisonReportPDF } from "@/components/exports/ComparisonReportPDF";
 
 interface AISystemComparisonDialogProps {
   open: boolean;
@@ -172,6 +178,9 @@ export function AISystemComparisonDialog({
   systems,
 }: AISystemComparisonDialogProps) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const { profile, user } = useAuth();
+  const { data: organization } = useOrganization();
 
   const { data: comparisonData, isLoading } = useAISystemComparison(selectedIds);
 
@@ -186,6 +195,37 @@ export function AISystemComparisonDialog({
   };
 
   const clearSelection = () => setSelectedIds([]);
+
+  const handleExportPDF = async () => {
+    if (!comparisonData || comparisonData.length === 0) return;
+
+    setIsExporting(true);
+    try {
+      const generatedBy = profile?.full_name || user?.email || "Unknown";
+      const doc = ComparisonReportPDF({
+        systems: sortedComparisonData,
+        organization: { name: organization?.name || "Organization" },
+        generatedBy,
+      });
+
+      const blob = await pdf(doc).toBlob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `AI_System_Comparison_${format(new Date(), "yyyy-MM-dd")}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast.success("Comparison report exported");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export comparison");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Sort systems by risk level for quick comparison
   const sortedComparisonData = useMemo(() => {
@@ -215,11 +255,28 @@ export function AISystemComparisonDialog({
               <p className="text-sm font-medium">
                 Select systems ({selectedIds.length}/4)
               </p>
-              {selectedIds.length > 0 && (
-                <Button variant="ghost" size="sm" onClick={clearSelection}>
-                  Clear all
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                {selectedIds.length >= 2 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportPDF}
+                    disabled={isExporting || isLoading}
+                  >
+                    {isExporting ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Download className="mr-2 h-4 w-4" />
+                    )}
+                    Export PDF
+                  </Button>
+                )}
+                {selectedIds.length > 0 && (
+                  <Button variant="ghost" size="sm" onClick={clearSelection}>
+                    Clear all
+                  </Button>
+                )}
+              </div>
             </div>
             <ScrollArea className="h-24">
               <div className="flex flex-wrap gap-2">
