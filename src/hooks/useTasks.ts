@@ -24,6 +24,16 @@ export interface Task {
   vendors?: { name: string } | null;
 }
 
+export interface BulkTaskInput {
+  title: string;
+  description?: string;
+  priority?: Task["priority"];
+  due_date?: string;
+  ai_system_id?: string;
+  vendor_id?: string;
+  task_type?: string;
+}
+
 export function useTasks(filters?: { status?: string; ai_system_id?: string }) {
   const { profile } = useAuth();
 
@@ -103,6 +113,78 @@ export function useCreateTask() {
     },
     onError: (error) => {
       toast.error("Failed to create task", { description: error.message });
+    },
+  });
+}
+
+export function useCreateBulkTasks() {
+  const { profile, user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (tasks: BulkTaskInput[]) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+      if (tasks.length === 0) return { created: 0 };
+
+      // Get existing tasks with same task_type + ai_system_id to avoid duplicates
+      const aiSystemIds = [...new Set(tasks.map(t => t.ai_system_id).filter(Boolean))];
+      const taskTypes = [...new Set(tasks.map(t => t.task_type).filter(Boolean))];
+
+      let existingTasks: { task_type: string | null; ai_system_id: string | null }[] = [];
+      
+      if (aiSystemIds.length > 0 && taskTypes.length > 0) {
+        const { data: existing } = await supabase
+          .from("tasks")
+          .select("task_type, ai_system_id")
+          .eq("organization_id", profile.organization_id)
+          .in("task_type", taskTypes)
+          .in("ai_system_id", aiSystemIds);
+        
+        existingTasks = existing || [];
+      }
+
+      // Filter out duplicates
+      const tasksToInsert = tasks.filter(task => {
+        if (!task.task_type || !task.ai_system_id) return true;
+        return !existingTasks.some(
+          existing => existing.task_type === task.task_type && existing.ai_system_id === task.ai_system_id
+        );
+      });
+
+      if (tasksToInsert.length === 0) {
+        return { created: 0, skipped: tasks.length };
+      }
+
+      const insertData = tasksToInsert.map(task => ({
+        organization_id: profile.organization_id,
+        title: task.title,
+        description: task.description || null,
+        priority: task.priority || "medium",
+        due_date: task.due_date || null,
+        ai_system_id: task.ai_system_id || null,
+        vendor_id: task.vendor_id || null,
+        task_type: task.task_type || null,
+        created_by: user?.id,
+        status: "todo",
+      }));
+
+      const { data, error } = await supabase
+        .from("tasks")
+        .insert(insertData)
+        .select();
+
+      if (error) throw error;
+      return { created: data.length, skipped: tasks.length - tasksToInsert.length };
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+      if (result.created > 0) {
+        toast.success(`${result.created} compliance tasks created`);
+      }
+    },
+    onError: (error) => {
+      toast.error("Failed to create tasks", { description: error.message });
     },
   });
 }
