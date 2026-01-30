@@ -1,149 +1,87 @@
 
-# Klarvo Development Plan
+# Phase Y: Auto-Create Tasks for High-Risk Systems
 
-## ✅ Phase C: Webhook Secret Added
-- `STRIPE_WEBHOOK_SECRET` added to project secrets
-- Signature verification enabled in `stripe-webhook` edge function
+## Overview
+When an AI system is classified as **high-risk**, the system will automatically create compliance tasks to guide users through deployer obligations required by the EU AI Act. This ensures no critical steps are missed and provides accountability through task tracking.
 
-## ✅ Phase D: Real Data Integration
-- `useSubscription.ts` - fetches real subscription from Supabase
-- `useDashboardMetrics.ts` - queries AI system counts from database
-- `useBilling.ts` - handles checkout and portal sessions
+## Tasks to Auto-Create for High-Risk Systems
 
-## ✅ Phase E: Billing Settings Page
-- Created `src/pages/Settings/Billing.tsx`
-- Shows current plan, status, usage meters
-- Upgrade/manage subscription buttons connected to edge functions
+Based on Article 26 deployer obligations and the custom knowledge spec, these tasks will be generated:
 
-## ✅ Phase F: Pricing Page Connected
-- Plan cards call `create-checkout-session` edge function
-- Handles authenticated vs unauthenticated users
-- Redirects to Stripe checkout with correct plan/billing period
+### Core High-Risk Tasks (Always Created)
+| Task Title | Priority | Due Date | Task Type |
+|------------|----------|----------|-----------|
+| Review FRIA requirement | High | +7 days | `fria_trigger` |
+| Assign human oversight personnel | High | +14 days | `human_oversight` |
+| Document oversight authority and competence | Medium | +21 days | `oversight_competence` |
+| Implement operational monitoring plan | High | +21 days | `monitoring` |
+| Verify log retention (6+ months) | Medium | +14 days | `logging` |
+| Upload vendor/provider instructions for use | Medium | +14 days | `vendor_docs` |
+| Establish incident reporting workflow | Medium | +21 days | `incident_process` |
 
-## ✅ Phase G: AI System Inventory (Real Data + Quick Capture)
-- `useAISystems.ts` - CRUD operations for AI systems
-- `useVendors.ts` - vendor management hooks
-- `useOrgMembers.ts` - fetch organization team members
-- `AISystemWizard.tsx` - 3-step Quick Capture wizard
-- `AISystems.tsx` - connected to real database with empty states
+### Conditional Tasks
+| Condition | Task Title | Priority |
+|-----------|------------|----------|
+| Category includes `employment` | Prepare worker notification | High |
+| Has vendor (`vendor_id` set) | Request vendor AI Act compliance statement | High |
+| Has vendor | Verify vendor logging/export capabilities | Medium |
 
-## ✅ Phase H: AI System Detail + Vendors Module
-- `AISystemDetail.tsx` - View/edit individual AI systems with ownership, status, vendor info
-- `Vendors.tsx` - Full vendor management with CRUD, due diligence status tracking
-- Added useUpdateVendor and useDeleteVendor hooks
+## Technical Implementation
 
-## ✅ Phase I: Classification Engine
-- Database schema: `ai_system_classifications`, `assessment_answers` tables
-- Enums: `risk_level`, `assessment_type`, `assessment_status`
-- `useClassification.ts` - CRUD operations for classification data
-- `ClassificationWizard.tsx` - 4-step wizard:
-  1. Prohibited Practices Screening (Article 5)
-  2. High-Risk Screening (Annex III categories)
-  3. Transparency Obligations (Article 50)
-  4. Result with risk level determination
-- `AISystemDetail.tsx` - Updated to show classification status with re-classify option
+### 1. Add Bulk Task Creation Hook
+Create `useCreateBulkTasks` mutation in `src/hooks/useTasks.ts`:
+- Accepts array of task definitions
+- Inserts all tasks in a single database operation
+- Avoids duplicate task creation (check by `task_type` + `ai_system_id`)
+- Returns count of tasks created
 
-## ✅ Phase J: Evidence Vault
-- Storage bucket: `evidence` with org-based folder RLS
-- Database: `evidence_files` table with status, linkages, audit fields
-- `useEvidence.ts` - upload, download, delete, status update hooks
-- `Evidence.tsx` - Full UI with upload dialog, file list, status management
+### 2. Modify Classification Wizard
+Update `src/pages/ClassificationWizard.tsx` in the `handleComplete` function:
+- After saving classification and initializing controls
+- If `riskLevel === "high_risk"`:
+  - Build task list based on categories and system attributes
+  - Calculate due dates relative to today
+  - Call `createBulkTasks` mutation
+  - Show toast with task count
 
-## ✅ Phase K: Tasks Module
-- Database: `tasks` table with priority, status, due dates, linkages
-- `useTasks.ts` - CRUD operations with filtering
-- `Tasks.tsx` - Full UI with task list, status updates, creation dialog, overdue detection
+### 3. Task Type Taxonomy
+Define clear `task_type` values for automated tasks:
+```text
+fria_trigger
+human_oversight  
+oversight_competence
+monitoring
+logging
+vendor_docs
+incident_process
+worker_notification
+vendor_attestation
+vendor_logging
+```
 
-## ✅ Phase L: Dashboard Updates
-- `useDashboardMetrics.ts` - Extended to include classification breakdown, evidence stats, task stats
-- `Dashboard.tsx` - Updated with:
-  - Classification breakdown (high-risk, limited, minimal, not classified)
-  - Real evidence and task progress
-  - Live pending tasks from database
+## Code Changes Summary
 
-## ✅ Phase M: Policies & Templates Module
-- Database: `policies` table with type, status, versioning, approval workflow
-- `usePolicies.ts` - CRUD operations with approve/archive
-- `Policies.tsx` - Card grid UI with filtering, create/edit dialogs, approval workflow
+| File | Change |
+|------|--------|
+| `src/hooks/useTasks.ts` | Add `useCreateBulkTasks` mutation for batch insert |
+| `src/pages/ClassificationWizard.tsx` | Import hook, build task list, call on high-risk classification |
+| `.lovable/plan.md` | Document Phase Y completion |
 
-## ✅ Phase N: Training/AI Literacy Module
-- Database: `training_records` table with training types, status, expiration
-- `useTraining.ts` - CRUD operations with status updates
-- `Training.tsx` - Table UI with completion tracking, assignment dialog, progress bar
+## User Experience
 
-## ✅ Phase O: Incidents Module
-- Database: `incidents` table with severity, status, affected parties, response tracking
-- `useIncidents.ts` - CRUD operations with filtering
-- `Incidents.tsx` - Full UI with incident reporting, status workflow, detail view
+1. User completes classification wizard
+2. If high-risk is detected, after "Classification completed!" toast:
+   - Additional toast: "7 compliance tasks created for high-risk system"
+3. Tasks appear in Tasks page filtered by the AI system
+4. Each task links back to the AI system detail page
 
-## ✅ Phase P: Export Packs
-- `@react-pdf/renderer` + `jszip` for client-side generation
-- `AISystemPDF.tsx` - React-PDF document component with classification, obligations
-- `useExports.ts` - PDF/ZIP generation hooks with evidence bundling
-- `Exports.tsx` - UI for single system exports and full organization exports
-- Free tier watermark support
+## Edge Cases Handled
 
-## ✅ Phase Q: FRIA (Fundamental Rights Impact Assessment)
-- Database: `fria_assessments` table with Article 27 compliant fields
-- `useFRIA.ts` - CRUD operations for FRIA assessments
-- `FRIAWizard.tsx` - 7-step wizard covering:
-  1. Overview (title, owner, deployment date, DPIA linkage)
-  2. Process description (workflow, purpose, decisions, oversight)
-  3. Scope (duration, frequency, affected persons, vulnerable groups)
-  4. Risks of harm (fundamental rights categories, likelihood, severity)
-  5. Human oversight measures (design, competence, intervention authority)
-  6. Mitigation & governance (mitigations, complaints, monitoring, triggers)
-  7. Approval (final conclusion, authority notification)
-- `AISystemDetail.tsx` - FRIA section for high-risk systems with status tracking
+- **Re-classification**: When re-running wizard, existing tasks with same `task_type` + `ai_system_id` will not be duplicated (upsert or skip logic)
+- **Prohibited classification**: No tasks created (system cannot be deployed)
+- **Minimal/Limited risk**: No automatic tasks created (manual task creation still available)
 
-## ✅ Phase R: Settings Page
-- `useOrganization.ts` - fetch/update organization profile
-- `useTeamMembers.ts` - fetch members with roles, update roles, remove members
-- `Settings/General.tsx` - Tabbed settings UI with:
-  - Organization tab: name, industry, company size
-  - Team tab: member list with role management, role permissions overview
-  - Billing tab: link to existing billing settings
-- Role-based access control (only admins can edit)
-
-## ✅ Phase S: Assessments Page
-- `useAssessments.ts` - fetch all classifications and FRIAs with system/owner data
-- `Assessments.tsx` - Tabbed UI with:
-  - Summary stats (classifications, high-risk, FRIAs, approved)
-  - Classifications tab: filterable table by risk level
-  - FRIAs tab: filterable table by status with conclusion badges
-- Links to AI system detail and FRIA wizard
-
-## ✅ Phase T: Control Library
-- Database: `control_library` (master definitions), `control_implementations` (per-AI-system status)
-- Seeded 30+ EU AI Act controls across 9 categories (GOV, CLS, TRN, DEP, LOG, DATA, VEN, LIT, MON)
-- `useControls.ts` - hooks for control library, applicable controls by risk level, implementations
-- `Controls.tsx` - browsable control library with search, category filtering, accordion view
-- Controls mapped by risk level (all, high_risk, limited_risk, vendor_based)
-
-## ✅ Phase U: Vendor Attestations
-- Database: `vendor_attestations` table with type, validity dates, verification status
-- `useVendorAttestations.ts` - CRUD operations for attestations
-- `VendorAttestations.tsx` - Component with stats, add dialog, verification workflow
-- `VendorDetail.tsx` - Vendor detail page with info, linked AI systems, and attestations
-- 10 attestation types: AI Act compliance, SOC2, ISO27001, model card, DPA, etc.
-
-## ✅ Phase V: Control Implementation UI
-- `AISystemControls.tsx` - Control tracking component for AI system detail page
-- Grouped by category with collapsible sections
-- Status dropdowns (Not Started, In Progress, Implemented, N/A)
-- Progress tracking per category and overall
-- Auto-initialize controls based on classification
-
-## ✅ Phase W: Dashboard Enhancements
-- Extended `useDashboardMetrics.ts` with controls and attestation stats
-- Dashboard now shows 4 progress cards: Classification, Controls, Vendor Attestations, Evidence
-- Real-time stats for control implementation progress
-- Vendor attestation verification and expiry tracking
-
-## ✅ Phase X: Auto-Initialize Controls
-- Controls now auto-initialize when classification wizard is completed
-- Applicable controls selected based on risk level (high_risk, limited_risk, vendor-based)
-- Toast notification shows number of controls initialized
-
-## Next Steps (Remaining Enhancements)
-- Auto-create tasks for high-risk systems (FRIA trigger, deployer obligations)
+## Future Enhancements (Not in This Phase)
+- Email notifications for new tasks
+- Auto-assign tasks to oversight owner if specified
+- Template customization per organization
