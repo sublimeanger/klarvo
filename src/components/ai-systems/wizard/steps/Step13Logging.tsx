@@ -29,12 +29,12 @@ const LOG_ACCESS_ROLES = [
 
 export function Step13Logging({ data, onChange, isHighRisk }: Step13LoggingProps) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 flex gap-3">
-        <FileText className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Logging & Record-Keeping</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Logging & Record-Keeping</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             High-risk AI systems must have logging capability. Deployers must keep logs 
             under their control for at least six months (unless other law differs).
           </p>
@@ -52,7 +52,7 @@ export function Step13Logging({ data, onChange, isHighRisk }: Step13LoggingProps
       {data.has_automatic_logs === "yes" && (
         <>
           <div className="space-y-2">
-            <Label htmlFor="log_storage_location">Where are logs stored?</Label>
+            <Label htmlFor="log_storage_location" className="text-sm">Where are logs stored?</Label>
             <Input
               id="log_storage_location"
               placeholder="e.g., Vendor system, Internal database, SIEM"
@@ -69,7 +69,7 @@ export function Step13Logging({ data, onChange, isHighRisk }: Step13LoggingProps
           />
 
           <div className="space-y-2">
-            <Label>Log retention period</Label>
+            <Label className="text-sm">Log retention period</Label>
             <Select
               value={data.log_retention_period}
               onValueChange={(value) => onChange({ log_retention_period: value })}
@@ -98,7 +98,7 @@ export function Step13Logging({ data, onChange, isHighRisk }: Step13LoggingProps
       />
 
       {isHighRisk && (
-        <div className="border-t pt-6">
+        <div className="border-t pt-4 sm:pt-6">
           <RadioGroupField
             label="Confirm minimum retention ≥ 6 months (if under deployer control)"
             description="For high-risk AI systems, logs must be retained for at least 6 months"
@@ -109,8 +109,8 @@ export function Step13Logging({ data, onChange, isHighRisk }: Step13LoggingProps
           />
 
           {data.log_retention_6_months_confirmed === "no" && (
-            <div className="rounded-lg border border-warning bg-warning/10 p-4 mt-4">
-              <p className="text-sm">
+            <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4 mt-4">
+              <p className="text-xs sm:text-sm">
                 <strong>Action required:</strong> Log retention must be extended to at 
                 least 6 months for high-risk AI systems where logs are under your control.
               </p>
