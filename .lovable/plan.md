@@ -1,5 +1,5 @@
 
-# Billing Integration - COMPLETED
+# Klarvo Development Plan
 
 ## ✅ Phase C: Webhook Secret Added
 - `STRIPE_WEBHOOK_SECRET` added to project secrets
@@ -20,9 +20,15 @@
 - Handles authenticated vs unauthenticated users
 - Redirects to Stripe checkout with correct plan/billing period
 
-## Next Steps (Future Enhancements)
-- Add real usage tracking (storage, exports)
-- Add high-risk system detection logic
-- Connect real training completion tracking
-- Add webhook event logging/monitoring
+## ✅ Phase G: AI System Inventory (Real Data + Quick Capture)
+- `useAISystems.ts` - CRUD operations for AI systems
+- `useVendors.ts` - vendor management hooks
+- `useOrgMembers.ts` - fetch organization team members
+- `AISystemWizard.tsx` - 3-step Quick Capture wizard
+- `AISystems.tsx` - connected to real database with empty states
 
+## Next Steps (Core Modules)
+- AI System Detail page with edit functionality
+- Classification Engine (prohibited screening, Annex III, risk level)
+- Vendors management page
+- Evidence vault module

@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import AISystems from "@/pages/AISystems";
+import AISystemWizard from "@/pages/AISystemWizard";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import BillingSettings from "@/pages/Settings/Billing";
@@ -56,7 +57,7 @@ const App = () => (
               <Route path="/" element={<Dashboard />} />
               <Route path="/ai-systems" element={<AISystems />} />
               <Route path="/ai-systems/:id" element={<Placeholder />} />
-              <Route path="/ai-systems/new" element={<Placeholder />} />
+              <Route path="/ai-systems/new" element={<AISystemWizard />} />
               <Route path="/vendors" element={<Placeholder />} />
               <Route path="/assessments" element={<Placeholder />} />
               <Route path="/evidence" element={<Placeholder />} />
