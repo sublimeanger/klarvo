@@ -281,26 +281,26 @@ export default function FRIAWizard() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-up">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(`/ai-systems/${id}`)}>
+      <div className="flex items-center gap-3 sm:gap-4">
+        <Button variant="ghost" size="icon" onClick={() => navigate(`/ai-systems/${id}`)} className="shrink-0">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div>
-          <h1 className="text-2xl font-semibold">Fundamental Rights Impact Assessment</h1>
-          <p className="text-muted-foreground">{system.name} • Article 27</p>
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-2xl font-semibold truncate">Fundamental Rights Impact Assessment</h1>
+          <p className="text-sm sm:text-base text-muted-foreground truncate">{system.name} • Article 27</p>
         </div>
       </div>
 
       {/* Progress */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between text-sm">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="flex items-center justify-between text-xs sm:text-sm">
           <span className="text-muted-foreground">Step {currentStep} of {STEPS.length}</span>
           <span className="font-medium">{STEPS[currentStep - 1].title}</span>
         </div>
         <Progress value={progress} className="h-2" />
-        <div className="flex justify-between">
+        <div className="flex justify-between overflow-x-auto pb-1">
           {STEPS.map((step) => {
             const Icon = step.icon;
             const isActive = step.id === currentStep;
@@ -308,16 +308,16 @@ export default function FRIAWizard() {
             return (
               <div
                 key={step.id}
-                className={`flex flex-col items-center gap-1 ${
+                className={`flex flex-col items-center gap-1 shrink-0 ${
                   isActive ? "text-primary" : isComplete ? "text-success" : "text-muted-foreground"
                 }`}
               >
-                <div className={`rounded-full p-2 ${
+                <div className={`rounded-full p-1.5 sm:p-2 ${
                   isActive ? "bg-primary/10" : isComplete ? "bg-success/10" : "bg-muted"
                 }`}>
-                  {isComplete ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
+                  {isComplete ? <Check className="h-3 w-3 sm:h-4 sm:w-4" /> : <Icon className="h-3 w-3 sm:h-4 sm:w-4" />}
                 </div>
-                <span className="text-xs hidden md:block">{step.title}</span>
+                <span className="text-[10px] sm:text-xs hidden sm:block">{step.title}</span>
               </div>
             );
           })}
