@@ -1,462 +1,477 @@
 
-# World-Class Design Upgrade & Marketing Pages Plan
+# Drastic Design System Upgrade & Site-Wide Visual Polish
 
-## Executive Summary
-A comprehensive design system overhaul and complete marketing site build for Klarvo - the EU AI Act Compliance Hub. This plan delivers a pixel-perfect, world-class experience across desktop and mobile, with all necessary marketing, legal, and product pages.
+## Current State Analysis
 
----
+After reviewing the codebase thoroughly, I've identified these key areas that need significant enhancement to achieve a truly world-class aesthetic:
 
-## Part 1: Design System Upgrade
+### What's Currently Lacking
 
-### 1.1 Enhanced Color System
-Expand the current design tokens for richer visual hierarchy:
-
-- **Extended Primary Palette**: Add primary-50 through primary-950 shades
-- **Surface Colors**: Multiple background layers (surface-0, surface-1, surface-2)
-- **Gradient System**: Branded gradients for hero sections and CTAs
-- **Dark Mode Polish**: Refined dark theme with proper contrast ratios
-
-### 1.2 Typography Enhancements
-- Add display font sizes for marketing headlines (5xl, 6xl, 7xl)
-- Introduce font-weight variations (light through black)
-- Letter-spacing and line-height fine-tuning per heading level
-- Add Inter font weights 200 and 800 for more range
-
-### 1.3 Animation Library Expansion
-Add keyframes and animation utilities:
-
-```text
-New Animations:
-- float (subtle y-axis movement)
-- pulse-glow (soft glow effect)  
-- slide-up-fade (content reveal)
-- scale-fade-in (modal/card entrances)
-- shimmer (loading states)
-- gradient-shift (animated gradients)
-- stagger-children (sequential animations)
-```
-
-### 1.4 Component Enhancements
-
-| Component | Upgrades |
-|-----------|----------|
-| Button | Add `size="xl"`, gradient variant, icon-only circle style |
-| Card | Add glass morphism, elevated shadow states, gradient borders |
-| Badge | Add shimmer animation, outline variants |
-| Input | Add floating labels, enhanced focus states |
-| Sections | Container variants (narrow/wide/full) |
-
-### 1.5 New Utility Classes
-```text
-.glass-card - Frosted glass effect
-.gradient-border - Animated gradient borders  
-.text-gradient - Multi-color text gradients
-.shadow-glow - Colored glow shadows
-.hover-lift - 3D lift on hover
-.pattern-dots - Subtle dot pattern backgrounds
-.pattern-grid - Subtle grid pattern backgrounds
-```
+1. **Hero Sections**: Basic gradient orbs and simple layouts - missing dramatic visual impact, 3D elements, and sophisticated animations
+2. **Cards & Components**: Generic bordered boxes - no depth, shimmer effects, or premium glass morphism
+3. **Typography**: Good foundation but lacks dramatic contrast and sophisticated sizing hierarchy
+4. **Navigation**: Functional but plain - missing micro-interactions, animated underlines, premium hover states
+5. **Feature Showcases**: Placeholder image boxes - need actual product mockups or sophisticated abstract graphics
+6. **Testimonials**: Simple text cards - lack visual richness, ratings, verified badges
+7. **Logo Cloud**: Text placeholders - needs actual logos or sophisticated brand representations
+8. **CTA Sections**: Basic gradients - need animated backgrounds, floating elements, 3D depth
+9. **Pricing Page**: Inconsistent with marketing layout - completely standalone with basic styling
+10. **Mobile Experience**: Responsive but not optimized - needs touch-first interactions and bottom sheets
 
 ---
 
-## Part 2: Marketing Layout Components
+## Part 1: Enhanced Design System Foundation
 
-### 2.1 MarketingLayout Component
-Shared wrapper for all public pages:
-- Responsive navigation header with transparent/solid scroll state
-- Mega-menu for product features
-- Mobile drawer navigation with smooth animations
-- Announcement bar slot (for promotions/updates)
-- Sticky CTA bar on mobile
+### 1.1 Premium CSS Utilities (index.css additions)
 
-### 2.2 Footer Component
-Full-featured footer with:
-- 4-column link grid (Product, Resources, Company, Legal)
-- Newsletter signup
-- Social links
-- Trust badges (EU flag, security certifications)
-- Language/region selector placeholder
-- Copyright with dynamic year
-
-### 2.3 Reusable Section Components
 ```text
-- HeroSection (multiple variants: centered, split, video)
-- FeatureGrid (icon + text cards)
-- FeatureShowcase (alternating image/text sections)
-- TestimonialSection (carousel + static grid variants)
-- LogoCloud (customer/partner logos)
-- CTASection (banner style, card style)
-- FAQSection (accordion-based)
-- ComparisonTable (feature matrix)
-- TimelineSection (for EU AI Act dates)
-- StatsSection (animated counters)
+NEW ADDITIONS:
+- Animated gradient backgrounds with multi-layer parallax
+- Premium card variants: .card-premium, .card-glow, .card-3d
+- Floating decoration elements: .float-orb-1, .float-orb-2
+- Animated grid backgrounds with perspective
+- Noise texture overlays for depth
+- Premium button variants: .btn-shimmer, .btn-3d, .btn-outline-glow
+- Text effects: .text-shimmer, .text-glow, .text-shadow-lg
+- Border animations: .border-animate, .border-pulse
+- Scroll-triggered reveal classes
+- Premium shadows: .shadow-2xl-glow, .shadow-color-primary
+- Backdrop effects: .backdrop-premium, .backdrop-frosted
+```
+
+### 1.2 Animation Enhancements
+
+```text
+NEW KEYFRAMES:
+- gradient-flow: Multi-directional gradient movement
+- float-3d: 3D floating with rotation
+- pulse-ring: Expanding ring effect for CTAs
+- shine-sweep: Premium shine effect for cards
+- morph: Organic shape morphing for background blobs
+- text-reveal: Character-by-character reveal
+- counter-up: Number counting animation
+- parallax-scroll: Scroll-linked movement
+- glow-pulse: Breathing glow effect
+- border-trace: Border drawing animation
+```
+
+### 1.3 Premium Component Tokens
+
+```text
+NEW CSS VARIABLES:
+- --glass-bg: Sophisticated frosted glass with tint
+- --noise-opacity: Texture overlay intensity
+- --glow-color-1, --glow-color-2: Multi-color glow system
+- --card-border-gradient: Premium gradient borders
+- --shadow-colored: Tinted shadow system
+- --text-shadow-glow: Text glow effects
+- --transition-premium: Custom spring easing
 ```
 
 ---
 
-## Part 3: Marketing Pages
+## Part 2: Component-Level Upgrades
 
-### 3.1 Landing Page (`/` for logged-out users)
-**Route**: `/` (conditional: show landing if not logged in, dashboard if logged in)
+### 2.1 HeroSection.tsx - Complete Redesign
 
-Sections:
-1. **Hero**: Full-width with animated gradient background
-   - H1: "EU AI Act Compliance — Simple, Evidence-Based, Audit-Ready"
-   - Subheadline + dual CTAs (Start Free / Book Demo)
-   - Social proof badges (trust signals)
-   
-2. **Logo Cloud**: "Trusted by compliance teams at..."
-
-3. **Problem/Solution**: 3-column grid showing pain points → solutions
-
-4. **Feature Showcase**: 4-6 alternating sections with screenshots:
-   - AI System Inventory
-   - Classification Engine
-   - Evidence Vault
-   - Export Packs
-   - Control Library
-   - Training Tracking
-
-5. **EU AI Act Timeline**: Visual timeline with key dates
-
-6. **How It Works**: 3-step process diagram
-
-7. **Testimonials**: Quote cards with photos
-
-8. **Pricing Preview**: Compact tier comparison → link to /pricing
-
-9. **Final CTA**: Full-width gradient section
-
-### 3.2 Features Page (`/features`)
-Deep-dive into platform capabilities with:
-- Hero with product screenshot
-- Tabbed feature sections (Inventory, Classification, Evidence, etc.)
-- Interactive demo previews (animated GIFs/videos)
-- Comparison with alternatives
-
-### 3.3 Use Cases Page (`/use-cases`)
-Audience-specific pages:
-- `/use-cases/sme` - SME compliance
-- `/use-cases/enterprise` - Large organization
-- `/use-cases/hr` - HR/recruiting AI
-- `/use-cases/fintech` - Financial services
-- `/use-cases/healthcare` - Healthcare AI
-
-### 3.4 About Page (`/about`)
-Company information:
-- Mission and vision
-- Team section (optional placeholder)
-- Company values
-- Contact information
-
-### 3.5 Contact Page (`/contact`)
-- Contact form (name, email, company, message)
-- Sales inquiry option
-- Support links
-- Office address placeholder
-
-### 3.6 Book Demo Page (`/demo`)
-- Calendly-style embed placeholder
-- Demo request form
-- What to expect section
-
-### 3.7 Blog/Resources Landing (`/resources`)
-- Resource hub with categories
-- Featured articles placeholder
-- EU AI Act guides section
-- Webinars/events placeholder
-
-### 3.8 Documentation Page (`/docs`)
-- Getting started guide placeholder
-- Link structure for future docs
-
----
-
-## Part 4: Legal & Compliance Pages
-
-### 4.1 Terms of Service (`/terms`)
-Full legal page with:
-- Table of contents
-- Standard SaaS terms sections
-- Data processing information
-- Usage restrictions
-- Liability limitations
-
-### 4.2 Privacy Policy (`/privacy`)
-GDPR-compliant privacy policy:
-- Data collection practices
-- Cookie policy
-- Third-party services
-- Data retention
-- User rights
-- Contact for privacy inquiries
-
-### 4.3 Cookie Policy (`/cookies`)
-- Types of cookies used
-- Cookie preferences explanation
-- Third-party cookies
-- How to manage cookies
-
-### 4.4 Acceptable Use Policy (`/aup`)
-- Permitted uses
-- Prohibited activities
-- Enforcement actions
-
-### 4.5 Data Processing Agreement (`/dpa`)
-- GDPR DPA template
-- Sub-processor list
-- Security measures
-
-### 4.6 Security Page (`/security`)
-- Security practices overview
-- Compliance certifications (placeholder)
-- Data encryption details
-- Infrastructure overview
-- Responsible disclosure policy
-
-### 4.7 GDPR Compliance (`/gdpr`)
-- How the platform supports GDPR
-- Data subject rights
-- DPO contact information
-
----
-
-## Part 5: Additional Pages
-
-### 5.1 Enhanced 404 Page
-- Branded illustration
-- Search functionality
-- Popular links
-- Back to home button
-
-### 5.2 Status Page (`/status`)
-- System status indicators (placeholder)
-- Uptime history placeholder
-
-### 5.3 Changelog (`/changelog`)
-- Version history format
-- Feature announcements
-
-### 5.4 Integrations Page (`/integrations`)
-- Available integrations (Jira, Asana, etc.)
-- Coming soon integrations
-
-### 5.5 Partners Page (`/partners`)
-- Partner program overview
-- Benefits of partnership
-- Application form
-
-### 5.6 Press Kit (`/press`)
-- Brand assets download
-- Logo guidelines
-- Boilerplate text
-
-### 5.7 Careers Page (`/careers`)
-- Company culture section
-- Benefits overview
-- Job listings placeholder
-
----
-
-## Part 6: Mobile Optimization
-
-### 6.1 Responsive Breakpoints
 ```text
-Mobile: 320px - 639px
-Tablet: 640px - 1023px  
-Desktop: 1024px - 1279px
-Large: 1280px+
+ENHANCEMENTS:
+- Animated mesh gradient background with 3-4 morphing blobs
+- Floating 3D elements (abstract geometric shapes)
+- Animated particles or subtle snow/confetti effect
+- Text reveal animations with staggered timing
+- Glowing CTA buttons with pulse-ring on hover
+- Trust badges with verified icons and subtle animations
+- Optional video/Lottie background support
+- Responsive typography with clamp() sizing
+- Noise texture overlay for depth
+- Parallax scroll effect on decorative elements
 ```
 
-### 6.2 Mobile-Specific Enhancements
-- Touch-optimized tap targets (min 44px)
+### 2.2 MarketingHeader.tsx - Premium Navigation
+
+```text
+ENHANCEMENTS:
+- Animated logo with subtle hover effect
+- Navigation links with underline slide-in animation
+- Dropdown menus with staggered item reveal
+- Glass morphism background on scroll (more dramatic)
+- Mobile menu with full-screen animated overlay
+- Animated hamburger to X transition
+- Subtle backdrop blur with gradient tint
+- Premium box-shadow on scroll
+- Active route indicator with glow
+```
+
+### 2.3 FeatureGrid.tsx - Rich Card Design
+
+```text
+ENHANCEMENTS:
+- 3D tilt effect on hover (subtle perspective)
+- Icon container with gradient background and glow
+- Card border that lights up on hover
+- Staggered entrance animations with spring physics
+- Subtle grid pattern inside cards
+- Premium shadow that intensifies on hover
+- Description text fade-in animation
+- Link arrow with slide animation
+- Optional image or Lottie in card
+```
+
+### 2.4 FeatureShowcase.tsx - Visual Impact
+
+```text
+ENHANCEMENTS:
+- Replace placeholder boxes with:
+  * Gradient abstract shapes representing the feature
+  * Isometric illustrations or 3D mockups
+  * Animated SVG diagrams
+- Floating decorative elements around images
+- Bullet points with animated check icons
+- Badge with shimmer effect
+- Image containers with glowing border
+- Parallax scroll effect on images
+- Reveal animations on scroll
+```
+
+### 2.5 TestimonialSection.tsx - Social Proof Excellence
+
+```text
+ENHANCEMENTS:
+- Star ratings with animated fill
+- "Verified Customer" badges
+- Avatar rings with gradient borders
+- Quote marks as large decorative elements
+- Card hover with 3D lift and shadow
+- Carousel variant with smooth transitions
+- Company logos under testimonials
+- Animated entrance on scroll
+- Featured testimonial with larger treatment
+```
+
+### 2.6 StatsSection.tsx - Dynamic Numbers
+
+```text
+ENHANCEMENTS:
+- Animated counting numbers on scroll
+- Gradient text for values
+- Decorative lines connecting stats
+- Icon accents for each stat
+- Background pattern specific to stats
+- Glow effect on numbers
+- Responsive sizing with dramatic contrast
+```
+
+### 2.7 TimelineSection.tsx - Visual Storytelling
+
+```text
+ENHANCEMENTS:
+- Animated connecting line (draws as you scroll)
+- Milestone nodes with pulse animations
+- Cards with premium borders and shadows
+- Date badges with gradient backgrounds
+- Icon system for different event types
+- Progress indicator showing current position
+- Alternating card layouts
+- Mobile: vertical with animated reveals
+```
+
+### 2.8 CTASection.tsx - Conversion Focus
+
+```text
+ENHANCEMENTS:
+- Animated gradient background (flowing movement)
+- Floating decorative shapes
+- Button with animated shine sweep
+- Subtle particle effects
+- Trust badge row below buttons
+- 3D perspective on card variant
+- Urgency indicator option
+- Secondary content row for features
+```
+
+### 2.9 LogoCloud.tsx - Brand Credibility
+
+```text
+ENHANCEMENTS:
+- Replace text with stylized brand representations
+- Infinite scroll animation (subtle marquee)
+- Logos with hover state revealing company info
+- Premium grayscale to color on hover
+- Verified partner badges
+- "Featured in" variant for press logos
+- Responsive grid to marquee transition
+```
+
+### 2.10 MarketingFooter.tsx - Premium Closing
+
+```text
+ENHANCEMENTS:
+- Multi-layer gradient background
+- Newsletter input with animated focus state
+- Social icons with glow hover effects
+- Trust badges row (security, EU compliance)
+- Language selector with dropdown
+- "Back to top" smooth scroll button
+- Animated wave or pattern divider
+- Premium link hover animations
+```
+
+---
+
+## Part 3: Pricing Page Integration
+
+### 3.1 Pricing.tsx - Complete Redesign
+
+```text
+CHANGES:
+- Integrate into MarketingLayout (consistent nav/footer)
+- Premium plan cards with:
+  * Gradient borders for recommended plan
+  * Glow effect on hover
+  * Feature lists with animated checkmarks
+  * Price with animated reveal
+  * "Most Popular" badge with shimmer
+- Animated billing toggle with smooth transition
+- Feature comparison table with premium styling
+- FAQ accordion with smooth animations
+- Consistent section backgrounds
+- Mobile-optimized with stacked cards
+```
+
+---
+
+## Part 4: All Marketing Pages Polish
+
+### 4.1 About.tsx Enhancements
+
+```text
+- Hero with team photo placeholder or abstract art
+- Mission section with dramatic typography
+- Values cards with icon animations
+- Timeline with animated reveals
+- Stats with counting animation
+- Team grid with hover reveals
+- Full-width image sections
+```
+
+### 4.2 Contact.tsx Enhancements
+
+```text
+- Form with premium input styling
+- Floating labels with smooth animations
+- Success state with celebration animation
+- Contact info cards with icons
+- Map placeholder with gradient overlay
+- Social links with glow effects
+```
+
+### 4.3 Demo.tsx Enhancements
+
+```text
+- Calendar-style widget placeholder
+- Form with step progress indicator
+- Video thumbnail with play button
+- Benefits checklist with animations
+- Social proof testimonial embed
+```
+
+### 4.4 Resources.tsx Enhancements
+
+```text
+- Category tabs with animated indicator
+- Resource cards with image previews
+- Tag system with filter animation
+- Featured article hero section
+- Newsletter capture section
+```
+
+### 4.5 Use Case Pages Enhancements
+
+```text
+- Industry-specific hero images
+- Risk matrix visualizations
+- Case study excerpts
+- Industry stats with charts
+- Specific testimonials per industry
+- CTA with industry-specific copy
+```
+
+### 4.6 Legal Pages Enhancements
+
+```text
+- Improved LegalLayout with:
+  * Table of contents sidebar (desktop)
+  * Scroll progress indicator
+  * Section jump links
+  * Last updated badge
+  * Print-friendly styles
+  * Mobile bottom sheet ToC
+```
+
+---
+
+## Part 5: Mobile Excellence
+
+### 5.1 Touch-First Interactions
+
+```text
+- Touch targets minimum 44px
 - Swipe gestures for carousels
-- Bottom sheet patterns for mobile forms
-- Fixed mobile CTA bar on marketing pages
-- Hamburger menu with full-screen overlay
-- Optimized form layouts (stacked inputs)
+- Bottom sheet navigation on mobile
+- Sticky CTA bar on scroll
+- Pull-to-refresh patterns (where applicable)
+- Haptic-style feedback animations
+- Thumb-zone optimized layouts
+```
 
-### 6.3 Mobile Navigation Pattern
-- Sticky header that hides on scroll down, shows on scroll up
-- Mobile menu with smooth slide-in animation
-- Nested accordion for submenu items
-- Quick action buttons (Login, Start Free)
+### 5.2 Mobile-Specific Components
 
----
+```text
+- MobileNav.tsx with full-screen overlay
+- MobileCTABar.tsx sticky bottom bar
+- BottomSheet.tsx for modals/dropdowns
+- SwipeCarousel.tsx for testimonials/features
+- CollapsibleSection.tsx for long content
+```
 
-## Part 7: App Dashboard Polish
+### 5.3 Responsive Refinements
 
-### 7.1 Dashboard Improvements
-- Skeleton loading states for all cards
-- Empty state illustrations
-- Micro-interactions on hover
-- Animated number counters
-
-### 7.2 Sidebar Refinements
-- Smooth collapse/expand transitions
-- Tooltip labels when collapsed
-- Active state animations
-- Mobile: slide-out drawer pattern
-
-### 7.3 Form and Wizard Polish
-- Progress indicators with animations
-- Step transitions with slide effects
-- Inline validation with smooth reveals
-- Success state celebrations
+```text
+- Hero: Single column, smaller text, stacked CTAs
+- Feature grids: 1 column with cards
+- Stats: 2x2 grid on mobile
+- Timeline: Vertical with abbreviated cards
+- Footer: Accordion link sections
+- Forms: Full-width inputs, stacked layout
+- Tables: Horizontal scroll or card view
+```
 
 ---
 
-## Part 8: Performance & Polish
+## Part 6: Performance & Polish
 
-### 8.1 Image Optimization
-- Lazy loading for below-fold images
-- Responsive image sizes
-- WebP format support
-- Blur placeholder loading
+### 6.1 Animation Performance
 
-### 8.2 Animation Performance
-- GPU-accelerated transforms
-- Reduced motion media query support
+```text
+- Use transform and opacity only for animations
+- will-change hints for animated elements
 - Intersection Observer for scroll-triggered animations
+- Reduced motion media query support
+- Lazy load heavy animations/images
+- requestAnimationFrame for JS animations
+```
 
-### 8.3 Accessibility
-- Focus visible styles
+### 6.2 Image & Asset Optimization
+
+```text
+- Add placeholder abstract graphics for features
+- SVG illustrations for empty states
+- Optimized background patterns
+- WebP with fallbacks
+- Blur-up loading technique
+```
+
+### 6.3 Accessibility Enhancements
+
+```text
 - Skip to content link
+- Focus-visible styling (already present, verify)
 - ARIA labels for all interactive elements
-- Color contrast verification
-
----
-
-## Technical Implementation Structure
-
-### New Files to Create
-
-**Layout Components:**
-```text
-src/components/marketing/MarketingLayout.tsx
-src/components/marketing/MarketingHeader.tsx
-src/components/marketing/MarketingFooter.tsx
-src/components/marketing/MobileNav.tsx
-```
-
-**Section Components:**
-```text
-src/components/marketing/HeroSection.tsx
-src/components/marketing/FeatureGrid.tsx
-src/components/marketing/FeatureShowcase.tsx
-src/components/marketing/TestimonialSection.tsx
-src/components/marketing/LogoCloud.tsx
-src/components/marketing/CTASection.tsx
-src/components/marketing/TimelineSection.tsx
-src/components/marketing/StatsSection.tsx
-src/components/marketing/ComparisonTable.tsx
-```
-
-**Marketing Pages:**
-```text
-src/pages/marketing/LandingPage.tsx
-src/pages/marketing/Features.tsx
-src/pages/marketing/About.tsx
-src/pages/marketing/Contact.tsx
-src/pages/marketing/Demo.tsx
-src/pages/marketing/Resources.tsx
-src/pages/marketing/Integrations.tsx
-src/pages/marketing/Partners.tsx
-src/pages/marketing/Careers.tsx
-src/pages/marketing/Press.tsx
-src/pages/marketing/Status.tsx
-src/pages/marketing/Changelog.tsx
-```
-
-**Use Case Pages:**
-```text
-src/pages/use-cases/SME.tsx
-src/pages/use-cases/Enterprise.tsx
-src/pages/use-cases/HR.tsx
-src/pages/use-cases/Fintech.tsx
-src/pages/use-cases/Healthcare.tsx
-```
-
-**Legal Pages:**
-```text
-src/pages/legal/Terms.tsx
-src/pages/legal/Privacy.tsx
-src/pages/legal/Cookies.tsx
-src/pages/legal/AUP.tsx
-src/pages/legal/DPA.tsx
-src/pages/legal/Security.tsx
-src/pages/legal/GDPR.tsx
-```
-
-**Design System Updates:**
-```text
-src/index.css (enhanced)
-tailwind.config.ts (enhanced)
-src/lib/animations.ts (new)
+- Color contrast verification (4.5:1 minimum)
+- Screen reader friendly animations
+- Keyboard navigation testing
 ```
 
 ---
 
-## Route Structure Summary
+## Implementation Order
 
-| Route | Page | Type |
-|-------|------|------|
-| `/` | Landing (logged out) / Dashboard (logged in) | Marketing/App |
-| `/features` | Features | Marketing |
-| `/pricing` | Pricing (exists, enhance) | Marketing |
-| `/about` | About Us | Marketing |
-| `/contact` | Contact | Marketing |
-| `/demo` | Book Demo | Marketing |
-| `/resources` | Resources Hub | Marketing |
-| `/integrations` | Integrations | Marketing |
-| `/partners` | Partner Program | Marketing |
-| `/careers` | Careers | Marketing |
-| `/press` | Press Kit | Marketing |
-| `/status` | System Status | Marketing |
-| `/changelog` | Changelog | Marketing |
-| `/use-cases/*` | Use Case Pages | Marketing |
-| `/terms` | Terms of Service | Legal |
-| `/privacy` | Privacy Policy | Legal |
-| `/cookies` | Cookie Policy | Legal |
-| `/aup` | Acceptable Use Policy | Legal |
-| `/dpa` | Data Processing Agreement | Legal |
-| `/security` | Security | Legal |
-| `/gdpr` | GDPR Compliance | Legal |
+**Phase 1: Design System Core** (CSS variables, utilities, animations)
+- src/index.css enhancements
+- tailwind.config.ts updates
+- New animation keyframes
 
----
+**Phase 2: Core Marketing Components**
+- HeroSection.tsx complete redesign
+- MarketingHeader.tsx premium navigation
+- MarketingFooter.tsx enhancements
+- FeatureGrid.tsx with 3D effects
+- CTASection.tsx with animated backgrounds
 
-## Implementation Phases
+**Phase 3: Secondary Marketing Components**
+- TestimonialSection.tsx with ratings
+- StatsSection.tsx with counters
+- TimelineSection.tsx animated
+- LogoCloud.tsx with marquee
+- FeatureShowcase.tsx visual upgrade
 
-**Phase 1: Design System Foundation**
-- Enhanced CSS variables and Tailwind config
-- Animation library
-- New utility classes
-
-**Phase 2: Marketing Layout & Core Components**
-- MarketingLayout, Header, Footer
-- Section components (Hero, Features, CTA, etc.)
-
-**Phase 3: Primary Marketing Pages**
-- Landing page
-- Features page
-- Enhanced Pricing page
-
-**Phase 4: Legal Pages**
-- Terms, Privacy, Cookies, Security, DPA, AUP, GDPR
-
-**Phase 5: Secondary Marketing Pages**
-- About, Contact, Demo, Resources
+**Phase 4: Page-Level Polish**
+- Pricing.tsx integrate into MarketingLayout
+- LandingPage.tsx with new components
+- Features.tsx enhanced
+- About.tsx, Contact.tsx, Demo.tsx
 - Use case pages
+- Legal pages with ToC sidebar
 
-**Phase 6: Additional Pages**
-- Integrations, Partners, Careers, Press, Status, Changelog
+**Phase 5: Mobile Optimization**
+- MobileNav.tsx full-screen
+- Mobile CTA bar
+- Touch-optimized interactions
+- Responsive testing all pages
 
-**Phase 7: App Dashboard Polish**
-- Enhanced sidebar
-- Improved forms and wizards
-- Mobile app experience
-
-**Phase 8: Final Polish**
-- Cross-browser testing
-- Performance optimization
+**Phase 6: Final Polish**
+- Animation performance tuning
 - Accessibility audit
+- Cross-browser testing
+- Loading state refinements
+
+---
+
+## Technical Summary
+
+### Files to Modify
+
+```text
+HEAVILY MODIFIED:
+- src/index.css (300+ lines of new utilities)
+- tailwind.config.ts (new animations, variants)
+- src/components/marketing/HeroSection.tsx
+- src/components/marketing/MarketingHeader.tsx
+- src/components/marketing/MarketingFooter.tsx
+- src/components/marketing/FeatureGrid.tsx
+- src/components/marketing/FeatureShowcase.tsx
+- src/components/marketing/TestimonialSection.tsx
+- src/components/marketing/StatsSection.tsx
+- src/components/marketing/TimelineSection.tsx
+- src/components/marketing/CTASection.tsx
+- src/components/marketing/LogoCloud.tsx
+- src/pages/Pricing.tsx
+- src/pages/marketing/LandingPage.tsx
+
+MODERATELY MODIFIED:
+- All pages in src/pages/marketing/
+- All pages in src/pages/use-cases/
+- All pages in src/pages/legal/
+- src/components/marketing/LegalLayout.tsx
+
+NEW FILES:
+- src/components/marketing/MobileNav.tsx
+- src/components/marketing/MobileCTABar.tsx
+- src/components/marketing/AnimatedCounter.tsx
+- src/components/marketing/FloatingElements.tsx
+- src/components/marketing/GradientMesh.tsx
+```
+
+### Expected Outcome
+
+After implementation, the site will feature:
+- Dramatic, memorable hero sections with depth and movement
+- Premium card interactions with 3D effects
+- Smooth, performant animations throughout
+- Consistent, sophisticated aesthetic across all pages
+- Mobile experience that feels native and polished
+- Pricing page fully integrated with marketing design
+- Legal pages with professional, scannable layout
+- Trust signals and social proof prominently displayed
+- World-class visual quality competitive with Linear, Stripe, Vercel
