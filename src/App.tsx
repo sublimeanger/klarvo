@@ -22,6 +22,7 @@ import Exports from "@/pages/Exports";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import BillingSettings from "@/pages/Settings/Billing";
+import GeneralSettings from "@/pages/Settings/General";
 import NotFound from "@/pages/NotFound";
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
@@ -78,7 +79,7 @@ const App = () => (
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/incidents" element={<Incidents />} />
               <Route path="/exports" element={<Exports />} />
-              <Route path="/settings" element={<Placeholder />} />
+              <Route path="/settings" element={<GeneralSettings />} />
               <Route path="/settings/billing" element={<BillingSettings />} />
             </Route>
 

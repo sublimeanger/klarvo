@@ -96,8 +96,16 @@
   7. Approval (final conclusion, authority notification)
 - `AISystemDetail.tsx` - FRIA section for high-risk systems with status tracking
 
+## ✅ Phase R: Settings Page
+- `useOrganization.ts` - fetch/update organization profile
+- `useTeamMembers.ts` - fetch members with roles, update roles, remove members
+- `Settings/General.tsx` - Tabbed settings UI with:
+  - Organization tab: name, industry, company size
+  - Team tab: member list with role management, role permissions overview
+  - Billing tab: link to existing billing settings
+- Role-based access control (only admins can edit)
+
 ## Next Steps (Remaining Enhancements)
-- Settings page enhancements (organization profile, team management)
 - Assessments page (unified view of all classification assessments)
 - Control library implementation
 - Vendor attestation tracking
