@@ -7,7 +7,10 @@ import {
   GraduationCap, 
   Shield,
   ArrowRight,
-  Plus
+  Plus,
+  CheckSquare,
+  FileText,
+  AlertCircle,
 } from "lucide-react";
 import { MetricCard } from "@/components/ui/metric-card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -19,6 +22,7 @@ import { Link } from "react-router-dom";
 import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { useSubscription } from "@/hooks/useSubscription";
 import { TrialBanner } from "@/components/billing/TrialBanner";
+import { useTasks } from "@/hooks/useTasks";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -26,29 +30,25 @@ const upcomingDeadlines = [
   { date: "Aug 2, 2026", event: "High-risk AI system rules", type: "info" as const },
 ];
 
-const recentActivity = [
-  { action: "Added AI System", item: "ChatGPT for Customer Support", time: "2 hours ago" },
-  { action: "Classification completed", item: "CV Screening Assistant", time: "5 hours ago" },
-  { action: "Evidence uploaded", item: "Vendor Agreement - OpenAI", time: "1 day ago" },
-  { action: "Task completed", item: "Add transparency notice", time: "2 days ago" },
-];
-
-const pendingTasks = [
-  { title: "Complete classification for Marketing AI", priority: "high", dueIn: "2 days" },
-  { title: "Upload vendor documentation for Fraud Detection", priority: "medium", dueIn: "5 days" },
-  { title: "Assign oversight owner for CV Screening", priority: "high", dueIn: "1 day" },
-];
-
 export default function Dashboard() {
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
-  const { isTrialing, daysRemaining, plan, entitlements } = useSubscription();
+  const { isTrialing, daysRemaining } = useSubscription();
+  const { data: recentTasks = [] } = useTasks({ status: "all" });
 
-  // Mock these for now - in production would come from real data
-  const highRiskCandidates = 0;
-  const missingClassification = metrics.draftSystems;
-  const evidenceCompleteness = 0;
-  const trainingCompletion = 0;
-  const auditReadiness = 0;
+  // Calculate percentages
+  const classifiedCount = metrics.highRiskCount + metrics.limitedRiskCount + metrics.minimalRiskCount;
+  const classificationProgress = metrics.totalSystems > 0 
+    ? Math.round((classifiedCount / metrics.totalSystems) * 100) 
+    : 0;
+  
+  const evidenceProgress = metrics.evidenceCount > 0
+    ? Math.round((metrics.approvedEvidenceCount / metrics.evidenceCount) * 100)
+    : 0;
+
+  // Get pending tasks for display
+  const pendingTasks = recentTasks
+    .filter(t => t.status === "todo" || t.status === "in_progress")
+    .slice(0, 3);
 
   return (
     <div className="space-y-8 animate-fade-up">
@@ -74,9 +74,10 @@ export default function Dashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {metricsLoading ? (
           <>
+            <Skeleton className="h-32 rounded-lg" />
             <Skeleton className="h-32 rounded-lg" />
             <Skeleton className="h-32 rounded-lg" />
             <Skeleton className="h-32 rounded-lg" />
@@ -90,73 +91,169 @@ export default function Dashboard() {
               icon={Cpu}
             />
             <MetricCard
-              title="High-Risk Candidates"
-              value={highRiskCandidates}
+              title="High-Risk Systems"
+              value={metrics.highRiskCount}
               subtitle="Require deployer obligations"
               icon={AlertTriangle}
             />
             <MetricCard
-              title="Missing Classification"
-              value={missingClassification}
+              title="Pending Classification"
+              value={metrics.notClassifiedCount}
               subtitle="Need risk assessment"
               icon={HelpCircle}
+            />
+            <MetricCard
+              title="Open Tasks"
+              value={metrics.tasksTodo}
+              subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "All on track"}
+              icon={CheckSquare}
             />
           </>
         )}
       </div>
+
+      {/* Classification Breakdown */}
+      {metrics.totalSystems > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Shield className="h-5 w-5" />
+              Classification Breakdown
+            </CardTitle>
+            <CardDescription>Risk level distribution of your AI systems</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">High Risk</span>
+                  <StatusBadge variant="high">{metrics.highRiskCount}</StatusBadge>
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div 
+                    className="h-full bg-destructive transition-all" 
+                    style={{ width: `${metrics.totalSystems > 0 ? (metrics.highRiskCount / metrics.totalSystems) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Limited Risk</span>
+                  <StatusBadge variant="limited">{metrics.limitedRiskCount}</StatusBadge>
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div 
+                    className="h-full bg-warning transition-all" 
+                    style={{ width: `${metrics.totalSystems > 0 ? (metrics.limitedRiskCount / metrics.totalSystems) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Minimal Risk</span>
+                  <StatusBadge variant="minimal">{metrics.minimalRiskCount}</StatusBadge>
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div 
+                    className="h-full bg-success transition-all" 
+                    style={{ width: `${metrics.totalSystems > 0 ? (metrics.minimalRiskCount / metrics.totalSystems) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Not Classified</span>
+                  <StatusBadge variant="draft">{metrics.notClassifiedCount}</StatusBadge>
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div 
+                    className="h-full bg-muted-foreground/30 transition-all" 
+                    style={{ width: `${metrics.totalSystems > 0 ? (metrics.notClassifiedCount / metrics.totalSystems) * 100 : 0}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Progress Section */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center gap-2">
-              <FileCheck className="h-4 w-4 text-muted-foreground" />
-              Evidence Completeness
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{evidenceCompleteness}%</span>
-                <StatusBadge variant="warning" dot>In Progress</StatusBadge>
-              </div>
-              <Progress value={evidenceCompleteness} className="h-2" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <GraduationCap className="h-4 w-4 text-muted-foreground" />
-              Training Completion
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{trainingCompletion}%</span>
-                <StatusBadge variant="warning" dot>In Progress</StatusBadge>
-              </div>
-              <Progress value={trainingCompletion} className="h-2" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
               <Shield className="h-4 w-4 text-muted-foreground" />
-              Audit Readiness
+              Classification Progress
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{auditReadiness}%</span>
-                <StatusBadge variant="warning" dot>In Progress</StatusBadge>
+                <span className="text-2xl font-semibold">{classificationProgress}%</span>
+                <StatusBadge 
+                  variant={classificationProgress === 100 ? "success" : classificationProgress > 50 ? "warning" : "draft"} 
+                  dot
+                >
+                  {classificationProgress === 100 ? "Complete" : "In Progress"}
+                </StatusBadge>
               </div>
-              <Progress value={auditReadiness} className="h-2" />
+              <Progress value={classificationProgress} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {classifiedCount} of {metrics.totalSystems} systems classified
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              Evidence Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-semibold">{metrics.evidenceCount}</span>
+                <StatusBadge 
+                  variant={evidenceProgress === 100 ? "success" : "warning"} 
+                  dot
+                >
+                  {metrics.approvedEvidenceCount} approved
+                </StatusBadge>
+              </div>
+              <Progress value={evidenceProgress} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {metrics.approvedEvidenceCount} of {metrics.evidenceCount} files approved
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <CheckSquare className="h-4 w-4 text-muted-foreground" />
+              Task Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-semibold">{metrics.tasksTodo}</span>
+                {metrics.tasksOverdue > 0 ? (
+                  <StatusBadge variant="destructive" dot>
+                    {metrics.tasksOverdue} overdue
+                  </StatusBadge>
+                ) : (
+                  <StatusBadge variant="success" dot>On track</StatusBadge>
+                )}
+              </div>
+              <Progress value={metrics.tasksTodo > 0 ? 50 : 100} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {metrics.tasksTodo} tasks pending completion
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -211,49 +308,38 @@ export default function Dashboard() {
             </Button>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {pendingTasks.map((task, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div 
-                    className={`h-2 w-2 mt-2 rounded-full ${
-                      task.priority === "high" ? "bg-destructive" : "bg-warning"
-                    }`} 
-                  />
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm font-medium">{task.title}</p>
-                    <p className="text-sm text-muted-foreground">Due in {task.dueIn}</p>
+            {pendingTasks.length === 0 ? (
+              <div className="text-center py-6 text-muted-foreground">
+                <CheckSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No pending tasks</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {pendingTasks.map((task) => (
+                  <div key={task.id} className="flex items-start gap-4">
+                    <div 
+                      className={`h-2 w-2 mt-2 rounded-full ${
+                        task.priority === "urgent" || task.priority === "high" 
+                          ? "bg-destructive" 
+                          : "bg-warning"
+                      }`} 
+                    />
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium">{task.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {task.due_date 
+                          ? `Due ${new Date(task.due_date).toLocaleDateString()}`
+                          : "No due date"
+                        }
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
-
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest actions in your workspace</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center gap-4">
-                <div className="h-2 w-2 rounded-full bg-primary" />
-                <div className="flex-1">
-                  <p className="text-sm">
-                    <span className="font-medium">{activity.action}</span>
-                    {" · "}
-                    <span className="text-muted-foreground">{activity.item}</span>
-                  </p>
-                </div>
-                <span className="text-sm text-muted-foreground">{activity.time}</span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
