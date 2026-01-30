@@ -92,11 +92,11 @@ export default function BillingSettings() {
   const isLoading = subLoading || metricsLoading;
 
   return (
-    <div className="space-y-8 animate-fade-up">
+    <div className="space-y-6 sm:space-y-8 animate-fade-up">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Billing & Subscription</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Billing & Subscription</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Manage your subscription, usage, and billing details
         </p>
       </div>
@@ -185,7 +185,7 @@ export default function BillingSettings() {
       </Card>
 
       {/* Usage Meters */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
         {/* AI Systems Usage */}
         <Card>
           <CardHeader className="pb-2">

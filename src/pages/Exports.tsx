@@ -59,11 +59,11 @@ export default function Exports() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Export Packs</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Export Packs</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Generate audit-ready PDF and ZIP evidence bundles
         </p>
       </div>
@@ -125,11 +125,12 @@ export default function Exports() {
               </div>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 onClick={handleExportPDF}
                 disabled={!selectedSystem || isExporting}
                 className="flex-1"
+                size="sm"
               >
                 {isExporting ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -143,6 +144,7 @@ export default function Exports() {
                 disabled={!selectedSystem || isExporting}
                 variant="outline"
                 className="flex-1"
+                size="sm"
               >
                 {isExporting ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -214,7 +216,7 @@ export default function Exports() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <FileCheck className="h-4 w-4 text-primary" />

@@ -211,21 +211,23 @@ export default function AuditLog() {
     dateTo !== undefined;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Activity className="h-6 w-6" />
+          <h1 className="text-lg sm:text-2xl font-bold flex items-center gap-2">
+            <Activity className="h-5 w-5 sm:h-6 sm:w-6" />
             Audit Log
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Track all compliance actions across your organization
           </p>
         </div>
         <Button
           variant="outline"
+          size="sm"
           onClick={handleExportCSV}
           disabled={isExporting || filteredEntries.length === 0}
+          className="w-full sm:w-auto"
         >
           {isExporting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -245,12 +247,12 @@ export default function AuditLog() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
             {/* Search */}
-            <div className="relative flex-1 min-w-[200px]">
+            <div className="relative w-full sm:flex-1 sm:min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search by user, entity, or action..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -260,6 +262,7 @@ export default function AuditLog() {
               />
             </div>
 
+            <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
             {/* Action Type */}
             <Select
               value={actionFilter}
@@ -268,8 +271,8 @@ export default function AuditLog() {
                 setPage(0);
               }}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Action type" />
+              <SelectTrigger className="w-[140px] sm:w-[180px] shrink-0">
+                <SelectValue placeholder="Action" />
               </SelectTrigger>
               <SelectContent>
                 {ACTION_TYPE_OPTIONS.map((opt) => (
@@ -288,8 +291,8 @@ export default function AuditLog() {
                 setPage(0);
               }}
             >
-              <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Entity type" />
+              <SelectTrigger className="w-[120px] sm:w-[160px] shrink-0">
+                <SelectValue placeholder="Entity" />
               </SelectTrigger>
               <SelectContent>
                 {ENTITY_TYPE_OPTIONS.map((opt) => (
@@ -355,10 +358,11 @@ export default function AuditLog() {
             </Popover>
 
             {hasActiveFilters && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
-                Clear filters
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="shrink-0">
+                Clear
               </Button>
             )}
+            </div>
           </div>
 
           {hasActiveFilters && (

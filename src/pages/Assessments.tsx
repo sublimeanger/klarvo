@@ -152,62 +152,62 @@ export default function Assessments() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Assessments</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Assessments</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Overview of all risk classifications and fundamental rights assessments
         </p>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Classifications</CardTitle>
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+        <Card className="p-3 sm:p-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Classifications</CardTitle>
             <FileCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{classificationStats.total}</div>
+          <CardContent className="p-0 pt-2 sm:p-6 sm:pt-0">
+            <div className="text-xl sm:text-2xl font-bold">{classificationStats.total}</div>
             <p className="text-xs text-muted-foreground">
               {classificationStats.highRisk} high-risk
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">High Risk Systems</CardTitle>
+        <Card className="p-3 sm:p-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">High Risk</CardTitle>
             <ShieldAlert className="h-4 w-4 text-warning" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{classificationStats.highRisk}</div>
+          <CardContent className="p-0 pt-2 sm:p-6 sm:pt-0">
+            <div className="text-xl sm:text-2xl font-bold">{classificationStats.highRisk}</div>
             <p className="text-xs text-muted-foreground">
-              Require FRIA assessment
+              Require FRIA
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">FRIAs</CardTitle>
+        <Card className="p-3 sm:p-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">FRIAs</CardTitle>
             <Scale className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{friaStats.total}</div>
+          <CardContent className="p-0 pt-2 sm:p-6 sm:pt-0">
+            <div className="text-xl sm:text-2xl font-bold">{friaStats.total}</div>
             <p className="text-xs text-muted-foreground">
               {friaStats.completed} completed
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">FRIA Approved</CardTitle>
+        <Card className="p-3 sm:p-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Approved</CardTitle>
             <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{friaStats.approved}</div>
+          <CardContent className="p-0 pt-2 sm:p-6 sm:pt-0">
+            <div className="text-xl sm:text-2xl font-bold">{friaStats.approved}</div>
             <p className="text-xs text-muted-foreground">
               {friaStats.inProgress} in progress
             </p>
@@ -217,16 +217,18 @@ export default function Assessments() {
 
       {/* Tabs */}
       <Tabs defaultValue="classifications" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="classifications" className="flex items-center gap-2">
-            <FileCheck className="h-4 w-4" />
-            Risk Classifications
-          </TabsTrigger>
-          <TabsTrigger value="frias" className="flex items-center gap-2">
-            <Scale className="h-4 w-4" />
-            FRIAs
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="classifications" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <FileCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Risk </span>Classifications
+            </TabsTrigger>
+            <TabsTrigger value="frias" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Scale className="h-3 w-3 sm:h-4 sm:w-4" />
+              FRIAs
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Classifications Tab */}
         <TabsContent value="classifications" className="space-y-4">
