@@ -269,6 +269,65 @@ export type Database = {
           },
         ]
       }
+      control_evidence_links: {
+        Row: {
+          control_implementation_id: string
+          evidence_file_id: string
+          id: string
+          linked_at: string
+          linked_by: string | null
+          notes: string | null
+          organization_id: string
+        }
+        Insert: {
+          control_implementation_id: string
+          evidence_file_id: string
+          id?: string
+          linked_at?: string
+          linked_by?: string | null
+          notes?: string | null
+          organization_id: string
+        }
+        Update: {
+          control_implementation_id?: string
+          evidence_file_id?: string
+          id?: string
+          linked_at?: string
+          linked_by?: string | null
+          notes?: string | null
+          organization_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "control_evidence_links_control_implementation_id_fkey"
+            columns: ["control_implementation_id"]
+            isOneToOne: false
+            referencedRelation: "control_implementations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_evidence_links_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_evidence_links_linked_by_fkey"
+            columns: ["linked_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "control_evidence_links_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       control_implementations: {
         Row: {
           ai_system_id: string
