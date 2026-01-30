@@ -102,10 +102,10 @@ function ControlCard({
   return (
     <div className={`rounded-lg border bg-card ${isSelected ? "ring-2 ring-primary" : ""}`}>
       <div 
-        className="flex items-start justify-between p-3 hover:bg-muted/30 transition-colors cursor-pointer"
+        className="flex items-start justify-between p-2 sm:p-3 hover:bg-muted/30 transition-colors cursor-pointer"
         onClick={() => isSelectionMode ? onToggleSelect(implementation.id) : setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-start gap-3 flex-1">
+        <div className="flex items-start gap-2 sm:gap-3 flex-1 min-w-0">
           {isSelectionMode && (
             <div onClick={(e) => e.stopPropagation()}>
               <Checkbox
@@ -115,38 +115,38 @@ function ControlCard({
               />
             </div>
           )}
-          <div className={`p-1.5 rounded-md ${
+          <div className={`p-1 sm:p-1.5 rounded-md shrink-0 ${
             implementation.status === "implemented" ? "bg-success/10 text-success" :
             implementation.status === "in_progress" ? "bg-warning/10 text-warning" :
             "bg-muted text-muted-foreground"
           }`}>
-            <StatusIcon className="h-4 w-4" />
+            <StatusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-mono text-xs text-muted-foreground">{control.code}</span>
-              <span className="font-medium text-sm">{control.name}</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <span className="font-mono text-[10px] sm:text-xs text-muted-foreground">{control.code}</span>
+              <span className="font-medium text-xs sm:text-sm leading-tight">{control.name}</span>
               {evidenceCount > 0 && (
-                <Badge variant="outline" className="text-xs">
-                  <FileCheck className="h-3 w-3 mr-1" />
+                <Badge variant="outline" className="text-[10px] sm:text-xs">
+                  <FileCheck className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
                   {evidenceCount}
                 </Badge>
               )}
             </div>
             {control.description && (
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+              <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 line-clamp-2">
                 {control.description}
               </p>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
           {!isSelectionMode && (
             <Select
               value={implementation.status}
               onValueChange={(value) => onStatusChange(implementation.id, value)}
             >
-              <SelectTrigger className="w-[140px] h-8 text-xs">
+              <SelectTrigger className="w-[100px] sm:w-[140px] h-7 sm:h-8 text-[10px] sm:text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -159,9 +159,9 @@ function ControlCard({
           )}
           {!isSelectionMode && (
             isExpanded ? (
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
             ) : (
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
             )
           )}
         </div>
@@ -213,8 +213,8 @@ function CategorySection({
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <CollapsibleTrigger className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-muted/50 transition-colors">
-        <div className="flex items-center gap-3">
+      <CollapsibleTrigger className="flex items-center justify-between w-full p-2 sm:p-3 rounded-lg hover:bg-muted/50 transition-colors">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
           {isSelectionMode && (
             <div onClick={(e) => e.stopPropagation()}>
               <Checkbox
@@ -229,23 +229,23 @@ function CategorySection({
             </div>
           )}
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground shrink-0" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground shrink-0" />
           )}
-          <div className="text-left">
-            <p className="font-medium text-sm">{CATEGORY_LABELS[category] || category}</p>
-            <p className="text-xs text-muted-foreground">
+          <div className="text-left min-w-0">
+            <p className="font-medium text-xs sm:text-sm truncate">{CATEGORY_LABELS[category] || category}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
               {implemented}/{total} implemented
               {isSelectionMode && selectedInCategory > 0 && (
-                <span className="ml-2 text-primary">({selectedInCategory} selected)</span>
+                <span className="ml-1 sm:ml-2 text-primary">({selectedInCategory} selected)</span>
               )}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3 w-32">
-          <Progress value={progress} className="h-2" />
-          <span className="text-xs text-muted-foreground w-10">
+        <div className="flex items-center gap-2 sm:gap-3 w-20 sm:w-32 shrink-0">
+          <Progress value={progress} className="h-1.5 sm:h-2" />
+          <span className="text-[10px] sm:text-xs text-muted-foreground w-8 sm:w-10 text-right">
             {Math.round(progress)}%
           </span>
         </div>
@@ -280,14 +280,14 @@ function BulkActionToolbar({
   isLoading: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between bg-primary/10 border border-primary/20 rounded-lg p-3 mb-4">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-primary/10 border border-primary/20 rounded-lg p-2 sm:p-3 mb-3 sm:mb-4">
       <div className="flex items-center gap-2">
-        <CheckSquare className="h-4 w-4 text-primary" />
-        <span className="text-sm font-medium">{selectedCount} selected</span>
+        <CheckSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+        <span className="text-xs sm:text-sm font-medium">{selectedCount} selected</span>
       </div>
       <div className="flex items-center gap-2">
         <Select onValueChange={onBulkStatusChange} disabled={isLoading}>
-          <SelectTrigger className="w-[160px] h-8 text-xs">
+          <SelectTrigger className="w-[130px] sm:w-[160px] h-7 sm:h-8 text-[10px] sm:text-xs">
             <SelectValue placeholder="Set status..." />
           </SelectTrigger>
           <SelectContent>
@@ -302,9 +302,10 @@ function BulkActionToolbar({
           size="sm" 
           onClick={onClearSelection}
           disabled={isLoading}
+          className="h-7 sm:h-8 px-2 sm:px-3 text-xs"
         >
-          <X className="h-4 w-4 mr-1" />
-          Cancel
+          <X className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-0.5 sm:mr-1" />
+          <span className="hidden sm:inline">Cancel</span>
         </Button>
       </div>
     </div>
@@ -478,37 +479,38 @@ export function AISystemControls({
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className="pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
               Controls & Compliance
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Track implementation status for applicable controls
             </CardDescription>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
             {!isSelectionMode && (
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={handleSelectAll}
+                className="h-8 text-xs"
               >
-                <Square className="h-4 w-4 mr-2" />
+                <Square className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                 Bulk Edit
               </Button>
             )}
             <div className="text-right">
-              <p className="text-2xl font-bold">{Math.round(overallProgress)}%</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xl sm:text-2xl font-bold">{Math.round(overallProgress)}%</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 {totalImplemented}/{totalApplicable} implemented
               </p>
             </div>
           </div>
         </div>
-        <Progress value={overallProgress} className="h-2 mt-2" />
+        <Progress value={overallProgress} className="h-1.5 sm:h-2 mt-2" />
       </CardHeader>
       <CardContent className="space-y-2">
         {isSelectionMode && (
