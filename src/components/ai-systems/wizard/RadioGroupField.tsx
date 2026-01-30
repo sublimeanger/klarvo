@@ -30,11 +30,11 @@ export function RadioGroupField({
   layout = "vertical",
 }: RadioGroupFieldProps) {
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-2 sm:space-y-3", className)}>
       <div>
-        <Label className="text-sm font-medium">{label}</Label>
+        <Label className="text-sm font-medium leading-relaxed">{label}</Label>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">{description}</p>
         )}
       </div>
       
@@ -42,14 +42,14 @@ export function RadioGroupField({
         value={value}
         onValueChange={onChange}
         className={cn(
-          layout === "horizontal" ? "flex flex-wrap gap-4" : "space-y-2"
+          layout === "horizontal" ? "flex flex-wrap gap-2 sm:gap-4" : "space-y-2"
         )}
       >
         {options.map((option) => (
           <div
             key={option.value}
             className={cn(
-              "flex items-start space-x-3 rounded-lg border p-3 cursor-pointer transition-colors",
+              "flex items-start space-x-2 sm:space-x-3 rounded-lg border p-2 sm:p-3 cursor-pointer transition-colors",
               value === option.value
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50"

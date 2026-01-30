@@ -19,9 +19,9 @@ interface Step1BasicsProps {
 
 export function Step1Basics({ data, onChange, errors }: Step1BasicsProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="name">AI System Name *</Label>
+        <Label htmlFor="name" className="text-sm">AI System Name *</Label>
         <Input
           id="name"
           placeholder="e.g., ChatGPT for Customer Support"
@@ -29,41 +29,41 @@ export function Step1Basics({ data, onChange, errors }: Step1BasicsProps) {
           onChange={(e) => onChange({ name: e.target.value })}
           className={errors?.name ? "border-destructive" : ""}
         />
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           A clear, descriptive name for this AI system
         </p>
         {errors?.name && (
-          <p className="text-sm text-destructive">{errors.name}</p>
+          <p className="text-xs sm:text-sm text-destructive">{errors.name}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="internal_reference_id">Internal Reference ID</Label>
+        <Label htmlFor="internal_reference_id" className="text-sm">Internal Reference ID</Label>
         <Input
           id="internal_reference_id"
           placeholder="e.g., AI-CS-001"
           value={data.internal_reference_id}
           onChange={(e) => onChange({ internal_reference_id: e.target.value })}
         />
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Optional internal tracking identifier
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description" className="text-sm">Description</Label>
         <Textarea
           id="description"
           placeholder="Briefly describe what this AI system does..."
-          className="min-h-[100px]"
+          className="min-h-[80px] sm:min-h-[100px]"
           value={data.description}
           onChange={(e) => onChange({ description: e.target.value })}
         />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label>Department</Label>
+          <Label className="text-sm">Department</Label>
           <Select
             value={data.department}
             onValueChange={(value) => onChange({ department: value })}
@@ -82,7 +82,7 @@ export function Step1Basics({ data, onChange, errors }: Step1BasicsProps) {
         </div>
 
         <div className="space-y-2">
-          <Label>Status</Label>
+          <Label className="text-sm">Status</Label>
           <Select
             value={data.lifecycle_status}
             onValueChange={(value) => onChange({ lifecycle_status: value as LifecycleStatus })}

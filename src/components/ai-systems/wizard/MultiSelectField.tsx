@@ -33,19 +33,19 @@ export function MultiSelectField({
   };
 
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn("space-y-2 sm:space-y-3", className)}>
       <div>
-        <Label className="text-sm font-medium">{label}</Label>
+        <Label className="text-sm font-medium leading-relaxed">{label}</Label>
         {description && (
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">{description}</p>
         )}
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 grid-cols-1 sm:grid-cols-2">
         {options.map((option) => (
           <div
             key={option.value}
             className={cn(
-              "flex items-center space-x-3 rounded-lg border p-3 cursor-pointer transition-colors",
+              "flex items-center space-x-2 sm:space-x-3 rounded-lg border p-2 sm:p-3 cursor-pointer transition-colors",
               value.includes(option.value)
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50"
