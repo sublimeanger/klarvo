@@ -379,37 +379,37 @@ export default function ClassificationWizard() {
     answers: Record<string, AnswerValue>,
     setAnswers: (a: Record<string, AnswerValue>) => void
   ) => (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {questions.map((q, index) => (
-        <div key={q.id} className="space-y-3">
+        <div key={q.id} className="space-y-2 sm:space-y-3">
           <div className="flex gap-2">
-            <span className="text-sm font-medium text-muted-foreground">{index + 1}.</span>
-            <div className="flex-1">
-              <p className="font-medium">{q.question}</p>
+            <span className="text-xs sm:text-sm font-medium text-muted-foreground shrink-0">{index + 1}.</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm sm:text-base font-medium">{q.question}</p>
               {q.helpText && (
-                <p className="text-sm text-muted-foreground mt-1">{q.helpText}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">{q.helpText}</p>
               )}
             </div>
           </div>
           <RadioGroup
             value={answers[q.id] || ""}
             onValueChange={(v) => setAnswers({ ...answers, [q.id]: v as AnswerValue })}
-            className="flex gap-4 ml-6"
+            className="flex flex-wrap gap-3 sm:gap-4 ml-4 sm:ml-6"
           >
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
               <RadioGroupItem value="yes" id={`${q.id}-yes`} />
-              <Label htmlFor={`${q.id}-yes`} className="text-destructive font-medium">Yes</Label>
+              <Label htmlFor={`${q.id}-yes`} className="text-destructive font-medium text-sm">Yes</Label>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
               <RadioGroupItem value="no" id={`${q.id}-no`} />
-              <Label htmlFor={`${q.id}-no`} className="text-success font-medium">No</Label>
+              <Label htmlFor={`${q.id}-no`} className="text-success font-medium text-sm">No</Label>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1.5 sm:space-x-2">
               <RadioGroupItem value="unsure" id={`${q.id}-unsure`} />
-              <Label htmlFor={`${q.id}-unsure`} className="text-warning font-medium">Unsure</Label>
+              <Label htmlFor={`${q.id}-unsure`} className="text-warning font-medium text-sm">Unsure</Label>
             </div>
           </RadioGroup>
-          {index < questions.length - 1 && <Separator className="mt-4" />}
+          {index < questions.length - 1 && <Separator className="mt-3 sm:mt-4" />}
         </div>
       ))}
     </div>
@@ -506,23 +506,23 @@ export default function ClassificationWizard() {
         const config = riskConfig[riskLevel];
 
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Result Summary */}
-            <div className={`rounded-lg border p-6 text-center ${
+            <div className={`rounded-lg border p-4 sm:p-6 text-center ${
               riskLevel === "prohibited" ? "border-risk-prohibited/30 bg-risk-prohibited/5" :
               riskLevel === "high_risk" ? "border-risk-high/30 bg-risk-high/5" :
               riskLevel === "limited_risk" ? "border-risk-limited/30 bg-risk-limited/5" :
               "border-risk-minimal/30 bg-risk-minimal/5"
             }`}>
-              <config.icon className={`h-12 w-12 mx-auto ${config.color}`} />
-              <h3 className="text-2xl font-bold mt-4">{config.label}</h3>
-              <p className="text-muted-foreground mt-2">
+              <config.icon className={`h-10 w-10 sm:h-12 sm:w-12 mx-auto ${config.color}`} />
+              <h3 className="text-xl sm:text-2xl font-bold mt-3 sm:mt-4">{config.label}</h3>
+              <p className="text-sm sm:text-base text-muted-foreground mt-2">
                 Based on your answers, this AI system is classified as <strong>{config.label.toLowerCase()}</strong>.
               </p>
             </div>
 
             {/* Findings Summary */}
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -644,30 +644,30 @@ export default function ClassificationWizard() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(`/ai-systems/${id}`)}>
+      <div className="flex items-center gap-3 sm:gap-4">
+        <Button variant="ghost" size="icon" onClick={() => navigate(`/ai-systems/${id}`)} className="shrink-0">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Classify: {system.name}</h1>
-          <p className="text-muted-foreground">EU AI Act risk classification wizard</p>
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-2xl font-semibold tracking-tight truncate">Classify: {system.name}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">EU AI Act risk classification</p>
         </div>
       </div>
 
       {/* Progress */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <Progress value={progress} className="h-2" />
-        <div className="flex justify-between">
+        <div className="flex justify-between overflow-x-auto pb-1">
           {steps.map((step) => (
             <div
               key={step.id}
-              className={`flex items-center gap-2 text-sm ${
+              className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm shrink-0 ${
                 step.id <= currentStep ? "text-primary" : "text-muted-foreground"
               }`}
             >
-              <step.icon className="h-4 w-4" />
+              <step.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">{step.title}</span>
             </div>
           ))}
@@ -688,26 +688,29 @@ export default function ClassificationWizard() {
         <CardContent>
           {renderStep()}
 
-          <div className="flex justify-between mt-8 pt-6 border-t">
+          <div className="flex justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t gap-3">
             <Button
               type="button"
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 1}
+              size="sm"
+              className="sm:size-default"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
+              <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Back</span>
             </Button>
 
             {currentStep < 4 ? (
-              <Button type="button" onClick={handleNext}>
+              <Button type="button" onClick={handleNext} size="sm" className="sm:size-default">
                 Next
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={handleComplete} disabled={saveClassification.isPending}>
-                {saveClassification.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Complete Classification
+              <Button onClick={handleComplete} disabled={saveClassification.isPending} size="sm" className="sm:size-default">
+                {saveClassification.isPending && <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />}
+                <span className="hidden sm:inline">Complete Classification</span>
+                <span className="sm:hidden">Complete</span>
               </Button>
             )}
           </div>

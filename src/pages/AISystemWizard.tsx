@@ -285,15 +285,15 @@ export default function AISystemWizard() {
   const isDoneStep = currentStepDef?.key === "done";
 
   return (
-    <div className="space-y-6 animate-fade-up">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/ai-systems")}>
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
+      <div className="flex items-center gap-3 sm:gap-4">
+        <Button variant="ghost" size="icon" onClick={() => navigate("/ai-systems")} className="shrink-0">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Add AI System</h1>
-          <p className="text-muted-foreground">
-            {isFullAssessment ? "Full Assessment — complete EU AI Act classification" : "Quick capture — essential details only"}
+        <div className="min-w-0">
+          <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Add AI System</h1>
+          <p className="text-sm sm:text-base text-muted-foreground truncate">
+            {isFullAssessment ? "Full Assessment — EU AI Act classification" : "Quick capture — essential details"}
           </p>
         </div>
       </div>
@@ -309,19 +309,21 @@ export default function AISystemWizard() {
           {renderStep()}
 
           {!isDoneStep && (
-            <div className="flex justify-between mt-8 pt-6 border-t">
-              <Button type="button" variant="outline" onClick={handleBack} disabled={currentStep === 0}>
-                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+            <div className="flex justify-between mt-6 sm:mt-8 pt-4 sm:pt-6 border-t gap-3">
+              <Button type="button" variant="outline" onClick={handleBack} disabled={currentStep === 0} size="sm" className="sm:size-default">
+                <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Back</span>
               </Button>
 
               {isLastInputStep ? (
-                <Button onClick={handleSubmit} disabled={isSubmitting}>
-                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {isFullAssessment ? "Complete Assessment" : "Create AI System"}
+                <Button onClick={handleSubmit} disabled={isSubmitting} size="sm" className="sm:size-default">
+                  {isSubmitting && <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />}
+                  <span className="hidden sm:inline">{isFullAssessment ? "Complete Assessment" : "Create AI System"}</span>
+                  <span className="sm:hidden">{isFullAssessment ? "Complete" : "Create"}</span>
                 </Button>
               ) : (
-                <Button type="button" onClick={handleNext}>
-                  Next <ArrowRight className="ml-2 h-4 w-4" />
+                <Button type="button" onClick={handleNext} size="sm" className="sm:size-default">
+                  Next <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
                 </Button>
               )}
             </div>
