@@ -36,12 +36,16 @@
 - Created `src/lib/auditLogger.ts` with helper functions for logging events
 - Wired audit logging into: classification completion, FRIA completion, evidence uploads, task completion
 
-## Next Phases
+### Phase AC: Email Notifications ✅
+- Created `send-compliance-digest` edge function using Resend API
+- Added notification preferences to profiles (enabled, frequency, last sent)
+- Created `notification_logs` table for tracking sent notifications
+- Built `NotificationSettings` component for user preferences
+- Integrated into Settings page with Notifications tab
+- Supports daily/weekly digest emails with overdue tasks, expiring evidence, attestations, and control reviews
+- Includes "Send Test Digest" functionality
 
-### Phase AC: Email Notifications
-- Email digests for overdue tasks and expiring items
-- Configurable notification preferences per user
-- Integration with email service provider (Resend)
+## Next Phases
 
 ### Phase AE: Bulk Operations ✅
 - Added `useBulkUpdateControlStatus` hook for batch status updates

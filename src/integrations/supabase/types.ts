@@ -879,6 +879,47 @@ export type Database = {
           },
         ]
       }
+      notification_logs: {
+        Row: {
+          details: Json | null
+          id: string
+          notification_type: string
+          organization_id: string
+          recipient_email: string
+          sent_at: string | null
+          subject: string
+          user_id: string | null
+        }
+        Insert: {
+          details?: Json | null
+          id?: string
+          notification_type: string
+          organization_id: string
+          recipient_email: string
+          sent_at?: string | null
+          subject: string
+          user_id?: string | null
+        }
+        Update: {
+          details?: Json | null
+          id?: string
+          notification_type?: string
+          organization_id?: string
+          recipient_email?: string
+          sent_at?: string | null
+          subject?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           company_size: string | null
@@ -986,8 +1027,11 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          email_notifications_enabled: boolean | null
           full_name: string | null
           id: string
+          last_notification_sent_at: string | null
+          notification_frequency: string | null
           onboarding_completed: boolean
           organization_id: string | null
           updated_at: string
@@ -995,8 +1039,11 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          email_notifications_enabled?: boolean | null
           full_name?: string | null
           id: string
+          last_notification_sent_at?: string | null
+          notification_frequency?: string | null
           onboarding_completed?: boolean
           organization_id?: string | null
           updated_at?: string
@@ -1004,8 +1051,11 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          email_notifications_enabled?: boolean | null
           full_name?: string | null
           id?: string
+          last_notification_sent_at?: string | null
+          notification_frequency?: string | null
           onboarding_completed?: boolean
           organization_id?: string | null
           updated_at?: string

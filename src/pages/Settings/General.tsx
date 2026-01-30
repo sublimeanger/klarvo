@@ -10,6 +10,7 @@ import {
   Shield,
   Trash2,
   MoreHorizontal,
+  Bell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +58,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization, useUpdateOrganization } from "@/hooks/useOrganization";
 import { useTeamMembers, useUpdateMemberRole, useRemoveMember } from "@/hooks/useTeamMembers";
+import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import type { Enums } from "@/integrations/supabase/types";
 
 const INDUSTRY_SECTORS = [
@@ -170,6 +172,10 @@ export default function GeneralSettings() {
           <TabsTrigger value="team" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             Team
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex items-center gap-2">
+            <Bell className="h-4 w-4" />
+            Notifications
           </TabsTrigger>
           <TabsTrigger value="billing" asChild>
             <Link to="/settings/billing" className="flex items-center gap-2">
@@ -396,6 +402,11 @@ export default function GeneralSettings() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Notifications Tab */}
+        <TabsContent value="notifications" className="space-y-6">
+          <NotificationSettings />
         </TabsContent>
       </Tabs>
 
