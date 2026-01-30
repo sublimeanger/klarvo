@@ -7,6 +7,7 @@ import { TimelineSection } from "@/components/marketing/TimelineSection";
 import { StatsSection } from "@/components/marketing/StatsSection";
 import { TestimonialSection } from "@/components/marketing/TestimonialSection";
 import { CTASection } from "@/components/marketing/CTASection";
+import { ProductWalkthrough } from "@/components/marketing/ProductWalkthrough";
 import {
   Cpu,
   Shield,
@@ -88,24 +89,6 @@ const showcaseItems = [
   },
 ];
 
-const howItWorksSteps = [
-  {
-    icon: Cpu,
-    title: "1. Add Your AI Systems",
-    description: "Use our guided wizard to document each AI system. It takes less than 10 minutes per system.",
-  },
-  {
-    icon: Shield,
-    title: "2. Classify Risk Levels",
-    description: "Our classification engine automatically screens for prohibited practices and assigns risk levels.",
-  },
-  {
-    icon: FileCheck,
-    title: "3. Close Gaps & Export",
-    description: "Follow the gap checklist, upload evidence, and generate audit-ready documentation.",
-  },
-];
-
 export default function LandingPage() {
   return (
     <MarketingLayout>
@@ -140,14 +123,8 @@ export default function LandingPage() {
       {/* Timeline */}
       <TimelineSection />
 
-      {/* How It Works */}
-      <FeatureGrid
-        title="How It Works"
-        subtitle="Get from zero to compliant in three simple steps"
-        features={howItWorksSteps}
-        columns={3}
-        className="bg-surface-1"
-      />
+      {/* Interactive Product Walkthrough - Replaces static "How It Works" */}
+      <ProductWalkthrough />
 
       {/* Stats */}
       <StatsSection
