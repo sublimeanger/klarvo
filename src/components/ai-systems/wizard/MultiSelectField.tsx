@@ -45,7 +45,7 @@ export function MultiSelectField({
           <div
             key={option.value}
             className={cn(
-              "flex items-center space-x-2 sm:space-x-3 rounded-lg border p-2 sm:p-3 cursor-pointer transition-colors",
+              "flex items-center space-x-2 sm:space-x-3 rounded-lg border p-2.5 sm:p-3 cursor-pointer transition-colors",
               value.includes(option.value)
                 ? "border-primary bg-primary/5"
                 : "border-border hover:border-primary/50"
@@ -55,8 +55,9 @@ export function MultiSelectField({
             <Checkbox
               checked={value.includes(option.value)}
               onCheckedChange={() => handleToggle(option.value)}
+              className="shrink-0"
             />
-            <Label className="cursor-pointer font-normal">{option.label}</Label>
+            <Label className="cursor-pointer font-normal text-sm">{option.label}</Label>
           </div>
         ))}
       </div>
