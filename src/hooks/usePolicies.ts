@@ -216,3 +216,226 @@ export function useDeletePolicy() {
     },
   });
 }
+
+export interface PolicyVersion {
+  id: string;
+  policy_id: string;
+  organization_id: string;
+  version_number: number;
+  name: string;
+  description: string | null;
+  content: string | null;
+  policy_type: string;
+  status: string;
+  created_by: string | null;
+  created_at: string;
+  change_summary: string | null;
+  creator?: { full_name: string | null } | null;
+}
+
+/**
+ * Fetch version history for a policy
+ */
+export function usePolicyVersions(policyId: string | undefined) {
+  const { profile } = useAuth();
+
+  return useQuery({
+    queryKey: ["policy-versions", policyId],
+    queryFn: async () => {
+      if (!policyId || !profile?.organization_id) return [];
+
+      const { data, error } = await supabase
+        .from("policy_versions")
+        .select(`
+          *,
+          creator:profiles!created_by(full_name)
+        `)
+        .eq("policy_id", policyId)
+        .eq("organization_id", profile.organization_id)
+        .order("version_number", { ascending: false });
+
+      if (error) throw error;
+      return data as PolicyVersion[];
+    },
+    enabled: !!policyId && !!profile?.organization_id,
+  });
+}
+
+/**
+ * Save a version snapshot before updating
+ */
+export function useSaveVersion() {
+  const { profile, user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      policy,
+      changeSummary,
+    }: {
+      policy: Policy;
+      changeSummary?: string;
+    }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const { data, error } = await supabase
+        .from("policy_versions")
+        .insert({
+          policy_id: policy.id,
+          organization_id: profile.organization_id,
+          version_number: policy.version,
+          name: policy.name,
+          description: policy.description,
+          content: policy.content,
+          policy_type: policy.policy_type,
+          status: policy.status,
+          created_by: user?.id,
+          change_summary: changeSummary || null,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["policy-versions", data.policy_id] });
+    },
+    onError: (error) => {
+      toast.error("Failed to save version", { description: error.message });
+    },
+  });
+}
+
+/**
+ * Update policy with version tracking
+ */
+export function useUpdatePolicyWithVersion() {
+  const { profile, user } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      currentPolicy,
+      updates,
+      changeSummary,
+    }: {
+      id: string;
+      currentPolicy: Policy;
+      updates: Partial<Pick<Policy, "name" | "description" | "content" | "status" | "policy_type">>;
+      changeSummary?: string;
+    }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      // First, save the current version
+      const { error: versionError } = await supabase
+        .from("policy_versions")
+        .insert({
+          policy_id: currentPolicy.id,
+          organization_id: profile.organization_id,
+          version_number: currentPolicy.version,
+          name: currentPolicy.name,
+          description: currentPolicy.description,
+          content: currentPolicy.content,
+          policy_type: currentPolicy.policy_type,
+          status: currentPolicy.status,
+          created_by: user?.id,
+          change_summary: changeSummary || "Updated policy",
+        });
+
+      if (versionError) throw versionError;
+
+      // Then update the policy with incremented version
+      const { data, error } = await supabase
+        .from("policies")
+        .update({
+          ...updates,
+          version: currentPolicy.version + 1,
+        })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["policies"] });
+      queryClient.invalidateQueries({ queryKey: ["policy", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["policy-versions", data.id] });
+      toast.success("Policy updated (version saved)");
+    },
+    onError: (error) => {
+      toast.error("Failed to update policy", { description: error.message });
+    },
+  });
+}
+
+/**
+ * Rollback to a previous version
+ */
+export function useRollbackPolicy() {
+  const { profile } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      policyId,
+      version,
+    }: {
+      policyId: string;
+      version: PolicyVersion;
+    }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      // Get current policy to save as version first
+      const { data: currentPolicy, error: fetchError } = await supabase
+        .from("policies")
+        .select("*")
+        .eq("id", policyId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
+      // Save current state as a version
+      await supabase.from("policy_versions").insert({
+        policy_id: policyId,
+        organization_id: profile.organization_id,
+        version_number: currentPolicy.version,
+        name: currentPolicy.name,
+        description: currentPolicy.description,
+        content: currentPolicy.content,
+        policy_type: currentPolicy.policy_type,
+        status: currentPolicy.status,
+        change_summary: `Rolled back to version ${version.version_number}`,
+      });
+
+      // Restore from the selected version
+      const { data, error } = await supabase
+        .from("policies")
+        .update({
+          name: version.name,
+          description: version.description,
+          content: version.content,
+          status: version.status as Policy["status"],
+          version: currentPolicy.version + 1,
+        })
+        .eq("id", policyId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["policies"] });
+      queryClient.invalidateQueries({ queryKey: ["policy", data.id] });
+      queryClient.invalidateQueries({ queryKey: ["policy-versions", data.id] });
+      toast.success("Policy rolled back");
+    },
+    onError: (error) => {
+      toast.error("Failed to rollback", { description: error.message });
+    },
+  });
+}
