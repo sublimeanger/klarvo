@@ -84,7 +84,7 @@ function getAppliesLabel(appliesTo: string[]) {
 
 function ControlRow({ control }: { control: Control }) {
   return (
-    <TableRow>
+    <TableRow className="hidden md:table-row">
       <TableCell>
         <code className="text-xs font-mono bg-muted px-1.5 py-0.5 rounded">
           {control.code}
@@ -115,6 +115,35 @@ function ControlRow({ control }: { control: Control }) {
         )}
       </TableCell>
     </TableRow>
+  );
+}
+
+function ControlCard({ control }: { control: Control }) {
+  return (
+    <div className="md:hidden p-3 rounded-lg border bg-card space-y-2">
+      <div className="flex items-start justify-between gap-2">
+        <code className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded shrink-0">
+          {control.code}
+        </code>
+        <Badge variant="outline" className="text-[10px] shrink-0">
+          {getAppliesLabel(control.applies_to)}
+        </Badge>
+      </div>
+      <div>
+        <p className="font-medium text-sm">{control.name}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+          {control.description}
+        </p>
+      </div>
+      <div className="flex items-center justify-between gap-2 pt-1 border-t">
+        <div className="text-[10px] text-muted-foreground">
+          {control.review_frequency || "No review set"}
+        </div>
+        {control.article_reference && (
+          <Badge variant="secondary" className="text-[10px]">{control.article_reference}</Badge>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -231,26 +260,26 @@ export default function Controls() {
 
       {/* Filters */}
       <Card>
-        <CardHeader>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <CardHeader className="pb-4">
+          <div className="flex flex-col gap-4">
             <div>
-              <CardTitle>All Controls</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-base sm:text-lg">All Controls</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Browse and understand EU AI Act compliance requirements
               </CardDescription>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="relative">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <div className="relative flex-1 sm:flex-none">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search controls..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 w-[200px]"
+                  className="pl-9 w-full sm:w-[200px]"
                 />
               </div>
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
@@ -269,22 +298,29 @@ export default function Controls() {
           {filteredGrouped && Object.keys(filteredGrouped).length > 0 ? (
             <Accordion type="multiple" defaultValue={Object.keys(filteredGrouped)} className="space-y-2">
               {Object.entries(filteredGrouped).map(([category, categoryControls]) => (
-                <AccordionItem key={category} value={category} className="border rounded-lg px-4">
-                  <AccordionTrigger className="hover:no-underline py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                        {CATEGORY_ICONS[category] || <Shield className="h-5 w-5" />}
+                <AccordionItem key={category} value={category} className="border rounded-lg px-3 sm:px-4">
+                  <AccordionTrigger className="hover:no-underline py-3 sm:py-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary">
+                        {CATEGORY_ICONS[category] || <Shield className="h-4 w-4 sm:h-5 sm:w-5" />}
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold">{category}</p>
-                        <p className="text-sm text-muted-foreground font-normal">
+                        <p className="font-semibold text-sm sm:text-base">{category}</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground font-normal">
                           {categoryControls.length} control{categoryControls.length !== 1 ? "s" : ""}
                         </p>
                       </div>
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <Table>
+                    {/* Mobile cards */}
+                    <div className="space-y-2 md:hidden">
+                      {categoryControls.map((control) => (
+                        <ControlCard key={control.id} control={control} />
+                      ))}
+                    </div>
+                    {/* Desktop table */}
+                    <Table className="hidden md:table">
                       <TableHeader>
                         <TableRow>
                           <TableHead className="w-24">Code</TableHead>
@@ -321,40 +357,40 @@ export default function Controls() {
 
       {/* Help Section */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">How Controls Work</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-base sm:text-lg">How Controls Work</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                <ChevronRight className="h-4 w-4" />
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
               <div>
-                <p className="font-medium">Classification Triggers Controls</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium text-sm">Classification Triggers Controls</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   When you classify an AI system, applicable controls are automatically assigned based on risk level.
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                <FileCheck className="h-4 w-4" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
               <div>
-                <p className="font-medium">Track Implementation</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium text-sm">Track Implementation</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Mark controls as implemented, attach evidence, and track review dates per AI system.
                 </p>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-                <ExternalLink className="h-4 w-4" />
+            <div className="flex items-start gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
               <div>
-                <p className="font-medium">Export for Audits</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="font-medium text-sm">Export for Audits</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Control status is included in evidence packs for audit-ready documentation.
                 </p>
               </div>
