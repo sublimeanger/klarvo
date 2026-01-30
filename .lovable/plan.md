@@ -67,10 +67,13 @@
 - Added tabbed interface to Evidence page: All Files | Approval Queue (with pending count badge) | Approval History
 - Approval actions log to audit trail
 
-### Phase AI: Policy Version Control
-- Version history for policies
-- Diff view between versions
-- Rollback capability
+### Phase AI: Policy Version Control ✅
+- Created `policy_versions` table with RLS policies
+- Added `usePolicyVersions`, `useSaveVersion`, `useUpdatePolicyWithVersion`, `useRollbackPolicy` hooks
+- Built `PolicyVersionHistory` component with expandable version cards
+- Integrated diff view comparing old vs current version side-by-side
+- Added rollback functionality that saves current state before restoring
+- Added "Version History" option in policy dropdown menu with modal viewer
 
 ### Phase AJ: Scheduled Compliance Digests
 - Cron job for automatic daily/weekly digest emails

@@ -11,6 +11,7 @@ import {
   Edit,
   Copy,
   Filter,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,12 +55,13 @@ import {
 import {
   usePolicies,
   useCreatePolicy,
-  useUpdatePolicy,
+  useUpdatePolicyWithVersion,
   useApprovePolicy,
   useDeletePolicy,
   POLICY_TYPES,
   type Policy,
 } from "@/hooks/usePolicies";
+import { PolicyVersionHistory } from "@/components/policies/PolicyVersionHistory";
 
 const statusConfig: Record<string, { label: string; variant: "draft" | "pending" | "success" | "warning" }> = {
   draft: { label: "Draft", variant: "draft" },
@@ -82,9 +84,11 @@ export default function Policies() {
     content: "",
   });
 
+  const [viewHistoryPolicy, setViewHistoryPolicy] = useState<Policy | null>(null);
+
   const { data: policies = [], isLoading } = usePolicies({ status: statusFilter, type: typeFilter });
   const createPolicy = useCreatePolicy();
-  const updatePolicy = useUpdatePolicy();
+  const updatePolicyWithVersion = useUpdatePolicyWithVersion();
   const approvePolicy = useApprovePolicy();
   const deletePolicy = useDeletePolicy();
 
@@ -110,12 +114,20 @@ export default function Policies() {
   const handleUpdate = async () => {
     if (!editPolicy) return;
 
-    await updatePolicy.mutateAsync({
+    // Get original policy to compare
+    const originalPolicy = policies.find(p => p.id === editPolicy.id);
+    if (!originalPolicy) return;
+
+    await updatePolicyWithVersion.mutateAsync({
       id: editPolicy.id,
-      name: editPolicy.name,
-      description: editPolicy.description || undefined,
-      content: editPolicy.content || undefined,
-      status: editPolicy.status,
+      currentPolicy: originalPolicy,
+      updates: {
+        name: editPolicy.name,
+        description: editPolicy.description || undefined,
+        content: editPolicy.content || undefined,
+        status: editPolicy.status,
+      },
+      changeSummary: "Manual edit",
     });
 
     setEditPolicy(null);
@@ -294,6 +306,10 @@ export default function Policies() {
                           Approve
                         </DropdownMenuItem>
                       )}
+                      <DropdownMenuItem onClick={() => setViewHistoryPolicy(policy)}>
+                        <History className="mr-2 h-4 w-4" />
+                        Version History
+                      </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Copy className="mr-2 h-4 w-4" />
                         Duplicate
@@ -460,11 +476,29 @@ export default function Policies() {
             <Button variant="outline" onClick={() => setEditPolicy(null)}>
               Cancel
             </Button>
-            <Button onClick={handleUpdate} disabled={updatePolicy.isPending}>
-              {updatePolicy.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button onClick={handleUpdate} disabled={updatePolicyWithVersion.isPending}>
+              {updatePolicyWithVersion.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Save Changes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Version History Dialog */}
+      <Dialog open={!!viewHistoryPolicy} onOpenChange={() => setViewHistoryPolicy(null)}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              Version History
+            </DialogTitle>
+            <DialogDescription>
+              {viewHistoryPolicy?.name} — View and restore previous versions
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto py-4">
+            {viewHistoryPolicy && <PolicyVersionHistory policy={viewHistoryPolicy} />}
+          </div>
         </DialogContent>
       </Dialog>
 
