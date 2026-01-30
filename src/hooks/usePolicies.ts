@@ -101,6 +101,7 @@ export function useCreatePolicy() {
       content?: string;
       policy_type: string;
       is_template?: boolean;
+      template_source?: string;
     }) => {
       if (!profile?.organization_id) throw new Error("No organization");
 
@@ -113,6 +114,7 @@ export function useCreatePolicy() {
           content: input.content || null,
           policy_type: input.policy_type,
           is_template: input.is_template || false,
+          template_source: input.template_source || null,
           created_by: user?.id,
         })
         .select()

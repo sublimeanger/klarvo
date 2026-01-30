@@ -12,6 +12,7 @@ import {
   Copy,
   Filter,
   History,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +63,7 @@ import {
   type Policy,
 } from "@/hooks/usePolicies";
 import { PolicyVersionHistory } from "@/components/policies/PolicyVersionHistory";
+import { PolicyTemplateLibrary } from "@/components/policies/PolicyTemplateLibrary";
 
 const statusConfig: Record<string, { label: string; variant: "draft" | "pending" | "success" | "warning" }> = {
   draft: { label: "Draft", variant: "draft" },
@@ -75,6 +77,7 @@ export default function Policies() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showTemplateLibrary, setShowTemplateLibrary] = useState(false);
   const [editPolicy, setEditPolicy] = useState<Policy | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [newPolicy, setNewPolicy] = useState({
@@ -163,10 +166,16 @@ export default function Policies() {
             Manage AI governance policies and documentation templates
           </p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Create Policy
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setShowTemplateLibrary(true)}>
+            <Sparkles className="mr-2 h-4 w-4" />
+            Template Library
+          </Button>
+          <Button onClick={() => setShowAddDialog(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Create Policy
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -523,6 +532,12 @@ export default function Policies() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Template Library */}
+      <PolicyTemplateLibrary
+        open={showTemplateLibrary}
+        onOpenChange={setShowTemplateLibrary}
+      />
     </div>
   );
 }
