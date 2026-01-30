@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAISystem, useUpdateAISystem, useDeleteAISystem } from "@/hooks/useAISystems";
 import { useClassification } from "@/hooks/useClassification";
+import { useFRIA } from "@/hooks/useFRIA";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import type { Database } from "@/integrations/supabase/types";
@@ -83,6 +84,7 @@ export default function AISystemDetail() {
 
   const { data: system, isLoading, error } = useAISystem(id);
   const { data: classification } = useClassification(id);
+  const { data: fria } = useFRIA(id);
   const { vendors } = useVendors();
   const { members } = useOrgMembers();
   const updateSystem = useUpdateAISystem();
@@ -474,6 +476,67 @@ export default function AISystemDetail() {
               )}
             </CardContent>
           </Card>
+
+          {/* FRIA Section - Only show for high-risk systems */}
+          {classification?.is_high_risk_candidate && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Scale className="h-5 w-5" />
+                  Fundamental Rights Impact Assessment
+                </CardTitle>
+                <CardDescription>
+                  Article 27 requirement for high-risk AI systems
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {fria ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium">{fria.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Status: {fria.status === "completed" ? "Completed" : fria.status === "in_progress" ? "In Progress" : "Draft"}
+                        </p>
+                      </div>
+                      <StatusBadge
+                        variant={fria.status === "completed" ? "success" : fria.status === "in_progress" ? "pending" : "draft"}
+                        dot
+                      >
+                        {fria.status === "completed" ? "Completed" : fria.status === "in_progress" ? "In Progress" : "Draft"}
+                      </StatusBadge>
+                    </div>
+                    {fria.final_conclusion && (
+                      <div className="rounded-lg bg-muted p-3">
+                        <p className="text-sm">
+                          <span className="font-medium">Conclusion: </span>
+                          {fria.final_conclusion === "approve" && "Approved for deployment"}
+                          {fria.final_conclusion === "approve_with_mitigations" && "Approved with mitigations"}
+                          {fria.final_conclusion === "do_not_deploy" && "Do not deploy"}
+                        </p>
+                      </div>
+                    )}
+                    <Button variant="outline" asChild className="w-full">
+                      <Link to={`/ai-systems/${id}/fria`}>
+                        {fria.status === "completed" ? "View FRIA" : "Continue FRIA"}
+                      </Link>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        As a high-risk AI system, a FRIA is required before deployment.
+                      </p>
+                    </div>
+                    <Button asChild>
+                      <Link to={`/ai-systems/${id}/fria`}>Start FRIA</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}

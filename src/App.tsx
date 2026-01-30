@@ -11,6 +11,7 @@ import AISystems from "@/pages/AISystems";
 import AISystemWizard from "@/pages/AISystemWizard";
 import AISystemDetail from "@/pages/AISystemDetail";
 import ClassificationWizard from "@/pages/ClassificationWizard";
+import FRIAWizard from "@/pages/FRIAWizard";
 import Vendors from "@/pages/Vendors";
 import Evidence from "@/pages/Evidence";
 import Tasks from "@/pages/Tasks";
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/ai-systems/:id" element={<AISystemDetail />} />
               <Route path="/ai-systems/new" element={<AISystemWizard />} />
               <Route path="/ai-systems/:id/classify" element={<ClassificationWizard />} />
+              <Route path="/ai-systems/:id/fria" element={<FRIAWizard />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/assessments" element={<Placeholder />} />
               <Route path="/evidence" element={<Evidence />} />

@@ -368,6 +368,155 @@ export type Database = {
           },
         ]
       }
+      fria_assessments: {
+        Row: {
+          accessibility_considerations: string | null
+          affected_categories: string[] | null
+          affected_notification_method: string | null
+          affected_scale_per_month: number | null
+          ai_system_id: string
+          approved_at: string | null
+          approved_by: string | null
+          assessment_owner_id: string | null
+          complaint_mechanism: string | null
+          completed_at: string | null
+          created_at: string
+          decision_points: string | null
+          deployment_duration: string | null
+          expected_deployment_date: string | null
+          final_conclusion: string | null
+          governance_arrangements: string | null
+          has_existing_dpia: boolean | null
+          has_intervention_authority: boolean | null
+          has_vulnerable_groups: boolean | null
+          human_oversight_description: string | null
+          id: string
+          identified_risks: Json | null
+          intended_purpose: string | null
+          is_first_use: boolean | null
+          mitigation_measures: string | null
+          monitoring_plan: string | null
+          notification_evidence_url: string | null
+          notify_authority: boolean | null
+          organization_id: string
+          oversight_competence: string | null
+          oversight_design: string | null
+          process_description: string | null
+          reassessment_triggers: string[] | null
+          status: string
+          title: string
+          updated_at: string
+          usage_frequency: string | null
+        }
+        Insert: {
+          accessibility_considerations?: string | null
+          affected_categories?: string[] | null
+          affected_notification_method?: string | null
+          affected_scale_per_month?: number | null
+          ai_system_id: string
+          approved_at?: string | null
+          approved_by?: string | null
+          assessment_owner_id?: string | null
+          complaint_mechanism?: string | null
+          completed_at?: string | null
+          created_at?: string
+          decision_points?: string | null
+          deployment_duration?: string | null
+          expected_deployment_date?: string | null
+          final_conclusion?: string | null
+          governance_arrangements?: string | null
+          has_existing_dpia?: boolean | null
+          has_intervention_authority?: boolean | null
+          has_vulnerable_groups?: boolean | null
+          human_oversight_description?: string | null
+          id?: string
+          identified_risks?: Json | null
+          intended_purpose?: string | null
+          is_first_use?: boolean | null
+          mitigation_measures?: string | null
+          monitoring_plan?: string | null
+          notification_evidence_url?: string | null
+          notify_authority?: boolean | null
+          organization_id: string
+          oversight_competence?: string | null
+          oversight_design?: string | null
+          process_description?: string | null
+          reassessment_triggers?: string[] | null
+          status?: string
+          title: string
+          updated_at?: string
+          usage_frequency?: string | null
+        }
+        Update: {
+          accessibility_considerations?: string | null
+          affected_categories?: string[] | null
+          affected_notification_method?: string | null
+          affected_scale_per_month?: number | null
+          ai_system_id?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          assessment_owner_id?: string | null
+          complaint_mechanism?: string | null
+          completed_at?: string | null
+          created_at?: string
+          decision_points?: string | null
+          deployment_duration?: string | null
+          expected_deployment_date?: string | null
+          final_conclusion?: string | null
+          governance_arrangements?: string | null
+          has_existing_dpia?: boolean | null
+          has_intervention_authority?: boolean | null
+          has_vulnerable_groups?: boolean | null
+          human_oversight_description?: string | null
+          id?: string
+          identified_risks?: Json | null
+          intended_purpose?: string | null
+          is_first_use?: boolean | null
+          mitigation_measures?: string | null
+          monitoring_plan?: string | null
+          notification_evidence_url?: string | null
+          notify_authority?: boolean | null
+          organization_id?: string
+          oversight_competence?: string | null
+          oversight_design?: string | null
+          process_description?: string | null
+          reassessment_triggers?: string[] | null
+          status?: string
+          title?: string
+          updated_at?: string
+          usage_frequency?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fria_assessments_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fria_assessments_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fria_assessments_assessment_owner_id_fkey"
+            columns: ["assessment_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fria_assessments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incidents: {
         Row: {
           affected_parties: string[] | null
