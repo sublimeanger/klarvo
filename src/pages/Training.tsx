@@ -261,108 +261,170 @@ export default function Training() {
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-lg border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Staff Member</TableHead>
-                <TableHead>Training</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Completed</TableHead>
-                <TableHead className="w-12"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredRecords.map((record) => (
-                <TableRow key={record.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-                        <User className="h-4 w-4 text-muted-foreground" />
+        <>
+          {/* Mobile cards */}
+          <div className="md:hidden space-y-3">
+            {filteredRecords.map((record) => (
+              <Card key={record.id} className="p-3">
+                <div className="flex items-start gap-3">
+                  <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">{record.user?.full_name || "Unknown"}</p>
+                        <p className="text-xs text-muted-foreground truncate">{record.training_name}</p>
                       </div>
-                      <span className="font-medium">{record.user?.full_name || "Unknown"}</span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() =>
+                              updateStatus.mutate({ id: record.id, status: "completed" })
+                            }
+                          >
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            Mark Complete
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleteId(record.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                  </TableCell>
-                  <TableCell>{record.training_name}</TableCell>
-                  <TableCell>
-                    <span className="text-xs bg-muted px-2 py-1 rounded">
-                      {TRAINING_TYPES.find((t) => t.value === record.training_type)?.label}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      value={record.status}
-                      onValueChange={(v) =>
-                        updateStatus.mutate({ id: record.id, status: v as TrainingRecord["status"] })
-                      }
-                    >
-                      <SelectTrigger className="w-[130px] h-8">
-                        <StatusBadge variant={statusConfig[record.status]?.variant || "draft"} dot>
-                          {statusConfig[record.status]?.label}
-                        </StatusBadge>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="not_started">Not Started</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="expired">Expired</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    {record.completed_at
-                      ? format(new Date(record.completed_at), "PP")
-                      : <span className="text-muted-foreground">—</span>}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() =>
-                            updateStatus.mutate({ id: record.id, status: "completed" })
-                          }
-                        >
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          Mark Complete
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => setDeleteId(record.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded">
+                        {TRAINING_TYPES.find((t) => t.value === record.training_type)?.label}
+                      </span>
+                      <StatusBadge variant={statusConfig[record.status]?.variant || "draft"} dot className="text-[10px] px-1.5 py-0.5">
+                        {statusConfig[record.status]?.label}
+                      </StatusBadge>
+                    </div>
+                    {record.completed_at && (
+                      <p className="text-[10px] text-muted-foreground mt-1.5">
+                        Completed {format(new Date(record.completed_at), "PP")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block rounded-lg border bg-card">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Staff Member</TableHead>
+                  <TableHead>Training</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Completed</TableHead>
+                  <TableHead className="w-12"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredRecords.map((record) => (
+                  <TableRow key={record.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
+                          <User className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                        <span className="font-medium">{record.user?.full_name || "Unknown"}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{record.training_name}</TableCell>
+                    <TableCell>
+                      <span className="text-xs bg-muted px-2 py-1 rounded">
+                        {TRAINING_TYPES.find((t) => t.value === record.training_type)?.label}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Select
+                        value={record.status}
+                        onValueChange={(v) =>
+                          updateStatus.mutate({ id: record.id, status: v as TrainingRecord["status"] })
+                        }
+                      >
+                        <SelectTrigger className="w-[130px] h-8">
+                          <StatusBadge variant={statusConfig[record.status]?.variant || "draft"} dot>
+                            {statusConfig[record.status]?.label}
+                          </StatusBadge>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="not_started">Not Started</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="expired">Expired</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      {record.completed_at
+                        ? format(new Date(record.completed_at), "PP")
+                        : <span className="text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() =>
+                              updateStatus.mutate({ id: record.id, status: "completed" })
+                            }
+                          >
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            Mark Complete
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleteId(record.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Assign Training Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
+        <DialogContent className="w-[95vw] max-w-md">
           <DialogHeader>
-            <DialogTitle>Assign Training</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-base sm:text-lg">Assign Training</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Assign AI literacy training to a team member
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Staff Member *</Label>
+              <Label className="text-sm">Staff Member *</Label>
               <Select
                 value={newTraining.user_id}
                 onValueChange={(v) => setNewTraining({ ...newTraining, user_id: v })}
@@ -381,7 +443,7 @@ export default function Training() {
             </div>
 
             <div className="space-y-2">
-              <Label>Training Type</Label>
+              <Label className="text-sm">Training Type</Label>
               <Select
                 value={newTraining.training_type}
                 onValueChange={(v) => setNewTraining({ ...newTraining, training_type: v })}
@@ -403,7 +465,7 @@ export default function Training() {
             </div>
 
             <div className="space-y-2">
-              <Label>Training Name *</Label>
+              <Label className="text-sm">Training Name *</Label>
               <Input
                 value={newTraining.training_name}
                 onChange={(e) => setNewTraining({ ...newTraining, training_name: e.target.value })}
@@ -412,7 +474,7 @@ export default function Training() {
             </div>
 
             <div className="space-y-2">
-              <Label>Expiry Date</Label>
+              <Label className="text-sm">Expiry Date</Label>
               <Input
                 type="date"
                 value={newTraining.expires_at}
@@ -423,13 +485,14 @@ export default function Training() {
               </p>
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setShowAddDialog(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={handleCreate}
               disabled={!newTraining.user_id || !newTraining.training_name.trim() || createRecord.isPending}
+              className="w-full sm:w-auto"
             >
               {createRecord.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Assign Training
@@ -440,18 +503,18 @@ export default function Training() {
 
       {/* Delete Confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[95vw] max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Training Record?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-base sm:text-lg">Delete Training Record?</AlertDialogTitle>
+            <AlertDialogDescription className="text-xs sm:text-sm">
               This will permanently delete this training record.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {deleteRecord.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Delete
