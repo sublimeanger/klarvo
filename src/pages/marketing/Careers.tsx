@@ -1,4 +1,5 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,8 @@ import {
   Coffee,
   BookOpen,
   Zap,
-  Globe
+  Globe,
+  Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -97,41 +99,28 @@ export default function Careers() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <Briefcase className="h-4 w-4" />
-              We're Hiring
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              Join the{" "}
-              <span className="text-gradient">Klarvo Team</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              Help us build the future of AI governance. We're looking for passionate 
-              people who want to make AI compliance accessible to everyone.
-            </p>
-            
-            <Button size="lg" asChild>
-              <a href="#openings">
-                View Open Positions
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="We're Hiring"
+        title={
+          <>
+            <span className="text-foreground">Join the</span>{" "}
+            <span className="text-gradient-hero">Klarvo Team</span>
+          </>
+        }
+        subtitle="Help us build the future of AI governance. We're looking for passionate people who want to make AI compliance accessible to everyone."
+        primaryCta={{ label: "View Open Positions", href: "#openings" }}
+        variant="centered"
+        showTrustBadges={false}
+      />
 
       {/* Values */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">
+              <Heart className="h-3 w-3 mr-1" />
+              Culture
+            </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Our Values
             </h2>
@@ -142,8 +131,11 @@ export default function Careers() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {values.map((value, i) => (
-              <Card key={i} className="text-center hover:shadow-lg transition-shadow">
+              <Card key={i} className="group text-center hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:-translate-y-1 border-border/50">
                 <CardContent className="p-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-primary">
+                    {i + 1}
+                  </div>
                   <h3 className="text-lg font-semibold mb-2">{value.title}</h3>
                   <p className="text-muted-foreground text-sm">
                     {value.description}
@@ -159,6 +151,10 @@ export default function Careers() {
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Perks
+            </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Why Work With Us
             </h2>
@@ -169,10 +165,10 @@ export default function Careers() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {benefits.map((benefit, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 hover:border-primary/30">
+              <Card key={i} className="group hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:-translate-y-1 border-border/50">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <benefit.icon className="h-6 w-6 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                    <benefit.icon className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
                   <p className="text-muted-foreground text-sm">
@@ -186,9 +182,13 @@ export default function Careers() {
       </section>
 
       {/* Open Positions */}
-      <section id="openings" className="py-20 bg-muted/30">
+      <section id="openings" className="py-20 bg-surface-1 scroll-mt-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">
+              <Briefcase className="h-3 w-3 mr-1" />
+              Opportunities
+            </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
               Open Positions
             </h2>
@@ -199,7 +199,7 @@ export default function Careers() {
           
           <div className="max-w-3xl mx-auto space-y-4">
             {openPositions.map((position, i) => (
-              <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30">
+              <Card key={i} className="group cursor-pointer hover:shadow-xl transition-all hover:border-primary/30 border-border/50">
                 <CardContent className="p-6 flex items-center justify-between gap-4">
                   <div>
                     <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
@@ -214,7 +214,7 @@ export default function Careers() {
                       <Badge variant="outline">{position.type}</Badge>
                     </div>
                   </div>
-                  <Button variant="ghost" size="sm" className="shrink-0">
+                  <Button className="btn-premium shrink-0">
                     Apply
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
@@ -227,18 +227,25 @@ export default function Careers() {
 
       {/* CTA */}
       <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Don't See Your Role?</h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            We're always looking for talented people. Send us your CV and tell us 
-            how you'd like to contribute.
-          </p>
-          <Button size="lg" variant="outline" asChild>
-            <a href="mailto:careers@klarvo.io">
-              Send Your CV
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
-          </Button>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="max-w-xl mx-auto glass-premium border-primary/20">
+            <CardContent className="p-8 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/10">
+                <Zap className="h-7 w-7 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Don't See Your Role?</h2>
+              <p className="text-muted-foreground mb-6">
+                We're always looking for talented people. Send us your CV and tell us 
+                how you'd like to contribute.
+              </p>
+              <Button size="lg" className="btn-premium" asChild>
+                <a href="mailto:careers@klarvo.io">
+                  Send Your CV
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </MarketingLayout>
