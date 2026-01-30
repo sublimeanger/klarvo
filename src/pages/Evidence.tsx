@@ -195,16 +195,16 @@ export default function Evidence() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Evidence Vault</h1>
-          <p className="text-muted-foreground">
-            Store and manage compliance documentation and evidence
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Evidence Vault</h1>
+          <p className="text-sm text-muted-foreground">
+            Store and manage compliance documentation
           </p>
         </div>
-        <Button onClick={() => setShowUploadDialog(true)}>
+        <Button size="sm" onClick={() => setShowUploadDialog(true)} className="w-full sm:w-auto">
           <Upload className="mr-2 h-4 w-4" />
           Upload Evidence
         </Button>
@@ -212,76 +212,79 @@ export default function Evidence() {
 
       {/* Tabs */}
       <Tabs defaultValue="all" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="all" className="gap-2">
-            <FileText className="h-4 w-4" />
-            All Files
+        <TabsList className="w-full sm:w-auto overflow-x-auto">
+          <TabsTrigger value="all" className="gap-1.5 text-xs sm:text-sm">
+            <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">All Files</span>
+            <span className="sm:hidden">Files</span>
           </TabsTrigger>
-          <TabsTrigger value="approval" className="gap-2">
-            <ClipboardCheck className="h-4 w-4" />
-            Approval Queue
+          <TabsTrigger value="approval" className="gap-1.5 text-xs sm:text-sm">
+            <ClipboardCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Approval Queue</span>
+            <span className="sm:hidden">Queue</span>
             {pendingCount > 0 && (
-              <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
+              <Badge variant="secondary" className="ml-1 h-4 w-4 sm:h-5 sm:w-5 p-0 justify-center text-[10px] sm:text-xs">
                 {pendingCount}
               </Badge>
             )}
           </TabsTrigger>
-          <TabsTrigger value="history" className="gap-2">
-            <History className="h-4 w-4" />
-            Approval History
+          <TabsTrigger value="history" className="gap-1.5 text-xs sm:text-sm">
+            <History className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Approval History</span>
+            <span className="sm:hidden">History</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="space-y-6">
+        <TabsContent value="all" className="space-y-4 sm:space-y-6">
           {/* Filters */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search evidence..."
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
+                className="pl-9 h-9"
               />
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="h-9 shrink-0">
               <Filter className="mr-2 h-4 w-4" />
-              Filters
+              <span className="hidden sm:inline">Filters</span>
             </Button>
           </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-primary/10 p-2">
-              <FileText className="h-4 w-4 text-primary" />
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2">
+              <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{totalFiles}</p>
-              <p className="text-sm text-muted-foreground">Total Files</p>
+              <p className="text-lg sm:text-2xl font-bold">{totalFiles}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Total</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-success/10 p-2">
-              <CheckCircle className="h-4 w-4 text-success" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-success/10 p-1.5 sm:p-2">
+              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{approvedFiles}</p>
-              <p className="text-sm text-muted-foreground">Approved</p>
+              <p className="text-lg sm:text-2xl font-bold">{approvedFiles}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Approved</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-warning/10 p-2">
-              <Clock className="h-4 w-4 text-warning" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-warning/10 p-1.5 sm:p-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{draftFiles}</p>
-              <p className="text-sm text-muted-foreground">Pending Review</p>
+              <p className="text-lg sm:text-2xl font-bold">{draftFiles}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Pending</p>
             </div>
           </div>
         </div>

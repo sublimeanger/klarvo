@@ -171,50 +171,50 @@ export default function Incidents() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Incidents</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Incidents</h1>
+          <p className="text-sm text-muted-foreground">
             Track and manage AI-related incidents
           </p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)}>
+        <Button size="sm" onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Report Incident
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="relative flex-1 min-w-[160px] max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search incidents..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 h-9"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[110px] sm:w-[150px] h-9 shrink-0">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             {STATUS_OPTIONS.map((s) => (
               <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
             ))}
           </SelectContent>
         </Select>
         <Select value={severityFilter} onValueChange={setSeverityFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[100px] sm:w-[140px] h-9 shrink-0">
             <SelectValue placeholder="Severity" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Severity</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             {SEVERITY_OPTIONS.map((s) => (
               <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
             ))}
@@ -223,48 +223,48 @@ export default function Incidents() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-primary/10 p-2">
-              <AlertTriangle className="h-4 w-4 text-primary" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2">
+              <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{incidents.length}</p>
-              <p className="text-sm text-muted-foreground">Total Incidents</p>
+              <p className="text-lg sm:text-2xl font-bold">{incidents.length}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Total</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-warning/10 p-2">
-              <Clock className="h-4 w-4 text-warning" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-warning/10 p-1.5 sm:p-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{openCount}</p>
-              <p className="text-sm text-muted-foreground">Open</p>
+              <p className="text-lg sm:text-2xl font-bold">{openCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Open</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-destructive/10 p-2">
-              <ShieldAlert className="h-4 w-4 text-destructive" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-destructive/10 p-1.5 sm:p-2">
+              <ShieldAlert className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{criticalCount}</p>
-              <p className="text-sm text-muted-foreground">Critical</p>
+              <p className="text-lg sm:text-2xl font-bold">{criticalCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Critical</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-success/10 p-2">
-              <CheckCircle className="h-4 w-4 text-success" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-success/10 p-1.5 sm:p-2">
+              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{resolvedCount}</p>
-              <p className="text-sm text-muted-foreground">Resolved</p>
+              <p className="text-lg sm:text-2xl font-bold">{resolvedCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Resolved</p>
             </div>
           </div>
         </div>

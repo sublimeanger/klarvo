@@ -137,39 +137,39 @@ export default function Training() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">AI Literacy Training</h1>
-          <p className="text-muted-foreground">
-            Track staff training for EU AI Act Article 4 compliance
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">AI Literacy Training</h1>
+          <p className="text-sm text-muted-foreground">
+            Track staff training for Article 4 compliance
           </p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)}>
+        <Button size="sm" onClick={() => setShowAddDialog(true)} className="w-full sm:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Assign Training
         </Button>
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="relative flex-1 min-w-[180px] max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search by name or training..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 h-9"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[120px] sm:w-[150px] h-9 shrink-0">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="not_started">Not Started</SelectItem>
             <SelectItem value="in_progress">In Progress</SelectItem>
             <SelectItem value="completed">Completed</SelectItem>
@@ -179,61 +179,61 @@ export default function Training() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-primary/10 p-2">
-              <GraduationCap className="h-4 w-4 text-primary" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2">
+              <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{totalRecords}</p>
-              <p className="text-sm text-muted-foreground">Total Assigned</p>
+              <p className="text-lg sm:text-2xl font-bold">{totalRecords}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Assigned</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-success/10 p-2">
-              <CheckCircle className="h-4 w-4 text-success" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-success/10 p-1.5 sm:p-2">
+              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{completedCount}</p>
-              <p className="text-sm text-muted-foreground">Completed</p>
+              <p className="text-lg sm:text-2xl font-bold">{completedCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Completed</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-warning/10 p-2">
-              <Clock className="h-4 w-4 text-warning" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-warning/10 p-1.5 sm:p-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{inProgressCount}</p>
-              <p className="text-sm text-muted-foreground">In Progress</p>
+              <p className="text-lg sm:text-2xl font-bold">{inProgressCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">In Progress</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-destructive/10 p-2">
-              <AlertCircle className="h-4 w-4 text-destructive" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-destructive/10 p-1.5 sm:p-2">
+              <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{expiredCount}</p>
-              <p className="text-sm text-muted-foreground">Expired</p>
+              <p className="text-lg sm:text-2xl font-bold">{expiredCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Expired</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Completion Progress */}
-      <Card>
-        <CardContent className="p-4">
+      <Card className="rounded-xl">
+        <CardContent className="p-3 sm:p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Overall Completion Rate</span>
-            <span className="text-sm text-muted-foreground">{completionRate}%</span>
+            <span className="text-xs sm:text-sm font-medium">Overall Completion Rate</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">{completionRate}%</span>
           </div>
-          <Progress value={completionRate} className="h-2" />
+          <Progress value={completionRate} className="h-1.5 sm:h-2" />
         </CardContent>
       </Card>
 
