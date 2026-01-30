@@ -1171,6 +1171,85 @@ export type Database = {
           },
         ]
       }
+      vendor_attestations: {
+        Row: {
+          attestation_type: string
+          created_at: string
+          description: string | null
+          document_url: string | null
+          file_path: string | null
+          id: string
+          notes: string | null
+          organization_id: string
+          status: string
+          title: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+          vendor_id: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          attestation_type: string
+          created_at?: string
+          description?: string | null
+          document_url?: string | null
+          file_path?: string | null
+          id?: string
+          notes?: string | null
+          organization_id: string
+          status?: string
+          title: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+          vendor_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          attestation_type?: string
+          created_at?: string
+          description?: string | null
+          document_url?: string | null
+          file_path?: string | null
+          id?: string
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+          vendor_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_attestations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_attestations_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_attestations_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendors: {
         Row: {
           contact_email: string | null
