@@ -51,9 +51,11 @@ import { useClassification } from "@/hooks/useClassification";
 import { useFRIA } from "@/hooks/useFRIA";
 import { AISystemControls } from "@/components/ai-systems/AISystemControls";
 import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
+import { ActivityFeed } from "@/components/audit/ActivityFeed";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import { detectMaterialChanges, useTriggerReassessment } from "@/hooks/useReassessment";
+import { useEntityAuditLogs, useLogAction } from "@/hooks/useAuditLog";
 import type { Database } from "@/integrations/supabase/types";
 
 type LifecycleStatus = Database["public"]["Enums"]["lifecycle_status"];
@@ -94,6 +96,8 @@ export default function AISystemDetail() {
   const updateSystem = useUpdateAISystem();
   const deleteSystem = useDeleteAISystem();
   const triggerReassessment = useTriggerReassessment();
+  const logAction = useLogAction();
+  const { data: activityLogs = [], isLoading: isLoadingActivity } = useEntityAuditLogs("ai_system", id);
 
   // Form state for editing
   const [formData, setFormData] = useState({
@@ -687,6 +691,17 @@ export default function AISystemDetail() {
               )}
             </CardContent>
           </Card>
+
+          {/* Activity Feed */}
+          <ActivityFeed
+            entries={activityLogs}
+            isLoading={isLoadingActivity}
+            title="Activity"
+            description="Recent changes to this system"
+            showEntity={false}
+            maxHeight="300px"
+            emptyMessage="No activity recorded yet"
+          />
         </div>
       </div>
 
