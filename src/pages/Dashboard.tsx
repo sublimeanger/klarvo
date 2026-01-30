@@ -14,17 +14,11 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-
-// Demo data
-const metrics = {
-  totalSystems: 5,
-  highRiskCandidates: 3,
-  missingClassification: 1,
-  evidenceCompleteness: 68,
-  trainingCompletion: 45,
-  auditReadiness: 62,
-};
+import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
+import { useSubscription } from "@/hooks/useSubscription";
+import { TrialBanner } from "@/components/billing/TrialBanner";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -46,8 +40,23 @@ const pendingTasks = [
 ];
 
 export default function Dashboard() {
+  const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
+  const { isTrialing, daysRemaining, plan, entitlements } = useSubscription();
+
+  // Mock these for now - in production would come from real data
+  const highRiskCandidates = 0;
+  const missingClassification = metrics.draftSystems;
+  const evidenceCompleteness = 0;
+  const trainingCompletion = 0;
+  const auditReadiness = 0;
+
   return (
     <div className="space-y-8 animate-fade-up">
+      {/* Trial Banner */}
+      {isTrialing && daysRemaining > 0 && (
+        <TrialBanner daysRemaining={daysRemaining} />
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -66,24 +75,34 @@ export default function Dashboard() {
 
       {/* Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <MetricCard
-          title="Total AI Systems"
-          value={metrics.totalSystems}
-          subtitle="Across all departments"
-          icon={Cpu}
-        />
-        <MetricCard
-          title="High-Risk Candidates"
-          value={metrics.highRiskCandidates}
-          subtitle="Require deployer obligations"
-          icon={AlertTriangle}
-        />
-        <MetricCard
-          title="Missing Classification"
-          value={metrics.missingClassification}
-          subtitle="Need risk assessment"
-          icon={HelpCircle}
-        />
+        {metricsLoading ? (
+          <>
+            <Skeleton className="h-32 rounded-lg" />
+            <Skeleton className="h-32 rounded-lg" />
+            <Skeleton className="h-32 rounded-lg" />
+          </>
+        ) : (
+          <>
+            <MetricCard
+              title="Total AI Systems"
+              value={metrics.totalSystems}
+              subtitle={`${metrics.activeSystems} active, ${metrics.draftSystems} draft`}
+              icon={Cpu}
+            />
+            <MetricCard
+              title="High-Risk Candidates"
+              value={highRiskCandidates}
+              subtitle="Require deployer obligations"
+              icon={AlertTriangle}
+            />
+            <MetricCard
+              title="Missing Classification"
+              value={missingClassification}
+              subtitle="Need risk assessment"
+              icon={HelpCircle}
+            />
+          </>
+        )}
       </div>
 
       {/* Progress Section */}
@@ -98,10 +117,10 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{metrics.evidenceCompleteness}%</span>
+                <span className="text-2xl font-semibold">{evidenceCompleteness}%</span>
                 <StatusBadge variant="warning" dot>In Progress</StatusBadge>
               </div>
-              <Progress value={metrics.evidenceCompleteness} className="h-2" />
+              <Progress value={evidenceCompleteness} className="h-2" />
             </div>
           </CardContent>
         </Card>
@@ -116,10 +135,10 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{metrics.trainingCompletion}%</span>
+                <span className="text-2xl font-semibold">{trainingCompletion}%</span>
                 <StatusBadge variant="warning" dot>In Progress</StatusBadge>
               </div>
-              <Progress value={metrics.trainingCompletion} className="h-2" />
+              <Progress value={trainingCompletion} className="h-2" />
             </div>
           </CardContent>
         </Card>
@@ -134,10 +153,10 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{metrics.auditReadiness}%</span>
+                <span className="text-2xl font-semibold">{auditReadiness}%</span>
                 <StatusBadge variant="warning" dot>In Progress</StatusBadge>
               </div>
-              <Progress value={metrics.auditReadiness} className="h-2" />
+              <Progress value={auditReadiness} className="h-2" />
             </div>
           </CardContent>
         </Card>

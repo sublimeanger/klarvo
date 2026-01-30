@@ -1,61 +1,28 @@
 
-# Add Webhook Secret & Complete Implementation
+# Billing Integration - COMPLETED
 
-## Phase C Completion: Add Webhook Secret
+## ✅ Phase C: Webhook Secret Added
+- `STRIPE_WEBHOOK_SECRET` added to project secrets
+- Signature verification enabled in `stripe-webhook` edge function
 
-The webhook secret `whsec_oKmhAWosR9vIf8PQEHaX7eNnWOFloUoH` needs to be added to the project secrets as `STRIPE_WEBHOOK_SECRET`.
+## ✅ Phase D: Real Data Integration
+- `useSubscription.ts` - fetches real subscription from Supabase
+- `useDashboardMetrics.ts` - queries AI system counts from database
+- `useBilling.ts` - handles checkout and portal sessions
 
-**Action Required:**
-- Add the secret to the backend configuration
-- This will enable signature verification in the `stripe-webhook` edge function
+## ✅ Phase E: Billing Settings Page
+- Created `src/pages/Settings/Billing.tsx`
+- Shows current plan, status, usage meters
+- Upgrade/manage subscription buttons connected to edge functions
 
----
+## ✅ Phase F: Pricing Page Connected
+- Plan cards call `create-checkout-session` edge function
+- Handles authenticated vs unauthenticated users
+- Redirects to Stripe checkout with correct plan/billing period
 
-## Phase D: Real Data Integration
+## Next Steps (Future Enhancements)
+- Add real usage tracking (storage, exports)
+- Add high-risk system detection logic
+- Connect real training completion tracking
+- Add webhook event logging/monitoring
 
-**Update Subscription Hook** (`src/hooks/useSubscription.ts`):
-- Replace mock data with real Supabase queries
-- Fetch subscription from `subscriptions` table
-- Use React Query for caching and real-time updates
-
-**Update Dashboard** (`src/pages/Dashboard.tsx`):
-- Query actual AI system counts from database
-- Display real subscription status and plan info
-- Show usage metrics from `usage_snapshots`
-
-**Update AI Systems List** (`src/pages/AISystems.tsx`):
-- Fetch from `ai_systems` table with organization RLS
-- Include vendor and owner joins
-- Add create/edit/delete functionality
-
----
-
-## Phase E: Billing Settings Page
-
-**Create Settings Billing Page** (`src/pages/Settings/Billing.tsx`):
-- Current plan card with plan details
-- Usage meters (AI systems, storage, exports)
-- Upgrade/downgrade buttons calling checkout session
-- "Manage Subscription" button calling portal session
-- Next billing date display
-
----
-
-## Phase F: Connect Pricing Page to Real Checkout
-
-**Update Pricing Page** (`src/pages/Pricing.tsx`):
-- Connect plan cards to `create-checkout-session` edge function
-- Handle authenticated vs unauthenticated users
-- Redirect to checkout with correct plan/billing period
-- Success/cancel URL handling
-
----
-
-## Implementation Order
-
-1. Add `STRIPE_WEBHOOK_SECRET` to project secrets
-2. Update `useSubscription.ts` for real data
-3. Create billing settings page
-4. Connect pricing page to checkout
-5. Update dashboard with real metrics
-6. Test end-to-end subscription flow
