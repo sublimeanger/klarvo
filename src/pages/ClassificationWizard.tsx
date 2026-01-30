@@ -24,6 +24,8 @@ import { useAISystem } from "@/hooks/useAISystems";
 import { useClassification, useCreateOrUpdateClassification } from "@/hooks/useClassification";
 import { useControlLibrary, useInitializeControls } from "@/hooks/useControls";
 import { useCreateBulkTasks, BulkTaskInput } from "@/hooks/useTasks";
+import { logClassificationEvent } from "@/lib/auditLogger";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { addDays, format } from "date-fns";
 
@@ -160,6 +162,7 @@ export default function ClassificationWizard() {
   const { data: allControls } = useControlLibrary();
   const initializeControls = useInitializeControls();
   const createBulkTasks = useCreateBulkTasks();
+  const { profile, user } = useAuth();
 
   // Initialize from existing classification
   useEffect(() => {
@@ -353,6 +356,18 @@ export default function ClassificationWizard() {
       }
 
       await createBulkTasks.mutateAsync(highRiskTasks);
+    }
+
+    // Log audit event
+    if (profile?.organization_id) {
+      logClassificationEvent(
+        profile.organization_id,
+        user?.id,
+        existingClassification ? "classification.updated" : "classification.created",
+        id,
+        system?.name || "AI System",
+        riskLevel
+      );
     }
 
     toast.success("Classification completed!");
