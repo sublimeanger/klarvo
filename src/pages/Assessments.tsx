@@ -233,18 +233,18 @@ export default function Assessments() {
         {/* Classifications Tab */}
         <TabsContent value="classifications" className="space-y-4">
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <CardTitle>Risk Classifications</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-base sm:text-lg">Risk Classifications</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
                     EU AI Act risk level classifications for your AI systems
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-muted-foreground" />
                   <Select value={riskFilter} onValueChange={setRiskFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px] h-9">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -258,63 +258,106 @@ export default function Assessments() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
               {filteredClassifications && filteredClassifications.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>AI System</TableHead>
-                      <TableHead>Risk Level</TableHead>
-                      <TableHead>Confidence</TableHead>
-                      <TableHead>Classified By</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead className="w-12"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                <>
+                  {/* Mobile cards */}
+                  <div className="md:hidden space-y-3">
                     {filteredClassifications.map((classification) => (
-                      <TableRow key={classification.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">
+                      <div key={classification.id} className="border rounded-lg p-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm truncate">
                               {classification.ai_system?.name || "Unknown System"}
                             </p>
-                            <p className="text-sm text-muted-foreground capitalize">
+                            <p className="text-xs text-muted-foreground capitalize">
                               {classification.ai_system?.lifecycle_status?.replace("_", " ")}
                             </p>
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <StatusBadge variant={getRiskBadgeVariant(classification.risk_level)} dot>
-                            {getRiskLabel(classification.risk_level)}
-                          </StatusBadge>
-                        </TableCell>
-                        <TableCell>
-                          {classification.confidence_level ? (
-                            <span className="capitalize">{classification.confidence_level}</span>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {classification.classified_by_profile?.full_name || "—"}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {classification.classified_at
-                            ? new Date(classification.classified_at).toLocaleDateString()
-                            : "—"}
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="icon" asChild>
+                          <Button variant="ghost" size="icon" asChild className="h-7 w-7 shrink-0">
                             <Link to={`/ai-systems/${classification.ai_system_id}`}>
-                              <ExternalLink className="h-4 w-4" />
+                              <ExternalLink className="h-3.5 w-3.5" />
                             </Link>
                           </Button>
-                        </TableCell>
-                      </TableRow>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                          <StatusBadge variant={getRiskBadgeVariant(classification.risk_level)} dot className="text-[10px] px-1.5 py-0.5">
+                            {getRiskLabel(classification.risk_level)}
+                          </StatusBadge>
+                          {classification.confidence_level && (
+                            <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded capitalize">
+                              {classification.confidence_level}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-2">
+                          {classification.classified_by_profile?.full_name || "—"} • {classification.classified_at
+                            ? new Date(classification.classified_at).toLocaleDateString()
+                            : "—"}
+                        </p>
+                      </div>
                     ))}
-                  </TableBody>
-                </Table>
+                  </div>
+
+                  {/* Desktop table */}
+                  <div className="hidden md:block">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>AI System</TableHead>
+                          <TableHead>Risk Level</TableHead>
+                          <TableHead>Confidence</TableHead>
+                          <TableHead>Classified By</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead className="w-12"></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredClassifications.map((classification) => (
+                          <TableRow key={classification.id}>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium">
+                                  {classification.ai_system?.name || "Unknown System"}
+                                </p>
+                                <p className="text-sm text-muted-foreground capitalize">
+                                  {classification.ai_system?.lifecycle_status?.replace("_", " ")}
+                                </p>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <StatusBadge variant={getRiskBadgeVariant(classification.risk_level)} dot>
+                                {getRiskLabel(classification.risk_level)}
+                              </StatusBadge>
+                            </TableCell>
+                            <TableCell>
+                              {classification.confidence_level ? (
+                                <span className="capitalize">{classification.confidence_level}</span>
+                              ) : (
+                                <span className="text-muted-foreground">—</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
+                              {classification.classified_by_profile?.full_name || "—"}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {classification.classified_at
+                                ? new Date(classification.classified_at).toLocaleDateString()
+                                : "—"}
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="ghost" size="icon" asChild>
+                                <Link to={`/ai-systems/${classification.ai_system_id}`}>
+                                  <ExternalLink className="h-4 w-4" />
+                                </Link>
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               ) : (
                 <div className="text-center py-12">
                   <FileCheck className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -336,18 +379,18 @@ export default function Assessments() {
         {/* FRIAs Tab */}
         <TabsContent value="frias" className="space-y-4">
           <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
+            <CardHeader className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <CardTitle>Fundamental Rights Impact Assessments</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-base sm:text-lg">Fundamental Rights Impact Assessments</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm">
                     Article 27 assessments for high-risk AI systems
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-muted-foreground" />
                   <Select value={friaStatusFilter} onValueChange={setFriaStatusFilter}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-full sm:w-[180px] h-9">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -361,67 +404,113 @@ export default function Assessments() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
               {filteredFRIAs && filteredFRIAs.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Assessment</TableHead>
-                      <TableHead>AI System</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Conclusion</TableHead>
-                      <TableHead>Owner</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead className="w-12"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                <>
+                  {/* Mobile cards */}
+                  <div className="md:hidden space-y-3">
                     {filteredFRIAs.map((fria) => {
                       const conclusion = getFRIAConclusionBadge(fria.final_conclusion);
                       return (
-                        <TableRow key={fria.id}>
-                          <TableCell>
-                            <p className="font-medium">{fria.title}</p>
-                          </TableCell>
-                          <TableCell>
-                            {fria.ai_system?.name || "Unknown System"}
-                          </TableCell>
-                          <TableCell>
-                            <StatusBadge variant={getFRIAStatusBadge(fria.status)} dot>
+                        <div key={fria.id} className="border rounded-lg p-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-sm truncate">{fria.title}</p>
+                              <p className="text-xs text-primary truncate">
+                                {fria.ai_system?.name || "Unknown System"}
+                              </p>
+                            </div>
+                            <Button variant="ghost" size="icon" asChild className="h-7 w-7 shrink-0">
+                              <Link to={`/ai-systems/${fria.ai_system_id}/fria`}>
+                                <ExternalLink className="h-3.5 w-3.5" />
+                              </Link>
+                            </Button>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                            <StatusBadge variant={getFRIAStatusBadge(fria.status)} dot className="text-[10px] px-1.5 py-0.5">
                               {fria.status === "in_progress"
                                 ? "In Progress"
                                 : fria.status.charAt(0).toUpperCase() + fria.status.slice(1).replace("_", " ")}
                             </StatusBadge>
-                          </TableCell>
-                          <TableCell>
-                            {conclusion ? (
-                              <StatusBadge variant={conclusion.variant}>
+                            {conclusion && (
+                              <StatusBadge variant={conclusion.variant} className="text-[10px] px-1.5 py-0.5">
                                 {conclusion.label}
                               </StatusBadge>
-                            ) : (
-                              <span className="text-muted-foreground">—</span>
                             )}
-                          </TableCell>
-                          <TableCell>
-                            {fria.owner?.full_name || "—"}
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {fria.completed_at
+                          </div>
+                          <p className="text-[10px] text-muted-foreground mt-2">
+                            {fria.owner?.full_name || "—"} • {fria.completed_at
                               ? new Date(fria.completed_at).toLocaleDateString()
                               : new Date(fria.created_at).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            <Button variant="ghost" size="icon" asChild>
-                              <Link to={`/ai-systems/${fria.ai_system_id}/fria`}>
-                                <ExternalLink className="h-4 w-4" />
-                              </Link>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
+                          </p>
+                        </div>
                       );
                     })}
-                  </TableBody>
-                </Table>
+                  </div>
+
+                  {/* Desktop table */}
+                  <div className="hidden md:block">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Assessment</TableHead>
+                          <TableHead>AI System</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Conclusion</TableHead>
+                          <TableHead>Owner</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead className="w-12"></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredFRIAs.map((fria) => {
+                          const conclusion = getFRIAConclusionBadge(fria.final_conclusion);
+                          return (
+                            <TableRow key={fria.id}>
+                              <TableCell>
+                                <p className="font-medium">{fria.title}</p>
+                              </TableCell>
+                              <TableCell>
+                                {fria.ai_system?.name || "Unknown System"}
+                              </TableCell>
+                              <TableCell>
+                                <StatusBadge variant={getFRIAStatusBadge(fria.status)} dot>
+                                  {fria.status === "in_progress"
+                                    ? "In Progress"
+                                    : fria.status.charAt(0).toUpperCase() + fria.status.slice(1).replace("_", " ")}
+                                </StatusBadge>
+                              </TableCell>
+                              <TableCell>
+                                {conclusion ? (
+                                  <StatusBadge variant={conclusion.variant}>
+                                    {conclusion.label}
+                                  </StatusBadge>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {fria.owner?.full_name || "—"}
+                              </TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {fria.completed_at
+                                  ? new Date(fria.completed_at).toLocaleDateString()
+                                  : new Date(fria.created_at).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell>
+                                <Button variant="ghost" size="icon" asChild>
+                                  <Link to={`/ai-systems/${fria.ai_system_id}/fria`}>
+                                    <ExternalLink className="h-4 w-4" />
+                                  </Link>
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               ) : (
                 <div className="text-center py-12">
                   <Scale className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
