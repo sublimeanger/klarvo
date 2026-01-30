@@ -47,8 +47,25 @@
 
 ## Next Phases
 
-### Phase AE: Bulk Operations ✅
-- Added `useBulkUpdateControlStatus` hook for batch status updates
-- Updated `AISystemControls` with selection mode, checkboxes, and bulk action toolbar
-- Users can select multiple controls (individually or by category) and update status in one action
-- Bulk task assignment and evidence linking planned for future iteration
+### Phase AF: Global Audit Log Page ✅
+- Created `/audit-log` page with filtering by action type, entity type, date range, and search
+- Added pagination for large result sets
+- Implemented CSV export for audit records
+- Added to sidebar navigation
+
+### Phase AG: Bulk Task Assignment ✅
+- Added `useBulkAssignTasks` and `useBulkUpdateTaskStatus` hooks
+- Updated Tasks page with selection mode and bulk action toolbar
+- Users can select multiple tasks and assign to a team member or update status in one action
+
+## Upcoming Features
+
+### Phase AH: Evidence Approval Workflow
+- Approval queue for pending evidence
+- Approver assignment and notifications
+- Approval history tracking
+
+### Phase AI: Policy Version Control
+- Version history for policies
+- Diff view between versions
+- Rollback capability

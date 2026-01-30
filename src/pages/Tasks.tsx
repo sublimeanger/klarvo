@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format, isPast, isToday } from "date-fns";
 import {
   Plus,
@@ -15,6 +15,8 @@ import {
   Circle,
   Filter,
   Cpu,
+  Users,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +58,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTasks, useCreateTask, useUpdateTask, useDeleteTask, type Task } from "@/hooks/useTasks";
+import { useTasks, useCreateTask, useUpdateTask, useDeleteTask, useBulkAssignTasks, useBulkUpdateTaskStatus, type Task } from "@/hooks/useTasks";
 import { useAISystems } from "@/hooks/useAISystems";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 
@@ -90,6 +92,8 @@ export default function Tasks() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -106,6 +110,8 @@ export default function Tasks() {
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
+  const bulkAssign = useBulkAssignTasks();
+  const bulkUpdateStatus = useBulkUpdateTaskStatus();
 
   const filteredTasks = tasks.filter((task) =>
     task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -149,6 +155,48 @@ export default function Tasks() {
     }
   };
 
+  // Bulk operations
+  const toggleSelectAll = () => {
+    if (selectedTasks.size === filteredTasks.length) {
+      setSelectedTasks(new Set());
+    } else {
+      setSelectedTasks(new Set(filteredTasks.map((t) => t.id)));
+    }
+  };
+
+  const toggleTaskSelection = (taskId: string) => {
+    const newSelection = new Set(selectedTasks);
+    if (newSelection.has(taskId)) {
+      newSelection.delete(taskId);
+    } else {
+      newSelection.add(taskId);
+    }
+    setSelectedTasks(newSelection);
+  };
+
+  const handleBulkAssign = async (assignedTo: string | null) => {
+    await bulkAssign.mutateAsync({
+      taskIds: Array.from(selectedTasks),
+      assignedTo,
+    });
+    setSelectedTasks(new Set());
+    setIsSelectionMode(false);
+  };
+
+  const handleBulkStatusChange = async (status: Task["status"]) => {
+    await bulkUpdateStatus.mutateAsync({
+      taskIds: Array.from(selectedTasks),
+      status,
+    });
+    setSelectedTasks(new Set());
+    setIsSelectionMode(false);
+  };
+
+  const exitSelectionMode = () => {
+    setIsSelectionMode(false);
+    setSelectedTasks(new Set());
+  };
+
   // Stats
   const todoCount = tasks.filter((t) => t.status === "todo").length;
   const inProgressCount = tasks.filter((t) => t.status === "in_progress").length;
@@ -175,14 +223,76 @@ export default function Tasks() {
             Track compliance actions and deadlines
           </p>
         </div>
-        <Button onClick={() => setShowAddDialog(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Task
-        </Button>
+        <div className="flex items-center gap-2">
+          {!isSelectionMode ? (
+            <>
+              <Button variant="outline" onClick={() => setIsSelectionMode(true)}>
+                <Users className="mr-2 h-4 w-4" />
+                Bulk Edit
+              </Button>
+              <Button onClick={() => setShowAddDialog(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Task
+              </Button>
+            </>
+          ) : (
+            <Button variant="outline" onClick={exitSelectionMode}>
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* Bulk Action Toolbar */}
+      {isSelectionMode && selectedTasks.size > 0 && (
+        <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg border border-primary/20">
+          <span className="text-sm font-medium">
+            {selectedTasks.size} task{selectedTasks.size !== 1 ? "s" : ""} selected
+          </span>
+          <div className="h-4 w-px bg-border" />
+          
+          {/* Bulk Assign */}
+          <Select onValueChange={(v) => handleBulkAssign(v === "unassigned" ? null : v)}>
+            <SelectTrigger className="w-[160px] h-8">
+              <User className="mr-2 h-3 w-3" />
+              <span className="text-xs">Assign to...</span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="unassigned">Unassigned</SelectItem>
+              {members.map((m) => (
+                <SelectItem key={m.id} value={m.id}>
+                  {m.full_name || "Unnamed"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Bulk Status */}
+          <Select onValueChange={(v) => handleBulkStatusChange(v as Task["status"])}>
+            <SelectTrigger className="w-[140px] h-8">
+              <CheckCircle className="mr-2 h-3 w-3" />
+              <span className="text-xs">Set status...</span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todo">To Do</SelectItem>
+              <SelectItem value="in_progress">In Progress</SelectItem>
+              <SelectItem value="done">Done</SelectItem>
+              <SelectItem value="blocked">Blocked</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex items-center gap-4">
+        {isSelectionMode && (
+          <Checkbox
+            checked={filteredTasks.length > 0 && selectedTasks.size === filteredTasks.length}
+            onCheckedChange={toggleSelectAll}
+            className="h-5 w-5"
+          />
+        )}
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -291,13 +401,21 @@ export default function Tasks() {
                 key={task.id}
                 className={`flex items-center gap-4 rounded-lg border bg-card p-4 transition-colors ${
                   task.status === "done" ? "opacity-60" : ""
-                }`}
+                } ${selectedTasks.has(task.id) ? "ring-2 ring-primary" : ""}`}
               >
-                <Checkbox
-                  checked={task.status === "done"}
-                  onCheckedChange={() => handleStatusToggle(task)}
-                  className="h-5 w-5"
-                />
+                {isSelectionMode ? (
+                  <Checkbox
+                    checked={selectedTasks.has(task.id)}
+                    onCheckedChange={() => toggleTaskSelection(task.id)}
+                    className="h-5 w-5"
+                  />
+                ) : (
+                  <Checkbox
+                    checked={task.status === "done"}
+                    onCheckedChange={() => handleStatusToggle(task)}
+                    className="h-5 w-5"
+                  />
+                )}
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
