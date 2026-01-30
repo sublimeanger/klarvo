@@ -1,11 +1,14 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { 
   Sparkles, 
   Bug, 
   Wrench,
-  Zap
+  Zap,
+  ArrowRight
 } from "lucide-react";
 
 const releases = [
@@ -76,11 +79,11 @@ const releases = [
 const getTypeIcon = (type: string) => {
   switch (type) {
     case "feature":
-      return <Sparkles className="h-4 w-4" />;
+      return <Sparkles className="h-4 w-4 text-primary" />;
     case "fix":
-      return <Bug className="h-4 w-4" />;
+      return <Bug className="h-4 w-4 text-amber-500" />;
     case "improvement":
-      return <Wrench className="h-4 w-4" />;
+      return <Wrench className="h-4 w-4 text-blue-500" />;
     default:
       return <Zap className="h-4 w-4" />;
   }
@@ -91,9 +94,9 @@ const getTypeBadge = (type: string) => {
     case "feature":
       return <Badge className="bg-primary/20 text-primary border-primary/30">New Feature</Badge>;
     case "fix":
-      return <Badge variant="outline">Bug Fix</Badge>;
+      return <Badge className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800">Bug Fix</Badge>;
     case "improvement":
-      return <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 border-blue-200 dark:border-blue-800">Improvement</Badge>;
+      return <Badge className="bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800">Improvement</Badge>;
     default:
       return <Badge variant="secondary">{type}</Badge>;
   }
@@ -103,46 +106,38 @@ export default function Changelog() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <Sparkles className="h-4 w-4" />
-              Changelog
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              What's{" "}
-              <span className="text-gradient">New</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Stay up to date with the latest features, improvements, and fixes in Klarvo.
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="Changelog"
+        title={
+          <>
+            <span className="text-foreground">What's</span>{" "}
+            <span className="text-gradient-hero">New</span>
+          </>
+        }
+        subtitle="Stay up to date with the latest features, improvements, and fixes in Klarvo."
+        variant="centered"
+        showTrustBadges={false}
+      />
 
       {/* Releases */}
-      <section className="py-16">
+      <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="relative">
-              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border" />
+              {/* Animated line */}
+              <div className="absolute left-[18px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-border" />
               
               {releases.map((release, i) => (
-                <div key={i} className="relative pl-12 pb-12 last:pb-0">
-                  <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-background border-2 border-primary flex items-center justify-center">
+                <div key={i} className="relative pl-14 pb-12 last:pb-0 group">
+                  {/* Node */}
+                  <div className="absolute left-0 top-0 w-9 h-9 rounded-full bg-background border-2 border-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
                     {getTypeIcon(release.type)}
                   </div>
                   
-                  <Card>
+                  <Card className="border-border/50 hover:border-primary/30 transition-colors hover:shadow-lg">
                     <CardHeader>
                       <div className="flex flex-wrap items-center gap-2 mb-2">
-                        <Badge variant="outline" className="font-mono">v{release.version}</Badge>
+                        <Badge variant="outline" className="font-mono bg-muted/50">v{release.version}</Badge>
                         {getTypeBadge(release.type)}
                         <span className="text-sm text-muted-foreground">{release.date}</span>
                       </div>
@@ -152,7 +147,7 @@ export default function Changelog() {
                       <ul className="space-y-2">
                         {release.changes.map((change, j) => (
                           <li key={j} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <span className="text-primary mt-1">•</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
                             {change}
                           </li>
                         ))}
@@ -167,22 +162,30 @@ export default function Changelog() {
       </section>
 
       {/* Subscribe */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Stay in the Loop</h2>
-          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-            Get notified when we ship new features and improvements.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 h-10 px-4 rounded-md border border-input bg-background text-sm"
-            />
-            <button className="h-10 px-6 rounded-md bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
-              Subscribe
-            </button>
-          </div>
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="max-w-xl mx-auto glass-premium border-primary/20">
+            <CardContent className="p-8 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/10">
+                <Zap className="h-7 w-7 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">Stay in the Loop</h2>
+              <p className="text-muted-foreground mb-6">
+                Get notified when we ship new features and improvements.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 h-11 px-4 rounded-lg border border-input bg-background text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+                <Button className="btn-premium">
+                  Subscribe
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </MarketingLayout>

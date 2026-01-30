@@ -1,4 +1,6 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
+import { CTASection } from "@/components/marketing/CTASection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +12,8 @@ import {
   RefreshCw,
   Database,
   MessageSquare,
-  FileText,
-  Calendar
+  Calendar,
+  Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -95,39 +97,28 @@ export default function Integrations() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <Puzzle className="h-4 w-4" />
-              Integrations
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              Connect Klarvo to Your{" "}
-              <span className="text-gradient">Workflow</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Integrate Klarvo with the tools you already use—project management, 
-              communication, and GRC platforms—for seamless compliance workflows.
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="Integrations"
+        title={
+          <>
+            <span className="text-foreground">Connect Klarvo to Your</span>{" "}
+            <span className="text-gradient-hero">Workflow</span>
+          </>
+        }
+        subtitle="Integrate Klarvo with the tools you already use—project management, communication, and GRC platforms—for seamless compliance workflows."
+        variant="centered"
+        showTrustBadges={false}
+      />
 
       {/* Integration Features */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {integrationFeatures.map((feature, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30 text-center">
+              <Card key={i} className="group hover:shadow-xl transition-all duration-300 border-border/50 hover:border-primary/30 hover:-translate-y-1 text-center">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-6 w-6 text-primary" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                    <feature.icon className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                   <p className="text-muted-foreground text-sm">
@@ -144,7 +135,11 @@ export default function Integrations() {
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Available Now</h2>
+            <Badge variant="outline" className="mb-4">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Available Now
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">Connect Today</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Connect these integrations today to streamline your compliance workflow.
             </p>
@@ -152,9 +147,9 @@ export default function Integrations() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {availableIntegrations.map((integration, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 hover:border-primary/30">
+              <Card key={i} className="group hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:-translate-y-1 border-border/50">
                 <CardContent className="p-6">
-                  <div className="text-4xl mb-4">{integration.icon}</div>
+                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{integration.icon}</div>
                   <Badge variant="outline" className="mb-2">{integration.category}</Badge>
                   <h3 className="text-lg font-semibold mb-2">{integration.name}</h3>
                   <p className="text-muted-foreground text-sm mb-4">
@@ -172,10 +167,14 @@ export default function Integrations() {
       </section>
 
       {/* Coming Soon */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Coming Soon</h2>
+            <Badge variant="outline" className="mb-4">
+              <Calendar className="h-3 w-3 mr-1" />
+              Coming Soon
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">On the Roadmap</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               We're constantly expanding our integration ecosystem. Request early access below.
             </p>
@@ -183,7 +182,7 @@ export default function Integrations() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {comingSoonIntegrations.map((integration, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 opacity-80 hover:opacity-100">
+              <Card key={i} className="group hover:shadow-lg transition-all duration-300 opacity-80 hover:opacity-100 border-border/50">
                 <CardContent className="p-6">
                   <div className="text-4xl mb-4 grayscale group-hover:grayscale-0 transition-all">
                     {integration.icon}
@@ -208,10 +207,14 @@ export default function Integrations() {
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
-            <Card className="bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-950/50 dark:to-primary-900/30 border-primary-200 dark:border-primary-800">
+            <Card className="glass-premium border-primary/20">
               <CardContent className="p-8 md:p-12">
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div>
+                    <Badge variant="outline" className="mb-4">
+                      <Zap className="h-3 w-3 mr-1" />
+                      Developer API
+                    </Badge>
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">
                       Build Custom Integrations
                     </h2>
@@ -220,20 +223,20 @@ export default function Integrations() {
                       Klarvo's data and functionality for custom integrations.
                     </p>
                     <div className="space-y-2 mb-6">
-                      <div className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                        Full CRUD operations on all resources
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                        Webhooks for real-time events
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                        OAuth 2.0 authentication
-                      </div>
+                      {[
+                        "Full CRUD operations on all resources",
+                        "Webhooks for real-time events",
+                        "OAuth 2.0 authentication"
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-2 text-sm group">
+                          <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                            <CheckCircle2 className="h-3 w-3 text-primary" />
+                          </div>
+                          {item}
+                        </div>
+                      ))}
                     </div>
-                    <Button asChild>
+                    <Button className="btn-premium" asChild>
                       <Link to="/contact">
                         Request API Access
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -241,11 +244,12 @@ export default function Integrations() {
                     </Button>
                   </div>
                   <div className="hidden md:block">
-                    <div className="bg-background/80 rounded-lg p-4 font-mono text-sm">
+                    <div className="bg-background/80 rounded-xl p-6 font-mono text-sm border border-border/50">
                       <div className="text-muted-foreground">// Example API call</div>
-                      <div className="text-primary">GET</div>
+                      <div className="text-primary mt-2">GET</div>
                       <div>/api/v1/ai-systems</div>
-                      <div className="mt-2 text-muted-foreground">// Returns all AI systems</div>
+                      <div className="mt-4 text-muted-foreground">// Returns all AI systems</div>
+                      <div className="mt-2 text-xs text-muted-foreground/60">Response: 200 OK</div>
                     </div>
                   </div>
                 </div>
@@ -256,21 +260,13 @@ export default function Integrations() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Don't See Your Tool?</h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            We're always adding new integrations. Let us know what you need and 
-            we'll prioritize accordingly.
-          </p>
-          <Button size="lg" variant="outline" asChild>
-            <Link to="/contact">
-              <MessageSquare className="mr-2 h-4 w-4" />
-              Request an Integration
-            </Link>
-          </Button>
-        </div>
-      </section>
+      <CTASection
+        title="Don't See Your Tool?"
+        subtitle="We're always adding new integrations. Let us know what you need and we'll prioritize accordingly."
+        primaryCta={{ label: "Request an Integration", href: "/contact" }}
+        secondaryCta={{ label: "View All Features", href: "/features" }}
+        variant="gradient"
+      />
     </MarketingLayout>
   );
 }

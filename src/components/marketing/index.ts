@@ -9,3 +9,5 @@ export { TimelineSection } from './TimelineSection';
 export { StatsSection } from './StatsSection';
 export { LogoCloud } from './LogoCloud';
 export { TestimonialSection } from './TestimonialSection';
+export { AnimatedCounter } from './AnimatedCounter';
+export { LegalLayout } from './LegalLayout';
