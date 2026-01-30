@@ -1,280 +1,297 @@
 
 
-# Pricing & Billing Implementation Plan
+# Stripe Integration & Core System Building
 
-## Overview
+## Current State Analysis
 
-This plan updates the pricing structure based on your comprehensive pricing document and outlines the implementation of the complete billing infrastructure with Stripe integration, plan gating, and the public pricing page.
+**What's Done:**
+- Design system with Klarvo branding
+- App shell with sidebar navigation and routing
+- Dashboard with demo metrics
+- AI Systems list page with demo data
+- Pricing page with plan cards, FAQ, add-ons
+- Billing constants and feature gating hooks (client-side only)
+- Subscription and entitlements hooks (using mock data)
 
----
-
-## Updated Pricing Structure
-
-### Pricing Tiers (Updated from Original)
-
-| Plan | Monthly | Annual | AI Systems | Storage | Best For |
-|------|---------|--------|------------|---------|----------|
-| **Free** | EUR 0 | EUR 0 | 1 | 1 GB | Lead generation, tiny teams |
-| **Starter** | EUR 149/mo | EUR 1,490/yr | 10 | 50 GB | Most SMEs getting compliant |
-| **Growth** | EUR 349/mo | EUR 3,490/yr | 25 | 250 GB | Teams with multiple tools/use-cases |
-| **Pro** | EUR 749/mo | EUR 7,490/yr | 100 | 1 TB | Regulated / high scrutiny / scaling |
-| **Enterprise** | Custom | From EUR 15k/yr | Unlimited | Unlimited | Multi-entity, procurement, deep controls |
-
-### Overage Pricing (Per Additional AI System/Month)
-- Starter: EUR 12
-- Growth: EUR 9
-- Pro: EUR 6
-
-### Add-Ons
-- Shadow AI Discovery: EUR 149/mo
-- Vendor Portal: EUR 199/mo
-- Export Pro Pack: EUR 99/mo
-- Partner Mode: EUR 299/mo + EUR 49/client workspace/mo
-
-### Professional Services
-- Kickstart Setup: EUR 1,500 one-time
-- Compliance Sprint: EUR 3,500 (2 weeks)
-- Quarterly Governance Review: EUR 1,200/quarter
+**What's Missing:**
+- Database schema (no tables exist)
+- Authentication (no login/signup)
+- Stripe payment processing
+- Real data persistence
+- Multi-tenancy with organizations
 
 ---
 
-## Feature Gating by Plan
+## Implementation Plan
 
-### Free Plan
-Allowed:
-- 1 AI system
-- Basic intake wizard
-- Prohibited practices screening
-- Transparency screening
-- Limited evidence vault (1 GB)
-- Watermarked exports (PDF/ZIP)
+### Phase A: Database Foundation (Core Tables)
 
-Locked:
-- Org-wide dashboards
-- Approvals workflow
-- Auditor share links
-- Unlimited exports
+Create the complete database schema to support multi-tenancy, AI system inventory, and billing.
 
-### Starter Plan
-Everything in Free plus:
-- Up to 10 AI systems
-- Unlimited users
-- Full classification workflow
-- Control Library v1
-- Evidence vault (50 GB)
-- Unlimited unwatermarked exports
-- Email reminders
-- Basic compliance dashboard
-- Core policy templates
+**Organizations & Users:**
+```text
+organizations
+├── id (uuid, primary key)
+├── name (text)
+├── industry_sector (text)
+├── company_size (text)
+├── created_at, updated_at
 
-Locked:
-- Approvals/signatures
-- Auditor portal
-- API/integrations
+profiles (linked to auth.users)
+├── id (uuid, references auth.users)
+├── organization_id (uuid, references organizations)
+├── full_name (text)
+├── role (enum: admin, compliance_owner, system_owner, reviewer, viewer)
+├── created_at, updated_at
+```
 
-### Growth Plan
-Everything in Starter plus:
-- Up to 25 AI systems
-- Evidence approvals workflow
-- Auditor read-only links
-- Policy versioning
-- Org dashboards
-- Vendor workflows
-- Evidence vault (250 GB)
+**AI Systems Core:**
+```text
+ai_systems
+├── id (uuid, primary key)
+├── organization_id (uuid, references organizations)
+├── name (text)
+├── internal_reference_id (text)
+├── description (text)
+├── vendor_id (uuid, references vendors)
+├── department (text)
+├── lifecycle_status (enum: draft, pilot, live, retired, archived)
+├── primary_owner_id (uuid, references profiles)
+├── backup_owner_id (uuid, references profiles)
+├── created_by (uuid, references profiles)
+├── created_at, updated_at
 
-Locked:
-- FRIA module
-- Incidents/monitoring
-- API/integrations
+vendors
+├── id, organization_id, name
+├── contact_email, website
+├── contract_renewal_date
+├── due_diligence_status
+├── created_at, updated_at
+```
 
-### Pro Plan
-Everything in Growth plus:
-- Up to 100 AI systems
-- FRIA module + FRIA reports
-- Incidents and monitoring
-- Advanced reporting
-- Integrations (Jira/Asana)
-- API access
-- Evidence vault (1 TB)
+**Billing Tables:**
+```text
+subscriptions
+├── id (uuid, primary key)
+├── organization_id (uuid, references organizations)
+├── plan_id (text: free, starter, growth, pro, enterprise)
+├── status (enum: trialing, active, past_due, canceled)
+├── billing_period (enum: monthly, annual)
+├── current_period_start, current_period_end
+├── trial_end (timestamp)
+├── cancel_at_period_end (boolean)
+├── stripe_customer_id (text)
+├── stripe_subscription_id (text)
+├── created_at, updated_at
 
-### Enterprise
-Everything in Pro plus:
-- Unlimited AI systems
-- Multi-workspace
-- SSO (SAML/OIDC)
-- Custom controls/templates
-- Dedicated CSM
-- Data residency options
+usage_snapshots (for billing calculations)
+├── id, organization_id
+├── snapshot_date (date)
+├── active_ai_systems_count (int)
+├── storage_used_bytes (bigint)
+├── exports_count (int)
+```
+
+**RLS Policies:**
+- All tables secured with organization-based RLS
+- Users can only access data within their organization
+- Profiles linked to auth.users for identity
 
 ---
 
-## Implementation Tasks
+### Phase B: Authentication System
 
-### Task 1: Update Plan Document
-Update `.lovable/plan.md` with the correct pricing tiers from this document.
+**Auth Pages to Create:**
+- `/auth/login` — Email/password + Google OAuth + Magic Link
+- `/auth/signup` — Registration with email verification
+- `/auth/callback` — OAuth callback handler
+- `/auth/forgot-password` — Password reset flow
 
-### Task 2: Create Database Schema for Billing
+**Onboarding Wizard (3-step, first login):**
+1. **Company Details** — Organization name, industry sector
+2. **Your Role** — Select your role in the organization
+3. **Get Started** — Quick tips, start 14-day Growth trial
 
-**Tables to Create:**
+**Auth Components:**
+- `src/components/auth/AuthForm.tsx` — Login/signup form
+- `src/components/auth/SocialAuthButtons.tsx` — Google OAuth button
+- `src/components/auth/MagicLinkForm.tsx` — Email magic link
+- `src/contexts/AuthContext.tsx` — Auth state provider
+- `src/hooks/useAuth.ts` — Auth utilities
 
-1. **plans** - Public plan definitions
-   - id, name, price_monthly, price_annual, ai_systems_included, storage_gb, is_public, trial_days
+**Protected Routes:**
+- Wrap app routes in auth check
+- Redirect unauthenticated users to `/auth/login`
+- Redirect authenticated users from auth pages to dashboard
 
-2. **plan_entitlements** - Feature flags per plan
-   - plan_id, watermark_exports, approvals_enabled, policy_versioning_enabled, auditor_links_enabled, fria_enabled, incidents_enabled, integrations_enabled, api_enabled, multi_workspace_enabled, sso_enabled
+---
 
-3. **subscriptions** - One per organization
-   - org_id, status, plan_id, billing_period, current_period_start, current_period_end, trial_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id
+### Phase C: Stripe Integration
 
-4. **subscription_addons** - Active add-ons per org
-   - org_id, addon_id, status, quantity, started_at, ended_at
+**Enable Stripe via Lovable connector**, then create:
 
-5. **usage_snapshots** - Daily usage for billing
-   - org_id, date, active_ai_systems_count, storage_used_gb, exports_count
+**Edge Functions:**
+1. `create-checkout-session` — Creates Stripe checkout for plan upgrades
+2. `create-portal-session` — Creates Stripe billing portal session
+3. `stripe-webhook` — Handles Stripe webhook events
 
-### Task 3: Enable Stripe Integration
-Use Lovable's Stripe connector to set up payment processing with the defined pricing tiers.
+**Webhook Events to Handle:**
+- `checkout.session.completed` — Create/update subscription
+- `customer.subscription.updated` — Sync plan changes
+- `customer.subscription.deleted` — Handle cancellations
+- `invoice.payment_failed` — Mark subscription as past_due
 
-### Task 4: Create Pricing Page
-Build a public pricing page with:
-- Monthly/Annual toggle
-- Plan comparison cards
-- Add-ons section
-- Professional services section
-- FAQ section with 15+ questions
-- CTAs for each tier
+**Stripe Products to Create (via edge function on first run):**
+- Starter Monthly (€149/mo)
+- Starter Annual (€1,490/yr)
+- Growth Monthly (€349/mo)
+- Growth Annual (€3,490/yr)
+- Pro Monthly (€749/mo)
+- Pro Annual (€7,490/yr)
 
-**Page Structure:**
-1. Hero: "EU AI Act compliance - simple pricing that scales with your AI footprint"
-2. How pricing works explainer
-3. Plan cards (Free/Starter/Growth/Pro/Enterprise)
-4. "Included on every paid plan" section
-5. Add-ons (optional)
-6. Services (optional)
-7. Overage pricing
-8. FAQ section
-9. CTA footer
+**Checkout Flow:**
+1. User clicks upgrade on pricing page or upgrade modal
+2. Frontend calls `create-checkout-session` with plan and billing period
+3. Redirect to Stripe Checkout
+4. Stripe webhook updates subscription in database
+5. User returns to app with updated plan
 
-### Task 5: Create Plan Gating System
+---
+
+### Phase D: Real Data Integration
+
+**Replace Demo Data with Real Queries:**
+
+1. **Dashboard** — Query actual counts from `ai_systems`, `subscriptions`
+2. **AI Systems List** — Fetch from `ai_systems` table with RLS
+3. **Subscription Hook** — Fetch real subscription from database
+
+**Updated Hooks:**
+```typescript
+// useSubscription.ts - fetch real subscription
+const { data: subscription } = useQuery({
+  queryKey: ['subscription'],
+  queryFn: async () => {
+    const { data } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .single();
+    return data;
+  }
+});
+
+// useAISystems.ts - fetch real AI systems
+const { data: systems } = useQuery({
+  queryKey: ['ai-systems'],
+  queryFn: async () => {
+    const { data } = await supabase
+      .from('ai_systems')
+      .select('*, vendor:vendors(*), owner:profiles!primary_owner_id(*)')
+      .order('created_at', { ascending: false });
+    return data;
+  }
+});
+```
+
+---
+
+### Phase E: AI System Intake Wizard
+
+The heart of the product — create a guided wizard to add AI systems.
+
+**Wizard Structure:**
+- **Step 0:** Mode selection (Quick Capture vs Full Assessment)
+- **Step 1:** Basic Info (name, department, owner)
+- **Step 2:** Vendor (is it vendor-based? which vendor?)
+- **Step 3:** Use Case (what it does, who's affected)
+- **Step 4:** Human Involvement (HITL/HOTL/HOOTL)
+
+**Quick Capture Mode (4 mins):**
+- Name, department, owner, vendor (optional)
+- Auto-creates tasks for full classification later
 
 **Components:**
-1. **PlanGate** - Wrapper component that checks entitlements
-2. **UpgradeModal** - Reusable upgrade prompt with contextual copy
-3. **UsageMeter** - Shows AI systems/storage usage vs limits
-4. **LockIcon** - Visual indicator for locked features
-
-**Gating Enforcement Levels:**
-- UI gating (hide/disable with lock icon)
-- Action gating (block create actions server-side)
-- Data safety (read-only access on downgrade)
-
-### Task 6: Implement Trial Flow
-
-**14-Day Growth Trial:**
-- No credit card required
-- Full Growth features
-- Trial checklist on dashboard:
-  1. Add 3 AI systems
-  2. Complete classification for 1
-  3. Upload 5 evidence files
-  4. Export an evidence pack
-
-**Trial End Behavior:**
-- 3 days before: Banner + email
-- On end: Downgrade to Free, preserve data, lock Growth features
-
-### Task 7: Create Billing Settings Page
-
-**Settings > Billing includes:**
-- Current plan display
-- Period end date
-- Usage meters (AI systems, storage)
-- Upgrade/downgrade buttons
-- Add-on management
-- Invoice history link
-
-### Task 8: Implement Upgrade Prompts
-
-**Contextual prompts at:**
-1. AI Systems list (at 80% and 100% of limit)
-2. Evidence vault (at 80% storage)
-3. Export button (watermark removal)
-4. FRIA button (Pro feature)
-5. Auditor links (Growth feature)
-6. Approvals (Growth feature)
+- `src/pages/AISystemWizard.tsx` — Main wizard page
+- `src/components/wizard/WizardStep.tsx` — Step container
+- `src/components/wizard/WizardProgress.tsx` — Progress indicator
+- Individual step components for each section
 
 ---
 
-## Technical Details
+### Phase F: Billing Settings Page
 
-### AI System Billing Logic
-- Only "active" systems count: Draft, Pilot, Live
-- Retired/Archived systems don't count toward limit
-- Add `lifecycle_status` field to ai_systems table
+**Create `/settings/billing` with:**
+- Current plan card with upgrade/downgrade buttons
+- Usage meters (AI systems used / limit, storage used / limit)
+- Next billing date
+- Manage subscription button (opens Stripe portal)
+- Invoice history (link to Stripe portal)
 
-### Storage Calculation
-- Sum of evidence_files where is_deleted = false
-- Soft delete for evidence files
-- Block uploads when exceeded (don't block downloads)
-
-### Export Watermarking
-- Free tier: Add watermark to all exports
-- Paid tiers: No watermark
-
-### Downgrade Rules
-- Preserve all existing data
-- Enforce on creation, not viewing
-- Show "archive or upgrade" prompt if over limit
+**Components:**
+- `src/pages/Settings/Billing.tsx`
+- Integrated usage meters from billing components
 
 ---
 
-## Files to Create/Modify
+## File Structure
 
-### New Files:
-- `src/pages/Pricing.tsx` - Public pricing page
-- `src/components/billing/PlanCard.tsx` - Individual plan card
-- `src/components/billing/PlanGate.tsx` - Feature gating wrapper
-- `src/components/billing/UpgradeModal.tsx` - Upgrade prompt modal
-- `src/components/billing/UsageMeter.tsx` - Usage display
-- `src/components/billing/TrialBanner.tsx` - Trial countdown banner
-- `src/pages/Settings/Billing.tsx` - Billing settings page
-- `src/hooks/useSubscription.ts` - Subscription state hook
-- `src/hooks/useEntitlements.ts` - Feature entitlements hook
-- `src/lib/billing-constants.ts` - Plan definitions and limits
-
-### Modified Files:
-- `.lovable/plan.md` - Update pricing section
-- `src/App.tsx` - Add pricing route
-- `src/components/layout/AppSidebar.tsx` - Add upgrade prompt for limited plans
-
-### Database Migrations:
-- Create plans, plan_entitlements, subscriptions, subscription_addons, usage_snapshots tables
-- Add lifecycle_status to ai_systems
-- Add file_size_mb and is_deleted to evidence_files
+```text
+src/
+├── components/
+│   ├── auth/
+│   │   ├── AuthForm.tsx
+│   │   ├── SocialAuthButtons.tsx
+│   │   └── MagicLinkForm.tsx
+│   ├── billing/
+│   │   └── (existing + updates)
+│   └── wizard/
+│       ├── WizardStep.tsx
+│       ├── WizardProgress.tsx
+│       └── steps/
+├── contexts/
+│   └── AuthContext.tsx
+├── hooks/
+│   ├── useAuth.ts
+│   ├── useAISystems.ts
+│   └── (existing hooks updated)
+├── pages/
+│   ├── auth/
+│   │   ├── Login.tsx
+│   │   ├── Signup.tsx
+│   │   ├── Callback.tsx
+│   │   └── ForgotPassword.tsx
+│   ├── settings/
+│   │   └── Billing.tsx
+│   ├── AISystemWizard.tsx
+│   └── Onboarding.tsx
+supabase/
+└── functions/
+    ├── create-checkout-session/
+    ├── create-portal-session/
+    └── stripe-webhook/
+```
 
 ---
 
-## Pricing Page Copy (Ready to Use)
+## Implementation Order
 
-### Hero
-**H1:** EU AI Act compliance - simple pricing that scales with your AI footprint.
-
-**Subhead:** Build your AI inventory, classify risk, track controls and evidence, and export audit-ready packs - without enterprise GRC complexity.
-
-### Key Message
-**H2:** Pay per AI system, not per seat.
-
-Seats slow down compliance. On every paid plan, you get unlimited users and you pay based on the number of AI systems (use-cases) you need to track.
+1. **Database schema** — Create all core tables with RLS
+2. **Authentication** — Login, signup, protected routes
+3. **Onboarding wizard** — 3-step first-login experience
+4. **Enable Stripe** — Connect Stripe account
+5. **Stripe edge functions** — Checkout, portal, webhooks
+6. **Billing settings page** — Plan management UI
+7. **Real data queries** — Replace demo data
+8. **AI System wizard** — Quick Capture intake flow
+9. **Demo data seeding** — Create demo organization with 5 sample systems
 
 ---
 
-## Next Steps After Approval
+## Security Considerations
 
-1. Update the plan document with correct pricing
-2. Enable Stripe integration
-3. Create database schema for billing
-4. Build the public pricing page
-5. Implement plan gating components
-6. Add trial flow and upgrade prompts
-7. Create billing settings page
+- All tables have organization-based RLS
+- Stripe webhook verification using signature
+- Server-side plan enforcement (not just UI gating)
+- Email verification required before full access
+- Sensitive operations require re-authentication
 
