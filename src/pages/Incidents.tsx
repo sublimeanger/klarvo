@@ -296,115 +296,176 @@ export default function Incidents() {
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-lg border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Incident</TableHead>
-                <TableHead>AI System</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Reported</TableHead>
-                <TableHead className="w-12"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredIncidents.map((incident) => (
-                <TableRow key={incident.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{incident.title}</p>
-                      {incident.description && (
-                        <p className="text-xs text-muted-foreground line-clamp-1 max-w-[250px]">
-                          {incident.description}
-                        </p>
-                      )}
+        <>
+          {/* Mobile cards */}
+          <div className="md:hidden space-y-3">
+            {filteredIncidents.map((incident) => (
+              <Card key={incident.id} className="p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <StatusBadge variant={severityConfig[incident.severity]?.variant || "draft"} className="text-[10px] px-1.5 py-0.5">
+                        {SEVERITY_OPTIONS.find((s) => s.value === incident.severity)?.label}
+                      </StatusBadge>
+                      <StatusBadge variant={statusConfig[incident.status]?.variant || "draft"} dot className="text-[10px] px-1.5 py-0.5">
+                        {STATUS_OPTIONS.find((s) => s.value === incident.status)?.label}
+                      </StatusBadge>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    {incident.ai_system?.name || (
-                      <span className="text-muted-foreground">—</span>
+                    <p className="font-medium text-sm truncate">{incident.title}</p>
+                    {incident.ai_system?.name && (
+                      <p className="text-xs text-primary truncate">{incident.ai_system.name}</p>
                     )}
-                  </TableCell>
-                  <TableCell>
-                    <StatusBadge variant={severityConfig[incident.severity]?.variant || "draft"}>
-                      {SEVERITY_OPTIONS.find((s) => s.value === incident.severity)?.label}
-                    </StatusBadge>
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      value={incident.status}
-                      onValueChange={(v) =>
-                        updateIncident.mutate({ id: incident.id, status: v as Incident["status"] })
-                      }
-                    >
-                      <SelectTrigger className="w-[130px] h-8">
-                        <StatusBadge variant={statusConfig[incident.status]?.variant || "draft"} dot>
-                          {STATUS_OPTIONS.find((s) => s.value === incident.status)?.label}
-                        </StatusBadge>
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STATUS_OPTIONS.map((s) => (
-                          <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    {incident.detected_at
-                      ? format(new Date(incident.detected_at), "PP")
-                      : format(new Date(incident.created_at), "PP")}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => setViewIncident(incident)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            updateIncident.mutate({ id: incident.id, status: "resolved" })
-                          }
-                        >
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          Mark Resolved
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => setDeleteId(incident.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      {incident.detected_at
+                        ? format(new Date(incident.detected_at), "PP")
+                        : format(new Date(incident.created_at), "PP")}
+                    </p>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setViewIncident(incident)}>
+                        <Eye className="mr-2 h-4 w-4" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          updateIncident.mutate({ id: incident.id, status: "resolved" })
+                        }
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        Mark Resolved
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => setDeleteId(incident.id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden md:block rounded-lg border bg-card">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Incident</TableHead>
+                  <TableHead>AI System</TableHead>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Reported</TableHead>
+                  <TableHead className="w-12"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredIncidents.map((incident) => (
+                  <TableRow key={incident.id}>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{incident.title}</p>
+                        {incident.description && (
+                          <p className="text-xs text-muted-foreground line-clamp-1 max-w-[250px]">
+                            {incident.description}
+                          </p>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {incident.ai_system?.name || (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge variant={severityConfig[incident.severity]?.variant || "draft"}>
+                        {SEVERITY_OPTIONS.find((s) => s.value === incident.severity)?.label}
+                      </StatusBadge>
+                    </TableCell>
+                    <TableCell>
+                      <Select
+                        value={incident.status}
+                        onValueChange={(v) =>
+                          updateIncident.mutate({ id: incident.id, status: v as Incident["status"] })
+                        }
+                      >
+                        <SelectTrigger className="w-[130px] h-8">
+                          <StatusBadge variant={statusConfig[incident.status]?.variant || "draft"} dot>
+                            {STATUS_OPTIONS.find((s) => s.value === incident.status)?.label}
+                          </StatusBadge>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {STATUS_OPTIONS.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      {incident.detected_at
+                        ? format(new Date(incident.detected_at), "PP")
+                        : format(new Date(incident.created_at), "PP")}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => setViewIncident(incident)}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() =>
+                              updateIncident.mutate({ id: incident.id, status: "resolved" })
+                            }
+                          >
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            Mark Resolved
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleteId(incident.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Report Incident Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="w-[95vw] max-w-2xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Report Incident</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-base sm:text-lg">Report Incident</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Document an AI-related incident for tracking and response
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-4 py-4 max-h-[55vh] overflow-y-auto">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <Label>Incident Title *</Label>
