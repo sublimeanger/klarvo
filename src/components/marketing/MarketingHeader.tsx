@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -62,7 +62,7 @@ export function MarketingHeader() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -72,24 +72,39 @@ export function MarketingHeader() {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
-          ? "bg-background/95 backdrop-blur-md border-b shadow-soft"
-          : "bg-transparent"
+          ? "bg-background/80 backdrop-blur-xl border-b shadow-soft py-2"
+          : "bg-transparent py-4"
       )}
     >
       <div className="container-wide">
-        <nav className="flex items-center justify-between h-16 md:h-20">
+        <nav className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <img
-              src="/favicon.png"
-              alt="Klarvo"
-              className="h-9 w-9 rounded-lg transition-transform group-hover:scale-105"
-            />
+          <Link to="/" className="flex items-center gap-3 group relative z-50">
+            <div className="relative">
+              <img
+                src="/favicon.png"
+                alt="Klarvo"
+                className="h-10 w-10 rounded-xl transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 rounded-xl bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </div>
             <span className="text-xl font-bold tracking-tight">Klarvo</span>
           </Link>
 
@@ -98,22 +113,22 @@ export function MarketingHeader() {
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
                     Product
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[500px] gap-3 p-4 md:grid-cols-2">
+                    <ul className="grid w-[550px] gap-2 p-4 md:grid-cols-2">
                       {productLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                              className="block select-none space-y-1 rounded-xl p-4 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent hover:shadow-soft group"
                             >
-                              <div className="text-sm font-medium leading-none">
+                              <div className="text-sm font-semibold leading-none group-hover:text-primary transition-colors">
                                 {link.title}
                               </div>
-                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1.5">
                                 {link.description}
                               </p>
                             </Link>
@@ -127,33 +142,33 @@ export function MarketingHeader() {
                 <NavigationMenuItem>
                   <Link
                     to="/features"
-                    className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+                    className="group inline-flex h-10 w-max items-center justify-center rounded-lg bg-transparent px-4 font-medium text-foreground/80 transition-colors hover:text-foreground"
                   >
-                    Features
+                    <span className="link-underline">Features</span>
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
                   <Link
                     to="/pricing"
-                    className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none"
+                    className="group inline-flex h-10 w-max items-center justify-center rounded-lg bg-transparent px-4 font-medium text-foreground/80 transition-colors hover:text-foreground"
                   >
-                    Pricing
+                    <span className="link-underline">Pricing</span>
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
                     Resources
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[200px] gap-1 p-2">
+                    <ul className="grid w-[220px] gap-1 p-3">
                       {resourceLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none rounded-md px-3 py-2 text-sm leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              className="block select-none rounded-lg px-4 py-2.5 text-sm font-medium leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-primary"
                             >
                               {link.title}
                             </Link>
@@ -165,17 +180,17 @@ export function MarketingHeader() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
                     Company
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid w-[200px] gap-1 p-2">
+                    <ul className="grid w-[220px] gap-1 p-3">
                       {companyLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none rounded-md px-3 py-2 text-sm leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground"
+                              className="block select-none rounded-lg px-4 py-2.5 text-sm font-medium leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-primary"
                             >
                               {link.title}
                             </Link>
@@ -191,105 +206,122 @@ export function MarketingHeader() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild className="h-10 px-5 font-medium">
               <Link to="/auth/login">Log in</Link>
             </Button>
-            <Button asChild className="shadow-soft hover:shadow-glow transition-shadow">
-              <Link to="/auth/signup">Start Free</Link>
+            <Button asChild className="h-10 px-6 font-semibold rounded-xl shadow-colored-primary hover:shadow-glow transition-all duration-300 hover:-translate-y-0.5 group">
+              <Link to="/auth/signup">
+                Start Free
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </Link>
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 -mr-2"
+            className="lg:hidden relative z-50 p-2 -mr-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            <div className="relative w-6 h-6">
+              <span className={cn(
+                "absolute left-0 block h-0.5 w-6 bg-current transition-all duration-300",
+                isMobileMenuOpen ? "top-3 rotate-45" : "top-1"
+              )} />
+              <span className={cn(
+                "absolute left-0 top-3 block h-0.5 w-6 bg-current transition-all duration-300",
+                isMobileMenuOpen ? "opacity-0 scale-0" : "opacity-100"
+              )} />
+              <span className={cn(
+                "absolute left-0 block h-0.5 w-6 bg-current transition-all duration-300",
+                isMobileMenuOpen ? "top-3 -rotate-45" : "top-5"
+              )} />
+            </div>
           </button>
         </nav>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Full Screen Overlay */}
       <div
         className={cn(
-          "lg:hidden fixed inset-x-0 top-16 bottom-0 bg-background/98 backdrop-blur-xl transition-all duration-300 overflow-y-auto",
+          "lg:hidden fixed inset-0 bg-background/98 backdrop-blur-xl transition-all duration-500 z-40",
           isMobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="container-wide py-6 space-y-6">
-          {/* Product Section */}
-          <div>
-            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-              Product
-            </h3>
-            <div className="space-y-1">
-              {productLinks.map((link) => (
-                <Link
-                  key={link.title}
-                  to={link.href}
-                  className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
-                >
-                  {link.title}
+        <div className="container-wide pt-24 pb-8 h-full overflow-y-auto">
+          <div className="space-y-8">
+            {/* Product Section */}
+            <div className="animate-fade-up" style={{ animationDelay: '100ms' }}>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                Product
+              </h3>
+              <div className="space-y-1">
+                {productLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    to={link.href}
+                    className="block py-3 text-lg font-medium hover:text-primary transition-colors"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Quick Links */}
+            <div className="grid grid-cols-2 gap-8 animate-fade-up" style={{ animationDelay: '200ms' }}>
+              <div>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Resources
+                </h3>
+                <div className="space-y-1">
+                  {resourceLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                  Company
+                </h3>
+                <div className="space-y-1">
+                  {companyLinks.map((link) => (
+                    <Link
+                      key={link.title}
+                      to={link.href}
+                      className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
+                    >
+                      {link.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Mobile CTAs */}
+            <div className="space-y-3 pt-4 animate-fade-up" style={{ animationDelay: '300ms' }}>
+              <Button asChild className="w-full h-14 text-base font-semibold rounded-2xl shadow-colored-primary" size="lg">
+                <Link to="/auth/signup">
+                  Start Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
-              ))}
+              </Button>
+              <Button asChild variant="outline" className="w-full h-14 text-base font-semibold rounded-2xl" size="lg">
+                <Link to="/auth/login">Log in</Link>
+              </Button>
             </div>
-          </div>
-
-          <div className="h-px bg-border" />
-
-          {/* Quick Links */}
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Resources
-              </h3>
-              <div className="space-y-1">
-                {resourceLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    to={link.href}
-                    className="block py-2 text-base font-medium hover:text-primary transition-colors"
-                  >
-                    {link.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Company
-              </h3>
-              <div className="space-y-1">
-                {companyLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    to={link.href}
-                    className="block py-2 text-base font-medium hover:text-primary transition-colors"
-                  >
-                    {link.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="h-px bg-border" />
-
-          {/* Mobile CTAs */}
-          <div className="space-y-3 pt-2">
-            <Button asChild className="w-full h-12 text-base" size="lg">
-              <Link to="/auth/signup">Start Free</Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full h-12 text-base" size="lg">
-              <Link to="/auth/login">Log in</Link>
-            </Button>
           </div>
         </div>
       </div>
