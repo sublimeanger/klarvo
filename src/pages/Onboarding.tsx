@@ -140,13 +140,13 @@ export default function Onboarding() {
   const isStep2Valid = !!selectedRole;
 
   return (
-    <div className="min-h-screen bg-muted/30 py-12 px-4">
-      <div className="max-w-lg mx-auto space-y-8">
+    <div className="min-h-screen bg-muted/30 py-8 sm:py-12 px-4">
+      <div className="max-w-lg mx-auto space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="flex flex-col items-center space-y-2">
-          <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
-          <h1 className="text-2xl font-bold">Welcome to Klarvo</h1>
-          <p className="text-muted-foreground text-center">
+          <img src={klarvoLogo} alt="Klarvo" className="h-10 w-10 sm:h-12 sm:w-12" />
+          <h1 className="text-xl sm:text-2xl font-bold">Welcome to Klarvo</h1>
+          <p className="text-sm sm:text-base text-muted-foreground text-center">
             Let's set up your workspace in 2 minutes
           </p>
         </div>
@@ -156,7 +156,7 @@ export default function Onboarding() {
           {[1, 2, 3].map((s) => (
             <div
               key={s}
-              className={`flex items-center justify-center h-8 w-8 rounded-full text-sm font-medium transition-colors ${
+              className={`flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                 s === step
                   ? "bg-primary text-primary-foreground"
                   : s < step
@@ -164,7 +164,7 @@ export default function Onboarding() {
                   : "bg-muted text-muted-foreground"
               }`}
             >
-              {s < step ? <Check className="h-4 w-4" /> : s}
+              {s < step ? <Check className="h-3 w-3 sm:h-4 sm:w-4" /> : s}
             </div>
           ))}
         </div>

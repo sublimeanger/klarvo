@@ -139,21 +139,21 @@ export default function VendorDetail() {
   const statusConfig = dueDiligenceConfig[vendor.due_diligence_status];
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" asChild className="shrink-0">
             <Link to="/vendors">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-              <Building2 className="h-6 w-6 text-primary" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+              <Building2 className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight">{vendor.name}</h1>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-semibold tracking-tight truncate">{vendor.name}</h1>
               <div className="flex items-center gap-2 mt-1">
                 <StatusBadge variant={statusConfig.variant} dot>
                   {statusConfig.label}
@@ -162,12 +162,12 @@ export default function VendorDetail() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto sm:ml-0">
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="outline" className="text-destructive">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+              <Button variant="outline" className="text-destructive" size="sm">
+                <Trash2 className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Delete</span>
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -193,7 +193,7 @@ export default function VendorDetail() {
       </div>
 
       {/* Overview */}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-3">
         <Card className="md:col-span-2">
           <CardHeader>
             <CardTitle>Vendor Information</CardTitle>
