@@ -1,437 +1,221 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Cpu,
-  Building2,
-  User,
-  CheckCircle,
-  Loader2,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormDescription,
-} from "@/components/ui/form";
-import { Progress } from "@/components/ui/progress";
 import { useCreateAISystem } from "@/hooks/useAISystems";
 import { useVendors, useCreateVendor } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import { useAuth } from "@/contexts/AuthContext";
-import type { Database } from "@/integrations/supabase/types";
+import { WizardProgress } from "@/components/ai-systems/wizard/WizardProgress";
+import { QUICK_CAPTURE_STEPS, FULL_ASSESSMENT_STEPS } from "@/components/ai-systems/wizard/constants";
+import { DEFAULT_WIZARD_DATA, type AISystemWizardData, type WizardMode } from "@/components/ai-systems/wizard/types";
 
-type LifecycleStatus = Database["public"]["Enums"]["lifecycle_status"];
-
-const DEPARTMENTS = [
-  "Customer Service",
-  "Human Resources",
-  "Marketing",
-  "Sales",
-  "Finance",
-  "Operations",
-  "IT / Technology",
-  "Legal",
-  "Product",
-  "Research & Development",
-  "Other",
-];
-
-const quickCaptureSchema = z.object({
-  name: z.string().min(1, "System name is required"),
-  description: z.string().optional(),
-  department: z.string().optional(),
-  lifecycle_status: z.enum(["draft", "pilot", "live", "retired", "archived"]).default("draft"),
-  vendor_id: z.string().optional(),
-  new_vendor_name: z.string().optional(),
-  primary_owner_id: z.string().optional(),
-});
-
-type QuickCaptureFormData = z.infer<typeof quickCaptureSchema>;
-
-const steps = [
-  { id: 1, title: "Basics", icon: Cpu },
-  { id: 2, title: "Vendor", icon: Building2 },
-  { id: 3, title: "Ownership", icon: User },
-  { id: 4, title: "Done", icon: CheckCircle },
-];
+// Step components
+import { Step0ModeSelection } from "@/components/ai-systems/wizard/steps/Step0ModeSelection";
+import { Step1Basics } from "@/components/ai-systems/wizard/steps/Step1Basics";
+import { Step2Vendor } from "@/components/ai-systems/wizard/steps/Step2Vendor";
+import { Step3Ownership } from "@/components/ai-systems/wizard/steps/Step3Ownership";
+import { Step4Scope } from "@/components/ai-systems/wizard/steps/Step4Scope";
+import { Step5ValueChain } from "@/components/ai-systems/wizard/steps/Step5ValueChain";
+import { Step6AIDefinition } from "@/components/ai-systems/wizard/steps/Step6AIDefinition";
+import { Step7UseCase } from "@/components/ai-systems/wizard/steps/Step7UseCase";
+import { Step8Prohibited } from "@/components/ai-systems/wizard/steps/Step8Prohibited";
+import { Step9HighRisk } from "@/components/ai-systems/wizard/steps/Step9HighRisk";
+import { Step10Transparency } from "@/components/ai-systems/wizard/steps/Step10Transparency";
+import { Step11DataPrivacy } from "@/components/ai-systems/wizard/steps/Step11DataPrivacy";
+import { Step12Oversight } from "@/components/ai-systems/wizard/steps/Step12Oversight";
+import { Step13Logging } from "@/components/ai-systems/wizard/steps/Step13Logging";
+import { Step14Incidents } from "@/components/ai-systems/wizard/steps/Step14Incidents";
+import { Step15Workplace } from "@/components/ai-systems/wizard/steps/Step15Workplace";
+import { Step16Authority } from "@/components/ai-systems/wizard/steps/Step16Authority";
+import { Step17Training } from "@/components/ai-systems/wizard/steps/Step17Training";
+import { Step18FRIA } from "@/components/ai-systems/wizard/steps/Step18FRIA";
+import { Step19Signoff } from "@/components/ai-systems/wizard/steps/Step19Signoff";
+import { Step20Done } from "@/components/ai-systems/wizard/steps/Step20Done";
 
 export default function AISystemWizard() {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
   const { user } = useAuth();
   const { vendors } = useVendors();
   const { members } = useOrgMembers();
   const createSystem = useCreateAISystem();
   const createVendor = useCreateVendor();
 
-  const form = useForm<QuickCaptureFormData>({
-    resolver: zodResolver(quickCaptureSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      department: "",
-      lifecycle_status: "draft",
-      vendor_id: "",
-      new_vendor_name: "",
-      primary_owner_id: user?.id || "",
-    },
+  const [currentStep, setCurrentStep] = useState(0);
+  const [data, setData] = useState<AISystemWizardData>({
+    ...DEFAULT_WIZARD_DATA,
+    primary_owner_id: user?.id || "",
   });
+  const [createdSystemId, setCreatedSystemId] = useState<string>();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const progress = (currentStep / steps.length) * 100;
+  const isFullAssessment = data.wizard_mode === "full_assessment";
+  const steps = isFullAssessment ? FULL_ASSESSMENT_STEPS : QUICK_CAPTURE_STEPS;
+  const currentStepDef = steps[currentStep];
 
-  const handleNext = async () => {
-    if (currentStep === 1) {
-      const valid = await form.trigger(["name", "description", "department", "lifecycle_status"]);
-      if (!valid) return;
+  const isHighRisk = data.highrisk_screening_result === "high_risk_annex_iii" || 
+                     data.highrisk_screening_result === "high_risk_product";
+  const hasWorkplaceImpact = data.has_workplace_impact === "yes";
+  const isPublicAuthority = data.is_public_authority === "yes" || data.provides_public_service === "yes";
+
+  const updateData = useCallback((updates: Partial<AISystemWizardData>) => {
+    setData(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  const validateStep = () => {
+    const newErrors: Record<string, string> = {};
+    if (currentStepDef?.key === "basics" && !data.name.trim()) {
+      newErrors.name = "System name is required";
     }
-    if (currentStep < steps.length) {
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () => {
+    if (!validateStep()) return;
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
-  const handleSubmit = async (data: QuickCaptureFormData) => {
-    try {
-      let vendorId = data.vendor_id === "new" ? undefined : data.vendor_id || undefined;
+  const handleSubmit = async () => {
+    if (!validateStep()) return;
 
-      // Create vendor if needed
+    try {
+      let vendorId = data.vendor_id === "new" || data.vendor_id === "internal" ? undefined : data.vendor_id || undefined;
+
       if (data.vendor_id === "new" && data.new_vendor_name) {
         const vendor = await createVendor.mutateAsync({ name: data.new_vendor_name });
         vendorId = vendor.id;
       }
 
-      await createSystem.mutateAsync({
+      const result = await createSystem.mutateAsync({
         name: data.name,
         description: data.description || null,
         department: data.department || null,
-        lifecycle_status: data.lifecycle_status as LifecycleStatus,
+        lifecycle_status: data.lifecycle_status,
         vendor_id: vendorId || null,
         primary_owner_id: data.primary_owner_id || null,
+        backup_owner_id: data.backup_owner_id || null,
+        internal_reference_id: data.internal_reference_id || null,
+        // Full assessment fields
+        ...(isFullAssessment && {
+          deployment_regions: data.deployment_regions.length ? data.deployment_regions : null,
+          eu_countries: data.eu_countries.length ? data.eu_countries : null,
+          affected_groups: data.affected_groups.length ? data.affected_groups : null,
+          is_customer_facing: data.is_customer_facing === "yes",
+          has_workplace_impact: data.has_workplace_impact === "yes",
+          summary: data.summary || null,
+          built_internally: data.built_internally || null,
+          value_chain_role: data.value_chain_role.length ? data.value_chain_role : null,
+          foundation_model: data.foundation_model || null,
+          ai_definition_result: data.ai_definition_result || null,
+          ai_definition_rationale: data.ai_definition_rationale || null,
+          human_involvement: data.human_involvement || null,
+          prohibited_screening_result: data.prohibited_screening_result || null,
+          highrisk_screening_result: data.highrisk_screening_result || null,
+          transparency_status: data.transparency_status || null,
+          oversight_model: data.oversight_model || null,
+          final_classification: data.final_classification || null,
+          wizard_mode: data.wizard_mode,
+          wizard_completed_at: new Date().toISOString(),
+        }),
       });
 
-      setCurrentStep(4);
+      setCreatedSystemId(result.id);
+      setCurrentStep(steps.length - 1); // Go to Done step
     } catch (error) {
       // Error handled by mutation
     }
   };
 
+  const handleReset = () => {
+    setData({ ...DEFAULT_WIZARD_DATA, primary_owner_id: user?.id || "" });
+    setCurrentStep(0);
+    setCreatedSystemId(undefined);
+    setErrors({});
+  };
+
   const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>AI System Name *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., ChatGPT for Customer Support" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    A clear, descriptive name for this AI system
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Briefly describe what this AI system does..."
-                      className="min-h-[100px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="department"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Department</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select department" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {DEPARTMENTS.map((dept) => (
-                          <SelectItem key={dept} value={dept}>
-                            {dept}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="lifecycle_status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="draft">Draft / Idea</SelectItem>
-                        <SelectItem value="pilot">Pilot</SelectItem>
-                        <SelectItem value="live">Live</SelectItem>
-                        <SelectItem value="retired">Retired</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        );
-
-      case 2:
-        const vendorValue = form.watch("vendor_id");
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="vendor_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vendor / Provider</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select or add vendor" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="internal">Internal / Built in-house</SelectItem>
-                      {vendors.map((vendor) => (
-                        <SelectItem key={vendor.id} value={vendor.id}>
-                          {vendor.name}
-                        </SelectItem>
-                      ))}
-                      <SelectItem value="new">+ Add new vendor</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Is this AI system from an external vendor or built internally?
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {vendorValue === "new" && (
-              <FormField
-                control={form.control}
-                name="new_vendor_name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>New Vendor Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., OpenAI, Microsoft, Anthropic" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="primary_owner_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Primary Owner</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select owner" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {members.map((member) => (
-                        <SelectItem key={member.id} value={member.id}>
-                          {member.full_name || "Unnamed User"}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>
-                    Who is responsible for managing this AI system's compliance?
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="rounded-lg border border-dashed bg-muted/50 p-4">
-              <p className="text-sm text-muted-foreground">
-                <strong>What happens next:</strong> After creating this system, you'll be able to:
-              </p>
-              <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
-                <li>Run the EU AI Act classification wizard</li>
-                <li>Upload vendor documentation and evidence</li>
-                <li>Assign controls and track compliance</li>
-              </ul>
-            </div>
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <div className="mb-4 rounded-full bg-success/10 p-4">
-              <CheckCircle className="h-10 w-10 text-success" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">AI System Added!</h3>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              {form.getValues("name")} has been added to your inventory. 
-              You can now classify it and start tracking compliance.
-            </p>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={() => navigate("/ai-systems")}>
-                View Inventory
-              </Button>
-              <Button onClick={() => {
-                form.reset();
-                setCurrentStep(1);
-              }}>
-                Add Another
-              </Button>
-            </div>
-          </div>
-        );
+    switch (currentStepDef?.key) {
+      case "mode": return <Step0ModeSelection value={data.wizard_mode} onChange={(mode) => updateData({ wizard_mode: mode })} />;
+      case "basics": return <Step1Basics data={data} onChange={updateData} errors={errors} />;
+      case "vendor": return <Step2Vendor data={data} onChange={updateData} vendors={vendors} />;
+      case "ownership": return <Step3Ownership data={data} onChange={updateData} members={members} isFullAssessment={isFullAssessment} />;
+      case "scope": return <Step4Scope data={data} onChange={updateData} />;
+      case "value_chain": return <Step5ValueChain data={data} onChange={updateData} />;
+      case "definition": return <Step6AIDefinition data={data} onChange={updateData} members={members} />;
+      case "use_case": return <Step7UseCase data={data} onChange={updateData} />;
+      case "prohibited": return <Step8Prohibited data={data} onChange={updateData} />;
+      case "high_risk": return <Step9HighRisk data={data} onChange={updateData} />;
+      case "transparency": return <Step10Transparency data={data} onChange={updateData} />;
+      case "data_privacy": return <Step11DataPrivacy data={data} onChange={updateData} members={members} />;
+      case "oversight": return <Step12Oversight data={data} onChange={updateData} members={members} />;
+      case "logging": return <Step13Logging data={data} onChange={updateData} isHighRisk={isHighRisk} />;
+      case "incidents": return <Step14Incidents data={data} onChange={updateData} />;
+      case "workplace": return <Step15Workplace data={data} onChange={updateData} hasWorkplaceImpact={hasWorkplaceImpact} isHighRisk={isHighRisk} />;
+      case "authority": return <Step16Authority data={data} onChange={updateData} isHighRisk={isHighRisk} />;
+      case "training": return <Step17Training data={data} onChange={updateData} />;
+      case "fria": return <Step18FRIA data={data} onChange={updateData} isHighRisk={isHighRisk} isPublicAuthority={isPublicAuthority} aiSystemId={createdSystemId} />;
+      case "signoff": return <Step19Signoff data={data} onChange={updateData} members={members} />;
+      case "done": return <Step20Done data={data} onReset={handleReset} createdSystemId={createdSystemId} />;
+      default: return null;
     }
   };
 
   const isSubmitting = createSystem.isPending || createVendor.isPending;
+  const isLastInputStep = currentStep === steps.length - 2; // Before "done" step
+  const isDoneStep = currentStepDef?.key === "done";
 
   return (
     <div className="space-y-6 animate-fade-up">
-      {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => navigate("/ai-systems")}>
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Add AI System</h1>
-          <p className="text-muted-foreground">Quick capture — essential details only</p>
+          <p className="text-muted-foreground">
+            {isFullAssessment ? "Full Assessment — complete EU AI Act classification" : "Quick capture — essential details only"}
+          </p>
         </div>
       </div>
 
-      {/* Progress */}
-      <div className="space-y-4">
-        <Progress value={progress} className="h-2" />
-        <div className="flex justify-between">
-          {steps.map((step) => (
-            <div
-              key={step.id}
-              className={`flex items-center gap-2 text-sm ${
-                step.id <= currentStep ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              <step.icon className="h-4 w-4" />
-              <span className="hidden sm:inline">{step.title}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {!isDoneStep && <WizardProgress steps={steps} currentStep={currentStep} />}
 
-      {/* Form Card */}
       <Card>
         <CardHeader>
-          <CardTitle>{steps[currentStep - 1]?.title}</CardTitle>
-          <CardDescription>
-            {currentStep === 1 && "Tell us about this AI system"}
-            {currentStep === 2 && "Who provides this AI system?"}
-            {currentStep === 3 && "Who's responsible for this system?"}
-            {currentStep === 4 && "Your AI system has been added"}
-          </CardDescription>
+          <CardTitle>{currentStepDef?.title}</CardTitle>
+          <CardDescription>{currentStepDef?.description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              {renderStep()}
+          {renderStep()}
 
-              {currentStep < 4 && (
-                <div className="flex justify-between mt-8 pt-6 border-t">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleBack}
-                    disabled={currentStep === 1}
-                  >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back
-                  </Button>
+          {!isDoneStep && (
+            <div className="flex justify-between mt-8 pt-6 border-t">
+              <Button type="button" variant="outline" onClick={handleBack} disabled={currentStep === 0}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+              </Button>
 
-                  {currentStep < 3 ? (
-                    <Button type="button" onClick={handleNext}>
-                      Next
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  ) : (
-                    <Button type="submit" disabled={isSubmitting}>
-                      {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Create AI System
-                    </Button>
-                  )}
-                </div>
+              {isLastInputStep ? (
+                <Button onClick={handleSubmit} disabled={isSubmitting}>
+                  {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isFullAssessment ? "Complete Assessment" : "Create AI System"}
+                </Button>
+              ) : (
+                <Button type="button" onClick={handleNext}>
+                  Next <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               )}
-            </form>
-          </Form>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

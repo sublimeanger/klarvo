@@ -138,51 +138,373 @@ export type Database = {
       }
       ai_systems: {
         Row: {
+          acquisition_method: string[] | null
+          adapts_after_deployment: string | null
+          affected_groups: string[] | null
+          ai_definition_confidence: string | null
+          ai_definition_rationale: string | null
+          ai_definition_result: string | null
+          ai_definition_reviewer_id: string | null
           backup_owner_id: string | null
+          built_internally: string | null
+          can_export_logs: string | null
+          can_suspend_quickly: string | null
+          competence_requirements: string | null
+          contract_url: string | null
           created_at: string
           created_by: string | null
+          data_sources: string[] | null
+          data_under_control: string | null
           department: string | null
+          deployment_regions: string[] | null
           description: string | null
+          dpia_status: string | null
+          dpia_url: string | null
+          eu_countries: string[] | null
+          external_notification_requirements: string | null
+          final_classification: string | null
+          foundation_model: string | null
+          fria_status: string | null
+          fria_trigger_status: string | null
+          has_automatic_logs: string | null
+          has_legal_effects: boolean | null
+          has_stop_authority: boolean | null
+          has_workplace_impact: boolean | null
+          highrisk_biometric: string | null
+          highrisk_critical_infrastructure: string | null
+          highrisk_education: string | null
+          highrisk_employment: string | null
+          highrisk_essential_services: string | null
+          highrisk_justice: string | null
+          highrisk_law_enforcement: string | null
+          highrisk_migration: string | null
+          highrisk_safety_component: string | null
+          highrisk_screening_notes: string | null
+          highrisk_screening_result: string | null
+          human_involvement: string | null
           id: string
+          impact_scale: number | null
+          incident_process_status: string | null
+          infers_outputs: string | null
+          input_retention_period: string | null
+          internal_notification_list: string[] | null
           internal_reference_id: string | null
+          internal_user_groups: string[] | null
+          involves_minors: string | null
+          is_customer_facing: boolean | null
+          is_externally_offered: boolean | null
+          is_public_authority: boolean | null
           lifecycle_status: Database["public"]["Enums"]["lifecycle_status"]
+          log_access_roles: string[] | null
+          log_retention_6_months_confirmed: boolean | null
+          log_retention_period: string | null
+          log_storage_location: string | null
+          monitoring_metrics: string[] | null
+          monitoring_plan_status: string | null
           name: string
+          operates_autonomously: string | null
+          operators_trained: string | null
           organization_id: string
+          output_action_type: string | null
+          output_destinations: string[] | null
+          output_retention_period: string | null
+          output_types: string[] | null
+          override_capability: string | null
+          oversight_model: string | null
+          oversight_owner_id: string | null
+          oversight_sop_status: string | null
           primary_owner_id: string | null
+          privacy_owner_id: string | null
+          processes_personal_data: string | null
+          prohibited_biometric_categorisation: string | null
+          prohibited_criminal_profiling: string | null
+          prohibited_emotion_inference: string | null
+          prohibited_exploitation: string | null
+          prohibited_facial_scraping: string | null
+          prohibited_manipulation: string | null
+          prohibited_realtime_biometric: string | null
+          prohibited_screening_notes: string | null
+          prohibited_screening_result: string | null
+          prohibited_social_scoring: string | null
+          provides_public_service: boolean | null
+          purpose_category: string | null
+          registration_status: string | null
+          severity_levels_defined: boolean | null
+          signoff_date: string | null
+          signoff_notes: string | null
+          signoff_reviewer_id: string | null
+          special_category_data: string | null
+          staff_roles: string[] | null
+          summary: string | null
+          technical_approach: string[] | null
+          training_completion_status: string | null
+          training_exists: string | null
+          transparency_deepfake: string | null
+          transparency_direct_interaction: string | null
+          transparency_emotion_recognition: string | null
+          transparency_notes: string | null
+          transparency_obvious_ai: string | null
+          transparency_outputs_marked: string | null
+          transparency_public_text: string | null
+          transparency_status: string | null
+          transparency_synthetic_content: string | null
           updated_at: string
+          usage_frequency: string | null
+          value_chain_role: string[] | null
           vendor_id: string | null
+          wizard_completed_at: string | null
+          wizard_mode: string | null
+          worker_notification_status: string | null
+          workflow_description: string | null
         }
         Insert: {
+          acquisition_method?: string[] | null
+          adapts_after_deployment?: string | null
+          affected_groups?: string[] | null
+          ai_definition_confidence?: string | null
+          ai_definition_rationale?: string | null
+          ai_definition_result?: string | null
+          ai_definition_reviewer_id?: string | null
           backup_owner_id?: string | null
+          built_internally?: string | null
+          can_export_logs?: string | null
+          can_suspend_quickly?: string | null
+          competence_requirements?: string | null
+          contract_url?: string | null
           created_at?: string
           created_by?: string | null
+          data_sources?: string[] | null
+          data_under_control?: string | null
           department?: string | null
+          deployment_regions?: string[] | null
           description?: string | null
+          dpia_status?: string | null
+          dpia_url?: string | null
+          eu_countries?: string[] | null
+          external_notification_requirements?: string | null
+          final_classification?: string | null
+          foundation_model?: string | null
+          fria_status?: string | null
+          fria_trigger_status?: string | null
+          has_automatic_logs?: string | null
+          has_legal_effects?: boolean | null
+          has_stop_authority?: boolean | null
+          has_workplace_impact?: boolean | null
+          highrisk_biometric?: string | null
+          highrisk_critical_infrastructure?: string | null
+          highrisk_education?: string | null
+          highrisk_employment?: string | null
+          highrisk_essential_services?: string | null
+          highrisk_justice?: string | null
+          highrisk_law_enforcement?: string | null
+          highrisk_migration?: string | null
+          highrisk_safety_component?: string | null
+          highrisk_screening_notes?: string | null
+          highrisk_screening_result?: string | null
+          human_involvement?: string | null
           id?: string
+          impact_scale?: number | null
+          incident_process_status?: string | null
+          infers_outputs?: string | null
+          input_retention_period?: string | null
+          internal_notification_list?: string[] | null
           internal_reference_id?: string | null
+          internal_user_groups?: string[] | null
+          involves_minors?: string | null
+          is_customer_facing?: boolean | null
+          is_externally_offered?: boolean | null
+          is_public_authority?: boolean | null
           lifecycle_status?: Database["public"]["Enums"]["lifecycle_status"]
+          log_access_roles?: string[] | null
+          log_retention_6_months_confirmed?: boolean | null
+          log_retention_period?: string | null
+          log_storage_location?: string | null
+          monitoring_metrics?: string[] | null
+          monitoring_plan_status?: string | null
           name: string
+          operates_autonomously?: string | null
+          operators_trained?: string | null
           organization_id: string
+          output_action_type?: string | null
+          output_destinations?: string[] | null
+          output_retention_period?: string | null
+          output_types?: string[] | null
+          override_capability?: string | null
+          oversight_model?: string | null
+          oversight_owner_id?: string | null
+          oversight_sop_status?: string | null
           primary_owner_id?: string | null
+          privacy_owner_id?: string | null
+          processes_personal_data?: string | null
+          prohibited_biometric_categorisation?: string | null
+          prohibited_criminal_profiling?: string | null
+          prohibited_emotion_inference?: string | null
+          prohibited_exploitation?: string | null
+          prohibited_facial_scraping?: string | null
+          prohibited_manipulation?: string | null
+          prohibited_realtime_biometric?: string | null
+          prohibited_screening_notes?: string | null
+          prohibited_screening_result?: string | null
+          prohibited_social_scoring?: string | null
+          provides_public_service?: boolean | null
+          purpose_category?: string | null
+          registration_status?: string | null
+          severity_levels_defined?: boolean | null
+          signoff_date?: string | null
+          signoff_notes?: string | null
+          signoff_reviewer_id?: string | null
+          special_category_data?: string | null
+          staff_roles?: string[] | null
+          summary?: string | null
+          technical_approach?: string[] | null
+          training_completion_status?: string | null
+          training_exists?: string | null
+          transparency_deepfake?: string | null
+          transparency_direct_interaction?: string | null
+          transparency_emotion_recognition?: string | null
+          transparency_notes?: string | null
+          transparency_obvious_ai?: string | null
+          transparency_outputs_marked?: string | null
+          transparency_public_text?: string | null
+          transparency_status?: string | null
+          transparency_synthetic_content?: string | null
           updated_at?: string
+          usage_frequency?: string | null
+          value_chain_role?: string[] | null
           vendor_id?: string | null
+          wizard_completed_at?: string | null
+          wizard_mode?: string | null
+          worker_notification_status?: string | null
+          workflow_description?: string | null
         }
         Update: {
+          acquisition_method?: string[] | null
+          adapts_after_deployment?: string | null
+          affected_groups?: string[] | null
+          ai_definition_confidence?: string | null
+          ai_definition_rationale?: string | null
+          ai_definition_result?: string | null
+          ai_definition_reviewer_id?: string | null
           backup_owner_id?: string | null
+          built_internally?: string | null
+          can_export_logs?: string | null
+          can_suspend_quickly?: string | null
+          competence_requirements?: string | null
+          contract_url?: string | null
           created_at?: string
           created_by?: string | null
+          data_sources?: string[] | null
+          data_under_control?: string | null
           department?: string | null
+          deployment_regions?: string[] | null
           description?: string | null
+          dpia_status?: string | null
+          dpia_url?: string | null
+          eu_countries?: string[] | null
+          external_notification_requirements?: string | null
+          final_classification?: string | null
+          foundation_model?: string | null
+          fria_status?: string | null
+          fria_trigger_status?: string | null
+          has_automatic_logs?: string | null
+          has_legal_effects?: boolean | null
+          has_stop_authority?: boolean | null
+          has_workplace_impact?: boolean | null
+          highrisk_biometric?: string | null
+          highrisk_critical_infrastructure?: string | null
+          highrisk_education?: string | null
+          highrisk_employment?: string | null
+          highrisk_essential_services?: string | null
+          highrisk_justice?: string | null
+          highrisk_law_enforcement?: string | null
+          highrisk_migration?: string | null
+          highrisk_safety_component?: string | null
+          highrisk_screening_notes?: string | null
+          highrisk_screening_result?: string | null
+          human_involvement?: string | null
           id?: string
+          impact_scale?: number | null
+          incident_process_status?: string | null
+          infers_outputs?: string | null
+          input_retention_period?: string | null
+          internal_notification_list?: string[] | null
           internal_reference_id?: string | null
+          internal_user_groups?: string[] | null
+          involves_minors?: string | null
+          is_customer_facing?: boolean | null
+          is_externally_offered?: boolean | null
+          is_public_authority?: boolean | null
           lifecycle_status?: Database["public"]["Enums"]["lifecycle_status"]
+          log_access_roles?: string[] | null
+          log_retention_6_months_confirmed?: boolean | null
+          log_retention_period?: string | null
+          log_storage_location?: string | null
+          monitoring_metrics?: string[] | null
+          monitoring_plan_status?: string | null
           name?: string
+          operates_autonomously?: string | null
+          operators_trained?: string | null
           organization_id?: string
+          output_action_type?: string | null
+          output_destinations?: string[] | null
+          output_retention_period?: string | null
+          output_types?: string[] | null
+          override_capability?: string | null
+          oversight_model?: string | null
+          oversight_owner_id?: string | null
+          oversight_sop_status?: string | null
           primary_owner_id?: string | null
+          privacy_owner_id?: string | null
+          processes_personal_data?: string | null
+          prohibited_biometric_categorisation?: string | null
+          prohibited_criminal_profiling?: string | null
+          prohibited_emotion_inference?: string | null
+          prohibited_exploitation?: string | null
+          prohibited_facial_scraping?: string | null
+          prohibited_manipulation?: string | null
+          prohibited_realtime_biometric?: string | null
+          prohibited_screening_notes?: string | null
+          prohibited_screening_result?: string | null
+          prohibited_social_scoring?: string | null
+          provides_public_service?: boolean | null
+          purpose_category?: string | null
+          registration_status?: string | null
+          severity_levels_defined?: boolean | null
+          signoff_date?: string | null
+          signoff_notes?: string | null
+          signoff_reviewer_id?: string | null
+          special_category_data?: string | null
+          staff_roles?: string[] | null
+          summary?: string | null
+          technical_approach?: string[] | null
+          training_completion_status?: string | null
+          training_exists?: string | null
+          transparency_deepfake?: string | null
+          transparency_direct_interaction?: string | null
+          transparency_emotion_recognition?: string | null
+          transparency_notes?: string | null
+          transparency_obvious_ai?: string | null
+          transparency_outputs_marked?: string | null
+          transparency_public_text?: string | null
+          transparency_status?: string | null
+          transparency_synthetic_content?: string | null
           updated_at?: string
+          usage_frequency?: string | null
+          value_chain_role?: string[] | null
           vendor_id?: string | null
+          wizard_completed_at?: string | null
+          wizard_mode?: string | null
+          worker_notification_status?: string | null
+          workflow_description?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "ai_systems_ai_definition_reviewer_id_fkey"
+            columns: ["ai_definition_reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "ai_systems_backup_owner_id_fkey"
             columns: ["backup_owner_id"]
@@ -205,8 +527,29 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "ai_systems_oversight_owner_id_fkey"
+            columns: ["oversight_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "ai_systems_primary_owner_id_fkey"
             columns: ["primary_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_systems_privacy_owner_id_fkey"
+            columns: ["privacy_owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_systems_signoff_reviewer_id_fkey"
+            columns: ["signoff_reviewer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
