@@ -122,8 +122,8 @@ export function CTASection({
                 size="lg"
                 className={cn(
                   "h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5",
-                  variant === "gradient" && "border-white/30 text-white hover:bg-white/10 hover:border-white/50",
-                  variant === "dark" && "border-background/30 text-background hover:bg-background/10"
+                  variant === "gradient" && "bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white/50",
+                  variant === "dark" && "bg-transparent border-background/30 text-background hover:bg-background/10"
                 )}
               >
                 <Link to={secondaryCta.href}>{secondaryCta.label}</Link>
