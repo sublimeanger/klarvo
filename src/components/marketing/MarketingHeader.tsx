@@ -123,22 +123,22 @@ export function MarketingHeader() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            <NavigationMenu>
-              <NavigationMenuList>
+            <NavigationMenu delayDuration={0}>
+              <NavigationMenuList className="gap-1">
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/70 hover:text-foreground hover:bg-accent/50 data-[state=open]:bg-accent data-[state=open]:text-foreground rounded-lg transition-colors">
                     Product
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[550px] gap-2 p-4 md:grid-cols-2">
+                  <NavigationMenuContent className="!bg-popover border border-border shadow-xl rounded-xl">
+                    <ul className="grid w-[480px] gap-1 p-3 md:grid-cols-2">
                       {productLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none space-y-1 rounded-xl p-4 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent hover:shadow-soft group"
+                              className="block select-none rounded-lg p-3 leading-none no-underline outline-none transition-colors hover:bg-accent group"
                             >
-                              <div className="text-sm font-semibold leading-none group-hover:text-primary transition-colors">
+                              <div className="text-sm font-semibold leading-none text-foreground group-hover:text-primary transition-colors">
                                 {link.title}
                               </div>
                               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1.5">
@@ -155,26 +155,26 @@ export function MarketingHeader() {
                 <NavigationMenuItem>
                   <Link
                     to="/features"
-                    className="group inline-flex h-10 w-max items-center justify-center rounded-lg bg-transparent px-4 font-medium text-foreground/80 transition-colors hover:text-foreground"
+                    className="inline-flex h-10 items-center justify-center rounded-lg px-4 font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-accent/50"
                   >
-                    <span className="link-underline">Features</span>
+                    Features
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/70 hover:text-foreground hover:bg-accent/50 data-[state=open]:bg-accent data-[state=open]:text-foreground rounded-lg transition-colors">
                     Solutions
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[450px] gap-2 p-4 md:grid-cols-2">
+                  <NavigationMenuContent className="!bg-popover border border-border shadow-xl rounded-xl">
+                    <ul className="grid w-[420px] gap-1 p-3 md:grid-cols-2">
                       {solutionLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none space-y-1 rounded-xl p-4 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent hover:shadow-soft group"
+                              className="block select-none rounded-lg p-3 leading-none no-underline outline-none transition-colors hover:bg-accent group"
                             >
-                              <div className="text-sm font-semibold leading-none group-hover:text-primary transition-colors">
+                              <div className="text-sm font-semibold leading-none text-foreground group-hover:text-primary transition-colors">
                                 {link.title}
                               </div>
                               <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1.5">
@@ -191,24 +191,24 @@ export function MarketingHeader() {
                 <NavigationMenuItem>
                   <Link
                     to="/pricing"
-                    className="group inline-flex h-10 w-max items-center justify-center rounded-lg bg-transparent px-4 font-medium text-foreground/80 transition-colors hover:text-foreground"
+                    className="inline-flex h-10 items-center justify-center rounded-lg px-4 font-medium text-foreground/70 transition-colors hover:text-foreground hover:bg-accent/50"
                   >
-                    <span className="link-underline">Pricing</span>
+                    Pricing
                   </Link>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/70 hover:text-foreground hover:bg-accent/50 data-[state=open]:bg-accent data-[state=open]:text-foreground rounded-lg transition-colors">
                     Resources
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[220px] gap-1 p-3">
+                  <NavigationMenuContent className="!bg-popover border border-border shadow-xl rounded-xl">
+                    <ul className="grid w-[200px] gap-0.5 p-2">
                       {resourceLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none rounded-lg px-4 py-2.5 text-sm font-medium leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-primary"
+                              className="block select-none rounded-md px-3 py-2 text-sm font-medium leading-none no-underline outline-none transition-colors text-foreground/80 hover:bg-accent hover:text-foreground"
                             >
                               {link.title}
                             </Link>
@@ -220,17 +220,17 @@ export function MarketingHeader() {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/70 hover:text-foreground hover:bg-accent/50 data-[state=open]:bg-accent data-[state=open]:text-foreground rounded-lg transition-colors">
                     Company
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[220px] gap-1 p-3">
+                  <NavigationMenuContent className="!bg-popover border border-border shadow-xl rounded-xl">
+                    <ul className="grid w-[200px] gap-0.5 p-2">
                       {companyLinks.map((link) => (
                         <li key={link.title}>
                           <NavigationMenuLink asChild>
                             <Link
                               to={link.href}
-                              className="block select-none rounded-lg px-4 py-2.5 text-sm font-medium leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-primary"
+                              className="block select-none rounded-md px-3 py-2 text-sm font-medium leading-none no-underline outline-none transition-colors text-foreground/80 hover:bg-accent hover:text-foreground"
                             >
                               {link.title}
                             </Link>
