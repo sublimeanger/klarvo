@@ -71,7 +71,12 @@
 - `useTraining.ts` - CRUD operations with status updates
 - `Training.tsx` - Table UI with completion tracking, assignment dialog, progress bar
 
+## ✅ Phase O: Incidents Module
+- Database: `incidents` table with severity, status, affected parties, response tracking
+- `useIncidents.ts` - CRUD operations with filtering
+- `Incidents.tsx` - Full UI with incident reporting, status workflow, detail view
+
 ## Next Steps (Remaining Modules)
-- Incident management
 - Export packs (PDF/ZIP generation)
 - Settings page enhancements
+- FRIA (Fundamental Rights Impact Assessment) workflow

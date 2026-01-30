@@ -16,6 +16,7 @@ import Evidence from "@/pages/Evidence";
 import Tasks from "@/pages/Tasks";
 import Policies from "@/pages/Policies";
 import Training from "@/pages/Training";
+import Incidents from "@/pages/Incidents";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import BillingSettings from "@/pages/Settings/Billing";
@@ -72,7 +73,7 @@ const App = () => (
               <Route path="/policies" element={<Policies />} />
               <Route path="/training" element={<Training />} />
               <Route path="/tasks" element={<Tasks />} />
-              <Route path="/incidents" element={<Placeholder />} />
+              <Route path="/incidents" element={<Incidents />} />
               <Route path="/exports" element={<Placeholder />} />
               <Route path="/settings" element={<Placeholder />} />
               <Route path="/settings/billing" element={<BillingSettings />} />
