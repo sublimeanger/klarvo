@@ -157,54 +157,56 @@ export default function Policies() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Policies & Templates</h1>
-          <p className="text-muted-foreground">
-            Manage AI governance policies and documentation templates
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Policies & Templates</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage AI governance policies
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowTemplateLibrary(true)}>
+          <Button variant="outline" size="sm" onClick={() => setShowTemplateLibrary(true)} className="flex-1 sm:flex-initial">
             <Sparkles className="mr-2 h-4 w-4" />
-            Template Library
+            <span className="hidden sm:inline">Template Library</span>
+            <span className="sm:hidden">Templates</span>
           </Button>
-          <Button onClick={() => setShowAddDialog(true)}>
+          <Button size="sm" onClick={() => setShowAddDialog(true)} className="flex-1 sm:flex-initial">
             <Plus className="mr-2 h-4 w-4" />
-            Create Policy
+            <span className="hidden sm:inline">Create Policy</span>
+            <span className="sm:hidden">Create</span>
           </Button>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="relative flex-1 min-w-[160px] max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search policies..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 h-9"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px]">
+          <SelectTrigger className="w-[100px] sm:w-[140px] h-9 shrink-0">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="review">In Review</SelectItem>
+            <SelectItem value="review">Review</SelectItem>
             <SelectItem value="approved">Approved</SelectItem>
             <SelectItem value="archived">Archived</SelectItem>
           </SelectContent>
         </Select>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All Types" />
+          <SelectTrigger className="w-[110px] sm:w-[180px] h-9 shrink-0">
+            <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Types</SelectItem>
@@ -218,37 +220,37 @@ export default function Policies() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-muted p-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-muted p-1.5 sm:p-2">
+              <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{draftCount}</p>
-              <p className="text-sm text-muted-foreground">Drafts</p>
+              <p className="text-lg sm:text-2xl font-bold">{draftCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Drafts</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-warning/10 p-2">
-              <Edit className="h-4 w-4 text-warning" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-warning/10 p-1.5 sm:p-2">
+              <Edit className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{reviewCount}</p>
-              <p className="text-sm text-muted-foreground">In Review</p>
+              <p className="text-lg sm:text-2xl font-bold">{reviewCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Review</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-success/10 p-2">
-              <CheckCircle className="h-4 w-4 text-success" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-success/10 p-1.5 sm:p-2">
+              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{approvedCount}</p>
-              <p className="text-sm text-muted-foreground">Approved</p>
+              <p className="text-lg sm:text-2xl font-bold">{approvedCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Approved</p>
             </div>
           </div>
         </div>

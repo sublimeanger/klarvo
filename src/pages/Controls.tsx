@@ -162,15 +162,15 @@ export default function Controls() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Control Library</h1>
-          <p className="text-muted-foreground">
-            EU AI Act compliance controls mapped to your AI systems
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Control Library</h1>
+          <p className="text-sm text-muted-foreground">
+            EU AI Act compliance controls
           </p>
         </div>
-        <Button variant="outline" asChild>
+        <Button variant="outline" size="sm" asChild className="w-full sm:w-auto">
           <Link to="/ai-systems">
             <FileCheck className="h-4 w-4 mr-2" />
             View AI Systems
@@ -179,52 +179,52 @@ export default function Controls() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Controls</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <Card className="rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Total</CardTitle>
+            <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">
-              Across {stats.categories} categories
+          <CardContent className="p-3 pt-0 sm:pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              {stats.categories} categories
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Universal Controls</CardTitle>
-            <FileCheck className="h-4 w-4 text-primary" />
+        <Card className="rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Universal</CardTitle>
+            <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.allSystems}</div>
-            <p className="text-xs text-muted-foreground">Apply to all AI systems</p>
+          <CardContent className="p-3 pt-0 sm:pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.allSystems}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">All systems</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">High-Risk Controls</CardTitle>
-            <Users className="h-4 w-4 text-warning" />
+        <Card className="rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">High-Risk</CardTitle>
+            <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.highRisk}</div>
-            <p className="text-xs text-muted-foreground">
-              For high-risk systems
+          <CardContent className="p-3 pt-0 sm:pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.highRisk}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
+              High-risk only
             </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Categories</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
+        <Card className="rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium">Categories</CardTitle>
+            <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.categories}</div>
-            <p className="text-xs text-muted-foreground">Control categories</p>
+          <CardContent className="p-3 pt-0 sm:pt-0">
+            <div className="text-lg sm:text-2xl font-bold">{stats.categories}</div>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Categories</p>
           </CardContent>
         </Card>
       </div>
