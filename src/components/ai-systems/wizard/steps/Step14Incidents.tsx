@@ -58,13 +58,13 @@ export function Step14Incidents({ data, onChange }: Step14IncidentsProps) {
       />
 
       <div className="space-y-2">
-        <Label htmlFor="external_notification_requirements" className="text-sm">
+        <Label htmlFor="external_notification_requirements" className="text-sm leading-relaxed">
           Who do you notify externally (if required)?
         </Label>
         <Textarea
           id="external_notification_requirements"
           placeholder="e.g., Vendor, Regulator, Data protection authority, Affected customers..."
-          className="min-h-[80px]"
+          className="min-h-[70px] sm:min-h-[80px] text-sm"
           value={data.external_notification_requirements}
           onChange={(e) => onChange({ external_notification_requirements: e.target.value })}
         />

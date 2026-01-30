@@ -46,16 +46,16 @@ export function Step20Done({ data, onReset, createdSystemId }: Step20DoneProps) 
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-        <Button variant="outline" size="sm" className="sm:size-default" onClick={() => navigate("/ai-systems")}>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full max-w-xs sm:max-w-none sm:w-auto">
+        <Button variant="outline" onClick={() => navigate("/ai-systems")} className="w-full sm:w-auto">
           View Inventory
         </Button>
         {createdSystemId && (
-          <Button variant="outline" size="sm" className="sm:size-default" onClick={() => navigate(`/ai-systems/${createdSystemId}`)}>
+          <Button variant="outline" onClick={() => navigate(`/ai-systems/${createdSystemId}`)} className="w-full sm:w-auto">
             View Details
           </Button>
         )}
-        <Button size="sm" className="sm:size-default" onClick={onReset}>
+        <Button onClick={onReset} className="w-full sm:w-auto">
           Add Another
         </Button>
       </div>
