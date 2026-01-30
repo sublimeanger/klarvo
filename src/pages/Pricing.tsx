@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Shield, Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { PlanCard } from "@/components/billing/PlanCard";
 import { BillingToggle } from "@/components/billing/BillingToggle";
 import { AddonCard } from "@/components/billing/AddonCard";
 import { ServiceCard } from "@/components/billing/ServiceCard";
 import { FAQSection } from "@/components/billing/FAQSection";
+import { CTASection } from "@/components/marketing/CTASection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBilling } from "@/hooks/useBilling";
 import { 
@@ -28,7 +31,6 @@ export default function Pricing() {
     const plan = planId as PlanId;
     
     if (plan === "free") {
-      // Redirect to signup or dashboard
       if (user) {
         navigate("/");
       } else {
@@ -38,94 +40,104 @@ export default function Pricing() {
     }
     
     if (plan === "enterprise") {
-      // Open contact sales (placeholder)
       window.open("mailto:sales@klarvo.com?subject=Enterprise%20Inquiry", "_blank");
       return;
     }
     
-    // For paid plans, check if user is authenticated
     if (!user) {
-      // Redirect to signup, then they can upgrade after
       navigate("/auth/signup");
       return;
     }
     
     if (!profile?.organization_id) {
-      // Need to complete onboarding first
       navigate("/onboarding");
       return;
     }
     
-    // Start checkout
     createCheckoutSession(plan, billingPeriod);
   };
 
   const orderedPlans: PlanId[] = ['free', 'starter', 'growth', 'pro', 'enterprise'];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Klarvo" className="h-8 w-8 rounded-lg" />
-            <span className="font-semibold">Klarvo</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
-              Back to App
-            </Link>
-            <Button asChild>
-              <Link to="/">Start Free</Link>
-            </Button>
+    <MarketingLayout>
+      {/* Hero Section */}
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
+        <div className="absolute inset-0 pattern-grid opacity-30" />
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
+        
+        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <Badge variant="outline" className="mb-6 px-4 py-2 text-sm font-medium border-primary/30 bg-primary/5">
+              <Sparkles className="h-4 w-4 mr-2 text-primary" />
+              Simple, Transparent Pricing
+            </Badge>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+              EU AI Act Compliance —{" "}
+              <span className="text-gradient-hero">Priced for SMEs</span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
+              Build your AI inventory, classify risk, track controls & evidence, and export 
+              audit-ready packs — without enterprise GRC complexity.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
+              <Button size="lg" className="btn-premium" asChild>
+                <Link to="/auth/signup">
+                  Start Free 
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" className="border-border/60 hover:border-primary/50">
+                Talk to Sales
+              </Button>
+            </div>
+            
+            <p className="text-sm text-muted-foreground">
+              No credit card required. Upgrade anytime. Keep your data if you downgrade.
+            </p>
           </div>
-        </div>
-      </header>
-
-      {/* Hero */}
-      <section className="py-20 px-4">
-        <div className="container max-w-4xl text-center">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
-            EU AI Act compliance — simple pricing that scales with your AI footprint.
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Build your AI inventory, classify risk, track controls & evidence, and export audit-ready packs — without enterprise GRC complexity.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-            <Button size="lg" asChild>
-              <Link to="/">Start Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
-            <Button variant="outline" size="lg">
-              Talk to Sales
-            </Button>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            No credit card. Upgrade anytime. Keep your data if you downgrade.
-          </p>
         </div>
       </section>
 
-      {/* How pricing works */}
-      <section className="py-12 px-4 bg-muted/30">
-        <div className="container max-w-3xl text-center">
-          <h2 className="text-2xl font-semibold mb-4">Pay per AI system, not per seat.</h2>
-          <p className="text-muted-foreground">
-            Seats slow down compliance. On every paid plan, you get unlimited users and you pay based on the number of AI systems (use-cases) you need to track.
-          </p>
-          <p className="text-sm text-muted-foreground mt-4">
-            An "AI system" is one distinct AI use-case that needs its own classification, controls, and evidence pack.
-          </p>
+      {/* How Pricing Works */}
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 text-success text-sm font-medium mb-6">
+              <Zap className="h-4 w-4" />
+              Pay per AI system, not per seat
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+              Unlimited Users on Every Paid Plan
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Seats slow down compliance. On every paid plan, you get unlimited users and 
+              pay based on the number of AI systems (use-cases) you need to track.
+            </p>
+            <p className="text-sm text-muted-foreground mt-4">
+              An "AI system" is one distinct AI use-case that needs its own classification, 
+              controls, and evidence pack.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* Billing toggle */}
+      {/* Billing Toggle */}
       <section className="py-8 px-4">
         <BillingToggle billingPeriod={billingPeriod} onChange={setBillingPeriod} />
       </section>
 
-      {/* Plan cards */}
+      {/* Plan Cards */}
       <section className="py-12 px-4">
-        <div className="container">
+        <div className="container mx-auto">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
             {orderedPlans.map((planId) => (
               <PlanCard 
@@ -140,55 +152,62 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Included in all paid */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="container max-w-3xl">
-          <h2 className="text-2xl font-semibold text-center mb-8">Included in every paid plan</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {INCLUDED_IN_ALL_PAID.map((item, i) => (
-              <div key={i} className="flex items-start gap-2">
-                <Check className="h-5 w-5 text-success shrink-0 mt-0.5" />
-                <span>{item}</span>
-              </div>
-            ))}
+      {/* Included in All Paid */}
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl font-semibold text-center mb-8">
+              Included in Every Paid Plan
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {INCLUDED_IN_ALL_PAID.map((item, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-background/50 border border-border/50">
+                  <div className="w-5 h-5 rounded-full bg-success/20 flex items-center justify-center shrink-0 mt-0.5">
+                    <Check className="h-3 w-3 text-success" />
+                  </div>
+                  <span className="text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Overages */}
-      <section className="py-16 px-4">
-        <div className="container max-w-3xl text-center">
-          <h2 className="text-2xl font-semibold mb-4">Need more AI systems?</h2>
-          <p className="text-muted-foreground mb-6">
-            Add AI systems without changing plans:
-          </p>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="p-4 rounded-lg border bg-card">
-              <p className="font-medium">Starter</p>
-              <p className="text-2xl font-bold">€12</p>
-              <p className="text-sm text-muted-foreground">per extra AI system/mo</p>
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-2xl font-semibold mb-4">Need More AI Systems?</h2>
+            <p className="text-muted-foreground mb-8">
+              Add AI systems without changing plans:
+            </p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                { plan: 'Starter', price: '€12' },
+                { plan: 'Growth', price: '€9' },
+                { plan: 'Pro', price: '€6' },
+              ].map((item, i) => (
+                <div key={i} className="glass-card rounded-xl p-6 text-center group hover:border-primary/30 transition-colors">
+                  <p className="font-medium text-muted-foreground mb-2">{item.plan}</p>
+                  <p className="text-3xl font-bold text-gradient mb-1">{item.price}</p>
+                  <p className="text-xs text-muted-foreground">per extra AI system/mo</p>
+                </div>
+              ))}
             </div>
-            <div className="p-4 rounded-lg border bg-card">
-              <p className="font-medium">Growth</p>
-              <p className="text-2xl font-bold">€9</p>
-              <p className="text-sm text-muted-foreground">per extra AI system/mo</p>
-            </div>
-            <div className="p-4 rounded-lg border bg-card">
-              <p className="font-medium">Pro</p>
-              <p className="text-2xl font-bold">€6</p>
-              <p className="text-sm text-muted-foreground">per extra AI system/mo</p>
-            </div>
+            <p className="text-sm text-muted-foreground mt-6">
+              We count active AI systems (Draft / Pilot / Live). Retired systems don't count.
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground mt-4">
-            We count active AI systems (Draft / Pilot / Live). Retired systems don't count.
-          </p>
         </div>
       </section>
 
       {/* Add-ons */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="container">
-          <h2 className="text-2xl font-semibold text-center mb-8">Add-ons (optional)</h2>
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-semibold mb-2">Add-ons (Optional)</h2>
+            <p className="text-muted-foreground">Extend your platform with specialized capabilities</p>
+          </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
             {ADDONS.map((addon) => (
               <AddonCard key={addon.id} addon={addon} />
@@ -198,9 +217,12 @@ export default function Pricing() {
       </section>
 
       {/* Services */}
-      <section className="py-16 px-4">
-        <div className="container">
-          <h2 className="text-2xl font-semibold text-center mb-8">Professional Services (optional)</h2>
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-semibold mb-2">Professional Services</h2>
+            <p className="text-muted-foreground">Get hands-on help from our compliance experts</p>
+          </div>
           <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
             {SERVICES.map((service) => (
               <ServiceCard key={service.id} service={service} />
@@ -210,42 +232,20 @@ export default function Pricing() {
       </section>
 
       {/* FAQ */}
-      <section className="py-16 px-4 bg-muted/30">
-        <div className="container">
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FAQSection />
         </div>
       </section>
 
-      {/* CTA Footer */}
-      <section className="py-20 px-4">
-        <div className="container max-w-3xl text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to build an audit-ready AI inventory?</h2>
-          <p className="text-muted-foreground mb-8">
-            Start free, add your first AI system, and generate your first evidence pack today.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" asChild>
-              <Link to="/">Start Free <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
-            <Button variant="outline" size="lg">
-              Talk to Sales
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t py-8 px-4">
-        <div className="container flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Klarvo" className="h-6 w-6 rounded" />
-            <span className="text-sm text-muted-foreground">Klarvo</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} All rights reserved.
-          </p>
-        </div>
-      </footer>
-    </div>
+      {/* CTA */}
+      <CTASection
+        title="Ready to Build an Audit-Ready AI Inventory?"
+        subtitle="Start free, add your first AI system, and generate your first evidence pack today."
+        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
+        variant="gradient"
+      />
+    </MarketingLayout>
   );
 }

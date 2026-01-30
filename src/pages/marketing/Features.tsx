@@ -3,6 +3,8 @@ import { HeroSection } from "@/components/marketing/HeroSection";
 import { FeatureGrid } from "@/components/marketing/FeatureGrid";
 import { FeatureShowcase } from "@/components/marketing/FeatureShowcase";
 import { CTASection } from "@/components/marketing/CTASection";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Cpu,
   Shield,
@@ -16,6 +18,10 @@ import {
   Users,
   FileText,
   Lock,
+  CheckCircle2,
+  Zap,
+  Eye,
+  RefreshCw,
 } from "lucide-react";
 
 const coreFeatures = [
@@ -139,17 +145,90 @@ const complianceFeatures = [
   },
 ];
 
+const workflowSteps = [
+  {
+    step: "01",
+    title: "Add Your AI Systems",
+    description: "Use our guided wizard to document each AI system in under 10 minutes.",
+    icon: Cpu,
+  },
+  {
+    step: "02",
+    title: "Classify & Screen",
+    description: "Automated screening for prohibited practices, high-risk categories, and transparency obligations.",
+    icon: Shield,
+  },
+  {
+    step: "03",
+    title: "Close Gaps",
+    description: "Follow the gap checklist to implement controls and upload evidence.",
+    icon: ClipboardCheck,
+  },
+  {
+    step: "04",
+    title: "Export & Share",
+    description: "Generate audit-ready evidence packs for auditors, boards, or customers.",
+    icon: Download,
+  },
+];
+
 export default function Features() {
   return (
     <MarketingLayout>
       {/* Hero */}
       <HeroSection
         badge="Platform Features"
-        title="Everything You Need for EU AI Act Compliance"
+        title={
+          <>
+            <span className="text-foreground">Everything You Need for</span>
+            <br />
+            <span className="text-gradient-hero">EU AI Act Compliance</span>
+          </>
+        }
         subtitle="A complete platform that takes you from AI inventory to audit-ready documentation. No spreadsheets, no consultants, no guesswork."
         variant="centered"
         showTrustBadges={false}
       />
+
+      {/* Workflow Steps */}
+      <section className="py-20 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">
+              <Zap className="h-3 w-3 mr-1" />
+              Simple Workflow
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              From Zero to Compliant in 4 Steps
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Our guided process makes EU AI Act compliance straightforward
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {workflowSteps.map((item, i) => (
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+                <CardContent className="p-6">
+                  {/* Step number */}
+                  <div className="absolute -top-4 -right-4 w-20 h-20 bg-primary/5 rounded-full flex items-end justify-start pb-6 pl-6">
+                    <span className="text-4xl font-bold text-primary/30">{item.step}</span>
+                  </div>
+                  
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <item.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  
+                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Core Features Grid */}
       <FeatureGrid
@@ -157,7 +236,6 @@ export default function Features() {
         subtitle="Built from the ground up for EU AI Act compliance"
         features={coreFeatures}
         columns={3}
-        className="bg-surface-1"
       />
 
       {/* Deep Dive Showcase */}

@@ -1,6 +1,8 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
+import { CTASection } from "@/components/marketing/CTASection";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   Building2, 
@@ -11,7 +13,8 @@ import {
   Shield,
   FileCheck,
   Clock,
-  Sparkles
+  Sparkles,
+  Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -71,21 +74,25 @@ export default function SMEUseCase() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
         <div className="absolute inset-0 pattern-grid opacity-30" />
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
         
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <Badge className="mb-6" variant="outline">
-                <Building2 className="h-3 w-3 mr-1" />
+              <Badge variant="outline" className="mb-6 px-4 py-2 border-primary/30 bg-primary/5">
+                <Building2 className="h-4 w-4 mr-2 text-primary" />
                 For SMEs
               </Badge>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                 EU AI Act Compliance{" "}
-                <span className="text-gradient">Without the Enterprise Price Tag</span>
+                <span className="text-gradient-hero">Without the Enterprise Price Tag</span>
               </h1>
               
               <p className="text-xl text-muted-foreground leading-relaxed mb-8">
@@ -94,7 +101,7 @@ export default function SMEUseCase() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" asChild>
+                <Button size="lg" className="btn-premium" asChild>
                   <Link to="/auth/signup">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -107,11 +114,13 @@ export default function SMEUseCase() {
             </div>
             
             <div className="relative">
-              <div className="glass-card rounded-2xl p-8">
+              <div className="glass-premium rounded-2xl p-8">
                 <div className="space-y-4">
                   {features.slice(0, 5).map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                    <div key={i} className="flex items-center gap-3 group">
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+                        <CheckCircle2 className="h-4 w-4 text-primary" />
+                      </div>
                       <span className="text-foreground">{feature}</span>
                     </div>
                   ))}
@@ -120,17 +129,24 @@ export default function SMEUseCase() {
                   </div>
                 </div>
               </div>
+              
+              {/* Decorative element */}
+              <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl blur-xl" />
             </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <Badge variant="outline" className="mb-4">
+              <Zap className="h-3 w-3 mr-1" />
               Built for Lean Teams
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Enterprise-Quality Compliance, SME-Friendly Pricing
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               We know SMEs can't dedicate months to compliance projects. That's why 
@@ -140,15 +156,19 @@ export default function SMEUseCase() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <benefit.icon className="h-6 w-6 text-primary" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <benefit.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {benefit.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{benefit.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {benefit.description}
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -171,15 +191,13 @@ export default function SMEUseCase() {
           
           <div className="grid md:grid-cols-3 gap-6">
             {useCases.map((useCase, i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-xl">{useCase.title}</CardTitle>
-                  <CardDescription>{useCase.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-3">{useCase.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">{useCase.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {useCase.systems.map((system, j) => (
-                      <Badge key={j} variant="secondary">{system}</Badge>
+                      <Badge key={j} variant="secondary" className="font-normal">{system}</Badge>
                     ))}
                   </div>
                 </CardContent>
@@ -190,29 +208,13 @@ export default function SMEUseCase() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Shield className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Compliance Made Simple
-          </h2>
-          <p className="text-xl text-primary-100 max-w-2xl mx-auto mb-8">
-            Join hundreds of SMEs already using Klarvo to navigate EU AI Act 
-            compliance without the complexity or cost.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/auth/signup">
-                Start Your Free Trial
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
-              <Link to="/pricing">View Pricing</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        title="Compliance Made Simple"
+        subtitle="Join hundreds of SMEs already using Klarvo to navigate EU AI Act compliance without the complexity or cost."
+        primaryCta={{ label: "Start Your Free Trial", href: "/auth/signup" }}
+        secondaryCta={{ label: "View Pricing", href: "/pricing" }}
+        variant="gradient"
+      />
     </MarketingLayout>
   );
 }

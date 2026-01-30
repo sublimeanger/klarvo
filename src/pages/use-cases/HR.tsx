@@ -1,4 +1,5 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { CTASection } from "@/components/marketing/CTASection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -85,21 +86,25 @@ export default function HRUseCase() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
         <div className="absolute inset-0 pattern-grid opacity-30" />
+        
+        {/* Floating orbs - amber themed for warning */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-400/15 rounded-full blur-3xl animate-float-delayed" />
         
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <Badge className="mb-6 bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300 border-amber-200 dark:border-amber-800">
-                <AlertTriangle className="h-3 w-3 mr-1" />
+              <Badge className="mb-6 px-4 py-2 bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 border-amber-300 dark:border-amber-700">
+                <AlertTriangle className="h-4 w-4 mr-2" />
                 High-Risk AI Category
               </Badge>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                 HR & Recruitment{" "}
-                <span className="text-gradient">AI Compliance</span>
+                <span className="text-gradient-hero">AI Compliance</span>
               </h1>
               
               <p className="text-xl text-muted-foreground leading-relaxed mb-8">
@@ -109,7 +114,7 @@ export default function HRUseCase() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" asChild>
+                <Button size="lg" className="btn-premium" asChild>
                   <Link to="/auth/signup">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -122,10 +127,10 @@ export default function HRUseCase() {
             </div>
             
             <div className="relative">
-              <Card className="bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800">
+              <Card className="glass-premium border-amber-200/50 dark:border-amber-800/50">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-amber-600" />
+                  <CardTitle className="flex items-center gap-2 text-amber-800 dark:text-amber-200">
+                    <AlertTriangle className="h-5 w-5" />
                     EU AI Act Alert
                   </CardTitle>
                 </CardHeader>
@@ -136,11 +141,18 @@ export default function HRUseCase() {
                   </p>
                   <div className="space-y-2">
                     <div className="text-sm font-medium">This includes AI for:</div>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Recruitment and candidate screening</li>
-                      <li>• Performance evaluation</li>
-                      <li>• Promotion and termination decisions</li>
-                      <li>• Task allocation and monitoring</li>
+                    <ul className="text-sm text-muted-foreground space-y-1.5">
+                      {[
+                        "Recruitment and candidate screening",
+                        "Performance evaluation",
+                        "Promotion and termination decisions",
+                        "Task allocation and monitoring"
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                          {item}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </CardContent>
@@ -151,7 +163,7 @@ export default function HRUseCase() {
       </section>
 
       {/* HR AI Tools */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
@@ -164,16 +176,20 @@ export default function HRUseCase() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {hrAITools.map((tool, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-amber-300 dark:hover:border-amber-700">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-amber-300 dark:hover:border-amber-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <tool.icon className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-400/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-amber-500/10">
+                      <tool.icon className="h-7 w-7 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <Badge variant="destructive" className="mb-3">{tool.risk}</Badge>
+                    <h3 className="text-lg font-semibold mb-2">{tool.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {tool.description}
+                    </p>
                   </div>
-                  <Badge variant="destructive" className="mb-3">{tool.risk}</Badge>
-                  <h3 className="text-lg font-semibold mb-2">{tool.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {tool.description}
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -196,10 +212,12 @@ export default function HRUseCase() {
               
               <div className="space-y-4">
                 {complianceRequirements.map((req, i) => (
-                  <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-muted/50">
-                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 border border-border/50 hover:border-primary/30 transition-colors">
+                    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
                     <div>
-                      <div className="font-medium">{req.title}</div>
+                      <div className="font-semibold mb-1">{req.title}</div>
                       <div className="text-sm text-muted-foreground">{req.description}</div>
                     </div>
                   </div>
@@ -208,7 +226,7 @@ export default function HRUseCase() {
             </div>
             
             <div>
-              <Card className="sticky top-24">
+              <Card className="sticky top-24 glass-premium">
                 <CardHeader>
                   <CardTitle>HR Compliance Features</CardTitle>
                   <CardDescription>
@@ -218,15 +236,17 @@ export default function HRUseCase() {
                 <CardContent>
                   <div className="space-y-3">
                     {features.map((feature, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                      <div key={i} className="flex items-start gap-3 group">
+                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-primary/30 transition-colors">
+                          <CheckCircle2 className="h-3 w-3 text-primary" />
+                        </div>
                         <span className="text-sm">{feature}</span>
                       </div>
                     ))}
                   </div>
                   
-                  <div className="mt-6 pt-6 border-t">
-                    <Button className="w-full" asChild>
+                  <div className="mt-8 pt-6 border-t">
+                    <Button className="w-full btn-premium" asChild>
                       <Link to="/auth/signup">
                         Get Started Free
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -241,29 +261,13 @@ export default function HRUseCase() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Scale className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Don't Wait Until August 2026
-          </h2>
-          <p className="text-xl text-primary-100 max-w-2xl mx-auto mb-8">
-            HR AI systems have some of the strictest requirements under the EU AI Act. 
-            Start building your compliance foundation today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/auth/signup">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
-              <Link to="/resources">HR Compliance Guide</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        title="Don't Wait Until August 2026"
+        subtitle="HR AI systems have some of the strictest requirements under the EU AI Act. Start building your compliance foundation today."
+        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        secondaryCta={{ label: "HR Compliance Guide", href: "/resources" }}
+        variant="gradient"
+      />
     </MarketingLayout>
   );
 }

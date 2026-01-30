@@ -1,4 +1,5 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { CTASection } from "@/components/marketing/CTASection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +13,8 @@ import {
   Brain,
   Scan,
   Pill,
-  FileSearch
+  FileSearch,
+  Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -46,15 +48,18 @@ const healthcareAITools = [
 const regulatoryLandscape = [
   {
     title: "Medical Device Regulation (MDR)",
-    description: "Most healthcare AI qualifies as a medical device under EU MDR 2017/745. The AI Act adds AI-specific requirements on top."
+    description: "Most healthcare AI qualifies as a medical device under EU MDR 2017/745. The AI Act adds AI-specific requirements on top.",
+    icon: FileSearch
   },
   {
     title: "Dual Compliance Pathway",
-    description: "If your AI is a medical device, it's automatically high-risk under AI Act Article 6(1). Both regulations apply."
+    description: "If your AI is a medical device, it's automatically high-risk under AI Act Article 6(1). Both regulations apply.",
+    icon: Shield
   },
   {
     title: "Notified Body Involvement",
-    description: "High-risk healthcare AI requires conformity assessment, often involving a Notified Body for both MDR and AI Act."
+    description: "High-risk healthcare AI requires conformity assessment, often involving a Notified Body for both MDR and AI Act.",
+    icon: CheckCircle2
   }
 ];
 
@@ -73,21 +78,25 @@ export default function HealthcareUseCase() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
         <div className="absolute inset-0 pattern-grid opacity-30" />
+        
+        {/* Floating orbs - rose themed */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-rose-500/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-rose-400/15 rounded-full blur-3xl animate-float-delayed" />
         
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <Badge className="mb-6 bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-300 border-rose-200 dark:border-rose-800">
-                <Heart className="h-3 w-3 mr-1" />
+              <Badge className="mb-6 px-4 py-2 bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300 border-rose-300 dark:border-rose-700">
+                <Heart className="h-4 w-4 mr-2" />
                 Healthcare & Life Sciences
               </Badge>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                 Healthcare{" "}
-                <span className="text-gradient">AI Compliance</span>
+                <span className="text-gradient-hero">AI Compliance</span>
               </h1>
               
               <p className="text-xl text-muted-foreground leading-relaxed mb-8">
@@ -97,7 +106,7 @@ export default function HealthcareUseCase() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" asChild>
+                <Button size="lg" className="btn-premium" asChild>
                   <Link to="/auth/signup">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -110,10 +119,10 @@ export default function HealthcareUseCase() {
             </div>
             
             <div className="relative">
-              <Card className="bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800">
+              <Card className="glass-premium border-rose-200/50 dark:border-rose-800/50">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-rose-600" />
+                  <CardTitle className="flex items-center gap-2 text-rose-800 dark:text-rose-200">
+                    <AlertTriangle className="h-5 w-5" />
                     Dual Regulation Alert
                   </CardTitle>
                 </CardHeader>
@@ -125,10 +134,17 @@ export default function HealthcareUseCase() {
                   </p>
                   <div className="space-y-2">
                     <div className="text-sm font-medium">Key implications:</div>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Extended timeline (Aug 2027 for Annex I products)</li>
-                      <li>• Notified Body assessment often required</li>
-                      <li>• Technical documentation must satisfy both</li>
+                    <ul className="text-sm text-muted-foreground space-y-1.5">
+                      {[
+                        "Extended timeline (Aug 2027 for Annex I products)",
+                        "Notified Body assessment often required",
+                        "Technical documentation must satisfy both"
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                          {item}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 </CardContent>
@@ -139,7 +155,7 @@ export default function HealthcareUseCase() {
       </section>
 
       {/* Healthcare AI Tools */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
@@ -152,16 +168,20 @@ export default function HealthcareUseCase() {
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {healthcareAITools.map((tool, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-rose-300 dark:hover:border-rose-700">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-rose-300 dark:hover:border-rose-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <tool.icon className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500/20 to-rose-400/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-rose-500/10">
+                      <tool.icon className="h-7 w-7 text-rose-600 dark:text-rose-400" />
+                    </div>
+                    <Badge variant="outline" className="mb-3">{tool.regulation}</Badge>
+                    <h3 className="text-lg font-semibold mb-2">{tool.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {tool.description}
+                    </p>
                   </div>
-                  <Badge variant="outline" className="mb-3">{tool.regulation}</Badge>
-                  <h3 className="text-lg font-semibold mb-2">{tool.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {tool.description}
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -173,8 +193,12 @@ export default function HealthcareUseCase() {
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">
+              <Zap className="h-3 w-3 mr-1" />
+              Regulatory Landscape
+            </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Understanding the Regulatory Landscape
+              Understanding the Dual Compliance Path
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Healthcare AI compliance requires understanding how multiple regulations interact.
@@ -183,10 +207,10 @@ export default function HealthcareUseCase() {
           
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {regulatoryLandscape.map((item, i) => (
-              <Card key={i} className="hover:shadow-lg transition-shadow">
+              <Card key={i} className="group hover:shadow-lg transition-shadow border-border/50 hover:border-primary/30">
                 <CardHeader>
-                  <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-2">
-                    <FileSearch className="h-5 w-5 text-primary" />
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+                    <item.icon className="h-6 w-6 text-primary" />
                   </div>
                   <CardTitle className="text-xl">{item.title}</CardTitle>
                 </CardHeader>
@@ -200,7 +224,7 @@ export default function HealthcareUseCase() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
             <div>
@@ -214,8 +238,10 @@ export default function HealthcareUseCase() {
               
               <div className="grid sm:grid-cols-2 gap-3">
                 {features.map((feature, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <div key={i} className="flex items-start gap-3 group">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-primary/30 transition-colors">
+                      <CheckCircle2 className="h-3 w-3 text-primary" />
+                    </div>
                     <span className="text-sm">{feature}</span>
                   </div>
                 ))}
@@ -223,17 +249,17 @@ export default function HealthcareUseCase() {
             </div>
             
             <div>
-              <Card className="bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-950/50 dark:to-rose-900/30 border-rose-200 dark:border-rose-800">
+              <Card className="glass-premium border-rose-200/30 dark:border-rose-800/30">
                 <CardHeader>
                   <CardTitle>Extended Timeline Note</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">
                     Healthcare AI that's part of a medical device (Annex I) may have until 
-                    <strong> August 2, 2027</strong> for full compliance—but don't wait. 
+                    <strong className="text-foreground"> August 2, 2027</strong> for full compliance—but don't wait. 
                     Building documentation now means less scramble later.
                   </p>
-                  <Button asChild>
+                  <Button className="btn-premium" asChild>
                     <Link to="/resources">
                       Healthcare Compliance Guide
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -247,29 +273,13 @@ export default function HealthcareUseCase() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Shield className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Patient Safety Starts With Compliance
-          </h2>
-          <p className="text-xl text-primary-100 max-w-2xl mx-auto mb-8">
-            Healthcare AI has the potential to save lives—but only if deployed safely 
-            and responsibly. Start your compliance journey today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/auth/signup">
-                Start Free Trial
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
-              <Link to="/demo">Book Healthcare Demo</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        title="Patient Safety Starts With Compliance"
+        subtitle="Healthcare AI has the potential to save lives—but only if deployed safely and responsibly. Start your compliance journey today."
+        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        secondaryCta={{ label: "Book Healthcare Demo", href: "/demo" }}
+        variant="gradient"
+      />
     </MarketingLayout>
   );
 }
