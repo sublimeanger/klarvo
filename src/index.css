@@ -1297,7 +1297,152 @@
     background: hsl(320 80% 55% / 0.2);
   }
   
-  .orb-blue {
+.orb-blue {
     background: hsl(200 90% 50% / 0.2);
+  }
+  
+  /* ─────────────────────────────────────────────────────────────────────────
+     ACCESSIBILITY
+     ─────────────────────────────────────────────────────────────────────── */
+  
+  /* Skip to content link */
+  .skip-to-content {
+    @apply fixed left-4 z-[9999] -translate-y-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-transform duration-200 focus:translate-y-4 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+  
+  /* Enhanced focus styles */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+  
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: 220 13% 70%;
+    }
+    
+    .dark {
+      --border: 220 13% 40%;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION - ACCESSIBILITY CRITICAL
+   Disable animations for users who prefer reduced motion
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable specific animations */
+  .animate-morph,
+  .animate-morph-slow,
+  .animate-float-slow,
+  .animate-float-delayed,
+  .animate-float-fast,
+  .animate-gradient,
+  .animate-gradient-slow,
+  .animate-shimmer,
+  .animate-shimmer-slow,
+  .animate-pulse-ring,
+  .animate-shine-sweep,
+  .animate-bounce-subtle,
+  .animate-fade-in,
+  .animate-fade-up,
+  .animate-fade-down,
+  .animate-fade-left,
+  .animate-fade-right,
+  .animate-scale-in,
+  .animate-slide-in-right,
+  .animate-reveal-text,
+  .animate-counter-up,
+  .animate-draw-line,
+  .animate-border-trace,
+  .animate-glow-pulse,
+  .animate-spin-slow,
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none !important;
+  }
+  
+  /* Remove transforms on hover */
+  .hover-lift:hover,
+  .hover-lift-lg:hover,
+  .hover-scale:hover,
+  .hover-scale-lg:hover {
+    transform: none !important;
+  }
+  
+  /* Keep opacity transitions but make them instant */
+  .hover-shine::before {
+    display: none;
+  }
+  
+  /* Disable parallax */
+  .parallax {
+    transform: none !important;
+  }
+  
+  /* Disable floating orbs animation */
+  .orb {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRINT STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media print {
+  /* Hide non-essential elements */
+  .skip-to-content,
+  nav,
+  footer,
+  .btn-premium,
+  .orb,
+  .pattern-grid,
+  .pattern-dots,
+  .bg-mesh-gradient {
+    display: none !important;
+  }
+  
+  /* Reset backgrounds */
+  body,
+  .bg-surface-1,
+  .bg-surface-2,
+  .glass-card,
+  .glass-premium {
+    background: white !important;
+    color: black !important;
+  }
+  
+  /* Ensure text is readable */
+  * {
+    color: black !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Show link URLs */
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+  
+  /* Page breaks */
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  img, table, figure {
+    page-break-inside: avoid;
   }
 }
