@@ -40,6 +40,23 @@ import Onboarding from "@/pages/Onboarding";
 // Marketing pages
 import LandingPage from "@/pages/marketing/LandingPage";
 import Features from "@/pages/marketing/Features";
+import About from "@/pages/marketing/About";
+import Contact from "@/pages/marketing/Contact";
+import Demo from "@/pages/marketing/Demo";
+import Resources from "@/pages/marketing/Resources";
+import Integrations from "@/pages/marketing/Integrations";
+import Partners from "@/pages/marketing/Partners";
+import Careers from "@/pages/marketing/Careers";
+import Press from "@/pages/marketing/Press";
+import Status from "@/pages/marketing/Status";
+import Changelog from "@/pages/marketing/Changelog";
+
+// Use case pages
+import SMEUseCase from "@/pages/use-cases/SME";
+import EnterpriseUseCase from "@/pages/use-cases/Enterprise";
+import HRUseCase from "@/pages/use-cases/HR";
+import FintechUseCase from "@/pages/use-cases/Fintech";
+import HealthcareUseCase from "@/pages/use-cases/Healthcare";
 
 // Legal pages
 import Terms from "@/pages/legal/Terms";
@@ -64,6 +81,23 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             <Route path="/features" element={<Features />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/integrations" element={<Integrations />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/press" element={<Press />} />
+            <Route path="/status" element={<Status />} />
+            <Route path="/changelog" element={<Changelog />} />
+            
+            {/* Use case pages */}
+            <Route path="/use-cases/sme" element={<SMEUseCase />} />
+            <Route path="/use-cases/enterprise" element={<EnterpriseUseCase />} />
+            <Route path="/use-cases/hr" element={<HRUseCase />} />
+            <Route path="/use-cases/fintech" element={<FintechUseCase />} />
+            <Route path="/use-cases/healthcare" element={<HealthcareUseCase />} />
             
             {/* Legal pages (public) */}
             <Route path="/terms" element={<Terms />} />
