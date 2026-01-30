@@ -28,6 +28,9 @@ import { TrialBanner } from "@/components/billing/TrialBanner";
 import { useTasks } from "@/hooks/useTasks";
 import { ComplianceAlerts } from "@/components/dashboard/ComplianceAlerts";
 import { useComplianceAlerts } from "@/hooks/useComplianceAlerts";
+import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionChart";
+import { ComplianceTrendChart } from "@/components/dashboard/ComplianceTrendChart";
+import { DepartmentRiskChart } from "@/components/dashboard/DepartmentRiskChart";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -305,6 +308,17 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Analytics Charts */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <ComplianceTrendChart />
+        <div className="space-y-6">
+          <RiskDistributionChart />
+        </div>
+      </div>
+
+      {/* Department Distribution */}
+      <DepartmentRiskChart />
 
       {/* Compliance Alerts */}
       <ComplianceAlerts />
