@@ -17,6 +17,7 @@ import Tasks from "@/pages/Tasks";
 import Policies from "@/pages/Policies";
 import Training from "@/pages/Training";
 import Incidents from "@/pages/Incidents";
+import Exports from "@/pages/Exports";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import BillingSettings from "@/pages/Settings/Billing";
@@ -74,7 +75,7 @@ const App = () => (
               <Route path="/training" element={<Training />} />
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/incidents" element={<Incidents />} />
-              <Route path="/exports" element={<Placeholder />} />
+              <Route path="/exports" element={<Exports />} />
               <Route path="/settings" element={<Placeholder />} />
               <Route path="/settings/billing" element={<BillingSettings />} />
             </Route>
