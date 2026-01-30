@@ -1,283 +1,280 @@
 
 
-# EU AI Act Compliance Hub — Implementation Plan
+# Pricing & Billing Implementation Plan
 
-## Vision
-A world-class SaaS platform that enables SMEs to achieve EU AI Act compliance in hours, not weeks. Users can inventory AI systems, classify risk levels, map obligations, collect evidence, and generate audit-ready export packs — all with guided workflows and no legal jargon.
+## Overview
 
----
-
-## Phase 1: Foundation & Core Inventory (Weeks 1-2)
-**Goal:** Establish the platform foundation with authentication, multi-tenancy, and the heart of the product — the AI System Inventory.
-
-### 1.1 Authentication & Workspaces
-- Multi-tenant architecture with organization (workspace) support
-- User authentication with Email/Password, Google OAuth, and Magic Link options
-- Role-based permissions: Admin, Compliance Owner, System Owner, Reviewer, Viewer
-- Smooth onboarding: Quick signup → 3-step wizard (company name, industry sector, user role)
-- Demo mode: Full demo dataset with 5 realistic sample AI systems across departments (ChatGPT for Support, CV Screening Tool, Marketing Content Generator, etc.)
-
-### 1.2 Global Navigation & Dashboard
-- Clean, modern SaaS design (Linear/Notion style)
-- Main navigation: Dashboard, AI Systems, Vendors, Assessments, Evidence, Policies, Training, Tasks, Incidents, Exports, Settings
-- Executive dashboard showing:
-  - Total AI systems count
-  - High-risk candidates
-  - Systems missing classification
-  - EU AI Act timeline with upcoming deadlines
-  - Evidence completeness %
-  - Training completion %
-  - Audit readiness score
-
-### 1.3 AI System Inventory (The Heart)
-- AI System listing with search, filter, and sorting
-- "Add AI System" wizard with two modes:
-  - **Quick Capture** (2-4 mins): Essential fields + auto-creates tasks for completion
-  - **Full Assessment** (10-20 mins): Complete intake for classification
-- System detail page with tabs: Overview, Classification, Obligations, Evidence, Activity
-- Completeness score showing exactly what's missing
-- Duplicate system functionality for similar deployments
-- Bulk import via CSV with column mapping
-
-### 1.4 Vendor Management
-- Vendor directory with key details
-- Link vendors to AI systems
-- Track contract info, renewal dates
-- Vendor due diligence status
+This plan updates the pricing structure based on your comprehensive pricing document and outlines the implementation of the complete billing infrastructure with Stripe integration, plan gating, and the public pricing page.
 
 ---
 
-## Phase 2: Classification Engine & Obligations (Weeks 3-4)
-**Goal:** Build the "magic" — the guided classification flow that turns complex regulation into simple decisions.
+## Updated Pricing Structure
 
-### 2.1 AI System Definition Test
-- Guided questionnaire: "Is this even an AI system?"
-- Questions about inference, outputs, autonomy, learning capability
-- Stored conclusion (Likely AI / Likely Not / Needs Review) with rationale
-- Reviewer sign-off with confidence level
+### Pricing Tiers (Updated from Original)
 
-### 2.2 Prohibited Practices Screening
-- 8-question screening aligned with Article 5
-- Covers manipulation, vulnerable group exploitation, social scoring, biometric issues
-- Hard stop if flagged: "Potential prohibited practice → Stop & escalate"
-- Auto-create legal review task when flagged
+| Plan | Monthly | Annual | AI Systems | Storage | Best For |
+|------|---------|--------|------------|---------|----------|
+| **Free** | EUR 0 | EUR 0 | 1 | 1 GB | Lead generation, tiny teams |
+| **Starter** | EUR 149/mo | EUR 1,490/yr | 10 | 50 GB | Most SMEs getting compliant |
+| **Growth** | EUR 349/mo | EUR 3,490/yr | 25 | 250 GB | Teams with multiple tools/use-cases |
+| **Pro** | EUR 749/mo | EUR 7,490/yr | 100 | 1 TB | Regulated / high scrutiny / scaling |
+| **Enterprise** | Custom | From EUR 15k/yr | Unlimited | Unlimited | Multi-entity, procurement, deep controls |
 
-### 2.3 Risk Level Classification
-- Annex III high-risk screening (biometrics, employment, education, essential services, etc.)
-- Regulated product safety component check
-- Classification output: Prohibited/Blocked, High-Risk Candidate, Limited Risk, Minimal Risk
-- Auto-generate one-page Classification Memo (PDF)
+### Overage Pricing (Per Additional AI System/Month)
+- Starter: EUR 12
+- Growth: EUR 9
+- Pro: EUR 6
 
-### 2.4 Transparency Obligations Screening
-- Article 50 scenarios: AI interaction disclosure, synthetic content, deepfakes, emotion recognition
-- Identify required notices and disclosures
-- Auto-create disclosure implementation tasks
+### Add-Ons
+- Shadow AI Discovery: EUR 149/mo
+- Vendor Portal: EUR 199/mo
+- Export Pro Pack: EUR 99/mo
+- Partner Mode: EUR 299/mo + EUR 49/client workspace/mo
 
-### 2.5 Obligations & Control Mapping
-- Control library with 60+ controls organized by category (Governance, Classification, Transparency, High-Risk Deployer, Logging, Data, Vendor, Security, Training, Monitoring)
-- Auto-attach controls based on classification
-- Gap checklist: what exists vs. what's missing
-- Status tracking: Not Started → In Progress → Implemented → Not Applicable
-- Evidence requirements per control
+### Professional Services
+- Kickstart Setup: EUR 1,500 one-time
+- Compliance Sprint: EUR 3,500 (2 weeks)
+- Quarterly Governance Review: EUR 1,200/quarter
 
 ---
 
-## Phase 3: Evidence Vault & Tasks (Weeks 5-6)
-**Goal:** Make evidence collection effortless and keep teams on track with automated task management.
+## Feature Gating by Plan
 
-### 3.1 Evidence Vault
-- Upload evidence files (PDFs, screenshots, policies, vendor docs)
-- Evidence types: Vendor docs, Internal policies, Training materials, Risk assessments, Monitoring reports, Incident logs, Transparency notices
-- Evidence can be attached to: AI systems, Controls, Tasks, Policies
-- Rich metadata: Uploaded by, date, status (Draft/Approved), confidentiality level, expiry date, tags
-- Evidence approval workflow with reviewer assignment
-- "Evidence Request" feature to ask teammates for specific uploads
+### Free Plan
+Allowed:
+- 1 AI system
+- Basic intake wizard
+- Prohibited practices screening
+- Transparency screening
+- Limited evidence vault (1 GB)
+- Watermarked exports (PDF/ZIP)
 
-### 3.2 Task Management
-- Auto-created tasks when systems are added:
-  - Complete classification
-  - Upload vendor documentation
-  - Assign oversight owner
-  - Add transparency notice
-- Auto-created tasks when classified as high-risk:
-  - High-risk deployer obligations checklist
-  - FRIA requirement check
-  - Worker notification (if workplace use)
-- Task list with due dates, owners, priority
-- Email reminders for overdue tasks
-- Link tasks to AI systems, controls, and evidence
+Locked:
+- Org-wide dashboards
+- Approvals workflow
+- Auditor share links
+- Unlimited exports
 
-### 3.3 Automation Rules
-- When evidence uploaded → route to approver if approval required
-- When evidence has expiry → create renewal task
-- When new user joins → assign baseline AI literacy training
-- When classification changes → trigger reclassification review
+### Starter Plan
+Everything in Free plus:
+- Up to 10 AI systems
+- Unlimited users
+- Full classification workflow
+- Control Library v1
+- Evidence vault (50 GB)
+- Unlimited unwatermarked exports
+- Email reminders
+- Basic compliance dashboard
+- Core policy templates
 
----
+Locked:
+- Approvals/signatures
+- Auditor portal
+- API/integrations
 
-## Phase 4: Policies, Training & Monitoring (Weeks 7-8)
-**Goal:** Complete the compliance toolkit with templates, training tracking, and incident management.
+### Growth Plan
+Everything in Starter plus:
+- Up to 25 AI systems
+- Evidence approvals workflow
+- Auditor read-only links
+- Policy versioning
+- Org dashboards
+- Vendor workflows
+- Evidence vault (250 GB)
 
-### 4.1 Policies & Templates
-- Template library with 8+ gold-standard templates:
-  - AI Acceptable Use Policy
-  - Human Oversight Plan
-  - AI Vendor Due Diligence Questionnaire
-  - Transparency Notice Pack
-  - AI Incident Response Playbook
-  - Worker Notification Template
-  - AI System Register Export
-- In-app template editor with versioning
-- Two tones: "Startup-Simple" vs "Procurement-Ready"
-- Approval workflow for policy changes
-- Version history with diff view
+Locked:
+- FRIA module
+- Incidents/monitoring
+- API/integrations
 
-### 4.2 Training & AI Literacy Tracking
-- Training campaigns by role: All Staff Basics, AI Tool Users, High-Risk Operators, Reviewers
-- Content delivery: Upload PDFs/video links, optional quizzes
-- Per-employee completion tracking with reminders
-- Policy acknowledgement workflow
-- Annual re-certification automation
-- Training completion export for evidence
+### Pro Plan
+Everything in Growth plus:
+- Up to 100 AI systems
+- FRIA module + FRIA reports
+- Incidents and monitoring
+- Advanced reporting
+- Integrations (Jira/Asana)
+- API access
+- Evidence vault (1 TB)
 
-### 4.3 Incidents & Monitoring
-- Monitoring log: Performance drift, complaints, bias concerns
-- Incident records with: What happened, impacted groups, severity, containment actions, notifications, attachments, postmortem
-- Change management: Material changes trigger re-classification prompt
-- SLA timers for review deadlines
-
----
-
-## Phase 5: Exports & Billing (Weeks 9-10)
-**Goal:** Deliver the "money feature" — audit-ready export packs that SMEs will pay for.
-
-### 5.1 Export Packs (The Money Feature)
-- **AI System Evidence Pack:**
-  - PDF: Professional executive summary, inventory record, classification memo, obligations status, evidence index
-  - ZIP: Organized folders with all evidence files + index
-- **Organization Governance Pack:**
-  - Full AI inventory summary
-  - Classification distribution
-  - Training completion stats
-  - High-risk systems overview
-  - Evidence readiness score
-- **Board Summary:**
-  - 1-3 page executive PDF
-- Beautiful, consistent formatting that looks like premium consultancy deliverables
-- Cover page, document control, table of contents, evidence index
-
-### 5.2 Stripe Billing Integration
-- Pricing tiers per your model:
-  - **Free:** 1 workspace, 2 AI systems, PDF export (watermarked)
-  - **Starter (€99/mo):** 10 AI systems, 5 users, Evidence vault, ZIP export
-  - **Growth (€249/mo):** 25 AI systems, Unlimited users, Approvals, Training
-  - **Pro (€499/mo):** 75 AI systems, FRIA workflow, Auditor portal
-  - **Enterprise:** Custom pricing, SSO, dedicated support
-- Usage-based add-on: €8-15 per additional AI system
-- Upgrade prompts throughout the app
-- Subscription management & billing portal
-
-### 5.3 Feature Gating (Visible but Locked + Soft Limits)
-- Pro features visible with lock icon and "Upgrade" CTAs
-- FRIA workflow: Allow 1 FRIA on Growth, unlimited on Pro
-- EU Database Registration export: Pro only
-- Auditor portal links: Pro only
+### Enterprise
+Everything in Pro plus:
+- Unlimited AI systems
+- Multi-workspace
+- SSO (SAML/OIDC)
+- Custom controls/templates
+- Dedicated CSM
+- Data residency options
 
 ---
 
-## Phase 6: Pro Features & Polish (Weeks 11-12)
-**Goal:** Add premium features and polish the entire experience.
+## Implementation Tasks
 
-### 6.1 FRIA Workflow (Pro Feature)
-- Separate wizard for Fundamental Rights Impact Assessment
-- Article 27-aligned with all required sections:
-  - Process description, time period, affected persons
-  - Risks of harm to fundamental rights
-  - Human oversight measures
-  - Mitigations and governance
-- Auto-generate FRIA Report PDF
-- Mitigation tasks auto-created
+### Task 1: Update Plan Document
+Update `.lovable/plan.md` with the correct pricing tiers from this document.
 
-### 6.2 EU Database Registration Export (Pro Feature)
-- Generate registration-ready data bundle
-- Checklist for public authorities
-- Export format aligned with EU requirements
+### Task 2: Create Database Schema for Billing
 
-### 6.3 Auditor Portal Links (Pro Feature)
-- Read-only shareable links for external auditors
-- Configurable access (which systems, which evidence)
-- Activity tracking for auditor views
+**Tables to Create:**
 
-### 6.4 Audit Logs
-- Complete audit trail for all key actions
-- Who changed what, when, with details
-- Exportable for compliance evidence
+1. **plans** - Public plan definitions
+   - id, name, price_monthly, price_annual, ai_systems_included, storage_gb, is_public, trial_days
 
-### 6.5 Polish & Refinements
-- Mobile-responsive design
-- Keyboard shortcuts
-- Bulk actions for systems and tasks
-- Advanced filtering and saved views
-- Email notifications and digest options
+2. **plan_entitlements** - Feature flags per plan
+   - plan_id, watermark_exports, approvals_enabled, policy_versioning_enabled, auditor_links_enabled, fria_enabled, incidents_enabled, integrations_enabled, api_enabled, multi_workspace_enabled, sso_enabled
+
+3. **subscriptions** - One per organization
+   - org_id, status, plan_id, billing_period, current_period_start, current_period_end, trial_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id
+
+4. **subscription_addons** - Active add-ons per org
+   - org_id, addon_id, status, quantity, started_at, ended_at
+
+5. **usage_snapshots** - Daily usage for billing
+   - org_id, date, active_ai_systems_count, storage_used_gb, exports_count
+
+### Task 3: Enable Stripe Integration
+Use Lovable's Stripe connector to set up payment processing with the defined pricing tiers.
+
+### Task 4: Create Pricing Page
+Build a public pricing page with:
+- Monthly/Annual toggle
+- Plan comparison cards
+- Add-ons section
+- Professional services section
+- FAQ section with 15+ questions
+- CTAs for each tier
+
+**Page Structure:**
+1. Hero: "EU AI Act compliance - simple pricing that scales with your AI footprint"
+2. How pricing works explainer
+3. Plan cards (Free/Starter/Growth/Pro/Enterprise)
+4. "Included on every paid plan" section
+5. Add-ons (optional)
+6. Services (optional)
+7. Overage pricing
+8. FAQ section
+9. CTA footer
+
+### Task 5: Create Plan Gating System
+
+**Components:**
+1. **PlanGate** - Wrapper component that checks entitlements
+2. **UpgradeModal** - Reusable upgrade prompt with contextual copy
+3. **UsageMeter** - Shows AI systems/storage usage vs limits
+4. **LockIcon** - Visual indicator for locked features
+
+**Gating Enforcement Levels:**
+- UI gating (hide/disable with lock icon)
+- Action gating (block create actions server-side)
+- Data safety (read-only access on downgrade)
+
+### Task 6: Implement Trial Flow
+
+**14-Day Growth Trial:**
+- No credit card required
+- Full Growth features
+- Trial checklist on dashboard:
+  1. Add 3 AI systems
+  2. Complete classification for 1
+  3. Upload 5 evidence files
+  4. Export an evidence pack
+
+**Trial End Behavior:**
+- 3 days before: Banner + email
+- On end: Downgrade to Free, preserve data, lock Growth features
+
+### Task 7: Create Billing Settings Page
+
+**Settings > Billing includes:**
+- Current plan display
+- Period end date
+- Usage meters (AI systems, storage)
+- Upgrade/downgrade buttons
+- Add-on management
+- Invoice history link
+
+### Task 8: Implement Upgrade Prompts
+
+**Contextual prompts at:**
+1. AI Systems list (at 80% and 100% of limit)
+2. Evidence vault (at 80% storage)
+3. Export button (watermark removal)
+4. FRIA button (Pro feature)
+5. Auditor links (Growth feature)
+6. Approvals (Growth feature)
 
 ---
 
-## Design Principles
+## Technical Details
 
-**Clean SaaS Modern (Linear/Notion style):**
-- Minimal, spacious layouts
-- Neutral color palette with accent colors for status badges
-- Consistent card-based layouts
-- Clear typography hierarchy
-- Subtle animations for polish
+### AI System Billing Logic
+- Only "active" systems count: Draft, Pilot, Live
+- Retired/Archived systems don't count toward limit
+- Add `lifecycle_status` field to ai_systems table
 
-**SME-Friendly Language:**
-- Plain English everywhere with optional "legal view" expanders
-- "Why are we asking this?" help text on every question
-- Real examples throughout (ChatGPT, CV screening, marketing AI)
-- Progress indicators showing completion %
+### Storage Calculation
+- Sum of evidence_files where is_deleted = false
+- Soft delete for evidence files
+- Block uploads when exceeded (don't block downloads)
 
-**Audit-Ready Exports:**
-- Professional PDF layouts rivaling top consultancies
-- Consistent branding and formatting
-- Clear evidence traceability
-- Version control and timestamps
+### Export Watermarking
+- Free tier: Add watermark to all exports
+- Paid tiers: No watermark
 
----
-
-## Technical Architecture
-
-- **Frontend:** React + TypeScript + Tailwind CSS + shadcn/ui
-- **Backend:** Lovable Cloud with Supabase (database, auth, storage)
-- **Authentication:** Supabase Auth with Email, Google OAuth, Magic Link
-- **File Storage:** Supabase Storage for evidence files
-- **Payments:** Stripe integration for subscriptions
-- **PDF Generation:** Server-side PDF generation for export packs
-- **Multi-tenancy:** Organization-based with RLS policies
+### Downgrade Rules
+- Preserve all existing data
+- Enforce on creation, not viewing
+- Show "archive or upgrade" prompt if over limit
 
 ---
 
-## Key Automations
+## Files to Create/Modify
 
-1. **New AI System Added** → Create classification, documentation, and oversight tasks
-2. **High-Risk Classification** → Generate obligations checklist, trigger FRIA check
-3. **Evidence Uploaded** → Route to approver, set expiry reminders
-4. **Control Marked Implemented** → Prompt for evidence upload
-5. **New User Joins** → Assign baseline AI literacy training
-6. **Evidence Expiring** → Auto-create renewal task
-7. **Material System Change** → Trigger re-classification prompt
+### New Files:
+- `src/pages/Pricing.tsx` - Public pricing page
+- `src/components/billing/PlanCard.tsx` - Individual plan card
+- `src/components/billing/PlanGate.tsx` - Feature gating wrapper
+- `src/components/billing/UpgradeModal.tsx` - Upgrade prompt modal
+- `src/components/billing/UsageMeter.tsx` - Usage display
+- `src/components/billing/TrialBanner.tsx` - Trial countdown banner
+- `src/pages/Settings/Billing.tsx` - Billing settings page
+- `src/hooks/useSubscription.ts` - Subscription state hook
+- `src/hooks/useEntitlements.ts` - Feature entitlements hook
+- `src/lib/billing-constants.ts` - Plan definitions and limits
+
+### Modified Files:
+- `.lovable/plan.md` - Update pricing section
+- `src/App.tsx` - Add pricing route
+- `src/components/layout/AppSidebar.tsx` - Add upgrade prompt for limited plans
+
+### Database Migrations:
+- Create plans, plan_entitlements, subscriptions, subscription_addons, usage_snapshots tables
+- Add lifecycle_status to ai_systems
+- Add file_size_mb and is_deleted to evidence_files
 
 ---
 
-## Demo Dataset
+## Pricing Page Copy (Ready to Use)
 
-5 pre-configured sample AI systems to showcase platform capabilities:
+### Hero
+**H1:** EU AI Act compliance - simple pricing that scales with your AI footprint.
 
-1. **"ChatGPT for Customer Support"** — Minimal risk, transparency obligations
-2. **"CV Screening Assistant"** — High-risk candidate (employment), full obligations
-3. **"Marketing Content Generator"** — Limited risk, synthetic content disclosure
-4. **"Fraud Detection Model"** — High-risk candidate (financial services)
-5. **"Employee Productivity Analytics"** — High-risk candidate (workplace), worker notice required
+**Subhead:** Build your AI inventory, classify risk, track controls and evidence, and export audit-ready packs - without enterprise GRC complexity.
 
-Each includes sample classifications, controls, and evidence to demonstrate the full workflow.
+### Key Message
+**H2:** Pay per AI system, not per seat.
+
+Seats slow down compliance. On every paid plan, you get unlimited users and you pay based on the number of AI systems (use-cases) you need to track.
+
+---
+
+## Next Steps After Approval
+
+1. Update the plan document with correct pricing
+2. Enable Stripe integration
+3. Create database schema for billing
+4. Build the public pricing page
+5. Implement plan gating components
+6. Add trial flow and upgrade prompts
+7. Create billing settings page
 
