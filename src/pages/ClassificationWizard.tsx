@@ -22,6 +22,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Separator } from "@/components/ui/separator";
 import { useAISystem } from "@/hooks/useAISystems";
 import { useClassification, useCreateOrUpdateClassification } from "@/hooks/useClassification";
+import { useControlLibrary, useInitializeControls } from "@/hooks/useControls";
 import { toast } from "sonner";
 
 // Prohibited practices questions (Article 5)
@@ -154,6 +155,8 @@ export default function ClassificationWizard() {
   const { data: system, isLoading: systemLoading } = useAISystem(id);
   const { data: existingClassification } = useClassification(id);
   const saveClassification = useCreateOrUpdateClassification();
+  const { data: allControls } = useControlLibrary();
+  const initializeControls = useInitializeControls();
 
   // Initialize from existing classification
   useEffect(() => {
@@ -204,6 +207,7 @@ export default function ClassificationWizard() {
     if (!id) return;
 
     const riskLevel = calculateRiskLevel();
+    const hasVendor = !!system?.vendor_id;
     
     await saveClassification.mutateAsync({
       ai_system_id: id,
@@ -222,6 +226,28 @@ export default function ClassificationWizard() {
       confidence_level: hasProhibitedUnsure ? "medium" : "high",
       classification_rationale: `Automated classification based on ${Object.keys(prohibitedAnswers).length + Object.keys(highRiskAnswers).length + Object.keys(transparencyAnswers).length} screening questions.`,
     });
+
+    // Auto-initialize applicable controls based on risk level
+    if (allControls && riskLevel !== "prohibited") {
+      const applicableControlIds = allControls
+        .filter((control) => {
+          const appliesTo = control.applies_to;
+          if (appliesTo.includes("all")) return true;
+          if (riskLevel === "high_risk" && appliesTo.includes("high_risk")) return true;
+          if (riskLevel === "limited_risk" && appliesTo.includes("limited_risk")) return true;
+          if (hasVendor && appliesTo.includes("vendor_based")) return true;
+          return false;
+        })
+        .map((c) => c.id);
+
+      if (applicableControlIds.length > 0) {
+        await initializeControls.mutateAsync({
+          aiSystemId: id,
+          controlIds: applicableControlIds,
+        });
+        toast.success(`${applicableControlIds.length} controls initialized based on classification`);
+      }
+    }
 
     toast.success("Classification completed!");
     navigate(`/ai-systems/${id}`);

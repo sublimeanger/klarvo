@@ -140,5 +140,10 @@
 - Real-time stats for control implementation progress
 - Vendor attestation verification and expiry tracking
 
+## ✅ Phase X: Auto-Initialize Controls
+- Controls now auto-initialize when classification wizard is completed
+- Applicable controls selected based on risk level (high_risk, limited_risk, vendor-based)
+- Toast notification shows number of controls initialized
+
 ## Next Steps (Remaining Enhancements)
-- Auto-initialize controls after classification
+- Auto-create tasks for high-risk systems (FRIA trigger, deployer obligations)
