@@ -55,12 +55,12 @@ export function Step9HighRisk({ data, onChange }: Step9HighRiskProps) {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border border-warning/50 bg-warning/5 p-4 flex gap-3">
-        <AlertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border border-warning/50 bg-warning/5 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-warning shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">High-Risk Screening (Annex III)</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">High-Risk Screening (Annex III)</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Annex III of the EU AI Act lists high-risk AI system categories. High-risk 
             systems have additional obligations including human oversight, logging, 
             monitoring, and potentially FRIA requirements.
@@ -80,17 +80,17 @@ export function Step9HighRisk({ data, onChange }: Step9HighRiskProps) {
       ))}
 
       <div className="space-y-2">
-        <Label htmlFor="highrisk_screening_notes">Notes / Rationale</Label>
+        <Label htmlFor="highrisk_screening_notes" className="text-sm">Notes / Rationale</Label>
         <Textarea
           id="highrisk_screening_notes"
           placeholder="Add any context or explanation for your answers..."
           value={data.highrisk_screening_notes}
           onChange={(e) => onChange({ highrisk_screening_notes: e.target.value })}
-          className="min-h-[80px]"
+          className="min-h-[70px] sm:min-h-[80px]"
         />
       </div>
 
-      <div className="border-t pt-6">
+      <div className="border-t pt-4 sm:pt-6">
         <RadioGroupField
           label="High-risk screening result"
           options={HIGHRISK_SCREENING_RESULTS}
@@ -101,11 +101,11 @@ export function Step9HighRisk({ data, onChange }: Step9HighRiskProps) {
 
       {(data.highrisk_screening_result === "high_risk_annex_iii" || 
         data.highrisk_screening_result === "high_risk_product") && (
-        <div className="rounded-lg border border-warning bg-warning/10 p-4">
-          <p className="text-sm font-medium">
+        <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4">
+          <p className="text-xs sm:text-sm font-medium">
             High-risk classification will trigger additional requirements:
           </p>
-          <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
+          <ul className="mt-2 space-y-1 text-xs sm:text-sm text-muted-foreground list-disc list-inside">
             <li>Human oversight and monitoring obligations</li>
             <li>Log retention for at least 6 months</li>
             <li>Incident reporting procedures</li>
