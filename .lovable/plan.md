@@ -105,7 +105,14 @@
   - Billing tab: link to existing billing settings
 - Role-based access control (only admins can edit)
 
+## ✅ Phase S: Assessments Page
+- `useAssessments.ts` - fetch all classifications and FRIAs with system/owner data
+- `Assessments.tsx` - Tabbed UI with:
+  - Summary stats (classifications, high-risk, FRIAs, approved)
+  - Classifications tab: filterable table by risk level
+  - FRIAs tab: filterable table by status with conclusion badges
+- Links to AI system detail and FRIA wizard
+
 ## Next Steps (Remaining Enhancements)
-- Assessments page (unified view of all classification assessments)
 - Control library implementation
 - Vendor attestation tracking
