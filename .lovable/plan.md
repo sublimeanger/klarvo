@@ -1,363 +1,462 @@
 
-# Feature Build Plan: Expanded AI System Intake Wizard (Full Assessment Mode)
+# World-Class Design Upgrade & Marketing Pages Plan
 
-## Current State
-
-The AI System Wizard currently has only **4 steps** (Quick Capture mode):
-1. Basics (name, description, department, status)
-2. Vendor selection
-3. Ownership
-4. Done
-
-However, the EU AI Act Compliance Hub specification requires a **comprehensive 16-step Full Assessment wizard** that captures all regulatory-required fields.
+## Executive Summary
+A comprehensive design system overhaul and complete marketing site build for Klarvo - the EU AI Act Compliance Hub. This plan delivers a pixel-perfect, world-class experience across desktop and mobile, with all necessary marketing, legal, and product pages.
 
 ---
 
-## Implementation Plan
+## Part 1: Design System Upgrade
 
-### Overview
+### 1.1 Enhanced Color System
+Expand the current design tokens for richer visual hierarchy:
 
-We will expand the existing `AISystemWizard.tsx` to support both modes:
-- **Quick Capture** (current 4 steps) - for fast inventory capture
-- **Full Assessment** (16 steps) - for complete EU AI Act regulatory classification
+- **Extended Primary Palette**: Add primary-50 through primary-950 shades
+- **Surface Colors**: Multiple background layers (surface-0, surface-1, surface-2)
+- **Gradient System**: Branded gradients for hero sections and CTAs
+- **Dark Mode Polish**: Refined dark theme with proper contrast ratios
 
-Users will select their mode at the start, and the wizard will adapt accordingly.
+### 1.2 Typography Enhancements
+- Add display font sizes for marketing headlines (5xl, 6xl, 7xl)
+- Introduce font-weight variations (light through black)
+- Letter-spacing and line-height fine-tuning per heading level
+- Add Inter font weights 200 and 800 for more range
 
----
+### 1.3 Animation Library Expansion
+Add keyframes and animation utilities:
 
-## Technical Implementation
+```text
+New Animations:
+- float (subtle y-axis movement)
+- pulse-glow (soft glow effect)  
+- slide-up-fade (content reveal)
+- scale-fade-in (modal/card entrances)
+- shimmer (loading states)
+- gradient-shift (animated gradients)
+- stagger-children (sequential animations)
+```
 
-### Step 0: Mode Selection & Basic Identity
-**Fields to add:**
-- Wizard mode toggle (Quick Capture / Full Assessment)
-- System name, internal ID, status
-- Primary owner, backup owner, department
+### 1.4 Component Enhancements
 
-### Step 1: Scope & Geography
-**New fields:**
-- Deployment regions (EU, UK, US, Other)
-- EU countries where deployed (multi-select)
-- Internal user groups (multi-select)
-- Affected persons (Customers, Employees, Candidates, etc.)
-- Is customer-facing? (Y/N)
-- Workplace impact? (Y/N)
-- Legal/significant effects? (Y/N)
-- One-sentence summary
+| Component | Upgrades |
+|-----------|----------|
+| Button | Add `size="xl"`, gradient variant, icon-only circle style |
+| Card | Add glass morphism, elevated shadow states, gradient borders |
+| Badge | Add shimmer animation, outline variants |
+| Input | Add floating labels, enhanced focus states |
+| Sections | Container variants (narrow/wide/full) |
 
-### Step 2: Value Chain Role
-**New fields:**
-- Built by organization? (Fully in-house / Partially / External)
-- How obtained? (SaaS, API, Open-source, etc.)
-- Your role (Deployer / Provider / Both / Importer / Distributor)
-- If Provider: offered externally? (Y/N)
-- Vendor selection (existing flow)
-- Foundation model used (text)
-- Contract/terms link
-
-### Step 3: AI System Definition Test
-**New fields:**
-- Does it infer outputs from inputs? (Y/N/Unsure)
-- Output types (Predictions, Recommendations, Decisions, etc.)
-- Operates with autonomy? (Y/N/Unsure)
-- Adapts/learns after deployment? (Y/N/Unknown)
-- Technical approach (ML, Deep learning, LLM, etc.)
-- **Conclusion**: Likely AI system / Likely not / Needs review
-- Rationale (text)
-- Reviewer selection
-- Confidence level
-
-### Step 4: Use Case & Functionality
-**New fields:**
-- Purpose category (HR, Finance, Customer Support, etc.)
-- Workflow description
-- Output type (Recommend / Decide / Automate / Generate)
-- Where outputs are used (Dashboard, API, Email, etc.)
-- Human involvement model (HITL / HOTL / HOOTL)
-- Override capability description
-- Usage frequency
-- Scale of impact (people/month)
-
-### Step 5: Prohibited Practices Screening (Article 5)
-**New fields (8 screening questions):**
-- Subliminal/manipulative techniques?
-- Exploitation of vulnerabilities?
-- Social scoring?
-- Criminal risk profiling?
-- Untargeted facial recognition scraping?
-- Workplace/education emotion inference?
-- Biometric categorisation of protected characteristics?
-- Real-time remote biometric ID in public spaces?
-- **Conclusion**: No indicators / Potential prohibited / Needs review
-
-### Step 6: High-Risk Screening (Annex III)
-**New fields (9 screening questions):**
-- Biometric identification/categorisation?
-- Critical infrastructure?
-- Education/vocational training?
-- Employment/worker management?
-- Access to essential services?
-- Law enforcement/public security?
-- Migration/asylum/border control?
-- Administration of justice/democratic processes?
-- Safety component of regulated product?
-- **Result**: Not high-risk / Potential high-risk (Annex III) / Potential (regulated product) / Needs review
-
-### Step 7: Transparency Obligations (Article 50)
-**New fields:**
-- Direct interaction with people? (Y/N)
-- If yes: obvious it's AI? (Y/N/Unsure)
-- Generates synthetic content? (Y/N)
-- If yes: outputs marked as AI-generated? (Y/N/Unknown)
-- Emotion recognition/biometric categorisation? (Y/N)
-- Deepfake generation? (Y/N)
-- AI-generated public interest text? (Y/N)
-- **Status**: Not applicable / Implemented / Gaps exist
-- Evidence upload for disclosures
-
-### Step 8: Data & Privacy
-**New fields:**
-- Processes personal data? (Y/N/Unknown)
-- Special category data? (Y/N/Unknown)
-- Involves minors? (Y/N/Unknown)
-- Data sources (multi-select)
-- Input data under deployer control? (Y/N/Partly)
-- Retention periods for inputs and outputs
-- DPIA status (Not needed / Planned / Completed / Unknown)
-- DPIA link/upload
-- Privacy owner selection
-
-### Step 9: Human Oversight & Operating Model
-**New fields:**
-- Oversight model (HITL / HOTL / HOOTL)
-- Oversight owner (person)
-- Authority to pause/stop? (Y/N)
-- Required training/competence (text)
-- Operators trained today? (Y/Partially/N)
-- Oversight SOP exists? (Exists / Draft / Not started)
-- SOP upload
-- Monitoring plan exists? (Exists / Draft / Not started)
-- What is monitored? (Accuracy, Drift, Bias, etc.)
-
-### Step 10: Logging & Record-Keeping
-**New fields:**
-- System generates automatic logs? (Y/N/Unknown)
-- Log storage location
-- Log access control (who has access)
-- Log retention period
-- Can export logs on demand? (Y/N/Unknown)
-- Log evidence upload
-- For high-risk: confirm minimum 6-month retention
-
-### Step 11: Risk & Incident Handling
-**New fields:**
-- Incident response process exists? (Y/Partially/N)
-- Severity levels defined? (Y/N)
-- Internal notification list
-- External notification requirements
-- Can suspend system quickly? (Y immediately / Y but slow / N / Unknown)
-- Incident evidence upload
-
-### Step 12: Workplace-Specific Obligations
-**Fields (conditional on workplace use):**
-- Used in workplace context? (Y/N)
-- High-risk candidate? (auto from Step 6)
-- Worker notification prepared? (Implemented / Planned / Not started)
-- Worker notice upload
-
-### Step 13: Public Authority Registration
-**Fields:**
-- Is public authority? (Y/N)
-- Provides public service? (Y/N)
-- Registration status (Registered / Not registered / Vendor responsible / Unknown)
-- Registration evidence upload
-
-### Step 14: Training & AI Literacy
-**New fields:**
-- Staff roles operating system (multi-select)
-- AI literacy training exists? (Y/Partially/N)
-- Training completion status (percentage bands)
-- Training material/completion report upload
-
-### Step 15: FRIA Trigger Check
-**Fields:**
-- High-risk candidate? (auto, read-only)
-- Meets FRIA trigger conditions? (auto-suggest based on earlier answers)
-- FRIA status (Not required / Required-planned / In progress / Completed)
-- Create FRIA now (button)
-
-### Step 16: Review & Sign-Off
-**Fields:**
-- Final classification (auto-calculated, editable)
-- Reviewer sign-off (person)
-- Sign-off date
-- Notes
-- **Auto-generated outputs:**
-  - Classification Memo (PDF)
-  - Gap Checklist
-  - Task Plan
-  - Evidence Requests
-
----
-
-## Database Changes
-
-Add new columns to `ai_systems` table:
-```sql
--- Geography & Scope
-deployment_regions TEXT[],
-eu_countries TEXT[],
-affected_groups TEXT[],
-is_customer_facing BOOLEAN,
-has_workplace_impact BOOLEAN,
-has_legal_effects BOOLEAN,
-summary TEXT,
-
--- Value Chain
-built_internally TEXT, -- 'fully' | 'partially' | 'external'
-acquisition_method TEXT[],
-value_chain_role TEXT[],
-is_externally_offered BOOLEAN,
-foundation_model TEXT,
-contract_url TEXT,
-
--- AI Definition Test
-ai_definition_result TEXT, -- 'likely_ai' | 'likely_not' | 'needs_review'
-ai_definition_rationale TEXT,
-ai_definition_confidence TEXT,
-
--- Use Case
-purpose_category TEXT,
-workflow_description TEXT,
-output_action_type TEXT,
-output_destinations TEXT[],
-human_involvement TEXT,
-override_capability TEXT,
-usage_frequency TEXT,
-impact_scale INTEGER,
-
--- Human Oversight
-oversight_model TEXT,
-oversight_owner_id UUID,
-has_stop_authority BOOLEAN,
-competence_requirements TEXT,
-operators_trained TEXT,
-oversight_sop_status TEXT,
-monitoring_plan_status TEXT,
-monitoring_metrics TEXT[],
-
--- Logging
-has_automatic_logs TEXT,
-log_storage_location TEXT,
-log_access_roles TEXT[],
-log_retention_period TEXT,
-can_export_logs TEXT,
-log_retention_6_months_confirmed BOOLEAN,
-
--- Incident Handling
-incident_process_status TEXT,
-severity_levels_defined BOOLEAN,
-internal_notification_list TEXT[],
-external_notification_requirements TEXT,
-can_suspend_quickly TEXT,
-
--- Workplace
-worker_notification_status TEXT,
-
--- Public Authority
-is_public_authority BOOLEAN,
-provides_public_service BOOLEAN,
-registration_status TEXT,
-
--- Training
-staff_roles TEXT[],
-training_exists TEXT,
-training_completion_status TEXT,
-
--- FRIA
-fria_trigger_status TEXT,
-fria_status TEXT,
-
--- Sign-off
-final_classification TEXT,
-signoff_reviewer_id UUID,
-signoff_date TIMESTAMPTZ,
-signoff_notes TEXT
+### 1.5 New Utility Classes
+```text
+.glass-card - Frosted glass effect
+.gradient-border - Animated gradient borders  
+.text-gradient - Multi-color text gradients
+.shadow-glow - Colored glow shadows
+.hover-lift - 3D lift on hover
+.pattern-dots - Subtle dot pattern backgrounds
+.pattern-grid - Subtle grid pattern backgrounds
 ```
 
 ---
 
-## File Changes
+## Part 2: Marketing Layout Components
 
-### 1. `src/pages/AISystemWizard.tsx`
-- Expand from 4 steps to support 16-step Full Assessment mode
-- Add mode selection at start
-- Add all new form fields per step
-- Add progress indicator with step names
-- Add step validation logic
-- Auto-calculate classification based on answers
+### 2.1 MarketingLayout Component
+Shared wrapper for all public pages:
+- Responsive navigation header with transparent/solid scroll state
+- Mega-menu for product features
+- Mobile drawer navigation with smooth animations
+- Announcement bar slot (for promotions/updates)
+- Sticky CTA bar on mobile
 
-### 2. `src/hooks/useAISystems.ts`
-- Update `useCreateAISystem` to accept all new fields
-- Add validation for Full Assessment submissions
+### 2.2 Footer Component
+Full-featured footer with:
+- 4-column link grid (Product, Resources, Company, Legal)
+- Newsletter signup
+- Social links
+- Trust badges (EU flag, security certifications)
+- Language/region selector placeholder
+- Copyright with dynamic year
 
-### 3. Database Migration
-- Add all new columns to `ai_systems` table
-- Add new enums for dropdowns
+### 2.3 Reusable Section Components
+```text
+- HeroSection (multiple variants: centered, split, video)
+- FeatureGrid (icon + text cards)
+- FeatureShowcase (alternating image/text sections)
+- TestimonialSection (carousel + static grid variants)
+- LogoCloud (customer/partner logos)
+- CTASection (banner style, card style)
+- FAQSection (accordion-based)
+- ComparisonTable (feature matrix)
+- TimelineSection (for EU AI Act dates)
+- StatsSection (animated counters)
+```
 
-### 4. `src/integrations/supabase/types.ts`
-- Will auto-update after migration
+---
+
+## Part 3: Marketing Pages
+
+### 3.1 Landing Page (`/` for logged-out users)
+**Route**: `/` (conditional: show landing if not logged in, dashboard if logged in)
+
+Sections:
+1. **Hero**: Full-width with animated gradient background
+   - H1: "EU AI Act Compliance — Simple, Evidence-Based, Audit-Ready"
+   - Subheadline + dual CTAs (Start Free / Book Demo)
+   - Social proof badges (trust signals)
+   
+2. **Logo Cloud**: "Trusted by compliance teams at..."
+
+3. **Problem/Solution**: 3-column grid showing pain points → solutions
+
+4. **Feature Showcase**: 4-6 alternating sections with screenshots:
+   - AI System Inventory
+   - Classification Engine
+   - Evidence Vault
+   - Export Packs
+   - Control Library
+   - Training Tracking
+
+5. **EU AI Act Timeline**: Visual timeline with key dates
+
+6. **How It Works**: 3-step process diagram
+
+7. **Testimonials**: Quote cards with photos
+
+8. **Pricing Preview**: Compact tier comparison → link to /pricing
+
+9. **Final CTA**: Full-width gradient section
+
+### 3.2 Features Page (`/features`)
+Deep-dive into platform capabilities with:
+- Hero with product screenshot
+- Tabbed feature sections (Inventory, Classification, Evidence, etc.)
+- Interactive demo previews (animated GIFs/videos)
+- Comparison with alternatives
+
+### 3.3 Use Cases Page (`/use-cases`)
+Audience-specific pages:
+- `/use-cases/sme` - SME compliance
+- `/use-cases/enterprise` - Large organization
+- `/use-cases/hr` - HR/recruiting AI
+- `/use-cases/fintech` - Financial services
+- `/use-cases/healthcare` - Healthcare AI
+
+### 3.4 About Page (`/about`)
+Company information:
+- Mission and vision
+- Team section (optional placeholder)
+- Company values
+- Contact information
+
+### 3.5 Contact Page (`/contact`)
+- Contact form (name, email, company, message)
+- Sales inquiry option
+- Support links
+- Office address placeholder
+
+### 3.6 Book Demo Page (`/demo`)
+- Calendly-style embed placeholder
+- Demo request form
+- What to expect section
+
+### 3.7 Blog/Resources Landing (`/resources`)
+- Resource hub with categories
+- Featured articles placeholder
+- EU AI Act guides section
+- Webinars/events placeholder
+
+### 3.8 Documentation Page (`/docs`)
+- Getting started guide placeholder
+- Link structure for future docs
+
+---
+
+## Part 4: Legal & Compliance Pages
+
+### 4.1 Terms of Service (`/terms`)
+Full legal page with:
+- Table of contents
+- Standard SaaS terms sections
+- Data processing information
+- Usage restrictions
+- Liability limitations
+
+### 4.2 Privacy Policy (`/privacy`)
+GDPR-compliant privacy policy:
+- Data collection practices
+- Cookie policy
+- Third-party services
+- Data retention
+- User rights
+- Contact for privacy inquiries
+
+### 4.3 Cookie Policy (`/cookies`)
+- Types of cookies used
+- Cookie preferences explanation
+- Third-party cookies
+- How to manage cookies
+
+### 4.4 Acceptable Use Policy (`/aup`)
+- Permitted uses
+- Prohibited activities
+- Enforcement actions
+
+### 4.5 Data Processing Agreement (`/dpa`)
+- GDPR DPA template
+- Sub-processor list
+- Security measures
+
+### 4.6 Security Page (`/security`)
+- Security practices overview
+- Compliance certifications (placeholder)
+- Data encryption details
+- Infrastructure overview
+- Responsible disclosure policy
+
+### 4.7 GDPR Compliance (`/gdpr`)
+- How the platform supports GDPR
+- Data subject rights
+- DPO contact information
+
+---
+
+## Part 5: Additional Pages
+
+### 5.1 Enhanced 404 Page
+- Branded illustration
+- Search functionality
+- Popular links
+- Back to home button
+
+### 5.2 Status Page (`/status`)
+- System status indicators (placeholder)
+- Uptime history placeholder
+
+### 5.3 Changelog (`/changelog`)
+- Version history format
+- Feature announcements
+
+### 5.4 Integrations Page (`/integrations`)
+- Available integrations (Jira, Asana, etc.)
+- Coming soon integrations
+
+### 5.5 Partners Page (`/partners`)
+- Partner program overview
+- Benefits of partnership
+- Application form
+
+### 5.6 Press Kit (`/press`)
+- Brand assets download
+- Logo guidelines
+- Boilerplate text
+
+### 5.7 Careers Page (`/careers`)
+- Company culture section
+- Benefits overview
+- Job listings placeholder
+
+---
+
+## Part 6: Mobile Optimization
+
+### 6.1 Responsive Breakpoints
+```text
+Mobile: 320px - 639px
+Tablet: 640px - 1023px  
+Desktop: 1024px - 1279px
+Large: 1280px+
+```
+
+### 6.2 Mobile-Specific Enhancements
+- Touch-optimized tap targets (min 44px)
+- Swipe gestures for carousels
+- Bottom sheet patterns for mobile forms
+- Fixed mobile CTA bar on marketing pages
+- Hamburger menu with full-screen overlay
+- Optimized form layouts (stacked inputs)
+
+### 6.3 Mobile Navigation Pattern
+- Sticky header that hides on scroll down, shows on scroll up
+- Mobile menu with smooth slide-in animation
+- Nested accordion for submenu items
+- Quick action buttons (Login, Start Free)
+
+---
+
+## Part 7: App Dashboard Polish
+
+### 7.1 Dashboard Improvements
+- Skeleton loading states for all cards
+- Empty state illustrations
+- Micro-interactions on hover
+- Animated number counters
+
+### 7.2 Sidebar Refinements
+- Smooth collapse/expand transitions
+- Tooltip labels when collapsed
+- Active state animations
+- Mobile: slide-out drawer pattern
+
+### 7.3 Form and Wizard Polish
+- Progress indicators with animations
+- Step transitions with slide effects
+- Inline validation with smooth reveals
+- Success state celebrations
+
+---
+
+## Part 8: Performance & Polish
+
+### 8.1 Image Optimization
+- Lazy loading for below-fold images
+- Responsive image sizes
+- WebP format support
+- Blur placeholder loading
+
+### 8.2 Animation Performance
+- GPU-accelerated transforms
+- Reduced motion media query support
+- Intersection Observer for scroll-triggered animations
+
+### 8.3 Accessibility
+- Focus visible styles
+- Skip to content link
+- ARIA labels for all interactive elements
+- Color contrast verification
+
+---
+
+## Technical Implementation Structure
+
+### New Files to Create
+
+**Layout Components:**
+```text
+src/components/marketing/MarketingLayout.tsx
+src/components/marketing/MarketingHeader.tsx
+src/components/marketing/MarketingFooter.tsx
+src/components/marketing/MobileNav.tsx
+```
+
+**Section Components:**
+```text
+src/components/marketing/HeroSection.tsx
+src/components/marketing/FeatureGrid.tsx
+src/components/marketing/FeatureShowcase.tsx
+src/components/marketing/TestimonialSection.tsx
+src/components/marketing/LogoCloud.tsx
+src/components/marketing/CTASection.tsx
+src/components/marketing/TimelineSection.tsx
+src/components/marketing/StatsSection.tsx
+src/components/marketing/ComparisonTable.tsx
+```
+
+**Marketing Pages:**
+```text
+src/pages/marketing/LandingPage.tsx
+src/pages/marketing/Features.tsx
+src/pages/marketing/About.tsx
+src/pages/marketing/Contact.tsx
+src/pages/marketing/Demo.tsx
+src/pages/marketing/Resources.tsx
+src/pages/marketing/Integrations.tsx
+src/pages/marketing/Partners.tsx
+src/pages/marketing/Careers.tsx
+src/pages/marketing/Press.tsx
+src/pages/marketing/Status.tsx
+src/pages/marketing/Changelog.tsx
+```
+
+**Use Case Pages:**
+```text
+src/pages/use-cases/SME.tsx
+src/pages/use-cases/Enterprise.tsx
+src/pages/use-cases/HR.tsx
+src/pages/use-cases/Fintech.tsx
+src/pages/use-cases/Healthcare.tsx
+```
+
+**Legal Pages:**
+```text
+src/pages/legal/Terms.tsx
+src/pages/legal/Privacy.tsx
+src/pages/legal/Cookies.tsx
+src/pages/legal/AUP.tsx
+src/pages/legal/DPA.tsx
+src/pages/legal/Security.tsx
+src/pages/legal/GDPR.tsx
+```
+
+**Design System Updates:**
+```text
+src/index.css (enhanced)
+tailwind.config.ts (enhanced)
+src/lib/animations.ts (new)
+```
+
+---
+
+## Route Structure Summary
+
+| Route | Page | Type |
+|-------|------|------|
+| `/` | Landing (logged out) / Dashboard (logged in) | Marketing/App |
+| `/features` | Features | Marketing |
+| `/pricing` | Pricing (exists, enhance) | Marketing |
+| `/about` | About Us | Marketing |
+| `/contact` | Contact | Marketing |
+| `/demo` | Book Demo | Marketing |
+| `/resources` | Resources Hub | Marketing |
+| `/integrations` | Integrations | Marketing |
+| `/partners` | Partner Program | Marketing |
+| `/careers` | Careers | Marketing |
+| `/press` | Press Kit | Marketing |
+| `/status` | System Status | Marketing |
+| `/changelog` | Changelog | Marketing |
+| `/use-cases/*` | Use Case Pages | Marketing |
+| `/terms` | Terms of Service | Legal |
+| `/privacy` | Privacy Policy | Legal |
+| `/cookies` | Cookie Policy | Legal |
+| `/aup` | Acceptable Use Policy | Legal |
+| `/dpa` | Data Processing Agreement | Legal |
+| `/security` | Security | Legal |
+| `/gdpr` | GDPR Compliance | Legal |
 
 ---
 
 ## Implementation Phases
 
-### Phase 1: Database Schema (First)
-- Create migration with all new columns
-- Use nullable fields to maintain backward compatibility
+**Phase 1: Design System Foundation**
+- Enhanced CSS variables and Tailwind config
+- Animation library
+- New utility classes
 
-### Phase 2: Mode Selection & Steps 0-4
-- Add mode toggle
-- Implement Geography/Scope step
-- Implement Value Chain step
-- Implement AI Definition Test step
-- Implement Use Case step
+**Phase 2: Marketing Layout & Core Components**
+- MarketingLayout, Header, Footer
+- Section components (Hero, Features, CTA, etc.)
 
-### Phase 3: Screening Steps 5-7
-- Prohibited Practices screening
-- High-Risk screening
-- Transparency obligations
+**Phase 3: Primary Marketing Pages**
+- Landing page
+- Features page
+- Enhanced Pricing page
 
-### Phase 4: Operational Steps 8-11
-- Data & Privacy
-- Human Oversight
-- Logging
-- Incident Handling
+**Phase 4: Legal Pages**
+- Terms, Privacy, Cookies, Security, DPA, AUP, GDPR
 
-### Phase 5: Compliance Steps 12-16
-- Workplace obligations
-- Public authority registration
-- Training & AI literacy
-- FRIA trigger check
-- Review & sign-off with auto-generated outputs
+**Phase 5: Secondary Marketing Pages**
+- About, Contact, Demo, Resources
+- Use case pages
 
----
+**Phase 6: Additional Pages**
+- Integrations, Partners, Careers, Press, Status, Changelog
 
-## UX Considerations
+**Phase 7: App Dashboard Polish**
+- Enhanced sidebar
+- Improved forms and wizards
+- Mobile app experience
 
-1. **Progressive disclosure** - Only show relevant steps based on previous answers
-2. **Save progress** - Allow saving partial completion
-3. **Skip logic** - If "Not an AI system", end wizard early
-4. **Help text** - Explain "Why we ask this" for each field
-5. **Mobile responsive** - Works on all screen sizes
-6. **Time estimate** - Show "~15-20 minutes" for Full Assessment
-
----
-
-## Auto-Generated Outputs
-
-Upon completion of Full Assessment:
-
-1. **Classification Memo PDF** - Summary of all answers and risk determination
-2. **Gap Checklist** - Controls missing + evidence missing
-3. **Task Plan** - Auto-created tasks with owners and due dates
-4. **Evidence Requests** - Assigned to specific people
+**Phase 8: Final Polish**
+- Cross-browser testing
+- Performance optimization
+- Accessibility audit
