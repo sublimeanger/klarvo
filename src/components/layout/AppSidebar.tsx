@@ -61,14 +61,13 @@ export function AppSidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center justify-between border-b px-4">
         <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Shield className="h-5 w-5 text-primary-foreground" />
-          </div>
+          <img 
+            src="/favicon.png" 
+            alt="Klarvo" 
+            className="h-9 w-9 rounded-lg"
+          />
           {!collapsed && (
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold">EU AI Act</span>
-              <span className="text-xs text-muted-foreground">Compliance Hub</span>
-            </div>
+            <span className="text-base font-semibold">Klarvo</span>
           )}
         </Link>
         <Button

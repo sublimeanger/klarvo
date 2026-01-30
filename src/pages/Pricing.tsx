@@ -32,10 +32,8 @@ export default function Pricing() {
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Shield className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-semibold">EU AI Act Compliance Hub</span>
+            <img src="/favicon.png" alt="Klarvo" className="h-8 w-8 rounded-lg" />
+            <span className="font-semibold">Klarvo</span>
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/" className="text-sm text-muted-foreground hover:text-foreground">
@@ -203,12 +201,8 @@ export default function Pricing() {
       <footer className="border-t py-8 px-4">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-primary">
-              <Shield className="h-3 w-3 text-primary-foreground" />
-            </div>
-            <span className="text-sm text-muted-foreground">
-              EU AI Act Compliance Hub
-            </span>
+            <img src="/favicon.png" alt="Klarvo" className="h-6 w-6 rounded" />
+            <span className="text-sm text-muted-foreground">Klarvo</span>
           </div>
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} All rights reserved.
