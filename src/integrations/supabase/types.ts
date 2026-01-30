@@ -269,6 +269,105 @@ export type Database = {
           },
         ]
       }
+      evidence_files: {
+        Row: {
+          ai_system_id: string | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          description: string | null
+          evidence_type: string | null
+          expires_at: string | null
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          name: string
+          organization_id: string
+          status: string
+          tags: string[] | null
+          updated_at: string
+          uploaded_by: string | null
+          vendor_id: string | null
+        }
+        Insert: {
+          ai_system_id?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          evidence_type?: string | null
+          expires_at?: string | null
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          name: string
+          organization_id: string
+          status?: string
+          tags?: string[] | null
+          updated_at?: string
+          uploaded_by?: string | null
+          vendor_id?: string | null
+        }
+        Update: {
+          ai_system_id?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          description?: string | null
+          evidence_type?: string | null
+          expires_at?: string | null
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          name?: string
+          organization_id?: string
+          status?: string
+          tags?: string[] | null
+          updated_at?: string
+          uploaded_by?: string | null
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_files_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidence_files_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidence_files_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidence_files_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidence_files_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           company_size: string | null

@@ -43,8 +43,13 @@
   4. Result with risk level determination
 - `AISystemDetail.tsx` - Updated to show classification status with re-classify option
 
+## ✅ Phase J: Evidence Vault
+- Storage bucket: `evidence` with org-based folder RLS
+- Database: `evidence_files` table with status, linkages, audit fields
+- `useEvidence.ts` - upload, download, delete, status update hooks
+- `Evidence.tsx` - Full UI with upload dialog, file list, status management
+
 ## Next Steps (Core Modules)
-- Evidence vault module with file uploads
 - Tasks management for compliance tracking
 - Policies & Templates module
 - Dashboard updates with classification metrics
