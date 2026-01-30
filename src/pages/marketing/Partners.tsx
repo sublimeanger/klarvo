@@ -63,7 +63,7 @@ const partnerBenefits = [
   {
     icon: BookOpen,
     title: "Sales Enablement",
-    description: "Access pitch decks, demo environments, case studies, and competitive battlecards."
+    description: "Access pitch decks, sandbox environments, case studies, and competitive battlecards."
   },
   {
     icon: Headphones,

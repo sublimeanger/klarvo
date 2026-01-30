@@ -113,7 +113,7 @@ export default function HealthcareUseCase() {
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link to="/demo">Book Healthcare Demo</Link>
+                  <Link to="/features">See How It Works</Link>
                 </Button>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function HealthcareUseCase() {
         title="Patient Safety Starts With Compliance"
         subtitle="Healthcare AI has the potential to save lives—but only if deployed safely and responsibly. Start your compliance journey today."
         primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
-        secondaryCta={{ label: "Book Healthcare Demo", href: "/demo" }}
+        secondaryCta={{ label: "Learn More", href: "/features" }}
         variant="gradient"
       />
     </MarketingLayout>

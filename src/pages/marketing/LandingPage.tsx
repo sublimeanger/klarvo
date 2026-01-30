@@ -163,7 +163,7 @@ export default function LandingPage() {
         title="Ready to Get EU AI Act Compliant?"
         subtitle="Start for free. No credit card required. Get your first AI system classified in under 10 minutes."
         primaryCta={{ label: "Start Free", href: "/auth/signup" }}
-        secondaryCta={{ label: "Book a Demo", href: "/demo" }}
+        secondaryCta={{ label: "See How It Works", href: "/features" }}
         variant="gradient"
       />
     </MarketingLayout>

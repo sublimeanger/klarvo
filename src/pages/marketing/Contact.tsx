@@ -280,13 +280,13 @@ export default function Contact() {
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-2">Looking for a Demo?</h3>
+                      <h3 className="font-semibold mb-2">Ready to Get Started?</h3>
                       <p className="text-muted-foreground text-sm mb-4">
-                        See Klarvo in action with a personalized walkthrough from our team.
+                        Explore our platform and classify your first AI system in under 10 minutes.
                       </p>
                       <Button size="sm" asChild>
-                        <Link to="/demo">
-                          Book a Demo
+                        <Link to="/auth/signup">
+                          Start Free Trial
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                       </Button>

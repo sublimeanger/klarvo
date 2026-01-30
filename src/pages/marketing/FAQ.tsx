@@ -322,7 +322,7 @@ export default function FAQ() {
         title="Ready to Get Started?"
         subtitle="Join hundreds of organizations using Klarvo for EU AI Act compliance."
         primaryCta={{ label: "Start Free", href: "/auth/signup" }}
-        secondaryCta={{ label: "Book a Demo", href: "/demo" }}
+        secondaryCta={{ label: "See Features", href: "/features" }}
         variant="gradient"
       />
     </MarketingLayout>
