@@ -13,6 +13,7 @@ import {
   ArrowUpDown,
   Loader2,
   Trash2,
+  GitCompare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,6 +45,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAISystems, useDeleteAISystem } from "@/hooks/useAISystems";
+import { AISystemComparisonDialog } from "@/components/ai-systems/AISystemComparisonDialog";
 
 const lifecycleStatusConfig: Record<string, { label: string; variant: "draft" | "pending" | "success" | "warning" }> = {
   draft: { label: "Draft", variant: "draft" },
@@ -56,6 +58,7 @@ const lifecycleStatusConfig: Record<string, { label: string; variant: "draft" | 
 export default function AISystems() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [compareOpen, setCompareOpen] = useState(false);
   const { systems, isLoading } = useAISystems();
   const deleteSystem = useDeleteAISystem();
   
@@ -96,12 +99,20 @@ export default function AISystems() {
             Inventory and manage your AI systems
           </p>
         </div>
-        <Button asChild>
-          <Link to="/ai-systems/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Add AI System
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          {systems.length >= 2 && (
+            <Button variant="outline" onClick={() => setCompareOpen(true)}>
+              <GitCompare className="mr-2 h-4 w-4" />
+              Compare Systems
+            </Button>
+          )}
+          <Button asChild>
+            <Link to="/ai-systems/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Add AI System
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -315,6 +326,13 @@ export default function AISystems() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Comparison Dialog */}
+      <AISystemComparisonDialog
+        open={compareOpen}
+        onOpenChange={setCompareOpen}
+        systems={systems}
+      />
     </div>
   );
 }
