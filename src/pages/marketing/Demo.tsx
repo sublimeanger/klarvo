@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { 
   Calendar,
   Play,
@@ -14,7 +16,9 @@ import {
   MessageSquare,
   Shield,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Zap,
+  Video
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -61,9 +65,7 @@ export default function Demo() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
     setIsSubmitting(false);
     setIsSubmitted(true);
     toast.success("Demo request received! We'll be in touch within 24 hours.");
@@ -77,58 +79,64 @@ export default function Demo() {
     <MarketingLayout>
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
+        <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
         <div className="absolute inset-0 pattern-grid opacity-30" />
+        
+        {/* Floating elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
         
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <Play className="h-4 w-4" />
+            <Badge variant="outline" className="mb-6 px-4 py-2 text-sm font-medium border-primary/30 bg-primary/5">
+              <Video className="h-4 w-4 mr-2 text-primary" />
               Book a Demo
-            </div>
+            </Badge>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               See Klarvo in{" "}
-              <span className="text-gradient">Action</span>
+              <span className="text-gradient-hero">Action</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground leading-relaxed">
+            <p className="text-xl text-muted-foreground leading-relaxed mb-8">
               Get a personalized walkthrough of our EU AI Act compliance platform 
               and discover how Klarvo can streamline your compliance journey.
             </p>
             
-            <div className="flex items-center justify-center gap-6 mt-8 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                30 minutes
-              </div>
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                1-on-1 session
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Flexible scheduling
-              </div>
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
+              {[
+                { icon: Clock, label: "30 minutes" },
+                { icon: Users, label: "1-on-1 session" },
+                { icon: Calendar, label: "Flexible scheduling" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50">
+                  <item.icon className="h-4 w-4 text-primary" />
+                  {item.label}
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Demo Highlights */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {demoHighlights.map((highlight, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30 text-center">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 text-center">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <highlight.icon className="h-6 w-6 text-primary" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <highlight.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{highlight.title}</h3>
+                    <p className="text-muted-foreground text-sm">
+                      {highlight.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{highlight.title}</h3>
-                  <p className="text-muted-foreground text-sm">
-                    {highlight.description}
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -142,9 +150,9 @@ export default function Demo() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 max-w-6xl mx-auto">
             {/* Form */}
             <div>
-              <Card className="border-border/50">
-                <CardHeader>
-                  <CardTitle>Request Your Demo</CardTitle>
+              <Card className="border-border/50 shadow-xl">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl">Request Your Demo</CardTitle>
                   <CardDescription>
                     Fill out the form and we'll schedule a personalized demo session.
                   </CardDescription>
@@ -152,8 +160,8 @@ export default function Demo() {
                 <CardContent>
                   {isSubmitted ? (
                     <div className="text-center py-12">
-                      <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle2 className="h-8 w-8 text-success" />
+                      <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-6 animate-scale-in">
+                        <CheckCircle2 className="h-10 w-10 text-success" />
                       </div>
                       <h3 className="text-xl font-semibold mb-2">Demo Requested!</h3>
                       <p className="text-muted-foreground mb-6">
@@ -168,7 +176,7 @@ export default function Demo() {
                       </Button>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="name">Full Name *</Label>
@@ -179,6 +187,7 @@ export default function Demo() {
                             required
                             value={formData.name}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                         <div className="space-y-2">
@@ -191,6 +200,7 @@ export default function Demo() {
                             required
                             value={formData.email}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                       </div>
@@ -205,6 +215,7 @@ export default function Demo() {
                             required
                             value={formData.company}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                         <div className="space-y-2">
@@ -215,6 +226,7 @@ export default function Demo() {
                             placeholder="Compliance Manager"
                             value={formData.role}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                       </div>
@@ -224,7 +236,7 @@ export default function Demo() {
                         <select
                           id="aiSystemCount"
                           name="aiSystemCount"
-                          className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                          className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm focus:ring-2 focus:ring-ring focus:ring-offset-2"
                           value={formData.aiSystemCount}
                           onChange={handleChange}
                         >
@@ -246,15 +258,16 @@ export default function Demo() {
                           rows={4}
                           value={formData.message}
                           onChange={handleChange}
+                          className="bg-background resize-none"
                         />
                       </div>
                       
-                      <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      <Button type="submit" className="w-full btn-premium" disabled={isSubmitting}>
                         {isSubmitting ? (
-                          <>
-                            <span className="animate-spin mr-2">⏳</span>
+                          <span className="flex items-center gap-2">
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             Submitting...
-                          </>
+                          </span>
                         ) : (
                           <>
                             <Calendar className="mr-2 h-4 w-4" />
@@ -271,7 +284,13 @@ export default function Demo() {
             {/* What You'll Learn */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
+                <Badge variant="outline" className="mb-4">
+                  <Zap className="h-3 w-3 mr-1" />
+                  What You'll Learn
+                </Badge>
+                <h2 className="text-2xl font-bold mb-4">
+                  Complete Platform Overview
+                </h2>
                 <p className="text-muted-foreground leading-relaxed">
                   Our product experts will show you exactly how Klarvo can help 
                   your organization achieve and maintain EU AI Act compliance.
@@ -280,22 +299,24 @@ export default function Demo() {
               
               <div className="space-y-4">
                 {whatYouLearn.map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                  <div key={i} className="flex items-start gap-3 group">
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-primary/30 transition-colors">
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                    </div>
                     <span className="text-foreground">{item}</span>
                   </div>
                 ))}
               </div>
               
-              <Card className="bg-primary-50 dark:bg-primary-950/30 border-primary-200 dark:border-primary-800">
+              <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900 flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
                       <Sparkles className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Can't wait?</h3>
-                      <p className="text-muted-foreground text-sm mb-3">
+                      <h3 className="font-semibold mb-2">Can't wait?</h3>
+                      <p className="text-muted-foreground text-sm mb-4">
                         Start your free trial now and explore the platform immediately.
                       </p>
                       <Button size="sm" asChild>

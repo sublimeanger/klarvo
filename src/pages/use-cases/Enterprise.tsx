@@ -1,4 +1,5 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { CTASection } from "@/components/marketing/CTASection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +13,8 @@ import {
   BarChart3,
   GitBranch,
   Globe,
-  Layers
+  Layers,
+  Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -83,20 +85,24 @@ export default function EnterpriseUseCase() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
+      <section className="relative py-20 lg:py-28 overflow-hidden">
+        <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
         <div className="absolute inset-0 pattern-grid opacity-30" />
+        
+        {/* Floating orbs */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
         
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge className="mb-6" variant="outline">
-              <Building2 className="h-3 w-3 mr-1" />
+            <Badge variant="outline" className="mb-6 px-4 py-2 border-primary/30 bg-primary/5">
+              <Building2 className="h-4 w-4 mr-2 text-primary" />
               Enterprise
             </Badge>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
               AI Governance at{" "}
-              <span className="text-gradient">Scale</span>
+              <span className="text-gradient-hero">Scale</span>
             </h1>
             
             <p className="text-xl text-muted-foreground leading-relaxed mb-8 max-w-3xl mx-auto">
@@ -106,7 +112,7 @@ export default function EnterpriseUseCase() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild>
+              <Button size="lg" className="btn-premium" asChild>
                 <Link to="/demo">
                   Schedule Enterprise Demo
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -121,28 +127,36 @@ export default function EnterpriseUseCase() {
       </section>
 
       {/* Enterprise Features Grid */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4">
+              <Zap className="h-3 w-3 mr-1" />
+              Enterprise-Grade
+            </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              Enterprise-Grade Capabilities
+              Built for Organizations at Scale
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Built for organizations that need robust security, scalability, and integration.
+              Robust security, scalability, and integration capabilities for large organizations.
             </p>
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {enterpriseFeatures.map((feature, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-6 w-6 text-primary" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <feature.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {feature.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {feature.description}
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -164,22 +178,24 @@ export default function EnterpriseUseCase() {
           
           <div className="max-w-4xl mx-auto space-y-4">
             {complianceChallenges.map((item, i) => (
-              <Card key={i} className="hover:shadow-md transition-shadow">
+              <Card key={i} className="hover:shadow-lg transition-shadow border-border/50">
                 <CardContent className="p-6">
                   <div className="grid md:grid-cols-2 gap-6 items-center">
                     <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center shrink-0 mt-0.5">
-                        <span className="text-destructive font-bold text-sm">!</span>
+                      <div className="w-10 h-10 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+                        <span className="text-destructive font-bold text-lg">!</span>
                       </div>
                       <div>
-                        <div className="text-sm text-muted-foreground mb-1">Challenge</div>
+                        <div className="text-xs font-medium text-destructive mb-1 uppercase tracking-wider">Challenge</div>
                         <div className="font-medium">{item.challenge}</div>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" />
+                      <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="h-5 w-5 text-success" />
+                      </div>
                       <div>
-                        <div className="text-sm text-muted-foreground mb-1">Klarvo Solution</div>
+                        <div className="text-xs font-medium text-success mb-1 uppercase tracking-wider">Solution</div>
                         <div className="text-foreground">{item.solution}</div>
                       </div>
                     </div>
@@ -192,7 +208,7 @@ export default function EnterpriseUseCase() {
       </section>
 
       {/* Enterprise Capabilities */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center max-w-6xl mx-auto">
             <div>
@@ -206,8 +222,10 @@ export default function EnterpriseUseCase() {
               
               <div className="grid sm:grid-cols-2 gap-3">
                 {enterpriseCapabilities.map((capability, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <div key={i} className="flex items-start gap-2 group">
+                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-primary/30 transition-colors">
+                      <CheckCircle2 className="h-3 w-3 text-primary" />
+                    </div>
                     <span className="text-sm">{capability}</span>
                   </div>
                 ))}
@@ -215,17 +233,17 @@ export default function EnterpriseUseCase() {
             </div>
             
             <div>
-              <Card className="bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-950/50 dark:to-primary-900/30 border-primary-200 dark:border-primary-800">
+              <Card className="glass-premium border-primary/20">
                 <CardHeader>
-                  <CardTitle>Enterprise Plan</CardTitle>
+                  <CardTitle className="text-2xl">Enterprise Plan</CardTitle>
                   <CardDescription>Custom pricing for your organization</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-4xl font-bold">Custom</div>
+                <CardContent className="space-y-6">
+                  <div className="text-5xl font-bold text-gradient">Custom</div>
                   <p className="text-muted-foreground">
                     Pricing based on your specific requirements, scale, and support needs.
                   </p>
-                  <Button className="w-full" size="lg" asChild>
+                  <Button className="w-full btn-premium" size="lg" asChild>
                     <Link to="/contact">
                       Contact Sales
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -239,28 +257,13 @@ export default function EnterpriseUseCase() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Shield className="h-16 w-16 mx-auto mb-6 opacity-90" />
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Ready to Scale AI Governance?
-          </h2>
-          <p className="text-xl text-primary-100 max-w-2xl mx-auto mb-8">
-            Let's discuss how Klarvo can support your organization's unique compliance requirements.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
-              <Link to="/demo">
-                Schedule Demo
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10" asChild>
-              <Link to="/contact">Talk to Sales</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        title="Ready to Scale AI Governance?"
+        subtitle="Let's discuss how Klarvo can support your organization's unique compliance requirements."
+        primaryCta={{ label: "Schedule Demo", href: "/demo" }}
+        secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
+        variant="gradient"
+      />
     </MarketingLayout>
   );
 }

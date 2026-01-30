@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { 
   Mail, 
   MessageSquare, 
@@ -14,9 +16,12 @@ import {
   Send,
   Headphones,
   FileQuestion,
-  Handshake
+  Handshake,
+  ArrowRight,
+  Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 const contactOptions = [
   {
@@ -24,21 +29,18 @@ const contactOptions = [
     title: "Customer Support",
     description: "Get help with your account or technical issues",
     action: "support@klarvo.io",
-    type: "email"
   },
   {
     icon: Handshake,
     title: "Sales Inquiries",
     description: "Learn about pricing and enterprise plans",
     action: "sales@klarvo.io",
-    type: "email"
   },
   {
     icon: FileQuestion,
     title: "Partnership Opportunities",
     description: "Explore integration and reseller partnerships",
     action: "partners@klarvo.io",
-    type: "email"
   }
 ];
 
@@ -56,10 +58,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
     setIsSubmitting(false);
     setIsSubmitted(true);
     toast.success("Message sent! We'll get back to you within 24 hours.");
@@ -72,50 +71,44 @@ export default function Contact() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <MessageSquare className="h-4 w-4" />
-              Get in Touch
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              We're Here to{" "}
-              <span className="text-gradient">Help</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Have questions about EU AI Act compliance or our platform? 
-              Our team typically responds within 24 hours.
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="Get in Touch"
+        title={
+          <>
+            <span className="text-foreground">We're Here to</span>{" "}
+            <span className="text-gradient-hero">Help</span>
+          </>
+        }
+        subtitle="Have questions about EU AI Act compliance or our platform? Our team typically responds within 24 hours."
+        variant="centered"
+        showTrustBadges={false}
+      />
 
       {/* Contact Options */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {contactOptions.map((option, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30 text-center">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 text-center">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <option.icon className="h-6 w-6 text-primary" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <option.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{option.title}</h3>
+                    <p className="text-muted-foreground text-sm mb-4">
+                      {option.description}
+                    </p>
+                    <a 
+                      href={`mailto:${option.action}`}
+                      className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium text-sm group/link"
+                    >
+                      {option.action}
+                      <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
+                    </a>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{option.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {option.description}
-                  </p>
-                  <a 
-                    href={`mailto:${option.action}`}
-                    className="text-primary hover:underline font-medium text-sm"
-                  >
-                    {option.action}
-                  </a>
                 </CardContent>
               </Card>
             ))}
@@ -129,9 +122,9 @@ export default function Contact() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 max-w-6xl mx-auto">
             {/* Form */}
             <div>
-              <Card className="border-border/50">
-                <CardHeader>
-                  <CardTitle>Send us a Message</CardTitle>
+              <Card className="border-border/50 shadow-xl">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl">Send us a Message</CardTitle>
                   <CardDescription>
                     Fill out the form below and we'll get back to you as soon as possible.
                   </CardDescription>
@@ -139,8 +132,8 @@ export default function Contact() {
                 <CardContent>
                   {isSubmitted ? (
                     <div className="text-center py-12">
-                      <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle2 className="h-8 w-8 text-success" />
+                      <div className="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-6 animate-scale-in">
+                        <CheckCircle2 className="h-10 w-10 text-success" />
                       </div>
                       <h3 className="text-xl font-semibold mb-2">Message Sent!</h3>
                       <p className="text-muted-foreground mb-6">
@@ -157,7 +150,7 @@ export default function Contact() {
                       </Button>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="grid sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="name">Full Name *</Label>
@@ -168,6 +161,7 @@ export default function Contact() {
                             required
                             value={formData.name}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                         <div className="space-y-2">
@@ -180,6 +174,7 @@ export default function Contact() {
                             required
                             value={formData.email}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                       </div>
@@ -193,6 +188,7 @@ export default function Contact() {
                             placeholder="Acme Inc."
                             value={formData.company}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                         <div className="space-y-2">
@@ -204,6 +200,7 @@ export default function Contact() {
                             required
                             value={formData.subject}
                             onChange={handleChange}
+                            className="bg-background"
                           />
                         </div>
                       </div>
@@ -218,15 +215,16 @@ export default function Contact() {
                           required
                           value={formData.message}
                           onChange={handleChange}
+                          className="bg-background resize-none"
                         />
                       </div>
                       
-                      <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      <Button type="submit" className="w-full btn-premium" disabled={isSubmitting}>
                         {isSubmitting ? (
-                          <>
-                            <span className="animate-spin mr-2">⏳</span>
+                          <span className="flex items-center gap-2">
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             Sending...
-                          </>
+                          </span>
                         ) : (
                           <>
                             <Send className="mr-2 h-4 w-4" />
@@ -240,7 +238,7 @@ export default function Contact() {
               </Card>
             </div>
             
-            {/* Info */}
+            {/* Info Sidebar */}
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-bold mb-4">Why Contact Us?</h2>
@@ -252,54 +250,48 @@ export default function Contact() {
               </div>
               
               <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center shrink-0">
-                    <Clock className="h-5 w-5 text-primary" />
+                {[
+                  { icon: Clock, title: "Response Time", desc: "We aim to respond to all inquiries within 24 business hours." },
+                  { icon: Building2, title: "Office Hours", desc: "Monday - Friday, 9:00 AM - 6:00 PM CET" },
+                  { icon: Mail, title: "General Inquiries", desc: "hello@klarvo.io", isLink: true },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-start gap-4 group">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-1">{item.title}</h3>
+                      {item.isLink ? (
+                        <a href={`mailto:${item.desc}`} className="text-primary hover:underline text-sm">
+                          {item.desc}
+                        </a>
+                      ) : (
+                        <p className="text-muted-foreground text-sm">{item.desc}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Response Time</h3>
-                    <p className="text-muted-foreground text-sm">
-                      We aim to respond to all inquiries within 24 business hours.
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center shrink-0">
-                    <Building2 className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Office Hours</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Monday - Friday, 9:00 AM - 6:00 PM CET
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center shrink-0">
-                    <Mail className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">General Inquiries</h3>
-                    <p className="text-muted-foreground text-sm">
-                      <a href="mailto:hello@klarvo.io" className="text-primary hover:underline">
-                        hello@klarvo.io
-                      </a>
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
               
-              <Card className="bg-primary-50 dark:bg-primary-950/30 border-primary-200 dark:border-primary-800">
+              <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20">
                 <CardContent className="p-6">
-                  <h3 className="font-semibold mb-2">Looking for a Demo?</h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    See Klarvo in action with a personalized walkthrough from our team.
-                  </p>
-                  <Button variant="outline" asChild>
-                    <a href="/demo">Book a Demo</a>
-                  </Button>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                      <Sparkles className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold mb-2">Looking for a Demo?</h3>
+                      <p className="text-muted-foreground text-sm mb-4">
+                        See Klarvo in action with a personalized walkthrough from our team.
+                      </p>
+                      <Button size="sm" asChild>
+                        <Link to="/demo">
+                          Book a Demo
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>

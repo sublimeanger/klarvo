@@ -1,6 +1,10 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
+import { CTASection } from "@/components/marketing/CTASection";
+import { AnimatedCounter } from "@/components/marketing/AnimatedCounter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { 
   Shield, 
   Users, 
@@ -9,7 +13,9 @@ import {
   Globe, 
   Award,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  Sparkles,
+  Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -37,61 +43,64 @@ const values = [
 ];
 
 const milestones = [
-  { year: "2024", event: "Klarvo founded to address EU AI Act compliance gap" },
-  { year: "2024", event: "Platform MVP launched with core inventory & classification" },
-  { year: "2025", event: "Full evidence vault and export pack capabilities released" },
-  { year: "2025", event: "FRIA workflow and control library modules added" },
+  { year: "2024", event: "Klarvo founded to address EU AI Act compliance gap", quarter: "Q1" },
+  { year: "2024", event: "Platform MVP launched with core inventory & classification", quarter: "Q3" },
+  { year: "2025", event: "Full evidence vault and export pack capabilities released", quarter: "Q1" },
+  { year: "2025", event: "FRIA workflow and control library modules added", quarter: "Q2" },
 ];
 
 const stats = [
-  { value: "500+", label: "AI Systems Documented" },
-  { value: "50+", label: "Organizations Served" },
-  { value: "10K+", label: "Evidence Files Managed" },
-  { value: "99.9%", label: "Platform Uptime" },
+  { value: 500, suffix: "+", label: "AI Systems Documented" },
+  { value: 50, suffix: "+", label: "Organizations Served" },
+  { value: 10, suffix: "K+", label: "Evidence Files Managed" },
+  { value: 99.9, suffix: "%", label: "Platform Uptime" },
+];
+
+const missionPoints = [
+  "Complete AI system inventory in minutes, not weeks",
+  "Automated risk classification with explainable results",
+  "One-click evidence packs that impress auditors",
+  "Continuous compliance, not point-in-time snapshots"
 ];
 
 export default function About() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <Globe className="h-4 w-4" />
-              About Klarvo
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              Making AI Compliance{" "}
-              <span className="text-gradient">Accessible</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              We're on a mission to democratize EU AI Act compliance. Every organization 
-              using AI deserves the tools to do it responsibly—without needing a team of 
-              lawyers or consultants.
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="About Klarvo"
+        title={
+          <>
+            <span className="text-foreground">Making AI Compliance</span>
+            <br />
+            <span className="text-gradient-hero">Accessible to Everyone</span>
+          </>
+        }
+        subtitle="We're on a mission to democratize EU AI Act compliance. Every organization using AI deserves the tools to do it responsibly—without needing a team of lawyers or consultants."
+        variant="centered"
+        showTrustBadges={false}
+      />
 
       {/* Mission Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+              <Badge variant="outline" className="mb-6">
+                <Target className="h-3 w-3 mr-1" />
                 Our Mission
+              </Badge>
+              
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+                Leveling the Playing Field
               </h2>
+              
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                 The EU AI Act represents the world's first comprehensive AI regulation. 
                 It's a landmark achievement for responsible AI—but compliance shouldn't 
                 be a privilege reserved for large enterprises with deep pockets.
               </p>
+              
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Klarvo exists to level the playing field. We provide SMEs with the same 
                 caliber of compliance tooling that Fortune 500 companies pay consultants 
@@ -99,27 +108,29 @@ export default function About() {
               </p>
               
               <div className="space-y-3">
-                {[
-                  "Complete AI system inventory in minutes, not weeks",
-                  "Automated risk classification with explainable results",
-                  "One-click evidence packs that impress auditors",
-                  "Continuous compliance, not point-in-time snapshots"
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                {missionPoints.map((item, i) => (
+                  <div key={i} className="flex items-start gap-3 group">
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-primary/30 transition-colors">
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                    </div>
                     <span className="text-foreground">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
             
+            {/* Stats Card */}
             <div className="relative">
-              <div className="glass-card rounded-2xl p-8 lg:p-12">
-                <div className="grid grid-cols-2 gap-6">
+              <div className="glass-premium rounded-2xl p-8 lg:p-10">
+                <div className="grid grid-cols-2 gap-8">
                   {stats.map((stat, i) => (
-                    <div key={i} className="text-center p-4">
-                      <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">
-                        {stat.value}
+                    <div key={i} className="text-center group">
+                      <div className="text-3xl lg:text-4xl font-bold text-gradient mb-2">
+                        <AnimatedCounter 
+                          value={stat.value} 
+                          suffix={stat.suffix}
+                          duration={2000}
+                        />
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {stat.label}
@@ -128,6 +139,9 @@ export default function About() {
                   ))}
                 </div>
               </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl blur-xl" />
             </div>
           </div>
         </div>
@@ -137,25 +151,34 @@ export default function About() {
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <Badge variant="outline" className="mb-4">
+              <Heart className="h-3 w-3 mr-1" />
               Our Values
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              The Principles That Guide Us
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              The principles that guide everything we build
+              Every feature we build, every decision we make, is guided by these core values
             </p>
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, i) => (
-              <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30">
+              <Card key={i} className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <value.icon className="h-6 w-6 text-primary" />
+                  {/* Background gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <value.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-3">{value.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {value.description}
+                    </p>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{value.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {value.description}
-                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -164,34 +187,46 @@ export default function About() {
       </section>
 
       {/* Timeline Section */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <Badge variant="outline" className="mb-4">
+              <Sparkles className="h-3 w-3 mr-1" />
               Our Journey
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Building the Future of AI Compliance
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Building the future of AI compliance, one milestone at a time
+              From idea to industry-leading platform
             </p>
           </div>
           
           <div className="max-w-3xl mx-auto">
             <div className="relative">
-              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border" />
+              {/* Animated line */}
+              <div className="absolute left-[18px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-border" />
               
               {milestones.map((milestone, i) => (
-                <div key={i} className="relative pl-12 pb-10 last:pb-0">
-                  <div className="absolute left-0 top-0 w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 border-4 border-background flex items-center justify-center">
+                <div key={i} className="relative pl-14 pb-12 last:pb-0 group">
+                  {/* Node */}
+                  <div className="absolute left-0 top-0 w-9 h-9 rounded-full bg-background border-2 border-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
                     <Award className="h-4 w-4 text-primary" />
                   </div>
-                  <div className="glass-card rounded-xl p-6">
-                    <div className="text-sm font-medium text-primary mb-1">
-                      {milestone.year}
-                    </div>
-                    <div className="text-foreground">
-                      {milestone.event}
-                    </div>
-                  </div>
+                  
+                  {/* Card */}
+                  <Card className="border-border/50 hover:border-primary/30 transition-colors hover:shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-3 mb-2">
+                        <Badge variant="secondary" className="font-mono">
+                          {milestone.year} {milestone.quarter}
+                        </Badge>
+                      </div>
+                      <p className="text-foreground font-medium">
+                        {milestone.event}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </div>
               ))}
             </div>
@@ -200,33 +235,13 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-              Ready to Join Us?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Whether you're looking to achieve compliance or join our team, 
-              we'd love to hear from you.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild>
-                <Link to="/auth/signup">
-                  Start Free Trial
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/careers">
-                  View Open Positions
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <CTASection
+        title="Ready to Join Us?"
+        subtitle="Whether you're looking to achieve compliance or join our team, we'd love to hear from you."
+        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        secondaryCta={{ label: "View Open Positions", href: "/careers" }}
+        variant="gradient"
+      />
     </MarketingLayout>
   );
 }
