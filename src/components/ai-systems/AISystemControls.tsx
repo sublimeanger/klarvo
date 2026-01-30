@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Play,
   Loader2,
+  FileCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Badge } from "@/components/ui/badge";
 import {
   useAISystemControls,
   useApplicableControls,
@@ -38,12 +40,21 @@ import {
   useUpdateControlStatus,
   type ControlImplementation,
 } from "@/hooks/useControls";
+import { useControlsEvidenceCounts } from "@/hooks/useControlEvidence";
+import { ControlEvidenceSection } from "@/components/controls/ControlEvidenceSection";
 
 interface AISystemControlsProps {
   aiSystemId: string;
   riskLevel: string | undefined;
   hasVendor: boolean;
   isClassified: boolean;
+}
+
+interface ControlCardProps {
+  implementation: ControlImplementation;
+  aiSystemId: string;
+  evidenceCount: number;
+  onStatusChange: (id: string, status: string) => void;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; variant: "draft" | "pending" | "success" | "warning"; icon: typeof Clock }> = {
@@ -67,11 +78,11 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 function ControlCard({ 
   implementation, 
+  aiSystemId,
+  evidenceCount,
   onStatusChange 
-}: { 
-  implementation: ControlImplementation;
-  onStatusChange: (id: string, status: string) => void;
-}) {
+}: ControlCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const control = implementation.control;
   if (!control) return null;
 
@@ -79,52 +90,83 @@ function ControlCard({
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className="flex items-start justify-between p-3 rounded-lg border bg-card hover:bg-muted/30 transition-colors">
-      <div className="flex items-start gap-3 flex-1">
-        <div className={`p-1.5 rounded-md ${
-          implementation.status === "implemented" ? "bg-success/10 text-success" :
-          implementation.status === "in_progress" ? "bg-warning/10 text-warning" :
-          "bg-muted text-muted-foreground"
-        }`}>
-          <StatusIcon className="h-4 w-4" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-muted-foreground">{control.code}</span>
-            <span className="font-medium text-sm">{control.name}</span>
+    <div className="rounded-lg border bg-card">
+      <div 
+        className="flex items-start justify-between p-3 hover:bg-muted/30 transition-colors cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-start gap-3 flex-1">
+          <div className={`p-1.5 rounded-md ${
+            implementation.status === "implemented" ? "bg-success/10 text-success" :
+            implementation.status === "in_progress" ? "bg-warning/10 text-warning" :
+            "bg-muted text-muted-foreground"
+          }`}>
+            <StatusIcon className="h-4 w-4" />
           </div>
-          {control.description && (
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-              {control.description}
-            </p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-mono text-xs text-muted-foreground">{control.code}</span>
+              <span className="font-medium text-sm">{control.name}</span>
+              {evidenceCount > 0 && (
+                <Badge variant="outline" className="text-xs">
+                  <FileCheck className="h-3 w-3 mr-1" />
+                  {evidenceCount}
+                </Badge>
+              )}
+            </div>
+            {control.description && (
+              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                {control.description}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+          <Select
+            value={implementation.status}
+            onValueChange={(value) => onStatusChange(implementation.id, value)}
+          >
+            <SelectTrigger className="w-[140px] h-8 text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="not_started">Not Started</SelectItem>
+              <SelectItem value="in_progress">In Progress</SelectItem>
+              <SelectItem value="implemented">Implemented</SelectItem>
+              <SelectItem value="not_applicable">N/A</SelectItem>
+            </SelectContent>
+          </Select>
+          {isExpanded ? (
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          ) : (
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
         </div>
       </div>
-      <Select
-        value={implementation.status}
-        onValueChange={(value) => onStatusChange(implementation.id, value)}
-      >
-        <SelectTrigger className="w-[140px] h-8 text-xs">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="not_started">Not Started</SelectItem>
-          <SelectItem value="in_progress">In Progress</SelectItem>
-          <SelectItem value="implemented">Implemented</SelectItem>
-          <SelectItem value="not_applicable">N/A</SelectItem>
-        </SelectContent>
-      </Select>
+      {isExpanded && (
+        <div className="px-3 pb-3 pt-1 border-t">
+          <ControlEvidenceSection
+            controlImplementationId={implementation.id}
+            aiSystemId={aiSystemId}
+            controlName={control.name}
+          />
+        </div>
+      )}
     </div>
   );
 }
 
 function CategorySection({ 
   category, 
-  controls, 
+  controls,
+  aiSystemId,
+  evidenceCounts,
   onStatusChange 
 }: { 
   category: string;
   controls: ControlImplementation[];
+  aiSystemId: string;
+  evidenceCounts: Record<string, number>;
   onStatusChange: (id: string, status: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(true);
@@ -161,6 +203,8 @@ function CategorySection({
           <ControlCard
             key={implementation.id}
             implementation={implementation}
+            aiSystemId={aiSystemId}
+            evidenceCount={evidenceCounts[implementation.id] || 0}
             onStatusChange={onStatusChange}
           />
         ))}
@@ -179,6 +223,10 @@ export function AISystemControls({
   const applicableControls = useApplicableControls(riskLevel, hasVendor);
   const initializeControls = useInitializeControls();
   const updateStatus = useUpdateControlStatus();
+  
+  // Fetch evidence counts for all controls
+  const controlIds = implementations?.map((impl) => impl.id) || [];
+  const { data: evidenceCounts = {} } = useControlsEvidenceCounts(controlIds);
 
   const handleInitialize = async () => {
     const controlIds = applicableControls.map((c) => c.id);
@@ -297,6 +345,8 @@ export function AISystemControls({
             key={category}
             category={category}
             controls={controls}
+            aiSystemId={aiSystemId}
+            evidenceCounts={evidenceCounts}
             onStatusChange={handleStatusChange}
           />
         ))}
