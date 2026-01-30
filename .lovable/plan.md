@@ -27,8 +27,13 @@
 - `AISystemWizard.tsx` - 3-step Quick Capture wizard
 - `AISystems.tsx` - connected to real database with empty states
 
+## ✅ Phase H: AI System Detail + Vendors Module
+- `AISystemDetail.tsx` - View/edit individual AI systems with ownership, status, vendor info
+- `Vendors.tsx` - Full vendor management with CRUD, due diligence status tracking
+- Added useUpdateVendor and useDeleteVendor hooks
+
 ## Next Steps (Core Modules)
-- AI System Detail page with edit functionality
-- Classification Engine (prohibited screening, Annex III, risk level)
-- Vendors management page
-- Evidence vault module
+- Classification Engine (prohibited screening, Annex III, risk level determination)
+- Evidence vault module with file uploads
+- Tasks management for compliance tracking
+- Policies & Templates module
