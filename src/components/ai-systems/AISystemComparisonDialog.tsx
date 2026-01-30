@@ -70,14 +70,14 @@ function ComparisonColumn({ system }: { system: ComparisonSystemData }) {
     : 0;
 
   return (
-    <div className="flex-1 min-w-[280px] border-r last:border-r-0 p-4 space-y-5">
+    <div className="flex-1 min-w-[240px] sm:min-w-[280px] border-r last:border-r-0 p-3 sm:p-4 space-y-4 sm:space-y-5">
       {/* System Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-            <Cpu className="h-4 w-4 text-primary" />
+          <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-primary/10">
+            <Cpu className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
           </div>
-          <h3 className="font-semibold text-sm truncate">{system.name}</h3>
+          <h3 className="font-semibold text-xs sm:text-sm truncate">{system.name}</h3>
         </div>
         <Badge className={statusConfig.color} variant="outline">
           {statusConfig.label}
@@ -240,19 +240,19 @@ export function AISystemComparisonDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] p-0">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle>Compare AI Systems</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="max-w-5xl max-h-[90vh] p-0 w-[95vw] sm:w-auto">
+        <DialogHeader className="p-4 sm:p-6 pb-0">
+          <DialogTitle className="text-base sm:text-lg">Compare AI Systems</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Select up to 4 systems to compare risk levels, control status, and evidence coverage side-by-side.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col h-[70vh]">
+        <div className="flex flex-col h-[65vh] sm:h-[70vh]">
           {/* System Selection */}
-          <div className="p-4 border-b bg-muted/30">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-medium">
+          <div className="p-3 sm:p-4 border-b bg-muted/30">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 mb-3">
+              <p className="text-xs sm:text-sm font-medium">
                 Select systems ({selectedIds.length}/4)
               </p>
               <div className="flex items-center gap-2">
