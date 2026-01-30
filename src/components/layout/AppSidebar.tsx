@@ -17,6 +17,7 @@ import {
   ChevronRight,
   LogOut,
   User,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -42,6 +43,7 @@ const navigation = [
   { name: "Tasks", href: "/tasks", icon: CheckSquare },
   { name: "Incidents", href: "/incidents", icon: AlertTriangle },
   { name: "Exports", href: "/exports", icon: Download },
+  { name: "Audit Log", href: "/audit-log", icon: Activity },
 ];
 
 const bottomNavigation = [

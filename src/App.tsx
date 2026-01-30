@@ -22,6 +22,7 @@ import Controls from "@/pages/Controls";
 import Training from "@/pages/Training";
 import Incidents from "@/pages/Incidents";
 import Exports from "@/pages/Exports";
+import AuditLog from "@/pages/AuditLog";
 import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import BillingSettings from "@/pages/Settings/Billing";
@@ -84,6 +85,7 @@ const App = () => (
               <Route path="/tasks" element={<Tasks />} />
               <Route path="/incidents" element={<Incidents />} />
               <Route path="/exports" element={<Exports />} />
+              <Route path="/audit-log" element={<AuditLog />} />
               <Route path="/settings" element={<GeneralSettings />} />
               <Route path="/settings/billing" element={<BillingSettings />} />
             </Route>

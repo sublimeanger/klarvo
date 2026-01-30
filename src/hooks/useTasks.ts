@@ -268,3 +268,79 @@ export function useDeleteTask() {
     },
   });
 }
+
+/**
+ * Bulk assign tasks to a team member
+ */
+export function useBulkAssignTasks() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      taskIds,
+      assignedTo,
+    }: {
+      taskIds: string[];
+      assignedTo: string | null;
+    }) => {
+      if (taskIds.length === 0) return 0;
+
+      const { error } = await supabase
+        .from("tasks")
+        .update({ assigned_to: assignedTo })
+        .in("id", taskIds);
+
+      if (error) throw error;
+      return taskIds.length;
+    },
+    onSuccess: (count) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      toast.success(`Assigned ${count} tasks`);
+    },
+    onError: (error) => {
+      toast.error("Failed to assign tasks", { description: error.message });
+    },
+  });
+}
+
+/**
+ * Bulk update task status
+ */
+export function useBulkUpdateTaskStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      taskIds,
+      status,
+    }: {
+      taskIds: string[];
+      status: Task["status"];
+    }) => {
+      if (taskIds.length === 0) return 0;
+
+      const updateData: Record<string, unknown> = { status };
+      if (status === "done") {
+        updateData.completed_at = new Date().toISOString();
+      } else {
+        updateData.completed_at = null;
+      }
+
+      const { error } = await supabase
+        .from("tasks")
+        .update(updateData)
+        .in("id", taskIds);
+
+      if (error) throw error;
+      return taskIds.length;
+    },
+    onSuccess: (count) => {
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard-metrics"] });
+      toast.success(`Updated ${count} tasks`);
+    },
+    onError: (error) => {
+      toast.error("Failed to update tasks", { description: error.message });
+    },
+  });
+}
