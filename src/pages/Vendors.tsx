@@ -347,7 +347,10 @@ export default function Vendors() {
               {filteredVendors.map((vendor) => (
                 <TableRow key={vendor.id}>
                   <TableCell>
-                    <div className="flex items-center gap-3">
+                    <Link
+                      to={`/vendors/${vendor.id}`}
+                      className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                    >
                       <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
                         <Building2 className="h-4 w-4 text-primary" />
                       </div>
@@ -359,7 +362,7 @@ export default function Vendors() {
                           </p>
                         )}
                       </div>
-                    </div>
+                    </Link>
                   </TableCell>
                   <TableCell>
                     {vendor.website ? (
@@ -430,6 +433,9 @@ export default function Vendors() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link to={`/vendors/${vendor.id}`}>View Details</Link>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>Edit Vendor</DropdownMenuItem>
                         <DropdownMenuItem>Upload Documents</DropdownMenuItem>
                         <DropdownMenuSeparator />

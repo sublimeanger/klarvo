@@ -120,6 +120,13 @@
 - `Controls.tsx` - browsable control library with search, category filtering, accordion view
 - Controls mapped by risk level (all, high_risk, limited_risk, vendor_based)
 
+## ✅ Phase U: Vendor Attestations
+- Database: `vendor_attestations` table with type, validity dates, verification status
+- `useVendorAttestations.ts` - CRUD operations for attestations
+- `VendorAttestations.tsx` - Component with stats, add dialog, verification workflow
+- `VendorDetail.tsx` - Vendor detail page with info, linked AI systems, and attestations
+- 10 attestation types: AI Act compliance, SOC2, ISO27001, model card, DPA, etc.
+
 ## Next Steps (Remaining Enhancements)
-- Vendor attestation tracking
 - Control implementation UI per AI system
+- Dashboard enhancements with control/attestation stats
