@@ -64,6 +64,7 @@ import { useOrganization } from "@/hooks/useOrganization";
 import { useAuth } from "@/contexts/AuthContext";
 import { ClassificationMemoPDF } from "@/components/exports/ClassificationMemoPDF";
 import { AISystemPDF } from "@/components/exports/AISystemPDF";
+import { FRIAReportPDF } from "@/components/exports/FRIAReportPDF";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -116,6 +117,19 @@ export default function AISystemDetail() {
     if (!system?.signoff_reviewer_id) return undefined;
     const reviewer = members.find(m => m.id === system.signoff_reviewer_id);
     return reviewer?.full_name || undefined;
+  };
+
+  // Get FRIA owner and approver names
+  const getFRIAOwnerName = () => {
+    if (!fria?.assessment_owner_id) return undefined;
+    const owner = members.find(m => m.id === fria.assessment_owner_id);
+    return owner?.full_name || undefined;
+  };
+
+  const getFRIAApproverName = () => {
+    if (!fria?.approved_by) return undefined;
+    const approver = members.find(m => m.id === fria.approved_by);
+    return approver?.full_name || undefined;
   };
 
   // Export Classification Memo PDF
@@ -178,6 +192,38 @@ export default function AISystemDetail() {
     } catch (err) {
       console.error("Export failed:", err);
       toast.error("Failed to export Evidence Pack");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Export FRIA Report PDF
+  const handleExportFRIA = async () => {
+    if (!system || !organization || !fria) return;
+    
+    setIsExporting(true);
+    try {
+      const blob = await pdf(
+        <FRIAReportPDF
+          fria={fria}
+          systemName={system.name}
+          organizationName={organization.name}
+          ownerName={getFRIAOwnerName()}
+          approverName={getFRIAApproverName()}
+        />
+      ).toBlob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${system.name.replace(/[^a-z0-9]/gi, "_")}_FRIA_Report.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      toast.success("FRIA Report exported successfully");
+    } catch (err) {
+      console.error("Export failed:", err);
+      toast.error("Failed to export FRIA Report");
     } finally {
       setIsExporting(false);
     }
@@ -817,6 +863,21 @@ export default function AISystemDetail() {
                 )}
                 Evidence Pack (PDF)
               </Button>
+              {fria && (
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start" 
+                  onClick={handleExportFRIA}
+                  disabled={isExporting}
+                >
+                  {isExporting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Scale className="mr-2 h-4 w-4" />
+                  )}
+                  FRIA Report (PDF)
+                </Button>
+              )}
             </CardContent>
           </Card>
 
