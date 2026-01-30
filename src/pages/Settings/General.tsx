@@ -155,31 +155,33 @@ export default function GeneralSettings() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your organization and team settings
+        <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Settings</h1>
+        <p className="text-sm text-muted-foreground">
+          Manage organization and team settings
         </p>
       </div>
 
-      <Tabs defaultValue="organization" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="organization" className="flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
-            Organization
+      <Tabs defaultValue="organization" className="space-y-4 sm:space-y-6">
+        <TabsList className="w-full sm:w-auto overflow-x-auto">
+          <TabsTrigger value="organization" className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Organization</span>
+            <span className="sm:hidden">Org</span>
           </TabsTrigger>
-          <TabsTrigger value="team" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
+          <TabsTrigger value="team" className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             Team
           </TabsTrigger>
-          <TabsTrigger value="notifications" className="flex items-center gap-2">
-            <Bell className="h-4 w-4" />
-            Notifications
+          <TabsTrigger value="notifications" className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <Bell className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">Notifications</span>
+            <span className="sm:hidden">Alerts</span>
           </TabsTrigger>
           <TabsTrigger value="billing" asChild>
-            <Link to="/settings/billing" className="flex items-center gap-2">
-              <CreditCard className="h-4 w-4" />
+            <Link to="/settings/billing" className="flex items-center gap-1.5 text-xs sm:text-sm">
+              <CreditCard className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Billing
             </Link>
           </TabsTrigger>
@@ -206,7 +208,7 @@ export default function GeneralSettings() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="industry">Industry Sector</Label>
                   <Select
