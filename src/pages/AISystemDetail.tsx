@@ -342,25 +342,25 @@ export default function AISystemDetail() {
   const statusConfig = lifecycleStatusConfig[system.lifecycle_status] || lifecycleStatusConfig.draft;
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/ai-systems")}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate("/ai-systems")} className="shrink-0">
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-              <Cpu className="h-6 w-6 text-primary" />
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+              <Cpu className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             </div>
-            <div>
-              <h1 className="text-2xl font-semibold tracking-tight">{system.name}</h1>
-              <div className="flex items-center gap-2 mt-1">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-2xl font-semibold tracking-tight truncate">{system.name}</h1>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <StatusBadge variant={statusConfig.variant} dot>
                   {statusConfig.label}
                 </StatusBadge>
                 {system.internal_reference_id && (
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     ID: {system.internal_reference_id}
                   </span>
                 )}
@@ -369,31 +369,31 @@ export default function AISystemDetail() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto sm:ml-0">
           {isEditing ? (
             <>
-              <Button variant="outline" onClick={handleCancel}>
-                <X className="mr-2 h-4 w-4" />
-                Cancel
+              <Button variant="outline" onClick={handleCancel} size="sm">
+                <X className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Cancel</span>
               </Button>
-              <Button onClick={handleSave} disabled={updateSystem.isPending}>
+              <Button onClick={handleSave} disabled={updateSystem.isPending} size="sm">
                 {updateSystem.isPending ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Save className="mr-2 h-4 w-4" />
+                  <Save className="mr-1 sm:mr-2 h-4 w-4" />
                 )}
-                Save Changes
+                Save
               </Button>
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={handleEdit}>
-                <Edit2 className="mr-2 h-4 w-4" />
-                Edit
+              <Button variant="outline" onClick={handleEdit} size="sm">
+                <Edit2 className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Edit</span>
               </Button>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(true)}>
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
+              <Button variant="outline" onClick={() => setShowDeleteDialog(true)} size="sm">
+                <Trash2 className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Delete</span>
               </Button>
             </>
           )}
