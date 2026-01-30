@@ -20,7 +20,7 @@ export function Step5ValueChain({ data, onChange }: Step5ValueChainProps) {
   const showProviderQuestion = data.value_chain_role.includes("provider");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <RadioGroupField
         label="Is the AI system built by your organisation?"
         options={BUILT_INTERNALLY_OPTIONS}
@@ -58,20 +58,20 @@ export function Step5ValueChain({ data, onChange }: Step5ValueChainProps) {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="foundation_model">Foundation model / Model provider (if any)</Label>
+        <Label htmlFor="foundation_model" className="text-sm">Foundation model / Model provider (if any)</Label>
         <Input
           id="foundation_model"
           placeholder="e.g., OpenAI GPT-4, Claude 3, Llama 3"
           value={data.foundation_model}
           onChange={(e) => onChange({ foundation_model: e.target.value })}
         />
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           The underlying AI model or API used (if known)
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contract_url">Contract / Terms link</Label>
+        <Label htmlFor="contract_url" className="text-sm">Contract / Terms link</Label>
         <Input
           id="contract_url"
           type="url"
@@ -79,13 +79,13 @@ export function Step5ValueChain({ data, onChange }: Step5ValueChainProps) {
           value={data.contract_url}
           onChange={(e) => onChange({ contract_url: e.target.value })}
         />
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Link to vendor contract, terms of service, or internal documentation
         </p>
       </div>
 
-      <div className="rounded-lg border border-dashed bg-muted/50 p-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="rounded-lg border border-dashed bg-muted/50 p-3 sm:p-4">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           <strong>Why we ask:</strong> The EU AI Act assigns different obligations based on 
           your role. Deployers (who use AI) have duties like human oversight and monitoring. 
           Providers (who build/sell AI) have more extensive requirements.
