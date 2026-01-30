@@ -359,7 +359,7 @@ export default function Policies() {
 
       {/* Create Policy Dialog */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create Policy</DialogTitle>
             <DialogDescription>
@@ -367,7 +367,7 @@ export default function Policies() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Policy Name *</Label>
                 <Input
@@ -411,17 +411,18 @@ export default function Policies() {
                 value={newPolicy.content}
                 onChange={(e) => setNewPolicy({ ...newPolicy, content: e.target.value })}
                 placeholder="Policy content (Markdown supported)"
-                rows={8}
+                rows={6}
               />
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={() => setShowAddDialog(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button
               onClick={handleCreate}
               disabled={!newPolicy.name.trim() || createPolicy.isPending}
+              className="w-full sm:w-auto"
             >
               {createPolicy.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Policy

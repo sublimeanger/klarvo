@@ -331,129 +331,228 @@ export default function Vendors() {
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-lg border bg-card">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Vendor</TableHead>
-                <TableHead>Website</TableHead>
-                <TableHead>Contact</TableHead>
-                <TableHead>Due Diligence</TableHead>
-                <TableHead>Contract Renewal</TableHead>
-                <TableHead className="w-12"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredVendors.map((vendor) => (
-                <TableRow key={vendor.id}>
-                  <TableCell>
-                    <Link
-                      to={`/vendors/${vendor.id}`}
-                      className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-                    >
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                        <Building2 className="h-4 w-4 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium">{vendor.name}</p>
-                        {vendor.notes && (
-                          <p className="text-xs text-muted-foreground line-clamp-1 max-w-[200px]">
-                            {vendor.notes}
-                          </p>
-                        )}
-                      </div>
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {vendor.website ? (
+        <>
+          {/* Mobile Cards */}
+          <div className="space-y-3 md:hidden">
+            {filteredVendors.map((vendor) => (
+              <div key={vendor.id} className="rounded-lg border bg-card p-3">
+                <div className="flex items-start justify-between mb-2">
+                  <Link
+                    to={`/vendors/${vendor.id}`}
+                    className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                      <Building2 className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium text-sm truncate">{vendor.name}</p>
+                      {vendor.notes && (
+                        <p className="text-xs text-muted-foreground truncate max-w-[180px]">
+                          {vendor.notes}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to={`/vendors/${vendor.id}`}>View Details</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>Edit Vendor</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => setDeleteId(vendor.id)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                
+                <div className="flex items-center justify-between gap-2 pt-2 border-t">
+                  <Select
+                    value={vendor.due_diligence_status}
+                    onValueChange={(v) => handleStatusChange(vendor.id, v as DueDiligenceStatus)}
+                  >
+                    <SelectTrigger className="w-[120px] h-7 text-xs">
+                      <StatusBadge
+                        variant={dueDiligenceConfig[vendor.due_diligence_status]?.variant || "draft"}
+                        dot
+                        className="text-xs"
+                      >
+                        {dueDiligenceConfig[vendor.due_diligence_status]?.label || vendor.due_diligence_status}
+                      </StatusBadge>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="not_started">Not Started</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="needs_review">Needs Review</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <div className="flex items-center gap-2">
+                    {vendor.website && (
                       <a
                         href={vendor.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary flex items-center gap-1 hover:underline"
+                        className="text-primary p-1"
                       >
-                        {vendor.website.replace(/^https?:\/\//, "").split("/")[0]}
-                        <ExternalLink className="h-3 w-3" />
+                        <ExternalLink className="h-4 w-4" />
                       </a>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
                     )}
-                  </TableCell>
-                  <TableCell>
-                    {vendor.contact_email ? (
-                      <a
-                        href={`mailto:${vendor.contact_email}`}
-                        className="flex items-center gap-1 text-primary hover:underline"
-                      >
-                        <Mail className="h-3 w-3" />
-                        {vendor.contact_email}
+                    {vendor.contact_email && (
+                      <a href={`mailto:${vendor.contact_email}`} className="text-primary p-1">
+                        <Mail className="h-4 w-4" />
                       </a>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
                     )}
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      value={vendor.due_diligence_status}
-                      onValueChange={(v) => handleStatusChange(vendor.id, v as DueDiligenceStatus)}
-                    >
-                      <SelectTrigger className="w-[140px] h-8">
-                        <StatusBadge
-                          variant={dueDiligenceConfig[vendor.due_diligence_status]?.variant || "draft"}
-                          dot
-                        >
-                          {dueDiligenceConfig[vendor.due_diligence_status]?.label || vendor.due_diligence_status}
-                        </StatusBadge>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="not_started">Not Started</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="needs_review">Needs Review</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    {vendor.contract_renewal_date ? (
-                      <div className="flex items-center gap-1 text-sm">
-                        <Calendar className="h-3 w-3 text-muted-foreground" />
+                    {vendor.contract_renewal_date && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
                         {format(new Date(vendor.contract_renewal_date), "PP")}
-                      </div>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
+                      </span>
                     )}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link to={`/vendors/${vendor.id}`}>View Details</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>Edit Vendor</DropdownMenuItem>
-                        <DropdownMenuItem>Upload Documents</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => setDeleteId(vendor.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete Vendor
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table */}
+          <div className="hidden md:block rounded-lg border bg-card">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Vendor</TableHead>
+                  <TableHead>Website</TableHead>
+                  <TableHead>Contact</TableHead>
+                  <TableHead>Due Diligence</TableHead>
+                  <TableHead>Contract Renewal</TableHead>
+                  <TableHead className="w-12"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredVendors.map((vendor) => (
+                  <TableRow key={vendor.id}>
+                    <TableCell>
+                      <Link
+                        to={`/vendors/${vendor.id}`}
+                        className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                      >
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                          <Building2 className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-medium">{vendor.name}</p>
+                          {vendor.notes && (
+                            <p className="text-xs text-muted-foreground line-clamp-1 max-w-[200px]">
+                              {vendor.notes}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      {vendor.website ? (
+                        <a
+                          href={vendor.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary flex items-center gap-1 hover:underline"
+                        >
+                          {vendor.website.replace(/^https?:\/\//, "").split("/")[0]}
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {vendor.contact_email ? (
+                        <a
+                          href={`mailto:${vendor.contact_email}`}
+                          className="flex items-center gap-1 text-primary hover:underline"
+                        >
+                          <Mail className="h-3 w-3" />
+                          {vendor.contact_email}
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Select
+                        value={vendor.due_diligence_status}
+                        onValueChange={(v) => handleStatusChange(vendor.id, v as DueDiligenceStatus)}
+                      >
+                        <SelectTrigger className="w-[140px] h-8">
+                          <StatusBadge
+                            variant={dueDiligenceConfig[vendor.due_diligence_status]?.variant || "draft"}
+                            dot
+                          >
+                            {dueDiligenceConfig[vendor.due_diligence_status]?.label || vendor.due_diligence_status}
+                          </StatusBadge>
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="not_started">Not Started</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="needs_review">Needs Review</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      {vendor.contract_renewal_date ? (
+                        <div className="flex items-center gap-1 text-sm">
+                          <Calendar className="h-3 w-3 text-muted-foreground" />
+                          {format(new Date(vendor.contract_renewal_date), "PP")}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link to={`/vendors/${vendor.id}`}>View Details</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>Edit Vendor</DropdownMenuItem>
+                          <DropdownMenuItem>Upload Documents</DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleteId(vendor.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete Vendor
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
 
       {/* Delete Confirmation */}

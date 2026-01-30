@@ -108,12 +108,14 @@ export default function DocsArticle() {
       
       <div className="flex-1 pt-16 md:pt-20">
         <div className="flex">
-          {/* Sidebar */}
-          <DocsSidebar />
+          {/* Sidebar - hidden on mobile/tablet */}
+          <div className="hidden lg:block">
+            <DocsSidebar />
+          </div>
 
           {/* Main Content */}
           <main id="main-content" className="flex-1 min-w-0" tabIndex={-1}>
-            <div className="max-w-4xl mx-auto px-6 py-12">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
               {/* Breadcrumb */}
               <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
                 <Link to="/docs" className="hover:text-foreground transition-colors">
@@ -163,10 +165,10 @@ export default function DocsArticle() {
               />
 
               {/* Article Footer */}
-              <footer className="mt-16 pt-8 border-t border-border/50">
+              <footer className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-border/50">
                 {/* Feedback */}
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                     <span className="text-sm text-muted-foreground">Was this helpful?</span>
                     <div className="flex items-center gap-2">
                       <Button variant="outline" size="sm" onClick={() => toast.success("Thanks for your feedback!")}>
@@ -179,7 +181,7 @@ export default function DocsArticle() {
                       </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center">
                     <Button variant="ghost" size="sm" onClick={handleCopyLink}>
                       <Copy className="h-4 w-4 mr-1" />
                       Copy link
@@ -191,7 +193,7 @@ export default function DocsArticle() {
                 {relatedArticles.length > 0 && (
                   <div className="mb-8">
                     <h3 className="text-lg font-semibold mb-4">Related Articles</h3>
-                    <div className="grid sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                       {relatedArticles.map((related) => (
                         <Card key={related.slug} className="group hover:border-primary/30 transition-colors">
                           <CardContent className="p-4">
@@ -217,57 +219,57 @@ export default function DocsArticle() {
                 )}
 
                 {/* Prev/Next Navigation */}
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                   {prevArticle ? (
                     <Link
                       to={`/docs/${prevArticle.slug}`}
-                      className="group flex-1 p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors"
+                      className="group flex-1 p-3 sm:p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors"
                     >
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                         <ArrowLeft className="h-4 w-4" />
                         Previous
                       </div>
-                      <div className="font-medium group-hover:text-primary transition-colors">
+                      <div className="font-medium group-hover:text-primary transition-colors text-sm sm:text-base">
                         {prevArticle.title}
                       </div>
                     </Link>
                   ) : (
-                    <div className="flex-1" />
+                    <div className="hidden sm:block flex-1" />
                   )}
                   
                   {nextArticle ? (
                     <Link
                       to={`/docs/${nextArticle.slug}`}
-                      className="group flex-1 p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors text-right"
+                      className="group flex-1 p-3 sm:p-4 rounded-lg border border-border/50 hover:border-primary/30 transition-colors sm:text-right"
                     >
-                      <div className="flex items-center justify-end gap-2 text-sm text-muted-foreground mb-1">
+                      <div className="flex items-center sm:justify-end gap-2 text-sm text-muted-foreground mb-1">
                         Next
                         <ArrowRight className="h-4 w-4" />
                       </div>
-                      <div className="font-medium group-hover:text-primary transition-colors">
+                      <div className="font-medium group-hover:text-primary transition-colors text-sm sm:text-base">
                         {nextArticle.title}
                       </div>
                     </Link>
                   ) : (
-                    <div className="flex-1" />
+                    <div className="hidden sm:block flex-1" />
                   )}
                 </div>
 
                 {/* Contact Support */}
                 <Card className="mt-8 bg-primary/5 border-primary/20">
-                  <CardContent className="p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <MessageCircle className="h-6 w-6 text-primary" />
+                  <CardContent className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                       </div>
                       <div>
-                        <h4 className="font-semibold">Still need help?</h4>
-                        <p className="text-sm text-muted-foreground">
+                        <h4 className="font-semibold text-sm sm:text-base">Still need help?</h4>
+                        <p className="text-xs sm:text-sm text-muted-foreground">
                           Our support team is ready to assist you.
                         </p>
                       </div>
                     </div>
-                    <Button asChild>
+                    <Button asChild size="sm" className="w-full sm:w-auto">
                       <Link to="/contact">
                         Contact Support
                         <ExternalLink className="ml-2 h-4 w-4" />

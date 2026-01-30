@@ -44,8 +44,10 @@ export default function Docs() {
       
       <div className="flex-1 pt-16 md:pt-20">
         <div className="flex">
-          {/* Sidebar */}
-          <DocsSidebar />
+          {/* Sidebar - hidden on mobile/tablet */}
+          <div className="hidden lg:block">
+            <DocsSidebar />
+          </div>
 
           {/* Main Content */}
           <main id="main-content" className="flex-1 min-w-0" tabIndex={-1}>
@@ -64,7 +66,7 @@ export default function Docs() {
                     Documentation
                   </Badge>
                   
-                  <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
                     <span className="text-foreground">How Can We</span>{" "}
                     <span className="text-gradient-hero">Help You?</span>
                   </h1>
@@ -117,7 +119,7 @@ export default function Docs() {
               {/* Getting Started Cards */}
               <section className="mb-16">
                 <h2 className="text-2xl font-bold mb-6">Get Started</h2>
-                <div className="grid sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Card className="group hover:shadow-lg transition-all hover:border-primary/30">
                     <CardContent className="p-6">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -189,7 +191,7 @@ export default function Docs() {
                   </Button>
                 </div>
                 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   {videoTutorials.map((video, i) => (
                     <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30 overflow-hidden">
                       <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center relative">
@@ -215,7 +217,7 @@ export default function Docs() {
               <section>
                 <h2 className="text-2xl font-bold mb-6">Browse by Category</h2>
                 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {filteredCategories.map((category, i) => (
                     <Card key={i} className="group hover:shadow-lg transition-all hover:border-primary/30">
                       <CardHeader className="pb-3">

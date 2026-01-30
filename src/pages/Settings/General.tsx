@@ -283,36 +283,48 @@ export default function GeneralSettings() {
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                 </div>
               ) : members && members.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Member</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Joined</TableHead>
-                      {isAdmin && <TableHead className="w-12"></TableHead>}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                <>
+                  {/* Mobile Cards */}
+                  <div className="space-y-3 md:hidden">
                     {members.map((member) => (
-                      <TableRow key={member.id}>
-                        <TableCell>
+                      <div key={member.id} className="rounded-lg border bg-card p-3">
+                        <div className="flex items-start justify-between">
                           <div className="flex items-center gap-3">
                             <div className="rounded-full bg-muted p-2">
                               <User className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <div>
-                              <p className="font-medium">
+                              <p className="font-medium text-sm">
                                 {member.full_name || "Unnamed User"}
+                                {member.id === user?.id && (
+                                  <span className="text-xs text-muted-foreground ml-1">(You)</span>
+                                )}
                               </p>
-                              {member.id === user?.id && (
-                                <span className="text-xs text-muted-foreground">
-                                  (You)
-                                </span>
-                              )}
+                              <p className="text-xs text-muted-foreground">
+                                Joined {new Date(member.created_at).toLocaleDateString()}
+                              </p>
                             </div>
                           </div>
-                        </TableCell>
-                        <TableCell>
+                          {isAdmin && member.id !== user?.id && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={() => setMemberToRemove(member.id)}
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Remove
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
+                        </div>
+                        <div className="mt-3 pt-3 border-t">
                           {isAdmin && member.id !== user?.id ? (
                             <Select
                               value={member.user_role?.role || "viewer"}
@@ -320,7 +332,7 @@ export default function GeneralSettings() {
                                 handleRoleChange(member.id, value as Enums<"app_role">)
                               }
                             >
-                              <SelectTrigger className="w-[160px]">
+                              <SelectTrigger className="h-8">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -339,36 +351,101 @@ export default function GeneralSettings() {
                               {ROLES.find((r) => r.value === member.user_role?.role)?.label || "Viewer"}
                             </Badge>
                           )}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {new Date(member.created_at).toLocaleDateString()}
-                        </TableCell>
-                        {isAdmin && (
-                          <TableCell>
-                            {member.id !== user?.id && (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button variant="ghost" size="icon">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem
-                                    className="text-destructive"
-                                    onClick={() => setMemberToRemove(member.id)}
-                                  >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Remove from organization
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            )}
-                          </TableCell>
-                        )}
-                      </TableRow>
+                        </div>
+                      </div>
                     ))}
-                  </TableBody>
-                </Table>
+                  </div>
+
+                  {/* Desktop Table */}
+                  <div className="hidden md:block">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Member</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Joined</TableHead>
+                          {isAdmin && <TableHead className="w-12"></TableHead>}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {members.map((member) => (
+                          <TableRow key={member.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <div className="rounded-full bg-muted p-2">
+                                  <User className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <div>
+                                  <p className="font-medium">
+                                    {member.full_name || "Unnamed User"}
+                                  </p>
+                                  {member.id === user?.id && (
+                                    <span className="text-xs text-muted-foreground">
+                                      (You)
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {isAdmin && member.id !== user?.id ? (
+                                <Select
+                                  value={member.user_role?.role || "viewer"}
+                                  onValueChange={(value) =>
+                                    handleRoleChange(member.id, value as Enums<"app_role">)
+                                  }
+                                >
+                                  <SelectTrigger className="w-[160px]">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {ROLES.map((role) => (
+                                      <SelectItem key={role.value} value={role.value}>
+                                        <div className="flex items-center gap-2">
+                                          <Shield className="h-3 w-3" />
+                                          {role.label}
+                                        </div>
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              ) : (
+                                <Badge variant={getRoleBadgeVariant(member.user_role?.role || "viewer")}>
+                                  {ROLES.find((r) => r.value === member.user_role?.role)?.label || "Viewer"}
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {new Date(member.created_at).toLocaleDateString()}
+                            </TableCell>
+                            {isAdmin && (
+                              <TableCell>
+                                {member.id !== user?.id && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem
+                                        className="text-destructive"
+                                        onClick={() => setMemberToRemove(member.id)}
+                                      >
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Remove from organization
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )}
+                              </TableCell>
+                            )}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   No team members found
@@ -414,7 +491,7 @@ export default function GeneralSettings() {
 
       {/* Remove Member Dialog */}
       <AlertDialog open={!!memberToRemove} onOpenChange={() => setMemberToRemove(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-[95vw] sm:max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>Remove team member?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -422,11 +499,11 @@ export default function GeneralSettings() {
               to all organization data. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRemoveMember}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Remove Member
             </AlertDialogAction>

@@ -416,15 +416,15 @@ export default function Tasks() {
                 )}
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className={`font-medium ${task.status === "done" ? "line-through" : ""}`}>
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <p className={`font-medium text-sm sm:text-base truncate max-w-[200px] sm:max-w-none ${task.status === "done" ? "line-through" : ""}`}>
                       {task.title}
                     </p>
-                    <StatusBadge variant={priorityConfig[task.priority]?.variant || "draft"}>
+                    <StatusBadge variant={priorityConfig[task.priority]?.variant || "draft"} className="text-xs shrink-0">
                       {priorityConfig[task.priority]?.label}
                     </StatusBadge>
                     {task.task_type && (
-                      <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground bg-muted px-1.5 sm:px-2 py-0.5 rounded shrink-0 hidden sm:inline">
                         {TASK_TYPES.find((t) => t.value === task.task_type)?.label}
                       </span>
                     )}
@@ -461,9 +461,9 @@ export default function Tasks() {
                   value={task.status}
                   onValueChange={(v) => updateTask.mutate({ id: task.id, status: v as Task["status"] })}
                 >
-                  <SelectTrigger className="w-[130px] h-8">
-                    <StatusIcon className="mr-2 h-3 w-3" />
-                    <span className="text-xs">{statusConfig[task.status]?.label}</span>
+                  <SelectTrigger className="w-[100px] sm:w-[130px] h-8 shrink-0">
+                    <StatusIcon className="mr-1.5 sm:mr-2 h-3 w-3" />
+                    <span className="text-[10px] sm:text-xs">{statusConfig[task.status]?.label}</span>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="todo">To Do</SelectItem>
