@@ -150,24 +150,24 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
               Attestations & Documentation
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Track compliance statements, security certifications, and documentation from {vendorName}
             </CardDescription>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
+              <Button size="sm" className="w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Attestation
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="max-w-[95vw] sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
               <form onSubmit={handleSubmit}>
                 <DialogHeader>
                   <DialogTitle>Add Attestation</DialogTitle>
@@ -254,13 +254,14 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
                     />
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <DialogFooter className="flex-col sm:flex-row gap-2">
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
                     Cancel
                   </Button>
                   <Button
                     type="submit"
                     disabled={!formData.attestation_type || !formData.title || createAttestation.isPending}
+                    className="w-full sm:w-auto"
                   >
                     {createAttestation.isPending ? "Adding..." : "Add Attestation"}
                   </Button>
@@ -272,22 +273,22 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
       </CardHeader>
       <CardContent>
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="text-center p-3 rounded-lg bg-muted/50">
-            <p className="text-2xl font-bold">{stats.total}</p>
-            <p className="text-xs text-muted-foreground">Total</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-6">
+          <div className="text-center p-2 sm:p-3 rounded-lg bg-muted/50">
+            <p className="text-lg sm:text-2xl font-bold">{stats.total}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Total</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-success/10">
-            <p className="text-2xl font-bold text-success">{stats.verified}</p>
-            <p className="text-xs text-muted-foreground">Verified</p>
+          <div className="text-center p-2 sm:p-3 rounded-lg bg-success/10">
+            <p className="text-lg sm:text-2xl font-bold text-success">{stats.verified}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Verified</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-warning/10">
-            <p className="text-2xl font-bold text-warning">{stats.pending}</p>
-            <p className="text-xs text-muted-foreground">Pending</p>
+          <div className="text-center p-2 sm:p-3 rounded-lg bg-warning/10">
+            <p className="text-lg sm:text-2xl font-bold text-warning">{stats.pending}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Pending</p>
           </div>
-          <div className="text-center p-3 rounded-lg bg-destructive/10">
-            <p className="text-2xl font-bold text-destructive">{stats.expired}</p>
-            <p className="text-xs text-muted-foreground">Expired</p>
+          <div className="text-center p-2 sm:p-3 rounded-lg bg-destructive/10">
+            <p className="text-lg sm:text-2xl font-bold text-destructive">{stats.expired}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Expired</p>
           </div>
         </div>
 
@@ -301,28 +302,28 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
               return (
                 <div
                   key={attestation.id}
-                  className="flex items-start justify-between p-4 rounded-lg border bg-card"
+                  className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 p-3 sm:p-4 rounded-lg border bg-card"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                      <FileCheck className="h-4 w-4" />
+                  <div className="flex items-start gap-2.5 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                      <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">{attestation.title}</p>
-                        <StatusBadge variant={statusInfo.variant} dot>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <p className="font-medium text-sm sm:text-base">{attestation.title}</p>
+                        <StatusBadge variant={statusInfo.variant} dot className="text-xs">
                           {statusInfo.label}
                         </StatusBadge>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-0.5">
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                         {getTypeLabel(attestation.attestation_type)}
                       </p>
                       {attestation.description && (
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2">
                           {attestation.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-[10px] sm:text-xs text-muted-foreground">
                         {attestation.valid_from && (
                           <span>From: {new Date(attestation.valid_from).toLocaleDateString()}</span>
                         )}
@@ -330,7 +331,7 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
                           <span>Until: {new Date(attestation.valid_until).toLocaleDateString()}</span>
                         )}
                         {attestation.verified_at && attestation.verifier && (
-                          <span>
+                          <span className="hidden sm:inline">
                             Verified by {attestation.verifier.full_name} on{" "}
                             {new Date(attestation.verified_at).toLocaleDateString()}
                           </span>
@@ -338,7 +339,7 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 self-end sm:self-start shrink-0">
                     {attestation.document_url && (
                       <Button variant="ghost" size="icon" asChild>
                         <a href={attestation.document_url} target="_blank" rel="noopener noreferrer">
@@ -365,20 +366,20 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="max-w-[95vw] sm:max-w-lg">
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Attestation</AlertDialogTitle>
                           <AlertDialogDescription>
                             Are you sure you want to delete "{attestation.title}"? This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                          <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() =>
                               deleteAttestation.mutate({ id: attestation.id, vendorId })
                             }
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="w-full sm:w-auto bg-destructive text-destructive-foreground hover:bg-destructive/90"
                           >
                             Delete
                           </AlertDialogAction>

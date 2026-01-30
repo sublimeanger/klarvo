@@ -37,7 +37,7 @@ export function DocsSidebar() {
   })).filter(category => category.articles.length > 0);
 
   return (
-    <aside className="w-64 border-r border-border/50 bg-surface-1/50 flex flex-col h-[calc(100vh-64px)] sticky top-16">
+    <aside className="w-64 border-r border-border/50 bg-surface-1/50 flex-col h-[calc(100vh-64px)] sticky top-16 hidden lg:flex">
       {/* Search */}
       <div className="p-4 border-b border-border/50">
         <div className="relative">
