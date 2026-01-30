@@ -7,16 +7,26 @@ const productLinks = [
   { title: "Features", href: "/features" },
   { title: "Pricing", href: "/pricing" },
   { title: "Integrations", href: "/integrations" },
+  { title: "Templates", href: "/templates" },
+  { title: "API Reference", href: "/api" },
   { title: "Changelog", href: "/changelog" },
-  { title: "Documentation", href: "/docs" },
 ];
 
 const resourceLinks = [
+  { title: "Documentation", href: "/docs" },
+  { title: "EU AI Act Guide", href: "/eu-ai-act" },
   { title: "Resources", href: "/resources" },
-  { title: "Blog", href: "/resources#blog" },
-  { title: "EU AI Act Guide", href: "/resources#guide" },
-  { title: "Webinars", href: "/resources#webinars" },
+  { title: "Blog", href: "/blog" },
+  { title: "FAQ", href: "/faq" },
   { title: "Status", href: "/status" },
+];
+
+const solutionLinks = [
+  { title: "For SMEs", href: "/use-cases/sme" },
+  { title: "For Enterprise", href: "/use-cases/enterprise" },
+  { title: "HR & Recruitment", href: "/use-cases/hr" },
+  { title: "Financial Services", href: "/use-cases/fintech" },
+  { title: "Healthcare", href: "/use-cases/healthcare" },
 ];
 
 const companyLinks = [
@@ -50,12 +60,12 @@ export function MarketingFooter() {
       {/* Background decoration */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-500/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]" />
       </div>
       
       {/* Main Footer */}
       <div className="container-wide section-padding-sm">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 lg:gap-10">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6 group">
@@ -118,6 +128,23 @@ export function MarketingFooter() {
             <h3 className="font-semibold mb-5">Resources</h3>
             <ul className="space-y-3.5">
               {resourceLinks.map((link) => (
+                <li key={link.title}>
+                  <Link
+                    to={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+                  >
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Solutions */}
+          <div>
+            <h3 className="font-semibold mb-5">Solutions</h3>
+            <ul className="space-y-3.5">
+              {solutionLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     to={link.href}

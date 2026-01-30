@@ -42,9 +42,22 @@ const productLinks = [
 
 const resourceLinks = [
   { title: "Documentation", href: "/docs" },
+  { title: "EU AI Act Guide", href: "/eu-ai-act" },
+  { title: "Templates", href: "/templates" },
   { title: "Resources", href: "/resources" },
+  { title: "Blog", href: "/blog" },
+  { title: "FAQ", href: "/faq" },
+  { title: "API Reference", href: "/api" },
   { title: "Changelog", href: "/changelog" },
   { title: "Status", href: "/status" },
+];
+
+const solutionLinks = [
+  { title: "For SMEs", description: "Enterprise compliance without the enterprise price", href: "/use-cases/sme" },
+  { title: "For Enterprise", description: "Scale AI governance across your organization", href: "/use-cases/enterprise" },
+  { title: "HR & Recruitment", description: "Comply with high-risk HR AI requirements", href: "/use-cases/hr" },
+  { title: "Financial Services", description: "Credit scoring, insurance, and banking AI", href: "/use-cases/fintech" },
+  { title: "Healthcare", description: "Medical device and clinical AI compliance", href: "/use-cases/healthcare" },
 ];
 
 const companyLinks = [
@@ -146,6 +159,33 @@ export function MarketingHeader() {
                   >
                     <span className="link-underline">Features</span>
                   </Link>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent h-10 px-4 font-medium text-foreground/80 hover:text-foreground data-[state=open]:text-foreground">
+                    Solutions
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[450px] gap-2 p-4 md:grid-cols-2">
+                      {solutionLinks.map((link) => (
+                        <li key={link.title}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to={link.href}
+                              className="block select-none space-y-1 rounded-xl p-4 leading-none no-underline outline-none transition-all duration-200 hover:bg-accent hover:shadow-soft group"
+                            >
+                              <div className="text-sm font-semibold leading-none group-hover:text-primary transition-colors">
+                                {link.title}
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground mt-1.5">
+                                {link.description}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
@@ -259,6 +299,26 @@ export function MarketingHeader() {
               </h3>
               <div className="space-y-1">
                 {productLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    to={link.href}
+                    className="block py-3 text-lg font-medium hover:text-primary transition-colors"
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-px bg-border" />
+
+            {/* Solutions */}
+            <div className="animate-fade-up" style={{ animationDelay: '150ms' }}>
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                Solutions
+              </h3>
+              <div className="space-y-1">
+                {solutionLinks.map((link) => (
                   <Link
                     key={link.title}
                     to={link.href}
