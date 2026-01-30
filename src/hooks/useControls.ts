@@ -179,6 +179,40 @@ export function useUpdateControlStatus() {
   });
 }
 
+/**
+ * Bulk update control statuses - for updating multiple controls at once
+ */
+export function useBulkUpdateControlStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      ids,
+      status,
+    }: {
+      ids: string[];
+      status: string;
+    }) => {
+      if (ids.length === 0) return;
+
+      const { error } = await supabase
+        .from("control_implementations")
+        .update({ status })
+        .in("id", ids);
+
+      if (error) throw error;
+      return ids.length;
+    },
+    onSuccess: (count) => {
+      queryClient.invalidateQueries({ queryKey: ["ai-system-controls"] });
+      toast.success(`Updated ${count} controls`);
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update controls: ${error.message}`);
+    },
+  });
+}
+
 export function useMarkControlReviewed() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
