@@ -22,12 +22,12 @@ const INTERNAL_NOTIFICATION_OPTIONS = [
 
 export function Step14Incidents({ data, onChange }: Step14IncidentsProps) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 flex gap-3">
-        <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Risk & Incident Handling</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Risk & Incident Handling</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Deployers must monitor operation, inform providers/authorities when they 
             suspect risk, suspend use if needed, and report serious incidents.
           </p>
@@ -58,12 +58,13 @@ export function Step14Incidents({ data, onChange }: Step14IncidentsProps) {
       />
 
       <div className="space-y-2">
-        <Label htmlFor="external_notification_requirements">
+        <Label htmlFor="external_notification_requirements" className="text-sm">
           Who do you notify externally (if required)?
         </Label>
         <Textarea
           id="external_notification_requirements"
           placeholder="e.g., Vendor, Regulator, Data protection authority, Affected customers..."
+          className="min-h-[80px]"
           value={data.external_notification_requirements}
           onChange={(e) => onChange({ external_notification_requirements: e.target.value })}
         />
@@ -77,8 +78,8 @@ export function Step14Incidents({ data, onChange }: Step14IncidentsProps) {
       />
 
       {data.can_suspend_quickly === "no" && (
-        <div className="rounded-lg border border-warning bg-warning/10 p-4">
-          <p className="text-sm">
+        <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4">
+          <p className="text-xs sm:text-sm">
             <strong>Recommendation:</strong> High-risk AI systems should have a clear 
             process to quickly suspend or disable the system in case of safety concerns.
           </p>

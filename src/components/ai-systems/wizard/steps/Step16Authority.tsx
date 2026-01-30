@@ -15,12 +15,12 @@ export function Step16Authority({ data, onChange, isHighRisk }: Step16AuthorityP
     isHighRisk;
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 flex gap-3">
-        <Building className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <Building className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Public Authority Registration</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Public Authority Registration</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             There are registration requirements and an EU database for certain high-risk 
             AI systems. Public authorities have specific responsibilities.
           </p>
@@ -54,8 +54,8 @@ export function Step16Authority({ data, onChange, isHighRisk }: Step16AuthorityP
           />
 
           {data.registration_status === "not_registered" && (
-            <div className="rounded-lg border border-warning bg-warning/10 p-4">
-              <p className="text-sm">
+            <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4">
+              <p className="text-xs sm:text-sm">
                 <strong>Action required:</strong> Public authorities deploying high-risk 
                 AI systems may need to register in the EU database. A task will be 
                 created to review registration requirements.
@@ -64,11 +64,11 @@ export function Step16Authority({ data, onChange, isHighRisk }: Step16AuthorityP
           )}
         </>
       ) : (
-        <div className="rounded-lg border border-dashed bg-muted/50 p-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed bg-muted/50 p-3 sm:p-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             EU database registration is typically not required because:
           </p>
-          <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
+          <ul className="mt-2 space-y-1 text-xs sm:text-sm text-muted-foreground list-disc list-inside">
             {data.is_public_authority !== "yes" && data.provides_public_service !== "yes" && (
               <li>Your organization is not a public authority or public service provider</li>
             )}
