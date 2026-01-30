@@ -368,6 +368,120 @@ export type Database = {
           },
         ]
       }
+      incidents: {
+        Row: {
+          affected_parties: string[] | null
+          ai_system_id: string | null
+          assigned_to: string | null
+          containment_actions: string | null
+          created_at: string
+          description: string | null
+          detected_at: string | null
+          external_notification_details: string | null
+          external_notified: boolean | null
+          id: string
+          impact_description: string | null
+          internal_notified: string[] | null
+          occurred_at: string | null
+          organization_id: string
+          reported_by: string | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          root_cause: string | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+          vendor_id: string | null
+        }
+        Insert: {
+          affected_parties?: string[] | null
+          ai_system_id?: string | null
+          assigned_to?: string | null
+          containment_actions?: string | null
+          created_at?: string
+          description?: string | null
+          detected_at?: string | null
+          external_notification_details?: string | null
+          external_notified?: boolean | null
+          id?: string
+          impact_description?: string | null
+          internal_notified?: string[] | null
+          occurred_at?: string | null
+          organization_id: string
+          reported_by?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          root_cause?: string | null
+          severity?: string
+          status?: string
+          title: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Update: {
+          affected_parties?: string[] | null
+          ai_system_id?: string | null
+          assigned_to?: string | null
+          containment_actions?: string | null
+          created_at?: string
+          description?: string | null
+          detected_at?: string | null
+          external_notification_details?: string | null
+          external_notified?: boolean | null
+          id?: string
+          impact_description?: string | null
+          internal_notified?: string[] | null
+          occurred_at?: string | null
+          organization_id?: string
+          reported_by?: string | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          root_cause?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incidents_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_reported_by_fkey"
+            columns: ["reported_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incidents_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           company_size: string | null
