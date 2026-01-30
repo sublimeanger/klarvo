@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import AISystems from "@/pages/AISystems";
+import Pricing from "@/pages/Pricing";
 import Placeholder from "@/pages/Placeholder";
 import NotFound from "@/pages/NotFound";
 
@@ -18,6 +19,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public pricing page (no sidebar) */}
+          <Route path="/pricing" element={<Pricing />} />
+          
+          {/* App routes with sidebar */}
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/ai-systems" element={<AISystems />} />
