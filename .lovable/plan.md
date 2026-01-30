@@ -1,187 +1,134 @@
 
+# Animated Product Tour / "How It Works" Walkthrough
 
-# Mobile Responsiveness Polish: Remaining Components
-
-This plan continues the mobile responsiveness work across all remaining pages and components that haven't been polished yet. The focus is on ensuring consistent touch targets, readable typography, and proper layouts on mobile devices.
-
----
-
-## Overview of Changes
-
-I've identified the following pages and components that need mobile responsiveness improvements:
-
-### Core App Pages
-1. **Vendors.tsx** - Add mobile card view for vendor table
-2. **VendorDetail.tsx** - Already well-optimized, minor dialog tweaks
-3. **Policies.tsx** - Dialog responsiveness improvements
-4. **Tasks.tsx** - Already has good mobile support, minor refinements
-5. **Settings/General.tsx** - Add mobile card view for team members table
-6. **Onboarding.tsx** - Already well-optimized
-
-### Documentation Pages  
-7. **Docs.tsx** - Responsive sidebar and hero section
-8. **DocsArticle.tsx** - Mobile-friendly article footer and prev/next navigation
-9. **DocsSidebar.tsx** - Make sidebar collapsible/hidden on mobile
-
-### Vendor Components
-10. **VendorAttestations.tsx** - Mobile card layout for attestation items
-
-### Wizards (Already Well-Optimized)
-- **AISystemWizard.tsx** - Has responsive classes
-- **FRIAWizard.tsx** - Has responsive classes  
-- **ClassificationWizard.tsx** - Has responsive classes
+This plan creates an engaging, interactive animated walkthrough component that visually demonstrates the Klarvo workflow. The component will be placed on the landing page, replacing or enhancing the current static "How It Works" FeatureGrid section.
 
 ---
 
-## Detailed Changes
+## Design Approach
 
-### 1. Vendors.tsx (Lines 333-457)
-**Current Issue:** Table view doesn't work well on mobile.
+I'll create a **step-by-step animated product tour** that shows users the journey from adding their first AI system to generating audit-ready exports. The design will feature:
 
-**Changes:**
-- Add mobile card layout with `md:hidden` and `hidden md:block` toggle
-- Each vendor card shows: name, status badge, website/email icons, actions
-- Make delete confirmation dialog responsive
+- **Interactive stepper** with animated transitions between steps
+- **Mockup screens** that animate in/out as users progress
+- **Progress indicator** showing current step
+- **Auto-play option** with manual navigation controls
+
+---
+
+## Component Architecture
+
+### New Component: `ProductWalkthrough.tsx`
 
 ```text
-Mobile Card Structure:
-┌─────────────────────────────────┐
-│ [Icon] Vendor Name              │
-│ Status: [Badge]                 │
-│ Contract: Date or "—"           │
-│ ┌─────────────────────────────┐ │
-│ │ [Website] [Email] [Actions] │ │
-│ └─────────────────────────────┘ │
-└─────────────────────────────────┘
+Visual Layout:
+┌─────────────────────────────────────────────────────────────────────┐
+│                     How It Works                                    │
+│              Get from zero to compliant in minutes                  │
+├─────────────────────────────────────────────────────────────────────┤
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │                                                                │ │
+│  │                    [Animated Mockup Screen]                    │ │
+│  │                    Shows current step UI                       │ │
+│  │                                                                │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│  ┌───┐ ┌───┐ ┌───┐ ┌───┐   Progress dots / step indicators        │
+│  │ 1 │ │ 2 │ │ 3 │ │ 4 │                                           │
+│  └───┘ └───┘ └───┘ └───┘                                           │
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────┐│
+│  │ [<] │         Step Title & Description              │ [>]     ││
+│  │     │         What happens at this step             │         ││
+│  └─────────────────────────────────────────────────────────────────┘│
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Policies.tsx (Lines 361-431, 434-544)
-**Current Issue:** Create/Edit dialogs need mobile width handling.
+### Step Content (4 Steps)
 
-**Changes:**
-- Update `DialogContent` to use `max-w-[95vw] sm:max-w-2xl`
-- Stack `DialogFooter` buttons vertically on mobile
-- Add responsive text sizing in policy cards
-
-### 3. Settings/General.tsx (Lines 285-377)
-**Current Issue:** Team members table doesn't work on mobile.
-
-**Changes:**
-- Add mobile card layout for team members (similar to other tables)
-- Stack role permissions grid better on mobile (`sm:grid-cols-2 lg:grid-cols-3`)
-- Make `AlertDialogContent` responsive
-
-### 4. Docs.tsx (Main Documentation Page)
-**Current Issue:** Sidebar is always visible and takes space on mobile.
-
-**Changes:**
-- Hide `DocsSidebar` on mobile with `hidden lg:block`
-- Add mobile-specific search and category grid that spans full width
-- Optimize hero section typography for mobile (`text-3xl sm:text-4xl lg:text-5xl`)
-- Stack "Get Started" cards vertically on smallest screens
-
-### 5. DocsArticle.tsx
-**Current Issue:** Article footer elements need better mobile layout.
-
-**Changes:**
-- Make feedback buttons stack or shrink on mobile
-- Stack prev/next navigation vertically on mobile
-- Hide table of contents sidebar on mobile/tablet (`hidden xl:block` - already done)
-- Make related articles grid single column on mobile
-
-### 6. DocsSidebar.tsx
-**Current Issue:** Fixed sidebar takes too much space on mobile.
-
-**Changes:**
-- Add `hidden lg:block` to hide on mobile
-- Alternative: Create a mobile sheet/drawer trigger for docs navigation
-
-### 7. VendorAttestations.tsx (Lines 295-405)
-**Current Issue:** Attestation items use flex layout that can break on narrow screens.
-
-**Changes:**
-- Stack attestation items vertically on mobile (`flex-col sm:flex-row`)
-- Reduce padding and icon sizes on mobile
-- Make stats grid 2x2 on mobile (`grid-cols-2 sm:grid-cols-4`)
-- Update dialog width to `max-w-[95vw] sm:max-w-[500px]`
-
-### 8. Tasks.tsx (Minor Refinements)
-**Current Issue:** Some task cards have long content that could overflow.
-
-**Changes:**
-- Ensure status select triggers have responsive widths
-- Add `truncate` to task titles on mobile
-- Stack bulk action toolbar items better on narrow screens
+| Step | Title | Description | Visual |
+|------|-------|-------------|--------|
+| 1 | Add Your AI Systems | Use our guided wizard to document each AI system. Quick capture takes just 2-4 minutes. | Animated wizard form mockup |
+| 2 | Automatic Classification | Our engine screens for prohibited practices, checks Annex III categories, and assigns risk levels. | Classification result card with badges animating in |
+| 3 | Close the Gaps | Follow the auto-generated checklist. Upload evidence, assign owners, track progress. | Gap checklist with items checking off |
+| 4 | Export & Share | Generate professional PDF reports and ZIP bundles. Ready for auditors in one click. | Export pack preview with download animation |
 
 ---
 
-## Technical Implementation Details
+## Technical Implementation
 
-### Pattern 1: Mobile Card View for Tables
-```tsx
-{/* Mobile Cards */}
-<div className="space-y-3 md:hidden">
-  {items.map((item) => (
-    <div key={item.id} className="p-3 rounded-lg border bg-card">
-      {/* Compact card content */}
-    </div>
-  ))}
-</div>
+### Animation Strategy
 
-{/* Desktop Table */}
-<div className="hidden md:block rounded-lg border">
-  <Table>...</Table>
-</div>
-```
+Using the existing CSS animation system (no new dependencies):
 
-### Pattern 2: Responsive Dialogs
-```tsx
-<DialogContent className="max-w-[95vw] sm:max-w-lg">
-  <DialogFooter className="flex-col sm:flex-row gap-2">
-    <Button className="w-full sm:w-auto">Cancel</Button>
-    <Button className="w-full sm:w-auto">Submit</Button>
-  </DialogFooter>
-</DialogContent>
-```
+1. **Step transitions**: `animate-fade-up` and `animate-fade-out` for entering/exiting
+2. **Mockup elements**: Staggered animations with `animation-delay` for progressive reveals
+3. **Progress dots**: `animate-scale-in` on active step change
+4. **Auto-advance**: `setInterval` with 5-second duration (pausable on hover)
+5. **Reduced motion**: Respect `prefers-reduced-motion` via existing utility
 
-### Pattern 3: Responsive Typography
-```tsx
-<h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold">Title</h1>
-<p className="text-xs sm:text-sm text-muted-foreground">Description</p>
-```
+### Component Features
+
+- **useState** for current step (0-3)
+- **useEffect** for auto-advance timer
+- **CSS transitions** for smooth step changes
+- **Intersection Observer** to start animation when in viewport
+- **Keyboard navigation** (left/right arrows)
+- **Touch swipe support** for mobile
+
+### Mockup Screens (Simplified UI Representations)
+
+Each step will have a stylized mockup showing:
+- Step 1: Form fields appearing one by one
+- Step 2: Risk classification badges with color coding
+- Step 3: Checklist items with animated checkmarks
+- Step 4: Document preview with export button
 
 ---
 
-## Files to Modify
+## Files to Create/Modify
 
-| File | Priority | Changes |
-|------|----------|---------|
-| `src/pages/Vendors.tsx` | High | Add mobile card layout, responsive delete dialog |
-| `src/pages/Policies.tsx` | High | Responsive dialogs |
-| `src/pages/Settings/General.tsx` | High | Mobile team member cards |
-| `src/pages/marketing/Docs.tsx` | Medium | Hide sidebar on mobile, responsive hero |
-| `src/pages/marketing/DocsArticle.tsx` | Medium | Mobile article footer |
-| `src/components/docs/DocsSidebar.tsx` | Medium | Hide on mobile |
-| `src/components/vendors/VendorAttestations.tsx` | Medium | Mobile attestation cards |
-| `src/pages/Tasks.tsx` | Low | Minor refinements |
+| File | Action | Description |
+|------|--------|-------------|
+| `src/components/marketing/ProductWalkthrough.tsx` | **Create** | Main animated walkthrough component |
+| `src/components/marketing/WalkthroughStep.tsx` | **Create** | Individual step content with mockup visuals |
+| `src/components/marketing/index.ts` | Modify | Export new component |
+| `src/pages/marketing/LandingPage.tsx` | Modify | Replace static "How It Works" grid with new walkthrough |
 
 ---
 
-## Testing Recommendations
+## New CSS Additions (Optional)
 
-After implementation, test these scenarios:
-1. All pages on 320px width (smallest mobile)
-2. All dialogs open and close correctly on mobile
-3. Touch targets are at least 44x44px
-4. Horizontal scrolling is eliminated
-5. Text remains readable at all breakpoints
+May add to `index.css` if needed:
+- `.walkthrough-mockup` - Base styling for mockup containers
+- `.animate-check` - Checkmark animation for step 3
+- `.animate-typing` - Simulated typing effect for form fields
 
 ---
 
-## Estimated Scope
+## Accessibility Considerations
 
-- **8 files** to modify
-- **~400 lines** of responsive class updates
-- **No new dependencies** required
-- **No breaking changes** to existing functionality
+- Keyboard navigation (Tab, Arrow keys)
+- Screen reader announcements for step changes
+- Pause auto-advance on hover/focus
+- `aria-live` region for step content
+- Respect `prefers-reduced-motion`
 
+---
+
+## Mobile Responsiveness
+
+- Vertical layout on mobile (stacked mockup and controls)
+- Swipe gestures for navigation
+- Larger touch targets for step indicators
+- Optimized mockup sizing for smaller screens
+
+---
+
+## Technical Summary
+
+- **No new dependencies** - Uses existing Tailwind animations and React hooks
+- **~300 lines** of new component code
+- **Reusable** - Can be placed on landing page, features page, or docs
+- **Performant** - CSS animations, no heavy JavaScript libraries
+- **Accessible** - Full keyboard and screen reader support
