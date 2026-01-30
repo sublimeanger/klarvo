@@ -74,32 +74,32 @@ function GapItemCard({ item }: { item: GapItem }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-lg border",
+        "p-3 sm:p-4 rounded-lg border",
         severity.bg,
         severity.border
       )}
     >
-      <div className="flex items-start gap-3">
-        <div className={cn("mt-0.5", severity.color)}>
-          <SeverityIcon className="h-5 w-5" />
+      <div className="flex items-start gap-2 sm:gap-3">
+        <div className={cn("mt-0.5 shrink-0", severity.color)}>
+          <SeverityIcon className="h-4 w-4 sm:h-5 sm:w-5" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="outline" className="text-xs gap-1">
-              <CategoryIcon className="h-3 w-3" />
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
+            <Badge variant="outline" className="text-[10px] sm:text-xs gap-1">
+              <CategoryIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
               {category.label}
             </Badge>
-            <Badge className={cn("text-xs capitalize", severity.badge)}>
+            <Badge className={cn("text-[10px] sm:text-xs capitalize", severity.badge)}>
               {item.severity}
             </Badge>
           </div>
-          <h4 className="font-medium text-sm">{item.title}</h4>
-          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+          <h4 className="font-medium text-xs sm:text-sm">{item.title}</h4>
+          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
             {item.description}
           </p>
         </div>
         {item.actionPath && (
-          <Button size="sm" variant="outline" asChild className="shrink-0">
+          <Button size="sm" variant="outline" asChild className="shrink-0 hidden sm:flex">
             <Link to={item.actionPath}>
               {item.actionLabel}
               <ChevronRight className="ml-1 h-3 w-3" />
@@ -107,6 +107,14 @@ function GapItemCard({ item }: { item: GapItem }) {
           </Button>
         )}
       </div>
+      {item.actionPath && (
+        <Button size="sm" variant="outline" asChild className="w-full mt-2 sm:hidden">
+          <Link to={item.actionPath}>
+            {item.actionLabel}
+            <ChevronRight className="ml-1 h-3 w-3" />
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }
@@ -129,28 +137,28 @@ export function GapChecklist({ aiSystemId }: GapChecklistProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className="pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <ClipboardList className="h-5 w-5" />
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5" />
               Compliance Gap Checklist
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Outstanding requirements and recommended actions
             </CardDescription>
           </div>
-          <div className="text-right">
-            <div className="text-2xl font-bold">{completionScore}%</div>
+          <div className="text-left sm:text-right">
+            <div className="text-xl sm:text-2xl font-bold">{completionScore}%</div>
             <div className="text-xs text-muted-foreground">Audit Ready</div>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4 sm:space-y-6">
         {/* Progress bar */}
         <div className="space-y-2">
-          <Progress value={completionScore} className="h-2" />
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <Progress value={completionScore} className="h-1.5 sm:h-2" />
+          <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground">
             <span>Compliance Progress</span>
             <span>{summary.total} gap{summary.total !== 1 ? "s" : ""} identified</span>
           </div>
