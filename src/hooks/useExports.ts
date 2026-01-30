@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { AISystemPDF } from "@/components/exports/AISystemPDF";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AISystemExportData {
   id: string;
@@ -14,6 +15,19 @@ interface AISystemExportData {
   lifecycle_status: string;
   vendor?: { name: string } | null;
   primary_owner?: { full_name: string | null } | null;
+  oversight_model?: string | null;
+  human_involvement?: string | null;
+  oversight_sop_status?: string | null;
+  operators_trained?: string | null;
+  has_automatic_logs?: string | null;
+  log_storage_location?: string | null;
+  log_retention_period?: string | null;
+  can_export_logs?: string | null;
+  processes_personal_data?: string | null;
+  special_category_data?: string | null;
+  dpia_status?: string | null;
+  training_exists?: string | null;
+  training_completion_status?: string | null;
   classification?: {
     risk_level: string;
     is_ai_system?: boolean | null;
@@ -37,12 +51,56 @@ interface ExportOptions {
 export function useExports() {
   const { profile, user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
+  const queryClient = useQueryClient();
+
+  const logExport = async (
+    exportType: string,
+    fileName: string,
+    fileSizeBytes?: number,
+    aiSystemId?: string
+  ) => {
+    if (!profile?.organization_id) return;
+    
+    try {
+      await supabase.from("export_logs").insert({
+        organization_id: profile.organization_id,
+        user_id: profile.id,
+        export_type: exportType,
+        ai_system_id: aiSystemId || null,
+        file_name: fileName,
+        file_size_bytes: fileSizeBytes || null,
+      });
+      // Invalidate export history queries
+      queryClient.invalidateQueries({ queryKey: ["export-history"] });
+      queryClient.invalidateQueries({ queryKey: ["export-stats"] });
+    } catch (error) {
+      console.error("Failed to log export:", error);
+    }
+  };
 
   const fetchAISystemData = async (systemId: string): Promise<AISystemExportData | null> => {
     const { data, error } = await supabase
       .from("ai_systems")
       .select(`
-        *,
+        id,
+        name,
+        description,
+        department,
+        lifecycle_status,
+        created_at,
+        oversight_model,
+        human_involvement,
+        oversight_sop_status,
+        operators_trained,
+        has_automatic_logs,
+        log_storage_location,
+        log_retention_period,
+        can_export_logs,
+        processes_personal_data,
+        special_category_data,
+        dpia_status,
+        training_exists,
+        training_completion_status,
         vendor:vendors(name),
         primary_owner:profiles!ai_systems_primary_owner_id_fkey(full_name),
         classification:ai_system_classifications(*)
@@ -109,16 +167,20 @@ export function useExports() {
       });
 
       const blob = await pdf(doc).toBlob();
+      const fileName = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.pdf`;
 
       // Download the file
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.pdf`;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Log the export
+      await logExport("ai_system_pdf", fileName, blob.size, systemId);
 
       toast.success("PDF exported successfully");
     } catch (error) {
@@ -165,14 +227,18 @@ export function useExports() {
 
       // Generate ZIP and download
       const zipBlob = await zip.generateAsync({ type: "blob" });
+      const fileName = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.zip`;
       const url = URL.createObjectURL(zipBlob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.zip`;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Log the export
+      await logExport("ai_system_zip", fileName, zipBlob.size, systemId);
 
       toast.success("ZIP exported successfully");
     } catch (error) {
@@ -226,14 +292,18 @@ export function useExports() {
 
       // Generate ZIP and download
       const zipBlob = await zip.generateAsync({ type: "blob" });
+      const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_AI_Systems_Export.zip`;
       const url = URL.createObjectURL(zipBlob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_AI_Systems_Export.zip`;
+      a.download = fileName;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Log the export
+      await logExport("org_pack", fileName, zipBlob.size);
 
       toast.success(`Exported ${systems.length} AI systems`);
     } catch (error) {

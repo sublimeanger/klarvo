@@ -959,6 +959,64 @@ export type Database = {
           },
         ]
       }
+      export_logs: {
+        Row: {
+          ai_system_id: string | null
+          created_at: string | null
+          export_type: string
+          file_name: string
+          file_size_bytes: number | null
+          id: string
+          metadata: Json | null
+          organization_id: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_system_id?: string | null
+          created_at?: string | null
+          export_type: string
+          file_name: string
+          file_size_bytes?: number | null
+          id?: string
+          metadata?: Json | null
+          organization_id: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_system_id?: string | null
+          created_at?: string | null
+          export_type?: string
+          file_name?: string
+          file_size_bytes?: number | null
+          id?: string
+          metadata?: Json | null
+          organization_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "export_logs_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "export_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "export_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fria_assessments: {
         Row: {
           accessibility_considerations: string | null

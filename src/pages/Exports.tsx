@@ -8,6 +8,8 @@ import {
   Building2,
   FileCheck,
   Package,
+  Clock,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,9 +23,43 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useAISystems } from "@/hooks/useAISystems";
 import { useExports } from "@/hooks/useExports";
+import { useExportHistory } from "@/hooks/useExportHistory";
 import { useSubscription } from "@/hooks/useSubscription";
+import { format } from "date-fns";
+
+const formatExportType = (type: string) => {
+  switch (type) {
+    case "ai_system_pdf":
+      return "PDF";
+    case "ai_system_zip":
+      return "ZIP";
+    case "org_pack":
+      return "Org Pack";
+    case "classification_memo":
+      return "Classification";
+    case "fria_report":
+      return "FRIA Report";
+    default:
+      return type;
+  }
+};
+
+const formatFileSize = (bytes: number | null) => {
+  if (!bytes) return "—";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 export default function Exports() {
   const [selectedSystem, setSelectedSystem] = useState<string>("");
@@ -31,6 +67,7 @@ export default function Exports() {
   
   const { systems, isLoading: systemsLoading } = useAISystems();
   const { isExporting, exportAISystemPDF, exportAISystemZIP, exportAllSystems } = useExports();
+  const { exports, isLoading: historyLoading } = useExportHistory();
   const { subscription } = useSubscription();
 
   // Free tier gets watermarks
@@ -259,16 +296,81 @@ export default function Exports() {
         </CardContent>
       </Card>
 
-      {/* Recent Exports (placeholder for future) */}
-      <Card className="border-dashed">
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-            <Download className="h-6 w-6 text-muted-foreground" />
+      {/* Export History */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-muted p-2">
+              <Clock className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">Export History</CardTitle>
+              <CardDescription>
+                Recent exports for audit trail
+              </CardDescription>
+            </div>
           </div>
-          <h3 className="text-lg font-semibold mb-2">Export History</h3>
-          <p className="text-muted-foreground text-center max-w-sm">
-            Export history tracking coming soon. Your exports will be logged here for audit trails.
-          </p>
+        </CardHeader>
+        <CardContent>
+          {historyLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : exports.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+                <Download className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">No Exports Yet</h3>
+              <p className="text-muted-foreground max-w-sm">
+                Your export history will appear here. Generate a PDF or ZIP above to get started.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>File Name</TableHead>
+                    <TableHead>AI System</TableHead>
+                    <TableHead>Size</TableHead>
+                    <TableHead>Exported By</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {exports.map((exp) => (
+                    <TableRow key={exp.id}>
+                      <TableCell className="whitespace-nowrap">
+                        {format(new Date(exp.created_at), "MMM d, yyyy HH:mm")}
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge variant="default">
+                          {formatExportType(exp.export_type)}
+                        </StatusBadge>
+                      </TableCell>
+                      <TableCell className="font-mono text-xs max-w-[200px] truncate">
+                        {exp.file_name}
+                      </TableCell>
+                      <TableCell>
+                        {exp.ai_system?.name || "—"}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {formatFileSize(exp.file_size_bytes)}
+                      </TableCell>
+                      <TableCell className="flex items-center gap-2">
+                        <User className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-sm">
+                          {exp.user?.full_name || "Unknown"}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

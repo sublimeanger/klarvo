@@ -32,6 +32,7 @@ import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionCh
 import { ComplianceTrendChart } from "@/components/dashboard/ComplianceTrendChart";
 import { DepartmentRiskChart } from "@/components/dashboard/DepartmentRiskChart";
 import { AuditReadinessCard } from "@/components/dashboard/AuditReadinessCard";
+import { WelcomeCard } from "@/components/dashboard/WelcomeCard";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -86,6 +87,9 @@ export default function Dashboard() {
           </Link>
         </Button>
       </div>
+
+      {/* Welcome Card for new users */}
+      {!metricsLoading && metrics.totalSystems === 0 && <WelcomeCard />}
 
       {/* Metrics Grid */}
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">

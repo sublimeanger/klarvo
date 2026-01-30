@@ -20,6 +20,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { useBilling } from "@/hooks/useBilling";
+import { useStorageUsage } from "@/hooks/useStorageUsage";
+import { useExportHistory } from "@/hooks/useExportHistory";
 import { PLANS, type PlanId } from "@/lib/billing-constants";
 
 export default function BillingSettings() {
@@ -41,6 +43,8 @@ export default function BillingSettings() {
   } = useSubscription();
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
   const { createCheckoutSession, openCustomerPortal, isLoading: billingLoading } = useBilling();
+  const { storageUsage, isLoading: storageLoading } = useStorageUsage();
+  const { stats: exportStats, isLoading: exportsLoading } = useExportHistory();
 
   // Handle success/cancel from Stripe checkout
   useEffect(() => {
@@ -84,12 +88,12 @@ export default function BillingSettings() {
   const aiSystemsLimit = entitlements.aiSystemsIncluded;
   const aiSystemsPercent = aiSystemsLimit === Infinity ? 0 : Math.min(100, (aiSystemsUsed / aiSystemsLimit) * 100);
 
-  // Mock storage usage (in a real app, fetch from usage_snapshots)
-  const storageUsedGb = 2.4;
+  // Real storage usage from evidence_files
+  const storageUsedGb = storageUsage.totalGb;
   const storageLimit = entitlements.storageGbIncluded;
   const storagePercent = storageLimit === Infinity ? 0 : Math.min(100, (storageUsedGb / storageLimit) * 100);
 
-  const isLoading = subLoading || metricsLoading;
+  const isLoading = subLoading || metricsLoading || storageLoading || exportsLoading;
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-up">
@@ -256,10 +260,13 @@ export default function BillingSettings() {
             ) : (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-semibold">0</span>
+                  <span className="text-2xl font-semibold">{exportStats.exportsThisMonth}</span>
                   <span className="text-sm text-muted-foreground">Unlimited</span>
                 </div>
                 <Progress value={0} className="h-2" />
+                <p className="text-xs text-muted-foreground">
+                  {exportStats.totalExports} total exports
+                </p>
               </div>
             )}
           </CardContent>
