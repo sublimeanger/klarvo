@@ -18,9 +18,9 @@ interface Step2VendorProps {
 
 export function Step2Vendor({ data, onChange, vendors }: Step2VendorProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="space-y-2">
-        <Label>Vendor / Provider</Label>
+        <Label className="text-sm">Vendor / Provider</Label>
         <Select
           value={data.vendor_id}
           onValueChange={(value) => onChange({ vendor_id: value })}
@@ -38,14 +38,14 @@ export function Step2Vendor({ data, onChange, vendors }: Step2VendorProps) {
             <SelectItem value="new">+ Add new vendor</SelectItem>
           </SelectContent>
         </Select>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Is this AI system from an external vendor or built internally?
         </p>
       </div>
 
       {data.vendor_id === "new" && (
         <div className="space-y-2">
-          <Label htmlFor="new_vendor_name">New Vendor Name</Label>
+          <Label htmlFor="new_vendor_name" className="text-sm">New Vendor Name</Label>
           <Input
             id="new_vendor_name"
             placeholder="e.g., OpenAI, Microsoft, Anthropic"
@@ -55,8 +55,8 @@ export function Step2Vendor({ data, onChange, vendors }: Step2VendorProps) {
         </div>
       )}
 
-      <div className="rounded-lg border border-dashed bg-muted/50 p-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="rounded-lg border border-dashed bg-muted/50 p-3 sm:p-4">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           <strong>Why we ask:</strong> The EU AI Act has different obligations depending on 
           whether you're a provider (building AI) or deployer (using AI). External vendors 
           may also need to provide compliance documentation.
