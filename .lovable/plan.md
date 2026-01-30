@@ -76,7 +76,15 @@
 - `useIncidents.ts` - CRUD operations with filtering
 - `Incidents.tsx` - Full UI with incident reporting, status workflow, detail view
 
-## Next Steps (Remaining Modules)
-- Export packs (PDF/ZIP generation)
-- Settings page enhancements
+## ✅ Phase P: Export Packs
+- `@react-pdf/renderer` + `jszip` for client-side generation
+- `AISystemPDF.tsx` - React-PDF document component with classification, obligations
+- `useExports.ts` - PDF/ZIP generation hooks with evidence bundling
+- `Exports.tsx` - UI for single system exports and full organization exports
+- Free tier watermark support
+
+## Next Steps (Remaining Enhancements)
 - FRIA (Fundamental Rights Impact Assessment) workflow
+- Settings page enhancements
+- Assessments page (unified view of all classification assessments)
+- Control library implementation
