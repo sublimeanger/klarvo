@@ -51,6 +51,7 @@ import { useClassification } from "@/hooks/useClassification";
 import { useFRIA } from "@/hooks/useFRIA";
 import { AISystemControls } from "@/components/ai-systems/AISystemControls";
 import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
+import { GapChecklist } from "@/components/ai-systems/GapChecklist";
 import { ActivityFeed } from "@/components/audit/ActivityFeed";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
@@ -584,6 +585,9 @@ export default function AISystemDetail() {
             hasVendor={!!system.vendor_id}
             isClassified={!!classification && classification.risk_level !== "not_classified"}
           />
+
+          {/* Gap Checklist */}
+          <GapChecklist aiSystemId={id!} />
         </div>
 
         {/* Sidebar */}
