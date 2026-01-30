@@ -17,6 +17,7 @@ import Evidence from "@/pages/Evidence";
 import Tasks from "@/pages/Tasks";
 import Policies from "@/pages/Policies";
 import Assessments from "@/pages/Assessments";
+import Controls from "@/pages/Controls";
 import Training from "@/pages/Training";
 import Incidents from "@/pages/Incidents";
 import Exports from "@/pages/Exports";
@@ -74,6 +75,7 @@ const App = () => (
               <Route path="/ai-systems/:id/fria" element={<FRIAWizard />} />
               <Route path="/vendors" element={<Vendors />} />
               <Route path="/assessments" element={<Assessments />} />
+              <Route path="/controls" element={<Controls />} />
               <Route path="/evidence" element={<Evidence />} />
               <Route path="/policies" element={<Policies />} />
               <Route path="/training" element={<Training />} />
