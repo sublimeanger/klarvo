@@ -341,6 +341,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_create_organization: { Args: { _user_id: string }; Returns: boolean }
       get_user_organization_id: { Args: { _user_id: string }; Returns: string }
       has_any_role: {
         Args: {
