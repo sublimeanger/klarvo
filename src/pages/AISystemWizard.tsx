@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { useCreateAISystem } from "@/hooks/useAISystems";
 import { useVendors, useCreateVendor } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
+import { useCreateBulkTasks } from "@/hooks/useTasks";
 import { useAuth } from "@/contexts/AuthContext";
 import { WizardProgress } from "@/components/ai-systems/wizard/WizardProgress";
 import { QUICK_CAPTURE_STEPS, FULL_ASSESSMENT_STEPS } from "@/components/ai-systems/wizard/constants";
-import { DEFAULT_WIZARD_DATA, type AISystemWizardData, type WizardMode } from "@/components/ai-systems/wizard/types";
+import { DEFAULT_WIZARD_DATA, type AISystemWizardData } from "@/components/ai-systems/wizard/types";
+import { generateWizardTasks } from "@/lib/wizardTaskGenerator";
 
 // Step components
 import { Step0ModeSelection } from "@/components/ai-systems/wizard/steps/Step0ModeSelection";
@@ -41,6 +43,7 @@ export default function AISystemWizard() {
   const { members } = useOrgMembers();
   const createSystem = useCreateAISystem();
   const createVendor = useCreateVendor();
+  const createBulkTasks = useCreateBulkTasks();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [data, setData] = useState<AISystemWizardData>({
@@ -96,6 +99,7 @@ export default function AISystemWizard() {
         vendorId = vendor.id;
       }
 
+      // Build the full payload with all wizard fields
       const result = await createSystem.mutateAsync({
         name: data.name,
         description: data.description || null,
@@ -105,31 +109,137 @@ export default function AISystemWizard() {
         primary_owner_id: data.primary_owner_id || null,
         backup_owner_id: data.backup_owner_id || null,
         internal_reference_id: data.internal_reference_id || null,
-        // Full assessment fields
-        ...(isFullAssessment && {
-          deployment_regions: data.deployment_regions.length ? data.deployment_regions : null,
-          eu_countries: data.eu_countries.length ? data.eu_countries : null,
-          affected_groups: data.affected_groups.length ? data.affected_groups : null,
-          is_customer_facing: data.is_customer_facing === "yes",
-          has_workplace_impact: data.has_workplace_impact === "yes",
-          summary: data.summary || null,
-          built_internally: data.built_internally || null,
-          value_chain_role: data.value_chain_role.length ? data.value_chain_role : null,
-          foundation_model: data.foundation_model || null,
-          ai_definition_result: data.ai_definition_result || null,
-          ai_definition_rationale: data.ai_definition_rationale || null,
-          human_involvement: data.human_involvement || null,
-          prohibited_screening_result: data.prohibited_screening_result || null,
-          highrisk_screening_result: data.highrisk_screening_result || null,
-          transparency_status: data.transparency_status || null,
-          oversight_model: data.oversight_model || null,
-          final_classification: data.final_classification || null,
-          wizard_mode: data.wizard_mode,
-          wizard_completed_at: new Date().toISOString(),
-        }),
+        wizard_mode: data.wizard_mode,
+        wizard_completed_at: new Date().toISOString(),
+        // Geography & Scope
+        deployment_regions: data.deployment_regions.length ? data.deployment_regions : null,
+        eu_countries: data.eu_countries.length ? data.eu_countries : null,
+        internal_user_groups: data.internal_user_groups.length ? data.internal_user_groups : null,
+        affected_groups: data.affected_groups.length ? data.affected_groups : null,
+        is_customer_facing: data.is_customer_facing === "yes",
+        has_workplace_impact: data.has_workplace_impact === "yes",
+        has_legal_effects: data.has_legal_effects === "yes",
+        summary: data.summary || null,
+        // Value Chain
+        built_internally: data.built_internally || null,
+        acquisition_method: data.acquisition_method.length ? data.acquisition_method : null,
+        value_chain_role: data.value_chain_role.length ? data.value_chain_role : null,
+        is_externally_offered: data.is_externally_offered === "yes",
+        foundation_model: data.foundation_model || null,
+        contract_url: data.contract_url || null,
+        // AI Definition Test
+        infers_outputs: data.infers_outputs || null,
+        output_types: data.output_types.length ? data.output_types : null,
+        operates_autonomously: data.operates_autonomously || null,
+        adapts_after_deployment: data.adapts_after_deployment || null,
+        technical_approach: data.technical_approach.length ? data.technical_approach : null,
+        ai_definition_result: data.ai_definition_result || null,
+        ai_definition_rationale: data.ai_definition_rationale || null,
+        ai_definition_reviewer_id: data.ai_definition_reviewer_id || null,
+        ai_definition_confidence: data.ai_definition_confidence || null,
+        // Use Case
+        purpose_category: data.purpose_category || null,
+        workflow_description: data.workflow_description || null,
+        output_action_type: data.output_action_type || null,
+        output_destinations: data.output_destinations.length ? data.output_destinations : null,
+        human_involvement: data.human_involvement || null,
+        override_capability: data.override_capability || null,
+        usage_frequency: data.usage_frequency || null,
+        impact_scale: data.impact_scale || null,
+        // Prohibited Screening
+        prohibited_manipulation: data.prohibited_manipulation || null,
+        prohibited_exploitation: data.prohibited_exploitation || null,
+        prohibited_social_scoring: data.prohibited_social_scoring || null,
+        prohibited_criminal_profiling: data.prohibited_criminal_profiling || null,
+        prohibited_facial_scraping: data.prohibited_facial_scraping || null,
+        prohibited_emotion_inference: data.prohibited_emotion_inference || null,
+        prohibited_biometric_categorisation: data.prohibited_biometric_categorisation || null,
+        prohibited_realtime_biometric: data.prohibited_realtime_biometric || null,
+        prohibited_screening_notes: data.prohibited_screening_notes || null,
+        prohibited_screening_result: data.prohibited_screening_result || null,
+        // High-Risk Screening
+        highrisk_biometric: data.highrisk_biometric || null,
+        highrisk_critical_infrastructure: data.highrisk_critical_infrastructure || null,
+        highrisk_education: data.highrisk_education || null,
+        highrisk_employment: data.highrisk_employment || null,
+        highrisk_essential_services: data.highrisk_essential_services || null,
+        highrisk_law_enforcement: data.highrisk_law_enforcement || null,
+        highrisk_migration: data.highrisk_migration || null,
+        highrisk_justice: data.highrisk_justice || null,
+        highrisk_safety_component: data.highrisk_safety_component || null,
+        highrisk_screening_notes: data.highrisk_screening_notes || null,
+        highrisk_screening_result: data.highrisk_screening_result || null,
+        // Transparency
+        transparency_direct_interaction: data.transparency_direct_interaction || null,
+        transparency_obvious_ai: data.transparency_obvious_ai || null,
+        transparency_synthetic_content: data.transparency_synthetic_content || null,
+        transparency_outputs_marked: data.transparency_outputs_marked || null,
+        transparency_emotion_recognition: data.transparency_emotion_recognition || null,
+        transparency_deepfake: data.transparency_deepfake || null,
+        transparency_public_text: data.transparency_public_text || null,
+        transparency_status: data.transparency_status || null,
+        transparency_notes: data.transparency_notes || null,
+        // Data & Privacy
+        processes_personal_data: data.processes_personal_data || null,
+        special_category_data: data.special_category_data || null,
+        involves_minors: data.involves_minors || null,
+        data_sources: data.data_sources.length ? data.data_sources : null,
+        data_under_control: data.data_under_control || null,
+        input_retention_period: data.input_retention_period || null,
+        output_retention_period: data.output_retention_period || null,
+        dpia_status: data.dpia_status || null,
+        dpia_url: data.dpia_url || null,
+        privacy_owner_id: data.privacy_owner_id || null,
+        // Human Oversight
+        oversight_model: data.oversight_model || null,
+        oversight_owner_id: data.oversight_owner_id || null,
+        has_stop_authority: data.has_stop_authority === "yes",
+        competence_requirements: data.competence_requirements || null,
+        operators_trained: data.operators_trained || null,
+        oversight_sop_status: data.oversight_sop_status || null,
+        monitoring_plan_status: data.monitoring_plan_status || null,
+        monitoring_metrics: data.monitoring_metrics.length ? data.monitoring_metrics : null,
+        // Logging
+        has_automatic_logs: data.has_automatic_logs || null,
+        log_storage_location: data.log_storage_location || null,
+        log_access_roles: data.log_access_roles.length ? data.log_access_roles : null,
+        log_retention_period: data.log_retention_period || null,
+        can_export_logs: data.can_export_logs || null,
+        log_retention_6_months_confirmed: data.log_retention_6_months_confirmed === "yes",
+        // Incidents
+        incident_process_status: data.incident_process_status || null,
+        severity_levels_defined: data.severity_levels_defined === "yes",
+        internal_notification_list: data.internal_notification_list.length ? data.internal_notification_list : null,
+        external_notification_requirements: data.external_notification_requirements || null,
+        can_suspend_quickly: data.can_suspend_quickly || null,
+        // Workplace
+        worker_notification_status: data.worker_notification_status || null,
+        // Public Authority
+        is_public_authority: data.is_public_authority === "yes",
+        provides_public_service: data.provides_public_service === "yes",
+        registration_status: data.registration_status || null,
+        // Training
+        staff_roles: data.staff_roles.length ? data.staff_roles : null,
+        training_exists: data.training_exists || null,
+        training_completion_status: data.training_completion_status || null,
+        // FRIA
+        fria_trigger_status: data.fria_trigger_status || null,
+        fria_status: data.fria_status || null,
+        // Sign-off
+        final_classification: data.final_classification || null,
+        signoff_reviewer_id: data.signoff_reviewer_id || null,
+        signoff_date: isFullAssessment ? new Date().toISOString() : null,
+        signoff_notes: data.signoff_notes || null,
       });
 
       setCreatedSystemId(result.id);
+
+      // Generate and create compliance tasks
+      const tasks = generateWizardTasks(data, result.id, data.name);
+      if (tasks.length > 0) {
+        await createBulkTasks.mutateAsync(tasks);
+      }
+
       setCurrentStep(steps.length - 1); // Go to Done step
     } catch (error) {
       // Error handled by mutation
