@@ -28,12 +28,12 @@ interface Step12OversightProps {
 
 export function Step12Oversight({ data, onChange, members }: Step12OversightProps) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 flex gap-3">
-        <Users className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <Users className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Human Oversight & Operating Model</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Human Oversight & Operating Model</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             High-risk AI systems require competent human oversight with authority to 
             intervene. This section captures your oversight arrangements.
           </p>
@@ -48,7 +48,7 @@ export function Step12Oversight({ data, onChange, members }: Step12OversightProp
       />
 
       <div className="space-y-2">
-        <Label>Oversight owner (named person)</Label>
+        <Label className="text-sm">Oversight owner (named person)</Label>
         <Select
           value={data.oversight_owner_id}
           onValueChange={(value) => onChange({ oversight_owner_id: value })}
@@ -75,7 +75,7 @@ export function Step12Oversight({ data, onChange, members }: Step12OversightProp
       />
 
       <div className="space-y-2">
-        <Label htmlFor="competence_requirements">
+        <Label htmlFor="competence_requirements" className="text-sm">
           Required training/competence for operators
         </Label>
         <Textarea
@@ -83,6 +83,7 @@ export function Step12Oversight({ data, onChange, members }: Step12OversightProp
           placeholder="Describe the skills, training, or qualifications required..."
           value={data.competence_requirements}
           onChange={(e) => onChange({ competence_requirements: e.target.value })}
+          className="min-h-[70px] sm:min-h-[80px]"
         />
       </div>
 
@@ -94,9 +95,9 @@ export function Step12Oversight({ data, onChange, members }: Step12OversightProp
         layout="horizontal"
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label>Oversight SOP exists?</Label>
+          <Label className="text-sm">Oversight SOP exists?</Label>
           <Select
             value={data.oversight_sop_status}
             onValueChange={(value) => onChange({ oversight_sop_status: value })}
@@ -115,7 +116,7 @@ export function Step12Oversight({ data, onChange, members }: Step12OversightProp
         </div>
 
         <div className="space-y-2">
-          <Label>Monitoring plan exists?</Label>
+          <Label className="text-sm">Monitoring plan exists?</Label>
           <Select
             value={data.monitoring_plan_status}
             onValueChange={(value) => onChange({ monitoring_plan_status: value })}

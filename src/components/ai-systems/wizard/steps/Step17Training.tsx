@@ -23,12 +23,12 @@ interface Step17TrainingProps {
 
 export function Step17Training({ data, onChange }: Step17TrainingProps) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 flex gap-3">
-        <GraduationCap className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 flex gap-2 sm:gap-3">
+        <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
-          <p className="text-sm font-medium">Training & AI Literacy (Article 4)</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs sm:text-sm font-medium">Training & AI Literacy (Article 4)</p>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Providers and deployers must take measures to ensure sufficient AI literacy 
             of staff and others operating AI on their behalf.
           </p>
@@ -52,7 +52,7 @@ export function Step17Training({ data, onChange }: Step17TrainingProps) {
 
       {data.training_exists && data.training_exists !== "no" && (
         <div className="space-y-2">
-          <Label>Training completion status</Label>
+          <Label className="text-sm">Training completion status</Label>
           <Select
             value={data.training_completion_status}
             onValueChange={(value) => onChange({ training_completion_status: value })}
@@ -72,8 +72,8 @@ export function Step17Training({ data, onChange }: Step17TrainingProps) {
       )}
 
       {data.training_exists === "no" && (
-        <div className="rounded-lg border border-warning bg-warning/10 p-4">
-          <p className="text-sm">
+        <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4">
+          <p className="text-xs sm:text-sm">
             <strong>Recommendation:</strong> AI literacy training should be provided 
             to all staff operating or relying on AI systems. A task will be created 
             to develop a training program.
@@ -81,11 +81,11 @@ export function Step17Training({ data, onChange }: Step17TrainingProps) {
         </div>
       )}
 
-      <div className="rounded-lg border border-dashed bg-muted/50 p-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="rounded-lg border border-dashed bg-muted/50 p-3 sm:p-4">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           <strong>Training recommendations by role:</strong>
         </p>
-        <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
+        <ul className="mt-2 space-y-1 text-xs sm:text-sm text-muted-foreground list-disc list-inside">
           <li><strong>All staff:</strong> AI basics awareness</li>
           <li><strong>Operators:</strong> System-specific training</li>
           <li><strong>Reviewers/Approvers:</strong> Oversight and decision-making training</li>

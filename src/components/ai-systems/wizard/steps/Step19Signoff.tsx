@@ -55,18 +55,18 @@ export function Step19Signoff({ data, onChange, members }: Step19SignoffProps) {
   const suggestedClassification = getSuggestedClassification();
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4">
-        <p className="text-sm font-medium">Review & Sign-off</p>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4">
+        <p className="text-xs sm:text-sm font-medium">Review & Sign-off</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           Review the classification and confirm the assessment is complete.
         </p>
       </div>
 
-      <div className="rounded-lg border p-4 space-y-4">
-        <h4 className="font-medium">Assessment Summary</h4>
+      <div className="rounded-lg border p-3 sm:p-4 space-y-3 sm:space-y-4">
+        <h4 className="text-sm sm:text-base font-medium">Assessment Summary</h4>
         
-        <div className="grid gap-3 text-sm">
+        <div className="grid gap-2 sm:gap-3 text-xs sm:text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">AI Definition:</span>
             <span>{data.ai_definition_result === "likely_ai" ? "Likely AI System" : 
@@ -90,9 +90,9 @@ export function Step19Signoff({ data, onChange, members }: Step19SignoffProps) {
         </div>
       </div>
 
-      <div className="rounded-lg border p-4">
+      <div className="rounded-lg border p-3 sm:p-4">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium">Suggested Classification</span>
+          <span className="text-xs sm:text-sm font-medium">Suggested Classification</span>
           {getClassificationBadge(suggestedClassification)}
         </div>
         <p className="text-xs text-muted-foreground">
@@ -108,9 +108,9 @@ export function Step19Signoff({ data, onChange, members }: Step19SignoffProps) {
         onChange={(value) => onChange({ final_classification: value })}
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label>Reviewer sign-off</Label>
+          <Label className="text-sm">Reviewer sign-off</Label>
           <Select
             value={data.signoff_reviewer_id}
             onValueChange={(value) => onChange({ signoff_reviewer_id: value })}
@@ -129,7 +129,7 @@ export function Step19Signoff({ data, onChange, members }: Step19SignoffProps) {
         </div>
 
         <div className="space-y-2">
-          <Label>Confidence level</Label>
+          <Label className="text-sm">Confidence level</Label>
           <Select
             value={data.ai_definition_confidence}
             onValueChange={(value) => onChange({ ai_definition_confidence: value })}
@@ -149,18 +149,19 @@ export function Step19Signoff({ data, onChange, members }: Step19SignoffProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="signoff_notes">Notes</Label>
+        <Label htmlFor="signoff_notes" className="text-sm">Notes</Label>
         <Textarea
           id="signoff_notes"
           placeholder="Any additional notes or context..."
           value={data.signoff_notes}
           onChange={(e) => onChange({ signoff_notes: e.target.value })}
+          className="min-h-[70px] sm:min-h-[80px]"
         />
       </div>
 
-      <div className="rounded-lg border border-dashed bg-muted/50 p-4">
-        <p className="text-sm font-medium mb-2">Upon completion, the system will generate:</p>
-        <ul className="space-y-1 text-sm text-muted-foreground list-disc list-inside">
+      <div className="rounded-lg border border-dashed bg-muted/50 p-3 sm:p-4">
+        <p className="text-xs sm:text-sm font-medium mb-2">Upon completion, the system will generate:</p>
+        <ul className="space-y-1 text-xs sm:text-sm text-muted-foreground list-disc list-inside">
           <li>Classification Memo (PDF)</li>
           <li>Gap Checklist with missing controls</li>
           <li>Task Plan with owners and due dates</li>
