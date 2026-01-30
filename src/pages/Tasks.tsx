@@ -214,29 +214,29 @@ export default function Tasks() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Tasks</h1>
+          <p className="text-sm text-muted-foreground">
             Track compliance actions and deadlines
           </p>
         </div>
         <div className="flex items-center gap-2">
           {!isSelectionMode ? (
             <>
-              <Button variant="outline" onClick={() => setIsSelectionMode(true)}>
+              <Button variant="outline" size="sm" onClick={() => setIsSelectionMode(true)} className="hidden sm:flex">
                 <Users className="mr-2 h-4 w-4" />
                 Bulk Edit
               </Button>
-              <Button onClick={() => setShowAddDialog(true)}>
+              <Button size="sm" onClick={() => setShowAddDialog(true)} className="flex-1 sm:flex-initial">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Task
               </Button>
             </>
           ) : (
-            <Button variant="outline" onClick={exitSelectionMode}>
+            <Button variant="outline" size="sm" onClick={exitSelectionMode}>
               <X className="mr-2 h-4 w-4" />
               Cancel
             </Button>
@@ -246,17 +246,16 @@ export default function Tasks() {
 
       {/* Bulk Action Toolbar */}
       {isSelectionMode && selectedTasks.size > 0 && (
-        <div className="flex items-center gap-3 p-3 bg-primary/10 rounded-lg border border-primary/20">
-          <span className="text-sm font-medium">
-            {selectedTasks.size} task{selectedTasks.size !== 1 ? "s" : ""} selected
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 p-3 bg-primary/10 rounded-xl border border-primary/20">
+          <span className="text-xs sm:text-sm font-medium">
+            {selectedTasks.size} selected
           </span>
-          <div className="h-4 w-px bg-border" />
+          <div className="h-4 w-px bg-border hidden sm:block" />
           
-          {/* Bulk Assign */}
           <Select onValueChange={(v) => handleBulkAssign(v === "unassigned" ? null : v)}>
-            <SelectTrigger className="w-[160px] h-8">
+            <SelectTrigger className="w-[140px] sm:w-[160px] h-8">
               <User className="mr-2 h-3 w-3" />
-              <span className="text-xs">Assign to...</span>
+              <span className="text-xs">Assign...</span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="unassigned">Unassigned</SelectItem>
@@ -268,11 +267,10 @@ export default function Tasks() {
             </SelectContent>
           </Select>
 
-          {/* Bulk Status */}
           <Select onValueChange={(v) => handleBulkStatusChange(v as Task["status"])}>
-            <SelectTrigger className="w-[140px] h-8">
+            <SelectTrigger className="w-[120px] sm:w-[140px] h-8">
               <CheckCircle className="mr-2 h-3 w-3" />
-              <span className="text-xs">Set status...</span>
+              <span className="text-xs">Status...</span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todo">To Do</SelectItem>
@@ -285,30 +283,30 @@ export default function Tasks() {
       )}
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
         {isSelectionMode && (
           <Checkbox
             checked={filteredTasks.length > 0 && selectedTasks.size === filteredTasks.length}
             onCheckedChange={toggleSelectAll}
-            className="h-5 w-5"
+            className="h-5 w-5 shrink-0"
           />
         )}
-        <div className="relative flex-1 max-w-sm">
+        <div className="relative flex-1 min-w-[180px] max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search tasks..."
+            placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 h-9"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[150px]">
+          <SelectTrigger className="w-[120px] sm:w-[150px] h-9 shrink-0">
             <Filter className="mr-2 h-4 w-4" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="todo">To Do</SelectItem>
             <SelectItem value="in_progress">In Progress</SelectItem>
             <SelectItem value="done">Done</SelectItem>
@@ -318,48 +316,48 @@ export default function Tasks() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-primary/10 p-2">
-              <Circle className="h-4 w-4 text-primary" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2">
+              <Circle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{todoCount}</p>
-              <p className="text-sm text-muted-foreground">To Do</p>
+              <p className="text-lg sm:text-2xl font-bold">{todoCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">To Do</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-warning/10 p-2">
-              <Clock className="h-4 w-4 text-warning" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-warning/10 p-1.5 sm:p-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{inProgressCount}</p>
-              <p className="text-sm text-muted-foreground">In Progress</p>
+              <p className="text-lg sm:text-2xl font-bold">{inProgressCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">In Progress</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-success/10 p-2">
-              <CheckCircle className="h-4 w-4 text-success" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-success/10 p-1.5 sm:p-2">
+              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{doneCount}</p>
-              <p className="text-sm text-muted-foreground">Done</p>
+              <p className="text-lg sm:text-2xl font-bold">{doneCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Done</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-destructive/10 p-2">
-              <AlertCircle className="h-4 w-4 text-destructive" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-destructive/10 p-1.5 sm:p-2">
+              <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{overdueCount}</p>
-              <p className="text-sm text-muted-foreground">Overdue</p>
+              <p className="text-lg sm:text-2xl font-bold">{overdueCount}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Overdue</p>
             </div>
           </div>
         </div>

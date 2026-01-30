@@ -185,27 +185,27 @@ export default function Vendors() {
   }
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Vendors</h1>
-          <p className="text-muted-foreground">
-            Manage your AI system vendors and due diligence
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Vendors</h1>
+          <p className="text-sm text-muted-foreground">
+            Manage AI system vendors and due diligence
           </p>
         </div>
         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
           <DialogTrigger asChild>
-            <Button>
+            <Button size="sm" className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Vendor
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-[95vw] sm:max-w-lg">
             <DialogHeader>
               <DialogTitle>Add Vendor</DialogTitle>
               <DialogDescription>
-                Add a new AI vendor to track due diligence and documentation
+                Add a new AI vendor to track due diligence
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
@@ -214,7 +214,7 @@ export default function Vendors() {
                 <Input
                   value={newVendor.name}
                   onChange={(e) => setNewVendor({ ...newVendor, name: e.target.value })}
-                  placeholder="e.g., OpenAI, Microsoft, Anthropic"
+                  placeholder="e.g., OpenAI, Microsoft"
                 />
               </div>
               <div className="space-y-2">
@@ -239,15 +239,15 @@ export default function Vendors() {
                 <Textarea
                   value={newVendor.notes}
                   onChange={(e) => setNewVendor({ ...newVendor, notes: e.target.value })}
-                  placeholder="Any relevant notes about this vendor..."
+                  placeholder="Any relevant notes..."
                 />
               </div>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button variant="outline" onClick={() => setShowAddDialog(false)} className="w-full sm:w-auto">
                 Cancel
               </Button>
-              <Button onClick={handleCreateVendor} disabled={createVendor.isPending}>
+              <Button onClick={handleCreateVendor} disabled={createVendor.isPending} className="w-full sm:w-auto">
                 {createVendor.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Vendor
               </Button>
@@ -257,50 +257,50 @@ export default function Vendors() {
       </div>
 
       {/* Filters */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search vendors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
+            className="pl-9 h-9"
           />
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-primary/10 p-2">
-              <Building2 className="h-4 w-4 text-primary" />
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2">
+              <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{totalVendors}</p>
-              <p className="text-sm text-muted-foreground">Total Vendors</p>
+              <p className="text-lg sm:text-2xl font-bold">{totalVendors}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Total</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-success/10 p-2">
-              <CheckCircle className="h-4 w-4 text-success" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-success/10 p-1.5 sm:p-2">
+              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{completedDueDiligence}</p>
-              <p className="text-sm text-muted-foreground">Due Diligence Complete</p>
+              <p className="text-lg sm:text-2xl font-bold">{completedDueDiligence}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Complete</p>
             </div>
           </div>
         </div>
-        <div className="rounded-lg border bg-card p-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-warning/10 p-2">
-              <Clock className="h-4 w-4 text-warning" />
+        <div className="rounded-xl border bg-card p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="rounded-lg bg-warning/10 p-1.5 sm:p-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-semibold">{pendingDueDiligence}</p>
-              <p className="text-sm text-muted-foreground">In Progress / Review</p>
+              <p className="text-lg sm:text-2xl font-bold">{pendingDueDiligence}</p>
+              <p className="text-[10px] sm:text-sm text-muted-foreground">Pending</p>
             </div>
           </div>
         </div>
