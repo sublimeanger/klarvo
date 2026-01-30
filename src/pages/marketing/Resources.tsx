@@ -1,4 +1,5 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,9 @@ import {
   ExternalLink,
   Newspaper,
   GraduationCap,
-  FileCheck
+  FileCheck,
+  Zap,
+  Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -50,28 +53,24 @@ const resourceCategories = [
     title: "EU AI Act Guides",
     description: "In-depth explainers on key requirements",
     count: 12,
-    color: "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400"
   },
   {
     icon: FileText,
     title: "Templates & Checklists",
     description: "Ready-to-use compliance documents",
     count: 8,
-    color: "bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400"
   },
   {
     icon: Video,
     title: "Webinars & Videos",
     description: "Expert-led training sessions",
     count: 6,
-    color: "bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400"
   },
   {
     icon: Newspaper,
     title: "News & Updates",
     description: "Latest AI regulation developments",
     count: 15,
-    color: "bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400"
   }
 ];
 
@@ -117,42 +116,31 @@ export default function Resources() {
   return (
     <MarketingLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-background to-primary-100/50 dark:from-primary-950/30 dark:via-background dark:to-primary-900/20" />
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-700 dark:text-primary-300 text-sm font-medium mb-6">
-              <GraduationCap className="h-4 w-4" />
-              Resource Hub
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              Learn EU AI Act{" "}
-              <span className="text-gradient">Compliance</span>
-            </h1>
-            
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Guides, templates, webinars, and expert insights to help you 
-              navigate AI regulation with confidence.
-            </p>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="Resource Hub"
+        title={
+          <>
+            <span className="text-foreground">Learn EU AI Act</span>{" "}
+            <span className="text-gradient-hero">Compliance</span>
+          </>
+        }
+        subtitle="Guides, templates, webinars, and expert insights to help you navigate AI regulation with confidence."
+        variant="centered"
+        showTrustBadges={false}
+      />
 
       {/* Categories Grid */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {resourceCategories.map((category, i) => (
-              <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all duration-300 border-border/50 hover:border-primary/30">
+              <Card key={i} className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-border/50 hover:border-primary/30 hover:-translate-y-1">
                 <CardContent className="p-6 text-center">
-                  <div className={`w-12 h-12 rounded-xl ${category.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                    <category.icon className="h-6 w-6" />
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                    <category.icon className="h-7 w-7 text-primary" />
                   </div>
                   <h3 className="text-lg font-semibold mb-1">{category.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-2">
+                  <p className="text-muted-foreground text-sm mb-3">
                     {category.description}
                   </p>
                   <Badge variant="secondary">{category.count} resources</Badge>
@@ -168,20 +156,24 @@ export default function Resources() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Featured Resources</h2>
-              <p className="text-muted-foreground">Essential reading for EU AI Act compliance</p>
+              <Badge variant="outline" className="mb-4">
+                <Sparkles className="h-3 w-3 mr-1" />
+                Featured
+              </Badge>
+              <h2 className="text-3xl font-bold mb-2">Essential Resources</h2>
+              <p className="text-muted-foreground">Must-read content for EU AI Act compliance</p>
             </div>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
             {featuredResources.map((resource, i) => (
-              <Card key={i} className="group hover:shadow-xl transition-all duration-300 border-border/50 hover:border-primary/30 flex flex-col">
+              <Card key={i} className="group hover:shadow-xl transition-all duration-300 border-border/50 hover:border-primary/30 hover:-translate-y-1 flex flex-col">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 rounded-lg bg-primary-100 dark:bg-primary-900/50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <resource.icon className="h-5 w-5 text-primary" />
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <resource.icon className="h-6 w-6 text-primary" />
                     </div>
-                    <Badge variant="outline">{resource.badge}</Badge>
+                    <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary">{resource.badge}</Badge>
                   </div>
                   <CardTitle className="text-xl group-hover:text-primary transition-colors">
                     {resource.title}
@@ -209,19 +201,21 @@ export default function Resources() {
       </section>
 
       {/* Webinars & Recent Articles */}
-      <section className="py-20 bg-muted/30">
+      <section className="py-20 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Upcoming Webinars */}
             <div>
               <div className="flex items-center gap-2 mb-6">
-                <Video className="h-5 w-5 text-primary" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                  <Video className="h-5 w-5 text-primary" />
+                </div>
                 <h2 className="text-2xl font-bold">Upcoming Webinars</h2>
               </div>
               
               <div className="space-y-4">
                 {upcomingWebinars.map((webinar, i) => (
-                  <Card key={i} className="hover:shadow-md transition-shadow">
+                  <Card key={i} className="hover:shadow-lg transition-shadow border-border/50 hover:border-primary/30">
                     <CardContent className="p-6">
                       <h3 className="font-semibold mb-3">{webinar.title}</h3>
                       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
@@ -239,7 +233,7 @@ export default function Resources() {
                           <span className="text-muted-foreground">Speakers: </span>
                           {webinar.speakers.join(", ")}
                         </div>
-                        <Button size="sm">Register</Button>
+                        <Button size="sm" className="btn-premium">Register</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -250,13 +244,15 @@ export default function Resources() {
             {/* Recent Articles */}
             <div>
               <div className="flex items-center gap-2 mb-6">
-                <Newspaper className="h-5 w-5 text-primary" />
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
+                  <Newspaper className="h-5 w-5 text-primary" />
+                </div>
                 <h2 className="text-2xl font-bold">Recent Articles</h2>
               </div>
               
               <div className="space-y-4">
                 {recentArticles.map((article, i) => (
-                  <Card key={i} className="group cursor-pointer hover:shadow-md transition-all hover:border-primary/30">
+                  <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30 border-border/50">
                     <CardContent className="p-6 flex items-start justify-between gap-4">
                       <div>
                         <Badge variant="secondary" className="mb-2">{article.category}</Badge>
@@ -283,8 +279,11 @@ export default function Resources() {
       {/* Newsletter CTA */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="max-w-3xl mx-auto bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-950/50 dark:to-primary-900/30 border-primary-200 dark:border-primary-800">
+          <Card className="max-w-3xl mx-auto glass-premium border-primary/20">
             <CardContent className="p-8 md:p-12 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/10">
+                <Zap className="h-8 w-8 text-primary" />
+              </div>
               <h2 className="text-2xl md:text-3xl font-bold mb-4">
                 Stay Updated on AI Regulation
               </h2>
@@ -296,9 +295,9 @@ export default function Resources() {
                 <input
                   type="email"
                   placeholder="Enter your email"
-                  className="flex-1 h-10 px-4 rounded-md border border-input bg-background text-sm"
+                  className="flex-1 h-11 px-4 rounded-lg border border-input bg-background text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
-                <Button>
+                <Button className="btn-premium">
                   Subscribe
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
