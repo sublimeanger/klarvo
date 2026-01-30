@@ -1,14 +1,13 @@
 
-# Phase Y: Auto-Create Tasks for High-Risk Systems
+# Phase Y: Auto-Create Tasks for High-Risk Systems ✅ COMPLETED
 
 ## Overview
-When an AI system is classified as **high-risk**, the system will automatically create compliance tasks to guide users through deployer obligations required by the EU AI Act. This ensures no critical steps are missed and provides accountability through task tracking.
+When an AI system is classified as **high-risk**, the system automatically creates compliance tasks to guide users through deployer obligations required by the EU AI Act.
 
-## Tasks to Auto-Create for High-Risk Systems
+## Implementation Summary
 
-Based on Article 26 deployer obligations and the custom knowledge spec, these tasks will be generated:
+### Tasks Auto-Created for High-Risk Systems
 
-### Core High-Risk Tasks (Always Created)
 | Task Title | Priority | Due Date | Task Type |
 |------------|----------|----------|-----------|
 | Review FRIA requirement | High | +7 days | `fria_trigger` |
@@ -26,62 +25,31 @@ Based on Article 26 deployer obligations and the custom knowledge spec, these ta
 | Has vendor (`vendor_id` set) | Request vendor AI Act compliance statement | High |
 | Has vendor | Verify vendor logging/export capabilities | Medium |
 
-## Technical Implementation
-
-### 1. Add Bulk Task Creation Hook
-Create `useCreateBulkTasks` mutation in `src/hooks/useTasks.ts`:
-- Accepts array of task definitions
-- Inserts all tasks in a single database operation
-- Avoids duplicate task creation (check by `task_type` + `ai_system_id`)
-- Returns count of tasks created
-
-### 2. Modify Classification Wizard
-Update `src/pages/ClassificationWizard.tsx` in the `handleComplete` function:
-- After saving classification and initializing controls
-- If `riskLevel === "high_risk"`:
-  - Build task list based on categories and system attributes
-  - Calculate due dates relative to today
-  - Call `createBulkTasks` mutation
-  - Show toast with task count
-
-### 3. Task Type Taxonomy
-Define clear `task_type` values for automated tasks:
-```text
-fria_trigger
-human_oversight  
-oversight_competence
-monitoring
-logging
-vendor_docs
-incident_process
-worker_notification
-vendor_attestation
-vendor_logging
-```
-
-## Code Changes Summary
+## Technical Changes Made
 
 | File | Change |
 |------|--------|
-| `src/hooks/useTasks.ts` | Add `useCreateBulkTasks` mutation for batch insert |
-| `src/pages/ClassificationWizard.tsx` | Import hook, build task list, call on high-risk classification |
-| `.lovable/plan.md` | Document Phase Y completion |
+| `src/hooks/useTasks.ts` | Added `useCreateBulkTasks` mutation with duplicate prevention |
+| `src/pages/ClassificationWizard.tsx` | Integrated bulk task creation on high-risk classification |
 
-## User Experience
+## Features
+- Duplicate prevention: Tasks with same `task_type` + `ai_system_id` are not recreated
+- Due dates calculated relative to classification date
+- Toast notification confirms task count
+- Tasks linked to AI system and vendor (where applicable)
 
-1. User completes classification wizard
-2. If high-risk is detected, after "Classification completed!" toast:
-   - Additional toast: "7 compliance tasks created for high-risk system"
-3. Tasks appear in Tasks page filtered by the AI system
-4. Each task links back to the AI system detail page
+---
 
-## Edge Cases Handled
+# Next Development Phases
 
-- **Re-classification**: When re-running wizard, existing tasks with same `task_type` + `ai_system_id` will not be duplicated (upsert or skip logic)
-- **Prohibited classification**: No tasks created (system cannot be deployed)
-- **Minimal/Limited risk**: No automatic tasks created (manual task creation still available)
+## Phase Z: Dashboard Expiry Alerts
+Add deadline reminders and expiry alerts showing:
+- Attestations expiring soon
+- Evidence needing renewal  
+- Control reviews due
 
-## Future Enhancements (Not in This Phase)
-- Email notifications for new tasks
-- Auto-assign tasks to oversight owner if specified
-- Template customization per organization
+## Phase AA: Evidence-to-Control Linking
+Attach evidence files directly to individual control implementations.
+
+## Phase AB: Reassessment Triggers
+Prompt re-classification when material changes occur to an AI system.

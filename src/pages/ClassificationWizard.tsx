@@ -23,7 +23,9 @@ import { Separator } from "@/components/ui/separator";
 import { useAISystem } from "@/hooks/useAISystems";
 import { useClassification, useCreateOrUpdateClassification } from "@/hooks/useClassification";
 import { useControlLibrary, useInitializeControls } from "@/hooks/useControls";
+import { useCreateBulkTasks, BulkTaskInput } from "@/hooks/useTasks";
 import { toast } from "sonner";
+import { addDays, format } from "date-fns";
 
 // Prohibited practices questions (Article 5)
 const PROHIBITED_QUESTIONS = [
@@ -157,6 +159,7 @@ export default function ClassificationWizard() {
   const saveClassification = useCreateOrUpdateClassification();
   const { data: allControls } = useControlLibrary();
   const initializeControls = useInitializeControls();
+  const createBulkTasks = useCreateBulkTasks();
 
   // Initialize from existing classification
   useEffect(() => {
@@ -247,6 +250,109 @@ export default function ClassificationWizard() {
         });
         toast.success(`${applicableControlIds.length} controls initialized based on classification`);
       }
+    }
+
+    // Auto-create compliance tasks for high-risk systems
+    if (riskLevel === "high_risk") {
+      const today = new Date();
+      const formatDueDate = (daysFromNow: number) => format(addDays(today, daysFromNow), "yyyy-MM-dd");
+
+      const highRiskTasks: BulkTaskInput[] = [
+        {
+          title: "Review FRIA requirement",
+          description: "Assess whether a Fundamental Rights Impact Assessment is required for this high-risk AI system under Article 27.",
+          priority: "high",
+          due_date: formatDueDate(7),
+          ai_system_id: id,
+          task_type: "fria_trigger",
+        },
+        {
+          title: "Assign human oversight personnel",
+          description: "Designate competent personnel responsible for human oversight of this AI system as required by Article 26.",
+          priority: "high",
+          due_date: formatDueDate(14),
+          ai_system_id: id,
+          task_type: "human_oversight",
+        },
+        {
+          title: "Document oversight authority and competence",
+          description: "Document the training, competence, and authority of personnel assigned to oversee this AI system.",
+          priority: "medium",
+          due_date: formatDueDate(21),
+          ai_system_id: id,
+          task_type: "oversight_competence",
+        },
+        {
+          title: "Implement operational monitoring plan",
+          description: "Establish monitoring procedures for system performance, accuracy, and potential risks during operation.",
+          priority: "high",
+          due_date: formatDueDate(21),
+          ai_system_id: id,
+          task_type: "monitoring",
+        },
+        {
+          title: "Verify log retention (6+ months)",
+          description: "Confirm that system logs are retained for at least 6 months as required for high-risk AI deployers.",
+          priority: "medium",
+          due_date: formatDueDate(14),
+          ai_system_id: id,
+          task_type: "logging",
+        },
+        {
+          title: "Upload vendor/provider instructions for use",
+          description: "Obtain and store the instructions for use provided by the AI system provider.",
+          priority: "medium",
+          due_date: formatDueDate(14),
+          ai_system_id: id,
+          task_type: "vendor_docs",
+        },
+        {
+          title: "Establish incident reporting workflow",
+          description: "Create procedures for reporting serious incidents and malfunctions to relevant authorities.",
+          priority: "medium",
+          due_date: formatDueDate(21),
+          ai_system_id: id,
+          task_type: "incident_process",
+        },
+      ];
+
+      // Conditional: worker notification for employment category
+      if (highRiskCategories.includes("employment")) {
+        highRiskTasks.push({
+          title: "Prepare worker notification",
+          description: "Draft notification for workers/representatives about the use of this AI system in the workplace as required by Article 26.",
+          priority: "high",
+          due_date: formatDueDate(14),
+          ai_system_id: id,
+          task_type: "worker_notification",
+        });
+      }
+
+      // Conditional: vendor-specific tasks
+      if (hasVendor) {
+        highRiskTasks.push(
+          {
+            title: "Request vendor AI Act compliance statement",
+            description: "Request documentation from the vendor confirming their compliance with EU AI Act provider obligations.",
+            priority: "high",
+            due_date: formatDueDate(14),
+            ai_system_id: id,
+            vendor_id: system.vendor_id!,
+            task_type: "vendor_attestation",
+          },
+          {
+            title: "Verify vendor logging/export capabilities",
+            description: "Confirm that the vendor provides adequate logging capabilities and data export options for compliance.",
+            priority: "medium",
+            due_date: formatDueDate(21),
+            ai_system_id: id,
+            vendor_id: system.vendor_id!,
+            task_type: "vendor_logging",
+          }
+        );
+      }
+
+      await createBulkTasks.mutateAsync(highRiskTasks);
     }
 
     toast.success("Classification completed!");
