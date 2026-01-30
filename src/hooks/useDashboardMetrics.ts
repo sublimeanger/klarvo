@@ -7,6 +7,14 @@ export interface DashboardMetrics {
   activeSystems: number;
   draftSystems: number;
   retiredSystems: number;
+  highRiskCount: number;
+  limitedRiskCount: number;
+  minimalRiskCount: number;
+  notClassifiedCount: number;
+  evidenceCount: number;
+  approvedEvidenceCount: number;
+  tasksTodo: number;
+  tasksOverdue: number;
 }
 
 /**
@@ -19,23 +27,40 @@ export function useDashboardMetrics() {
     queryKey: ["dashboard-metrics", profile?.organization_id],
     queryFn: async () => {
       if (!profile?.organization_id) {
-        return {
-          totalSystems: 0,
-          activeSystems: 0,
-          draftSystems: 0,
-          retiredSystems: 0,
-        };
+        return getEmptyMetrics();
       }
 
       // Fetch AI systems with their lifecycle status
-      const { data: systems, error } = await supabase
+      const { data: systems, error: systemsError } = await supabase
         .from("ai_systems")
         .select("lifecycle_status")
         .eq("organization_id", profile.organization_id);
 
-      if (error) {
-        throw error;
-      }
+      if (systemsError) throw systemsError;
+
+      // Fetch classifications
+      const { data: classifications, error: classError } = await supabase
+        .from("ai_system_classifications")
+        .select("risk_level")
+        .eq("organization_id", profile.organization_id);
+
+      if (classError) throw classError;
+
+      // Fetch evidence files
+      const { data: evidence, error: evidenceError } = await supabase
+        .from("evidence_files")
+        .select("status")
+        .eq("organization_id", profile.organization_id);
+
+      if (evidenceError) throw evidenceError;
+
+      // Fetch tasks
+      const { data: tasks, error: tasksError } = await supabase
+        .from("tasks")
+        .select("status, due_date")
+        .eq("organization_id", profile.organization_id);
+
+      if (tasksError) throw tasksError;
 
       const totalSystems = systems?.length || 0;
       const activeSystems = systems?.filter(
@@ -48,11 +73,37 @@ export function useDashboardMetrics() {
         (s) => s.lifecycle_status === "retired" || s.lifecycle_status === "archived"
       ).length || 0;
 
+      // Classification breakdown
+      const highRiskCount = classifications?.filter(c => c.risk_level === "high_risk").length || 0;
+      const limitedRiskCount = classifications?.filter(c => c.risk_level === "limited_risk").length || 0;
+      const minimalRiskCount = classifications?.filter(c => c.risk_level === "minimal_risk").length || 0;
+      const notClassifiedCount = totalSystems - (classifications?.length || 0);
+
+      // Evidence
+      const evidenceCount = evidence?.length || 0;
+      const approvedEvidenceCount = evidence?.filter(e => e.status === "approved").length || 0;
+
+      // Tasks
+      const now = new Date();
+      const tasksTodo = tasks?.filter(t => t.status === "todo" || t.status === "in_progress").length || 0;
+      const tasksOverdue = tasks?.filter(t => {
+        if (!t.due_date || t.status === "done") return false;
+        return new Date(t.due_date) < now;
+      }).length || 0;
+
       return {
         totalSystems,
         activeSystems,
         draftSystems,
         retiredSystems,
+        highRiskCount,
+        limitedRiskCount,
+        minimalRiskCount,
+        notClassifiedCount,
+        evidenceCount,
+        approvedEvidenceCount,
+        tasksTodo,
+        tasksOverdue,
       };
     },
     enabled: !!profile?.organization_id,
@@ -61,14 +112,26 @@ export function useDashboardMetrics() {
   });
 
   return {
-    metrics: metrics || {
-      totalSystems: 0,
-      activeSystems: 0,
-      draftSystems: 0,
-      retiredSystems: 0,
-    },
+    metrics: metrics || getEmptyMetrics(),
     isLoading,
     error,
     refetch,
+  };
+}
+
+function getEmptyMetrics(): DashboardMetrics {
+  return {
+    totalSystems: 0,
+    activeSystems: 0,
+    draftSystems: 0,
+    retiredSystems: 0,
+    highRiskCount: 0,
+    limitedRiskCount: 0,
+    minimalRiskCount: 0,
+    notClassifiedCount: 0,
+    evidenceCount: 0,
+    approvedEvidenceCount: 0,
+    tasksTodo: 0,
+    tasksOverdue: 0,
   };
 }
