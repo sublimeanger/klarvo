@@ -23,6 +23,8 @@ export interface DashboardMetrics {
   attestationsTotal: number;
   attestationsVerified: number;
   attestationsExpired: number;
+  // Alert count (for metric card)
+  alertsCount: number;
 }
 
 /**
@@ -127,6 +129,16 @@ export function useDashboardMetrics() {
         return new Date(a.valid_until) < now;
       }).length || 0;
 
+      // Calculate alerts count (items needing attention)
+      const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const attestationsExpiringSoon = attestations?.filter(a => {
+        if (!a.valid_until || a.status === "expired") return false;
+        const validUntil = new Date(a.valid_until);
+        return validUntil <= thirtyDaysFromNow;
+      }).length || 0;
+
+      const alertsCount = tasksOverdue + attestationsExpiringSoon;
+
       return {
         totalSystems,
         activeSystems,
@@ -146,6 +158,7 @@ export function useDashboardMetrics() {
         attestationsTotal,
         attestationsVerified,
         attestationsExpired,
+        alertsCount,
       };
     },
     enabled: !!profile?.organization_id,
@@ -181,5 +194,6 @@ function getEmptyMetrics(): DashboardMetrics {
     attestationsTotal: 0,
     attestationsVerified: 0,
     attestationsExpired: 0,
+    alertsCount: 0,
   };
 }
