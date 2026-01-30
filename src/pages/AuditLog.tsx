@@ -393,54 +393,86 @@ export default function AuditLog() {
               </p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[160px]">Date & Time</TableHead>
-                  <TableHead className="w-[150px]">User</TableHead>
-                  <TableHead className="w-[180px]">Action</TableHead>
-                  <TableHead className="w-[120px]">Entity Type</TableHead>
-                  <TableHead>Entity Name</TableHead>
-                  <TableHead className="w-[200px]">Details</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Mobile cards */}
+              <div className="md:hidden divide-y">
                 {paginatedEntries.map((entry) => (
-                  <TableRow key={entry.id}>
-                    <TableCell className="text-sm">
-                      <div>{format(new Date(entry.created_at), "MMM d, yyyy")}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {format(new Date(entry.created_at), "HH:mm:ss")}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {entry.user?.full_name || "System"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="font-mono text-xs">
+                  <div key={entry.id} className="p-3 space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <Badge variant="secondary" className="font-mono text-[10px] shrink-0">
                         {entry.action_type}
                       </Badge>
-                    </TableCell>
-                    <TableCell className="capitalize">
-                      {entry.entity_type.replace("_", " ")}
-                    </TableCell>
-                    <TableCell className="truncate max-w-[200px]">
-                      {entry.entity_name || "—"}
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground truncate max-w-[200px]">
-                      {entry.details ? JSON.stringify(entry.details) : "—"}
-                    </TableCell>
-                  </TableRow>
+                      <span className="text-[10px] text-muted-foreground">
+                        {format(new Date(entry.created_at), "MMM d, HH:mm")}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium truncate">
+                        {entry.entity_name || entry.entity_type.replace("_", " ")}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {entry.user?.full_name || "System"} • <span className="capitalize">{entry.entity_type.replace("_", " ")}</span>
+                      </p>
+                    </div>
+                    {entry.details && (
+                      <p className="text-[10px] text-muted-foreground line-clamp-1">
+                        {JSON.stringify(entry.details)}
+                      </p>
+                    )}
+                  </div>
                 ))}
-              </TableBody>
-            </Table>
+              </div>
+
+              {/* Desktop table */}
+              <Table className="hidden md:table">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[160px]">Date & Time</TableHead>
+                    <TableHead className="w-[150px]">User</TableHead>
+                    <TableHead className="w-[180px]">Action</TableHead>
+                    <TableHead className="w-[120px]">Entity Type</TableHead>
+                    <TableHead>Entity Name</TableHead>
+                    <TableHead className="w-[200px]">Details</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginatedEntries.map((entry) => (
+                    <TableRow key={entry.id}>
+                      <TableCell className="text-sm">
+                        <div>{format(new Date(entry.created_at), "MMM d, yyyy")}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {format(new Date(entry.created_at), "HH:mm:ss")}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {entry.user?.full_name || "System"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary" className="font-mono text-xs">
+                          {entry.action_type}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="capitalize">
+                        {entry.entity_type.replace("_", " ")}
+                      </TableCell>
+                      <TableCell className="truncate max-w-[200px]">
+                        {entry.entity_name || "—"}
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        {entry.details ? JSON.stringify(entry.details) : "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
           )}
         </CardContent>
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t">
-            <div className="text-sm text-muted-foreground">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-4 border-t">
+            <div className="text-xs sm:text-sm text-muted-foreground">
               Page {page + 1} of {totalPages}
             </div>
             <div className="flex items-center gap-2">
@@ -449,17 +481,19 @@ export default function AuditLog() {
                 size="sm"
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
                 disabled={page === 0}
+                className="h-8 px-2 sm:px-3"
               >
                 <ChevronLeft className="h-4 w-4" />
-                Previous
+                <span className="hidden sm:inline">Previous</span>
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                 disabled={page >= totalPages - 1}
+                className="h-8 px-2 sm:px-3"
               >
-                Next
+                <span className="hidden sm:inline">Next</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
