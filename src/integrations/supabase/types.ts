@@ -14,6 +14,116 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_system_classifications: {
+        Row: {
+          ai_system_id: string
+          ai_system_rationale: string | null
+          classification_rationale: string | null
+          classified_at: string | null
+          classified_by: string | null
+          confidence_level: string | null
+          created_at: string
+          has_prohibited_indicators: boolean | null
+          has_transparency_obligations: boolean | null
+          high_risk_categories: string[] | null
+          high_risk_notes: string | null
+          high_risk_screening_completed: boolean | null
+          id: string
+          is_ai_system: boolean | null
+          is_high_risk_candidate: boolean | null
+          organization_id: string
+          prohibited_notes: string | null
+          prohibited_screening_completed: boolean | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_level: Database["public"]["Enums"]["risk_level"]
+          transparency_categories: string[] | null
+          transparency_screening_completed: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          ai_system_id: string
+          ai_system_rationale?: string | null
+          classification_rationale?: string | null
+          classified_at?: string | null
+          classified_by?: string | null
+          confidence_level?: string | null
+          created_at?: string
+          has_prohibited_indicators?: boolean | null
+          has_transparency_obligations?: boolean | null
+          high_risk_categories?: string[] | null
+          high_risk_notes?: string | null
+          high_risk_screening_completed?: boolean | null
+          id?: string
+          is_ai_system?: boolean | null
+          is_high_risk_candidate?: boolean | null
+          organization_id: string
+          prohibited_notes?: string | null
+          prohibited_screening_completed?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_level?: Database["public"]["Enums"]["risk_level"]
+          transparency_categories?: string[] | null
+          transparency_screening_completed?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          ai_system_id?: string
+          ai_system_rationale?: string | null
+          classification_rationale?: string | null
+          classified_at?: string | null
+          classified_by?: string | null
+          confidence_level?: string | null
+          created_at?: string
+          has_prohibited_indicators?: boolean | null
+          has_transparency_obligations?: boolean | null
+          high_risk_categories?: string[] | null
+          high_risk_notes?: string | null
+          high_risk_screening_completed?: boolean | null
+          id?: string
+          is_ai_system?: boolean | null
+          is_high_risk_candidate?: boolean | null
+          organization_id?: string
+          prohibited_notes?: string | null
+          prohibited_screening_completed?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_level?: Database["public"]["Enums"]["risk_level"]
+          transparency_categories?: string[] | null
+          transparency_screening_completed?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_system_classifications_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: true
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_system_classifications_classified_by_fkey"
+            columns: ["classified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_system_classifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_system_classifications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_systems: {
         Row: {
           backup_owner_id: string | null
@@ -94,6 +204,67 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessment_answers: {
+        Row: {
+          answer_notes: string | null
+          answer_value: string | null
+          answered_at: string | null
+          answered_by: string | null
+          assessment_type: Database["public"]["Enums"]["assessment_type"]
+          classification_id: string
+          created_at: string
+          id: string
+          organization_id: string
+          question_id: string
+        }
+        Insert: {
+          answer_notes?: string | null
+          answer_value?: string | null
+          answered_at?: string | null
+          answered_by?: string | null
+          assessment_type: Database["public"]["Enums"]["assessment_type"]
+          classification_id: string
+          created_at?: string
+          id?: string
+          organization_id: string
+          question_id: string
+        }
+        Update: {
+          answer_notes?: string | null
+          answer_value?: string | null
+          answered_at?: string | null
+          answered_by?: string | null
+          assessment_type?: Database["public"]["Enums"]["assessment_type"]
+          classification_id?: string
+          created_at?: string
+          id?: string
+          organization_id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_answers_answered_by_fkey"
+            columns: ["answered_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_answers_classification_id_fkey"
+            columns: ["classification_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_classifications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_answers_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -369,6 +540,13 @@ export type Database = {
         | "system_owner"
         | "reviewer"
         | "viewer"
+      assessment_status: "draft" | "in_progress" | "completed" | "needs_review"
+      assessment_type:
+        | "ai_definition"
+        | "prohibited_screening"
+        | "high_risk_screening"
+        | "transparency_screening"
+        | "full_classification"
       billing_period: "monthly" | "annual"
       due_diligence_status:
         | "not_started"
@@ -376,6 +554,12 @@ export type Database = {
         | "completed"
         | "needs_review"
       lifecycle_status: "draft" | "pilot" | "live" | "retired" | "archived"
+      risk_level:
+        | "prohibited"
+        | "high_risk"
+        | "limited_risk"
+        | "minimal_risk"
+        | "not_classified"
       subscription_status: "trialing" | "active" | "past_due" | "canceled"
     }
     CompositeTypes: {
@@ -511,6 +695,14 @@ export const Constants = {
         "reviewer",
         "viewer",
       ],
+      assessment_status: ["draft", "in_progress", "completed", "needs_review"],
+      assessment_type: [
+        "ai_definition",
+        "prohibited_screening",
+        "high_risk_screening",
+        "transparency_screening",
+        "full_classification",
+      ],
       billing_period: ["monthly", "annual"],
       due_diligence_status: [
         "not_started",
@@ -519,6 +711,13 @@ export const Constants = {
         "needs_review",
       ],
       lifecycle_status: ["draft", "pilot", "live", "retired", "archived"],
+      risk_level: [
+        "prohibited",
+        "high_risk",
+        "limited_risk",
+        "minimal_risk",
+        "not_classified",
+      ],
       subscription_status: ["trialing", "active", "past_due", "canceled"],
     },
   },

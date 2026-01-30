@@ -16,6 +16,10 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
+  ShieldAlert,
+  Eye,
+  XCircle,
+  Scale,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -42,6 +46,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAISystem, useUpdateAISystem, useDeleteAISystem } from "@/hooks/useAISystems";
+import { useClassification } from "@/hooks/useClassification";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import type { Database } from "@/integrations/supabase/types";
@@ -77,6 +82,7 @@ export default function AISystemDetail() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: system, isLoading, error } = useAISystem(id);
+  const { data: classification } = useClassification(id);
   const { vendors } = useVendors();
   const { members } = useOrgMembers();
   const updateSystem = useUpdateAISystem();
@@ -386,11 +392,15 @@ export default function AISystemDetail() {
             </CardContent>
           </Card>
 
-          {/* Classification Status - Placeholder for next phase */}
-          <Card className="border-dashed">
+          {/* Classification Status */}
+          <Card className={classification?.risk_level && classification.risk_level !== "not_classified" ? "" : "border-dashed"}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-warning" />
+                {classification?.risk_level === "prohibited" && <XCircle className="h-5 w-5 text-risk-prohibited" />}
+                {classification?.risk_level === "high_risk" && <AlertTriangle className="h-5 w-5 text-risk-high" />}
+                {classification?.risk_level === "limited_risk" && <Eye className="h-5 w-5 text-risk-limited" />}
+                {classification?.risk_level === "minimal_risk" && <CheckCircle className="h-5 w-5 text-risk-minimal" />}
+                {(!classification?.risk_level || classification.risk_level === "not_classified") && <Scale className="h-5 w-5 text-warning" />}
                 Classification Status
               </CardTitle>
               <CardDescription>
@@ -398,17 +408,70 @@ export default function AISystemDetail() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <div>
-                  <StatusBadge variant="pending" dot>Not Classified</StatusBadge>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Run the classification wizard to determine risk level and applicable obligations
-                  </p>
+              {classification && classification.risk_level !== "not_classified" ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <StatusBadge 
+                        variant={
+                          classification.risk_level === "prohibited" ? "prohibited" :
+                          classification.risk_level === "high_risk" ? "high" :
+                          classification.risk_level === "limited_risk" ? "limited" :
+                          "minimal"
+                        } 
+                        dot
+                      >
+                        {classification.risk_level === "prohibited" ? "Prohibited" :
+                         classification.risk_level === "high_risk" ? "High-Risk" :
+                         classification.risk_level === "limited_risk" ? "Limited Risk" :
+                         "Minimal Risk"}
+                      </StatusBadge>
+                      {classification.classified_at && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Classified on {format(new Date(classification.classified_at), "PP")}
+                        </p>
+                      )}
+                    </div>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to={`/ai-systems/${id}/classify`}>Re-classify</Link>
+                    </Button>
+                  </div>
+                  
+                  {/* Summary indicators */}
+                  <div className="grid gap-2 text-sm">
+                    {classification.has_prohibited_indicators && (
+                      <div className="flex items-center gap-2 text-risk-prohibited">
+                        <ShieldAlert className="h-4 w-4" />
+                        Prohibited practice indicators found
+                      </div>
+                    )}
+                    {classification.is_high_risk_candidate && classification.high_risk_categories && (
+                      <div className="flex items-center gap-2 text-risk-high">
+                        <AlertTriangle className="h-4 w-4" />
+                        High-risk: {classification.high_risk_categories.join(", ")}
+                      </div>
+                    )}
+                    {classification.has_transparency_obligations && (
+                      <div className="flex items-center gap-2 text-risk-limited">
+                        <Eye className="h-4 w-4" />
+                        Transparency obligations apply
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <Button disabled>
-                  Start Classification
-                </Button>
-              </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <StatusBadge variant="pending" dot>Not Classified</StatusBadge>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Run the classification wizard to determine risk level and applicable obligations
+                    </p>
+                  </div>
+                  <Button asChild>
+                    <Link to={`/ai-systems/${id}/classify`}>Start Classification</Link>
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
