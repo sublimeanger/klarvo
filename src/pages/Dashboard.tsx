@@ -31,6 +31,7 @@ import { useComplianceAlerts } from "@/hooks/useComplianceAlerts";
 import { RiskDistributionChart } from "@/components/dashboard/RiskDistributionChart";
 import { ComplianceTrendChart } from "@/components/dashboard/ComplianceTrendChart";
 import { DepartmentRiskChart } from "@/components/dashboard/DepartmentRiskChart";
+import { AuditReadinessCard } from "@/components/dashboard/AuditReadinessCard";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -130,6 +131,9 @@ export default function Dashboard() {
           </>
         )}
       </div>
+
+      {/* Audit Readiness Score */}
+      <AuditReadinessCard />
 
       {/* Classification Breakdown */}
       {metrics.totalSystems > 0 && (

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
+import { pdf } from "@react-pdf/renderer";
 import {
   ArrowLeft,
   Cpu,
@@ -21,6 +22,8 @@ import {
   XCircle,
   Scale,
   Shield,
+  Download,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -57,6 +60,11 @@ import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import { detectMaterialChanges, useTriggerReassessment } from "@/hooks/useReassessment";
 import { useEntityAuditLogs, useLogAction } from "@/hooks/useAuditLog";
+import { useOrganization } from "@/hooks/useOrganization";
+import { useAuth } from "@/contexts/AuthContext";
+import { ClassificationMemoPDF } from "@/components/exports/ClassificationMemoPDF";
+import { AISystemPDF } from "@/components/exports/AISystemPDF";
+import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
 type LifecycleStatus = Database["public"]["Enums"]["lifecycle_status"];
@@ -88,6 +96,7 @@ export default function AISystemDetail() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const { data: system, isLoading, error } = useAISystem(id);
   const { data: classification } = useClassification(id);
@@ -99,6 +108,80 @@ export default function AISystemDetail() {
   const triggerReassessment = useTriggerReassessment();
   const logAction = useLogAction();
   const { data: activityLogs = [], isLoading: isLoadingActivity } = useEntityAuditLogs("ai_system", id);
+  const { data: organization } = useOrganization();
+  const { profile, user } = useAuth();
+
+  // Get reviewer name for the classification memo
+  const getReviewerName = () => {
+    if (!system?.signoff_reviewer_id) return undefined;
+    const reviewer = members.find(m => m.id === system.signoff_reviewer_id);
+    return reviewer?.full_name || undefined;
+  };
+
+  // Export Classification Memo PDF
+  const handleExportMemo = async () => {
+    if (!system || !organization) return;
+    
+    setIsExporting(true);
+    try {
+      const blob = await pdf(
+        <ClassificationMemoPDF
+          system={system as any}
+          classification={classification as any}
+          organization={{ name: organization.name }}
+          generatedBy={profile?.full_name || user?.email || "Unknown"}
+          reviewerName={getReviewerName()}
+        />
+      ).toBlob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Classification_Memo.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      toast.success("Classification Memo exported successfully");
+    } catch (err) {
+      console.error("Export failed:", err);
+      toast.error("Failed to export Classification Memo");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Export Evidence Pack PDF
+  const handleExportEvidencePack = async () => {
+    if (!system || !organization) return;
+    
+    setIsExporting(true);
+    try {
+      const blob = await pdf(
+        <AISystemPDF
+          system={{
+            ...system,
+            classification: classification as any,
+          } as any}
+          organization={{ name: organization.name }}
+          generatedBy={profile?.full_name || user?.email || "Unknown"}
+        />
+      ).toBlob();
+      
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+      
+      toast.success("Evidence Pack exported successfully");
+    } catch (err) {
+      console.error("Export failed:", err);
+      toast.error("Failed to export Evidence Pack");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Form state for editing
   const [formData, setFormData] = useState({
@@ -693,6 +776,47 @@ export default function AISystemDetail() {
                   </div>
                 </>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Export Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="h-5 w-5" />
+                Export
+              </CardTitle>
+              <CardDescription>
+                Generate audit-ready documents
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start" 
+                onClick={handleExportMemo}
+                disabled={isExporting}
+              >
+                {isExporting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <FileText className="mr-2 h-4 w-4" />
+                )}
+                Classification Memo
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start" 
+                onClick={handleExportEvidencePack}
+                disabled={isExporting}
+              >
+                {isExporting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <FileText className="mr-2 h-4 w-4" />
+                )}
+                Evidence Pack (PDF)
+              </Button>
             </CardContent>
           </Card>
 
