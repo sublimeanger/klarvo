@@ -83,8 +83,21 @@
 - `Exports.tsx` - UI for single system exports and full organization exports
 - Free tier watermark support
 
+## ✅ Phase Q: FRIA (Fundamental Rights Impact Assessment)
+- Database: `fria_assessments` table with Article 27 compliant fields
+- `useFRIA.ts` - CRUD operations for FRIA assessments
+- `FRIAWizard.tsx` - 7-step wizard covering:
+  1. Overview (title, owner, deployment date, DPIA linkage)
+  2. Process description (workflow, purpose, decisions, oversight)
+  3. Scope (duration, frequency, affected persons, vulnerable groups)
+  4. Risks of harm (fundamental rights categories, likelihood, severity)
+  5. Human oversight measures (design, competence, intervention authority)
+  6. Mitigation & governance (mitigations, complaints, monitoring, triggers)
+  7. Approval (final conclusion, authority notification)
+- `AISystemDetail.tsx` - FRIA section for high-risk systems with status tracking
+
 ## Next Steps (Remaining Enhancements)
-- FRIA (Fundamental Rights Impact Assessment) workflow
-- Settings page enhancements
+- Settings page enhancements (organization profile, team management)
 - Assessments page (unified view of all classification assessments)
 - Control library implementation
+- Vendor attestation tracking
