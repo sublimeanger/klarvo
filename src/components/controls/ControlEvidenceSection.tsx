@@ -94,42 +94,42 @@ function LinkedEvidenceItem({
   if (!evidence) return null;
 
   return (
-    <div className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
-      <div className="flex items-center gap-3 min-w-0 flex-1">
-        <div className="rounded-lg bg-primary/10 p-2">
-          <FileCheck className="h-4 w-4 text-primary" />
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2 sm:p-3 rounded-lg border bg-card hover:bg-muted/50 transition-colors">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+        <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2 shrink-0">
+          <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium truncate">{evidence.name}</p>
+          <p className="text-xs sm:text-sm font-medium truncate">{evidence.name}</p>
           {evidence.description && (
-            <p className="text-xs text-muted-foreground truncate">{evidence.description}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{evidence.description}</p>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-2 ml-2">
+      <div className="flex items-center justify-end gap-1.5 sm:gap-2 ml-0 sm:ml-2">
         <EvidenceStatusBadge status={evidence.status} expiresAt={evidence.expires_at} />
         <Link to="/evidence">
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <ExternalLink className="h-4 w-4" />
+          <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8">
+            <ExternalLink className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           </Button>
         </Link>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive">
-              <X className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground hover:text-destructive">
+              <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent>
+          <AlertDialogContent className="w-[95vw] max-w-md">
             <AlertDialogHeader>
-              <AlertDialogTitle>Unlink evidence?</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-base sm:text-lg">Unlink evidence?</AlertDialogTitle>
+              <AlertDialogDescription className="text-xs sm:text-sm">
                 This will remove the link between "{evidence.name}" and this control. 
                 The evidence file will not be deleted.
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={onUnlink}>Unlink</AlertDialogAction>
+            <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+              <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={onUnlink} className="w-full sm:w-auto">Unlink</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -168,10 +168,10 @@ function LinkEvidenceDialog({
   };
 
   return (
-    <DialogContent className="max-w-lg">
+    <DialogContent className="w-[95vw] max-w-lg">
       <DialogHeader>
-        <DialogTitle>Link Evidence</DialogTitle>
-        <DialogDescription>
+        <DialogTitle className="text-base sm:text-lg">Link Evidence</DialogTitle>
+        <DialogDescription className="text-xs sm:text-sm">
           Select evidence to link to this control. Only approved evidence is shown.
         </DialogDescription>
       </DialogHeader>
@@ -262,22 +262,22 @@ export function ControlEvidenceSection({
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium flex items-center gap-2">
-          <FileCheck className="h-4 w-4 text-muted-foreground" />
-          Linked Evidence
+    <div className="space-y-2 sm:space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <h4 className="text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2">
+          <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+          <span className="hidden xs:inline">Linked</span> Evidence
           {linkedEvidence.length > 0 && (
-            <Badge variant="secondary" className="ml-1">
+            <Badge variant="secondary" className="ml-0.5 sm:ml-1 text-[10px] sm:text-xs">
               {linkedEvidence.length}
             </Badge>
           )}
         </h4>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">
-              <Plus className="h-4 w-4 mr-1" />
-              Link Evidence
+            <Button variant="outline" size="sm" className="h-7 sm:h-8 text-xs">
+              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
+              <span className="hidden xs:inline">Link</span> Evidence
             </Button>
           </DialogTrigger>
           <LinkEvidenceDialog
