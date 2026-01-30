@@ -301,11 +301,11 @@ export default function AISystemWizard() {
       {!isDoneStep && <WizardProgress steps={steps} currentStep={currentStep} />}
 
       <Card>
-        <CardHeader>
-          <CardTitle>{currentStepDef?.title}</CardTitle>
-          <CardDescription>{currentStepDef?.description}</CardDescription>
+        <CardHeader className="pb-4 sm:pb-6">
+          <CardTitle className="text-base sm:text-lg">{currentStepDef?.title}</CardTitle>
+          <CardDescription className="text-sm">{currentStepDef?.description}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           {renderStep()}
 
           {!isDoneStep && (
