@@ -134,5 +134,11 @@
 - Progress tracking per category and overall
 - Auto-initialize controls based on classification
 
+## ✅ Phase W: Dashboard Enhancements
+- Extended `useDashboardMetrics.ts` with controls and attestation stats
+- Dashboard now shows 4 progress cards: Classification, Controls, Vendor Attestations, Evidence
+- Real-time stats for control implementation progress
+- Vendor attestation verification and expiry tracking
+
 ## Next Steps (Remaining Enhancements)
-- Dashboard enhancements with control/attestation stats
+- Auto-initialize controls after classification

@@ -15,6 +15,14 @@ export interface DashboardMetrics {
   approvedEvidenceCount: number;
   tasksTodo: number;
   tasksOverdue: number;
+  // Control metrics
+  controlsTotal: number;
+  controlsImplemented: number;
+  controlsInProgress: number;
+  // Vendor attestation metrics
+  attestationsTotal: number;
+  attestationsVerified: number;
+  attestationsExpired: number;
 }
 
 /**
@@ -62,6 +70,21 @@ export function useDashboardMetrics() {
 
       if (tasksError) throw tasksError;
 
+      // Fetch control implementations
+      const { data: controls, error: controlsError } = await supabase
+        .from("control_implementations")
+        .select("status")
+        .eq("organization_id", profile.organization_id);
+
+      if (controlsError) throw controlsError;
+
+      // Fetch vendor attestations
+      const { data: attestations, error: attestationsError } = await supabase
+        .from("vendor_attestations")
+        .select("status, valid_until")
+        .eq("organization_id", profile.organization_id);
+
+      if (attestationsError) throw attestationsError;
       const totalSystems = systems?.length || 0;
       const activeSystems = systems?.filter(
         (s) => s.lifecycle_status === "live" || s.lifecycle_status === "pilot"
@@ -91,6 +114,19 @@ export function useDashboardMetrics() {
         return new Date(t.due_date) < now;
       }).length || 0;
 
+      // Controls
+      const controlsTotal = controls?.filter(c => c.status !== "not_applicable").length || 0;
+      const controlsImplemented = controls?.filter(c => c.status === "implemented").length || 0;
+      const controlsInProgress = controls?.filter(c => c.status === "in_progress").length || 0;
+
+      // Attestations
+      const attestationsTotal = attestations?.length || 0;
+      const attestationsVerified = attestations?.filter(a => a.status === "verified").length || 0;
+      const attestationsExpired = attestations?.filter(a => {
+        if (!a.valid_until) return false;
+        return new Date(a.valid_until) < now;
+      }).length || 0;
+
       return {
         totalSystems,
         activeSystems,
@@ -104,6 +140,12 @@ export function useDashboardMetrics() {
         approvedEvidenceCount,
         tasksTodo,
         tasksOverdue,
+        controlsTotal,
+        controlsImplemented,
+        controlsInProgress,
+        attestationsTotal,
+        attestationsVerified,
+        attestationsExpired,
       };
     },
     enabled: !!profile?.organization_id,
@@ -133,5 +175,11 @@ function getEmptyMetrics(): DashboardMetrics {
     approvedEvidenceCount: 0,
     tasksTodo: 0,
     tasksOverdue: 0,
+    controlsTotal: 0,
+    controlsImplemented: 0,
+    controlsInProgress: 0,
+    attestationsTotal: 0,
+    attestationsVerified: 0,
+    attestationsExpired: 0,
   };
 }

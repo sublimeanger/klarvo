@@ -11,6 +11,8 @@ import {
   CheckSquare,
   FileText,
   AlertCircle,
+  Building2,
+  ClipboardCheck,
 } from "lucide-react";
 import { MetricCard } from "@/components/ui/metric-card";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -43,6 +45,10 @@ export default function Dashboard() {
   
   const evidenceProgress = metrics.evidenceCount > 0
     ? Math.round((metrics.approvedEvidenceCount / metrics.evidenceCount) * 100)
+    : 0;
+
+  const controlsProgress = metrics.controlsTotal > 0
+    ? Math.round((metrics.controlsImplemented / metrics.controlsTotal) * 100)
     : 0;
 
   // Get pending tasks for display
@@ -178,12 +184,12 @@ export default function Dashboard() {
       )}
 
       {/* Progress Section */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center gap-2">
               <Shield className="h-4 w-4 text-muted-foreground" />
-              Classification Progress
+              Classification
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -199,7 +205,65 @@ export default function Dashboard() {
               </div>
               <Progress value={classificationProgress} className="h-2" />
               <p className="text-xs text-muted-foreground">
-                {classifiedCount} of {metrics.totalSystems} systems classified
+                {classifiedCount} of {metrics.totalSystems} classified
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
+              Controls
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-semibold">{controlsProgress}%</span>
+                <StatusBadge 
+                  variant={controlsProgress === 100 ? "success" : controlsProgress > 50 ? "warning" : "draft"} 
+                  dot
+                >
+                  {metrics.controlsInProgress > 0 ? `${metrics.controlsInProgress} in progress` : "Tracking"}
+                </StatusBadge>
+              </div>
+              <Progress value={controlsProgress} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {metrics.controlsImplemented} of {metrics.controlsTotal} implemented
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-muted-foreground" />
+              Vendor Attestations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-semibold">{metrics.attestationsTotal}</span>
+                {metrics.attestationsExpired > 0 ? (
+                  <StatusBadge variant="destructive" dot>
+                    {metrics.attestationsExpired} expired
+                  </StatusBadge>
+                ) : (
+                  <StatusBadge variant="success" dot>
+                    {metrics.attestationsVerified} verified
+                  </StatusBadge>
+                )}
+              </div>
+              <Progress 
+                value={metrics.attestationsTotal > 0 ? (metrics.attestationsVerified / metrics.attestationsTotal) * 100 : 0} 
+                className="h-2" 
+              />
+              <p className="text-xs text-muted-foreground">
+                {metrics.attestationsVerified} verified, {metrics.attestationsTotal - metrics.attestationsVerified - metrics.attestationsExpired} pending
               </p>
             </div>
           </CardContent>
@@ -209,7 +273,7 @@ export default function Dashboard() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium flex items-center gap-2">
               <FileText className="h-4 w-4 text-muted-foreground" />
-              Evidence Status
+              Evidence
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -225,34 +289,7 @@ export default function Dashboard() {
               </div>
               <Progress value={evidenceProgress} className="h-2" />
               <p className="text-xs text-muted-foreground">
-                {metrics.approvedEvidenceCount} of {metrics.evidenceCount} files approved
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2">
-              <CheckSquare className="h-4 w-4 text-muted-foreground" />
-              Task Progress
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">{metrics.tasksTodo}</span>
-                {metrics.tasksOverdue > 0 ? (
-                  <StatusBadge variant="destructive" dot>
-                    {metrics.tasksOverdue} overdue
-                  </StatusBadge>
-                ) : (
-                  <StatusBadge variant="success" dot>On track</StatusBadge>
-                )}
-              </div>
-              <Progress value={metrics.tasksTodo > 0 ? 50 : 100} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                {metrics.tasksTodo} tasks pending completion
+                {metrics.approvedEvidenceCount} of {metrics.evidenceCount} approved
               </p>
             </div>
           </CardContent>
