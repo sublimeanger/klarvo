@@ -50,8 +50,10 @@ import { useAISystem, useUpdateAISystem, useDeleteAISystem } from "@/hooks/useAI
 import { useClassification } from "@/hooks/useClassification";
 import { useFRIA } from "@/hooks/useFRIA";
 import { AISystemControls } from "@/components/ai-systems/AISystemControls";
+import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
+import { detectMaterialChanges, useTriggerReassessment } from "@/hooks/useReassessment";
 import type { Database } from "@/integrations/supabase/types";
 
 type LifecycleStatus = Database["public"]["Enums"]["lifecycle_status"];
@@ -91,6 +93,7 @@ export default function AISystemDetail() {
   const { members } = useOrgMembers();
   const updateSystem = useUpdateAISystem();
   const deleteSystem = useDeleteAISystem();
+  const triggerReassessment = useTriggerReassessment();
 
   // Form state for editing
   const [formData, setFormData] = useState({
@@ -130,7 +133,19 @@ export default function AISystemDetail() {
   };
 
   const handleSave = async () => {
-    if (!id) return;
+    if (!id || !system) return;
+    
+    // Detect material changes before saving
+    const oldData = {
+      vendor_id: system.vendor_id,
+      lifecycle_status: system.lifecycle_status,
+    };
+    const newData = {
+      vendor_id: formData.vendor_id || null,
+      lifecycle_status: formData.lifecycle_status,
+    };
+    
+    const materialChanges = detectMaterialChanges(oldData, newData);
     
     await updateSystem.mutateAsync({
       id,
@@ -143,6 +158,15 @@ export default function AISystemDetail() {
       backup_owner_id: formData.backup_owner_id || null,
       internal_reference_id: formData.internal_reference_id || null,
     });
+    
+    // If material changes detected and system is classified, trigger reassessment
+    if (materialChanges.length > 0 && classification && classification.risk_level !== "not_classified") {
+      const reasons = materialChanges.map(c => c.reason).join("; ");
+      await triggerReassessment.mutateAsync({
+        classificationId: classification.id,
+        reason: reasons,
+      });
+    }
     
     setIsEditing(false);
   };
@@ -245,6 +269,15 @@ export default function AISystemDetail() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Reassessment Alert */}
+          {classification && (classification as any).reassessment_needed && (
+            <ReassessmentAlert
+              classificationId={classification.id}
+              aiSystemId={id!}
+              reason={(classification as any).reassessment_reason}
+              triggeredAt={(classification as any).reassessment_triggered_at}
+            />
+          )}
           {/* Basic Information */}
           <Card>
             <CardHeader>
