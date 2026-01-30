@@ -75,6 +75,20 @@
 - Added rollback functionality that saves current state before restoring
 - Added "Version History" option in policy dropdown menu with modal viewer
 
-### Phase AJ: Scheduled Compliance Digests
-- Cron job for automatic daily/weekly digest emails
-- Configurable schedule per user
+### Phase AJ: Scheduled Compliance Digests ✅
+- Created `scheduled-digest-cron` edge function for automatic digest emails
+- Checks user notification_frequency (daily/weekly) and last_notification_sent_at
+- Sends emails only when due based on schedule
+- Includes summary response with stats (emails sent, skipped, reasons)
+- Can be called by external cron service (e.g., cron-job.org) on hourly/daily schedule
+- Logs all sent notifications to notification_logs table
+
+## Upcoming Features
+
+### Phase AK: Dashboard Analytics Charts
+- Add trend charts for compliance metrics over time
+- Visual risk distribution by department/category
+
+### Phase AL: AI System Comparison
+- Side-by-side comparison of multiple AI systems
+- Compare risk levels, controls status, evidence coverage
