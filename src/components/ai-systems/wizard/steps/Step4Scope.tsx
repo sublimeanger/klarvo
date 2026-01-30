@@ -20,7 +20,7 @@ export function Step4Scope({ data, onChange }: Step4ScopeProps) {
   const showEuCountries = data.deployment_regions.includes("eu");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <MultiSelectField
         label="Where is this system deployed?"
         description="Select all regions where this AI system is used"
@@ -31,15 +31,15 @@ export function Step4Scope({ data, onChange }: Step4ScopeProps) {
 
       {showEuCountries && (
         <div className="space-y-2">
-          <Label>EU Countries</Label>
-          <p className="text-sm text-muted-foreground mb-2">
+          <Label className="text-sm">EU Countries</Label>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-2">
             Select specific EU countries where the system is deployed
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto border rounded-lg p-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto border rounded-lg p-2 sm:p-3">
             {EU_COUNTRIES.map((country) => (
               <label
                 key={country}
-                className="flex items-center gap-2 text-sm cursor-pointer"
+                className="flex items-center gap-2 text-xs sm:text-sm cursor-pointer"
               >
                 <input
                   type="checkbox"
@@ -105,15 +105,15 @@ export function Step4Scope({ data, onChange }: Step4ScopeProps) {
       />
 
       <div className="space-y-2">
-        <Label htmlFor="summary">Summary in one sentence *</Label>
+        <Label htmlFor="summary" className="text-sm">Summary in one sentence *</Label>
         <Textarea
           id="summary"
           placeholder="e.g., An AI chatbot that answers customer support queries and can escalate to human agents"
           value={data.summary}
           onChange={(e) => onChange({ summary: e.target.value })}
-          className="min-h-[80px]"
+          className="min-h-[70px] sm:min-h-[80px]"
         />
-        <p className="text-sm text-muted-foreground">
+        <p className="text-xs sm:text-sm text-muted-foreground">
           Briefly describe what this system does and who it affects
         </p>
       </div>

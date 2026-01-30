@@ -28,10 +28,10 @@ interface Step6AIDefinitionProps {
 
 export function Step6AIDefinition({ data, onChange, members }: Step6AIDefinitionProps) {
   return (
-    <div className="space-y-6">
-      <div className="rounded-lg border bg-muted/50 p-4 mb-4">
-        <p className="text-sm font-medium">Is this an "AI system" under the EU AI Act?</p>
-        <p className="text-sm text-muted-foreground mt-1">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="rounded-lg border bg-muted/50 p-3 sm:p-4 mb-4">
+        <p className="text-xs sm:text-sm font-medium">Is this an "AI system" under the EU AI Act?</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           The Commission has published guidelines to help determine whether something qualifies 
           as an "AI system." This assessment helps establish if the Act applies.
         </p>
@@ -75,8 +75,8 @@ export function Step6AIDefinition({ data, onChange, members }: Step6AIDefinition
         onChange={(value) => onChange({ technical_approach: value })}
       />
 
-      <div className="border-t pt-6 mt-6">
-        <h4 className="font-medium mb-4">Conclusion</h4>
+      <div className="border-t pt-4 sm:pt-6 mt-4 sm:mt-6">
+        <h4 className="font-medium text-sm sm:text-base mb-4">Conclusion</h4>
 
         <RadioGroupField
           label="AI system definition conclusion"
@@ -86,19 +86,19 @@ export function Step6AIDefinition({ data, onChange, members }: Step6AIDefinition
         />
 
         <div className="space-y-2 mt-4">
-          <Label htmlFor="ai_definition_rationale">Rationale</Label>
+          <Label htmlFor="ai_definition_rationale" className="text-sm">Rationale</Label>
           <Textarea
             id="ai_definition_rationale"
             placeholder="Explain why you reached this conclusion..."
             value={data.ai_definition_rationale}
             onChange={(e) => onChange({ ai_definition_rationale: e.target.value })}
-            className="min-h-[100px]"
+            className="min-h-[80px] sm:min-h-[100px]"
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 mt-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mt-4">
           <div className="space-y-2">
-            <Label>Reviewer</Label>
+            <Label className="text-sm">Reviewer</Label>
             <Select
               value={data.ai_definition_reviewer_id}
               onValueChange={(value) => onChange({ ai_definition_reviewer_id: value })}
@@ -117,7 +117,7 @@ export function Step6AIDefinition({ data, onChange, members }: Step6AIDefinition
           </div>
 
           <div className="space-y-2">
-            <Label>Confidence level</Label>
+            <Label className="text-sm">Confidence level</Label>
             <Select
               value={data.ai_definition_confidence}
               onValueChange={(value) => onChange({ ai_definition_confidence: value })}
@@ -138,8 +138,8 @@ export function Step6AIDefinition({ data, onChange, members }: Step6AIDefinition
       </div>
 
       {data.ai_definition_result === "likely_not" && (
-        <div className="rounded-lg border border-warning bg-warning/10 p-4">
-          <p className="text-sm font-medium text-warning-foreground">
+        <div className="rounded-lg border border-warning bg-warning/10 p-3 sm:p-4">
+          <p className="text-xs sm:text-sm font-medium text-warning-foreground">
             If this is "Likely NOT an AI system," you may still want to track it in 
             your inventory, but EU AI Act obligations may not apply.
           </p>
