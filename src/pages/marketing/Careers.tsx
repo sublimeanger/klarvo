@@ -101,7 +101,11 @@ export default function Careers() {
                       <Badge variant="outline">{position.type}</Badge>
                     </div>
                   </div>
-                  <Button className="shrink-0">Apply <ArrowRight className="ml-1 h-4 w-4" /></Button>
+                  <Button className="shrink-0" asChild>
+                    <a href={`mailto:careers@klarvo.io?subject=Application: ${position.title}`}>
+                      Apply <ArrowRight className="ml-1 h-4 w-4" />
+                    </a>
+                  </Button>
                 </CardContent>
               </Card>
             ))}

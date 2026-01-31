@@ -3,6 +3,7 @@ import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { NewsletterForm } from "@/components/marketing/NewsletterForm";
 import { 
   BookOpen, 
   FileText, 
@@ -13,7 +14,6 @@ import {
   Clock,
   ExternalLink,
   Newspaper,
-  GraduationCap,
   FileCheck,
   Zap,
   Sparkles
@@ -315,16 +315,8 @@ export default function Resources() {
                 Get the latest EU AI Act updates, compliance tips, and exclusive resources 
                 delivered to your inbox. No spam, unsubscribe anytime.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 h-11 px-4 rounded-lg border border-input bg-background text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <Button className="btn-premium">
-                  Subscribe
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+              <div className="max-w-md mx-auto">
+                <NewsletterForm source="resources" variant="inline" />
               </div>
             </CardContent>
           </Card>

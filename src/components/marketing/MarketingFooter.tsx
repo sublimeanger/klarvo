@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Twitter, Linkedin, Github, ArrowRight, Mail, Shield, CheckCircle2 } from "lucide-react";
+import { Twitter, Linkedin, Github, Shield, CheckCircle2 } from "lucide-react";
+import { NewsletterForm } from "./NewsletterForm";
 
 const productLinks = [
   { title: "Features", href: "/features" },
@@ -86,20 +85,7 @@ export function MarketingFooter() {
             {/* Newsletter */}
             <div className="space-y-3">
               <p className="text-sm font-semibold">Stay updated on EU AI Act</p>
-              <form className="flex gap-2" onSubmit={(e) => e.preventDefault()}>
-                <div className="relative flex-1 max-w-[280px]">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="pl-10 h-11 rounded-xl border-2 focus:border-primary"
-                  />
-                </div>
-                <Button type="submit" className="h-11 px-5 rounded-xl font-semibold group">
-                  Subscribe
-                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                </Button>
-              </form>
+              <NewsletterForm source="footer" variant="inline" />
               <p className="text-xs text-muted-foreground">
                 Get compliance updates. No spam, unsubscribe anytime.
               </p>
