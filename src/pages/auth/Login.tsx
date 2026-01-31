@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SEOHead } from "@/components/seo";
 import klarvoLogo from "@/assets/klarvo-logo.png";
 
 export default function Login() {
@@ -23,7 +24,14 @@ export default function Login() {
   }, [user, profile, isLoading, navigate, from]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <>
+      <SEOHead
+        title="Sign In - Klarvo"
+        description="Sign in to your Klarvo account to manage EU AI Act compliance, AI system inventory, and governance documentation."
+        canonical="https://klarvo.io/auth/login"
+        noindex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="flex flex-col items-center space-y-2">
           <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
@@ -70,5 +78,6 @@ export default function Login() {
         </p>
       </div>
     </div>
+    </>
   );
 }

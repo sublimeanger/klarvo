@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { SEOHead } from "@/components/seo";
 import klarvoLogo from "@/assets/klarvo-logo.png";
 
 export default function Signup() {
@@ -21,7 +22,14 @@ export default function Signup() {
   }, [user, profile, isLoading, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <>
+      <SEOHead
+        title="Sign Up - Start Free Trial | Klarvo"
+        description="Create a Klarvo account and start your 14-day free trial. EU AI Act compliance made simple for SMEs."
+        canonical="https://klarvo.io/auth/signup"
+        noindex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="flex flex-col items-center space-y-2">
           <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
@@ -77,5 +85,6 @@ export default function Signup() {
         </div>
       </div>
     </div>
+    </>
   );
 }
