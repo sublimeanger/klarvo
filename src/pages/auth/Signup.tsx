@@ -15,7 +15,7 @@ export default function Signup() {
       if (profile && !profile.onboarding_completed) {
         navigate("/onboarding", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     }
   }, [user, profile, isLoading, navigate]);

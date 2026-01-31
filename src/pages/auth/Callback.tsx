@@ -27,7 +27,7 @@ export default function Callback() {
         if (profile && !profile.onboarding_completed) {
           navigate("/onboarding", { replace: true });
         } else {
-          navigate("/", { replace: true });
+          navigate("/dashboard", { replace: true });
         }
       } else {
         navigate("/auth/login", { replace: true });
