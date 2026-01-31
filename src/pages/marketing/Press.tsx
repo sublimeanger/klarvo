@@ -114,13 +114,17 @@ export default function Press() {
                   <div className="text-3xl font-bold text-primary">Klarvo</div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50">
-                    <Download className="mr-2 h-4 w-4" />
-                    PNG
+                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50" asChild>
+                    <a href="/klarvo-logo-primary.png" download="klarvo-logo.png">
+                      <Download className="mr-2 h-4 w-4" />
+                      PNG
+                    </a>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50">
-                    <Download className="mr-2 h-4 w-4" />
-                    SVG
+                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50" asChild>
+                    <a href="/klarvo-logo-primary.svg" download="klarvo-logo.svg">
+                      <Download className="mr-2 h-4 w-4" />
+                      SVG
+                    </a>
                   </Button>
                 </div>
               </CardContent>
@@ -141,13 +145,17 @@ export default function Press() {
                   <div className="text-3xl font-bold text-white">Klarvo</div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50">
-                    <Download className="mr-2 h-4 w-4" />
-                    PNG
+                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50" asChild>
+                    <a href="/klarvo-logo-white.png" download="klarvo-logo-white.png">
+                      <Download className="mr-2 h-4 w-4" />
+                      PNG
+                    </a>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50">
-                    <Download className="mr-2 h-4 w-4" />
-                    SVG
+                  <Button variant="outline" size="sm" className="flex-1 hover:border-primary/50" asChild>
+                    <a href="/klarvo-logo-white.svg" download="klarvo-logo-white.svg">
+                      <Download className="mr-2 h-4 w-4" />
+                      SVG
+                    </a>
                   </Button>
                 </div>
               </CardContent>

@@ -21,7 +21,7 @@ import {
   MessageCircle
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { docCategories, popularArticles, videoTutorials } from "@/lib/docsContent";
+import { docCategories, popularArticles } from "@/lib/docsContent";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
@@ -190,7 +190,7 @@ export default function Docs() {
                 </div>
               </section>
 
-              {/* Video Tutorials */}
+              {/* Video Tutorials - Coming Soon */}
               <section className="mb-16">
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -200,32 +200,23 @@ export default function Docs() {
                     </Badge>
                     <h2 className="text-2xl font-bold">Learn by Watching</h2>
                   </div>
-                  <Button variant="outline" size="sm">
-                    View All Videos
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
                 </div>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                  {videoTutorials.map((video, i) => (
-                    <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30 overflow-hidden">
-                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center relative">
-                        <div className="w-12 h-12 rounded-full bg-background/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                          <Play className="h-5 w-5 text-primary ml-0.5" />
-                        </div>
-                        <Badge className="absolute top-2 right-2 bg-background/80 text-foreground text-xs">
-                          {video.duration}
-                        </Badge>
-                      </div>
-                      <CardContent className="p-3">
-                        <h3 className="font-medium text-sm mb-0.5 group-hover:text-primary transition-colors">
-                          {video.title}
-                        </h3>
-                        <p className="text-xs text-muted-foreground">{video.thumbnail}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                <Card className="bg-muted/30 border-dashed">
+                  <CardContent className="py-12 text-center">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                      <Play className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Video Tutorials Coming Soon</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto mb-4">
+                      We're producing step-by-step video walkthroughs of key features. 
+                      Subscribe to be notified when they're ready.
+                    </p>
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/changelog">View Changelog</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
               </section>
 
               {/* Documentation Categories */}

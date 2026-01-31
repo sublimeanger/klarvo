@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, RelatedContent, ContentBreadcrumb, HubNavigation } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -79,8 +79,17 @@ export default function AIInventoryTemplate() {
       />
       <SchemaMarkup schema={[howToSchema, faqSchema, breadcrumbSchema]} />
 
+      {/* Breadcrumb */}
+      <section className="pt-8 pb-0">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <ContentBreadcrumb currentHref="/templates/ai-inventory-template" />
+          </div>
+        </div>
+      </section>
+
       {/* Hero */}
-      <section className="py-16 md:py-24">
+      <section className="py-8 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-2 mb-4">
@@ -218,6 +227,15 @@ export default function AIInventoryTemplate() {
                 <p className="text-muted-foreground">{faq.answer}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Hub Navigation */}
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <HubNavigation />
           </div>
         </div>
       </section>
