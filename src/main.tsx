@@ -1,10 +1,17 @@
-import { createRoot } from "react-dom/client";
+import { ViteReactSSG } from 'vite-react-ssg';
 import App from "./App.tsx";
 import "./index.css";
+import { ssgRoutes } from './ssgRoutes';
 
-const root = createRoot(document.getElementById("root")!);
-root.render(<App />);
+// Convert routes to the format expected by vite-react-ssg
+const routes = ssgRoutes.map(path => ({
+  path,
+  element: <App />,
+}));
 
-// Signal to prerenderer that the app is ready to be captured
-// This event is listened to by vite-plugin-prerender during build
-document.dispatchEvent(new Event('prerender-ready'));
+export const createRoot = ViteReactSSG(
+  { routes },
+  () => {
+    // Setup function - providers are handled inside App component
+  }
+);
