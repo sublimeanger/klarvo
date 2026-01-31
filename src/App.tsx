@@ -85,6 +85,13 @@ import Article26Guide from "@/pages/marketing/guides/Article26Guide";
 // Industry pages
 import HRRecruitmentPage from "@/pages/marketing/industries/HRRecruitmentPage";
 
+// Additional template pages
+import Article50Disclosure from "@/pages/marketing/templates/Article50Disclosure";
+import AIAcceptableUsePolicy from "@/pages/marketing/templates/AIAcceptableUsePolicy";
+import VendorDueDiligence from "@/pages/marketing/templates/VendorDueDiligence";
+import HumanOversightPlan from "@/pages/marketing/templates/HumanOversightPlan";
+import AIIncidentRegister from "@/pages/marketing/templates/AIIncidentRegister";
+
 // Use case pages
 import SMEUseCase from "@/pages/use-cases/SME";
 import EnterpriseUseCase from "@/pages/use-cases/Enterprise";
@@ -143,6 +150,27 @@ const App = () => (
             <Route path="/eu-ai-act-compliance-software" element={<ComplianceSoftwarePage />} />
             <Route path="/ai-inventory-software" element={<AIInventorySoftwarePage />} />
             <Route path="/fria-software" element={<FRIASoftwarePage />} />
+            
+            {/* Template Pages */}
+            <Route path="/templates/ai-inventory-template" element={<AIInventoryTemplate />} />
+            <Route path="/templates/fria-template" element={<FRIATemplate />} />
+            <Route path="/templates/article-26-checklist" element={<Article26Checklist />} />
+            <Route path="/templates/article-50-disclosure-templates" element={<Article50Disclosure />} />
+            <Route path="/templates/ai-acceptable-use-policy" element={<AIAcceptableUsePolicy />} />
+            <Route path="/templates/vendor-due-diligence-questionnaire" element={<VendorDueDiligence />} />
+            <Route path="/templates/human-oversight-plan-template" element={<HumanOversightPlan />} />
+            <Route path="/templates/ai-incident-register-template" element={<AIIncidentRegister />} />
+            
+            {/* Tool Pages */}
+            <Route path="/tools/ai-system-definition-checker" element={<AIDefinitionChecker />} />
+            <Route path="/tools/high-risk-checker-annex-iii" element={<HighRiskChecker />} />
+            
+            {/* Guide Pages */}
+            <Route path="/guides/eu-ai-act-for-smes" element={<EUAIActForSMEs />} />
+            <Route path="/guides/article-26-deployer-obligations" element={<Article26Guide />} />
+            
+            {/* Industry Pages */}
+            <Route path="/industries/hr-recruitment-ai-act" element={<HRRecruitmentPage />} />
             
             {/* Use case pages */}
             <Route path="/use-cases/sme" element={<SMEUseCase />} />
