@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { ChevronUp, List, Clock, Printer } from "lucide-react";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 
 interface LegalLayoutProps {
   title: string;
@@ -176,6 +176,14 @@ export function LegalLayout({ title, lastUpdated, children, slug, description }:
     ]
   });
 
+  const webPageSchema = createWebPageSchema({
+    name: `${title} - Klarvo`,
+    description: pageDescription,
+    url: `https://klarvo.io/${pageSlug}`,
+    datePublished: "2025-01-01",
+    dateModified: lastUpdated.split(" ").pop()?.includes("2025") ? "2025-01-30" : "2025-01-30"
+  });
+
   return (
     <MarketingLayout>
       <SEOHead
@@ -185,7 +193,7 @@ export function LegalLayout({ title, lastUpdated, children, slug, description }:
         canonical={`https://klarvo.io/${pageSlug}`}
         noindex={false}
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, webPageSchema]} />
       <ScrollProgress />
       
       <div className="py-12 lg:py-16 bg-surface-1 print:bg-white">

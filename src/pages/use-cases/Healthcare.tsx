@@ -17,7 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createArticleSchema, createFAQSchema } from "@/components/seo";
 
 const healthcareAITools = [
   {
@@ -82,6 +82,21 @@ const breadcrumbSchema = createBreadcrumbSchema({
   ]
 });
 
+const articleSchema = createArticleSchema({
+  headline: "Healthcare AI Compliance - EU AI Act & MDR",
+  description: "Navigate EU AI Act and MDR compliance for healthcare AI. Medical imaging, clinical decision support, and diagnostic AI governance.",
+  datePublished: "2025-01-25",
+  dateModified: "2025-01-31"
+});
+
+const faqSchema = createFAQSchema({
+  questions: [
+    { question: "Does healthcare AI need to comply with both EU AI Act and MDR?", answer: "Yes. Most healthcare AI qualifies as a medical device under MDR and is automatically high-risk under AI Act Article 6(1). Both regulations apply simultaneously." },
+    { question: "What is the compliance timeline for healthcare AI?", answer: "Healthcare AI that's part of a medical device (Annex I product) may have until August 2027 for full compliance, but preparation should start now." },
+    { question: "Is a Notified Body required for healthcare AI?", answer: "Often yes. High-risk healthcare AI typically requires conformity assessment involving a Notified Body for both MDR and AI Act requirements." }
+  ]
+});
+
 export default function HealthcareUseCase() {
   return (
     <MarketingLayout>
@@ -91,7 +106,7 @@ export default function HealthcareUseCase() {
         keywords={["healthcare AI compliance", "medical AI regulation", "MDR AI Act", "clinical AI governance"]}
         canonical="https://klarvo.io/use-cases/healthcare"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, articleSchema, faqSchema]} />
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">

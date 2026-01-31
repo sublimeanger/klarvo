@@ -8,7 +8,7 @@ import { StatsSection } from "@/components/marketing/StatsSection";
 import { TestimonialSection } from "@/components/marketing/TestimonialSection";
 import { CTASection } from "@/components/marketing/CTASection";
 import { ProductWalkthrough } from "@/components/marketing/ProductWalkthrough";
-import { SEOHead, SchemaMarkup, organizationSchema, createSoftwareApplicationSchema, createFAQSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, organizationSchema, websiteSchema, createSoftwareApplicationSchema, createFAQSchema } from "@/components/seo";
 import {
   Cpu,
   Shield,
@@ -127,7 +127,7 @@ export default function LandingPage() {
         keywords={["EU AI Act", "AI compliance", "AI Act compliance software", "AI inventory", "AI risk classification", "SME compliance"]}
         canonical="https://klarvo.io"
       />
-      <SchemaMarkup schema={[organizationSchema, softwareSchema, faqSchema]} />
+      <SchemaMarkup schema={[organizationSchema, websiteSchema, softwareSchema, faqSchema]} />
 
       {/* Hero */}
       <HeroSection
