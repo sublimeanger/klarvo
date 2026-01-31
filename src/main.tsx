@@ -1,13 +1,12 @@
 import { ViteReactSSG } from 'vite-react-ssg';
-import { BrowserRouter } from 'react-router-dom';
 import App from "./App.tsx";
 import "./index.css";
 
-// Single route entry - App handles all routing internally
+// Single catch-all route - App handles all routing internally via Routes
 const routes = [
   {
     path: '/*',
-    element: <BrowserRouter><App /></BrowserRouter>,
+    element: <App />,
   },
 ];
 
