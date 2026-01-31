@@ -16,6 +16,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const availableIntegrations = [
   {
@@ -93,9 +94,24 @@ const integrationFeatures = [
   }
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Integrations", url: "https://klarvo.io/integrations" }
+  ]
+});
+
 export default function Integrations() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Integrations - Connect Your Compliance Workflow"
+        description="Integrate Klarvo with Jira, Slack, Teams, and more. Seamlessly connect EU AI Act compliance to your existing tools and workflows."
+        keywords={["Klarvo integrations", "compliance integrations", "Jira AI compliance", "Slack compliance notifications"]}
+        canonical="https://klarvo.io/integrations"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="Integrations"

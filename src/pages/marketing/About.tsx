@@ -18,6 +18,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, organizationSchema, createBreadcrumbSchema } from "@/components/seo";
 
 const values = [
   {
@@ -63,9 +64,24 @@ const missionPoints = [
   "Continuous compliance, not point-in-time snapshots"
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "About", url: "https://klarvo.io/about" }
+  ]
+});
+
 export default function About() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="About Klarvo - EU AI Act Compliance for SMEs"
+        description="Klarvo is on a mission to democratize AI compliance. We make EU AI Act compliance accessible to every organization, without expensive consultants."
+        keywords={["Klarvo", "about Klarvo", "AI compliance company", "EU AI Act startup", "AI governance platform"]}
+        canonical="https://klarvo.io/about"
+      />
+      <SchemaMarkup schema={[organizationSchema, breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="About Klarvo"

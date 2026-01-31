@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const contactOptions = [
   {
@@ -68,8 +69,23 @@ export default function Contact() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const breadcrumbSchema = createBreadcrumbSchema({
+    items: [
+      { name: "Home", url: "https://klarvo.io" },
+      { name: "Contact", url: "https://klarvo.io/contact" }
+    ]
+  });
+
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Contact Klarvo - Get Help with AI Compliance"
+        description="Contact the Klarvo team for EU AI Act compliance support, sales inquiries, or partnership opportunities. We respond within 24 hours."
+        keywords={["contact Klarvo", "AI compliance support", "EU AI Act help", "compliance questions"]}
+        canonical="https://klarvo.io/contact"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="Get in Touch"
