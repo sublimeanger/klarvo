@@ -85,6 +85,11 @@ export const ssgRoutes: string[] = [
   '/dpa',
   '/gdpr',
   '/aup',
+  
+  // Auth Pages (pre-rendered for faster load, noindex for SEO)
+  '/auth/login',
+  '/auth/signup',
+  '/auth/forgot-password',
 ];
 
 // Total count for reference
