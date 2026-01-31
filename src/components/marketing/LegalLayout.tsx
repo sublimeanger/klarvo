@@ -6,11 +6,14 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { ChevronUp, List, Clock, Printer } from "lucide-react";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 interface LegalLayoutProps {
   title: string;
   lastUpdated: string;
   children: React.ReactNode;
+  slug?: string;
+  description?: string;
 }
 
 // Extract headings from content for ToC
@@ -155,7 +158,7 @@ function BackToTop() {
   );
 }
 
-export function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) {
+export function LegalLayout({ title, lastUpdated, children, slug, description }: LegalLayoutProps) {
   const { headings, activeId } = useTableOfContents();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -163,8 +166,26 @@ export function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) 
     window.print();
   };
 
+  const pageSlug = slug || title.toLowerCase().replace(/\s+/g, "-");
+  const pageDescription = description || `${title} for Klarvo EU AI Act compliance platform. Last updated ${lastUpdated}.`;
+  
+  const breadcrumbSchema = createBreadcrumbSchema({
+    items: [
+      { name: "Home", url: "https://klarvo.io" },
+      { name: title, url: `https://klarvo.io/${pageSlug}` }
+    ]
+  });
+
   return (
     <MarketingLayout>
+      <SEOHead
+        title={`${title} - Klarvo`}
+        description={pageDescription}
+        keywords={[title.toLowerCase(), "Klarvo legal", "compliance platform terms"]}
+        canonical={`https://klarvo.io/${pageSlug}`}
+        noindex={false}
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
       <ScrollProgress />
       
       <div className="py-12 lg:py-16 bg-surface-1 print:bg-white">

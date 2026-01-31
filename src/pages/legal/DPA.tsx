@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function DPA() {
   return (
-    <LegalLayout title="Data Processing Agreement" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="Data Processing Agreement" 
+      lastUpdated="January 30, 2025"
+      slug="dpa"
+      description="Data Processing Agreement (DPA) for Klarvo. GDPR-compliant terms for processing personal data on behalf of customers."
+    >
       <p className="lead">
         This Data Processing Agreement ("DPA") forms part of the agreement between Klarvo and Customer for the provision of the EU AI Act compliance platform services ("Services").
       </p>

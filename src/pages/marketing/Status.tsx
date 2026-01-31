@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Zap
 } from "lucide-react";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const services = [
   {
@@ -50,11 +51,26 @@ const recentIncidents: {
   description: string;
 }[] = [];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Status", url: "https://klarvo.io/status" }
+  ]
+});
+
 export default function Status() {
   const allOperational = services.every(s => s.status === "operational");
 
   return (
     <MarketingLayout>
+      <SEOHead
+        title="System Status - Klarvo Service Health"
+        description="Check the current status of Klarvo services. Real-time monitoring of platform availability and performance."
+        keywords={["Klarvo status", "service status", "uptime", "system health"]}
+        canonical="https://klarvo.io/status"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Status Header */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />

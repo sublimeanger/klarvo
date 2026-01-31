@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const apiEndpoints = [
   {
@@ -130,6 +131,13 @@ const webhookExample = `// Webhook payload example
   }
 }`;
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "API Reference", url: "https://klarvo.io/api" }
+  ]
+});
+
 export default function APIReference() {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -138,6 +146,14 @@ export default function APIReference() {
 
   return (
     <MarketingLayout>
+      <SEOHead
+        title="API Reference - Developer Documentation"
+        description="Klarvo REST API documentation. Full CRUD access, webhooks, and OAuth 2.0 authentication for AI compliance integration."
+        keywords={["Klarvo API", "REST API", "compliance API", "developer docs", "API integration"]}
+        canonical="https://klarvo.io/api"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="API Reference"

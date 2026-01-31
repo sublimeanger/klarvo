@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function Terms() {
   return (
-    <LegalLayout title="Terms of Service" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="Terms of Service" 
+      lastUpdated="January 30, 2025"
+      slug="terms"
+      description="Terms of Service for Klarvo EU AI Act compliance platform. Read our usage terms, account policies, and service agreements."
+    >
       <h2>1. Introduction</h2>
       <p>
         Welcome to Klarvo ("Company," "we," "our," or "us"). These Terms of Service ("Terms") govern your access to and use of our EU AI Act compliance platform, including our website, applications, and related services (collectively, the "Service").

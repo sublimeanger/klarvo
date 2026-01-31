@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function GDPR() {
   return (
-    <LegalLayout title="GDPR Compliance" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="GDPR Compliance" 
+      lastUpdated="January 30, 2025"
+      slug="gdpr"
+      description="GDPR compliance at Klarvo. Learn how we protect your data and support your GDPR obligations for AI governance."
+    >
       <h2>Our Commitment to GDPR</h2>
       <p>
         Klarvo is fully committed to compliance with the General Data Protection Regulation (GDPR). As a platform designed to help organizations manage EU AI Act compliance, we understand the importance of robust data protection practices.

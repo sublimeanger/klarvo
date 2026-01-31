@@ -17,6 +17,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const partnerTypes = [
   {
@@ -77,9 +78,24 @@ const partnerBenefits = [
   }
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Partners", url: "https://klarvo.io/partners" }
+  ]
+});
+
 export default function Partners() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Partner Program - Grow with Klarvo"
+        description="Join the Klarvo partner program. Reseller, consulting, and technology partnerships for EU AI Act compliance. Earn competitive commissions."
+        keywords={["Klarvo partners", "compliance partner program", "AI compliance reseller", "consulting partnership"]}
+        canonical="https://klarvo.io/partners"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="Partner Program"

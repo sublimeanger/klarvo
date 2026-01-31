@@ -4,7 +4,12 @@ import { Shield, Lock, Server, Eye, Users, AlertTriangle } from "lucide-react";
 
 export default function Security() {
   return (
-    <LegalLayout title="Security" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="Security" 
+      lastUpdated="January 30, 2025"
+      slug="security"
+      description="Security practices at Klarvo. Encryption, access controls, compliance certifications, and data protection for EU AI Act compliance."
+    >
       <div className="not-prose mb-12">
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[

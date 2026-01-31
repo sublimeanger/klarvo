@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function Privacy() {
   return (
-    <LegalLayout title="Privacy Policy" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="Privacy Policy" 
+      lastUpdated="January 30, 2025"
+      slug="privacy"
+      description="Privacy Policy for Klarvo. Learn how we collect, use, and protect your data when using our EU AI Act compliance platform."
+    >
       <h2>1. Introduction</h2>
       <p>
         Klarvo ("Company," "we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our EU AI Act compliance platform and related services (the "Service").

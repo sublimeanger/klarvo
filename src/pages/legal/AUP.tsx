@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 export default function AUP() {
   return (
-    <LegalLayout title="Acceptable Use Policy" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="Acceptable Use Policy" 
+      lastUpdated="January 30, 2025"
+      slug="acceptable-use"
+      description="Acceptable Use Policy for Klarvo. Guidelines for using our EU AI Act compliance platform responsibly."
+    >
       <h2>1. Introduction</h2>
       <p>
         This Acceptable Use Policy ("AUP") sets forth the rules and guidelines for using Klarvo's EU AI Act compliance platform (the "Service"). This policy is part of our <Link to="/terms">Terms of Service</Link>.
