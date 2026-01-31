@@ -68,13 +68,13 @@ export default function Login() {
 
         <p className="text-center text-xs text-muted-foreground">
           By continuing, you agree to our{" "}
-          <a href="#" className="underline hover:text-foreground">
+          <Link to="/terms" className="underline hover:text-foreground">
             Terms of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a href="#" className="underline hover:text-foreground">
+          <Link to="/privacy" className="underline hover:text-foreground">
             Privacy Policy
-          </a>
+          </Link>
         </p>
       </div>
     </div>

@@ -69,13 +69,13 @@ export default function Signup() {
         <div className="space-y-3 text-center">
           <p className="text-xs text-muted-foreground">
             By signing up, you agree to our{" "}
-            <a href="#" className="underline hover:text-foreground">
+            <Link to="/terms" className="underline hover:text-foreground">
               Terms of Service
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a href="#" className="underline hover:text-foreground">
+            <Link to="/privacy" className="underline hover:text-foreground">
               Privacy Policy
-            </a>
+            </Link>
           </p>
           <p className="text-xs text-muted-foreground">
             ✓ Full access to Growth features for 14 days
