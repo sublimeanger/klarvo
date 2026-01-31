@@ -17,6 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const enterpriseFeatures = [
   {
@@ -81,9 +82,24 @@ const complianceChallenges = [
   }
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Enterprise", url: "https://klarvo.io/use-cases/enterprise" }
+  ]
+});
+
 export default function EnterpriseUseCase() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Enterprise AI Governance - EU AI Act Compliance at Scale"
+        description="AI governance for enterprises. Multi-team workspaces, SSO, executive dashboards, and API integrations for large-scale EU AI Act compliance."
+        keywords={["enterprise AI governance", "AI compliance at scale", "multi-team compliance", "corporate AI Act"]}
+        canonical="https://klarvo.io/use-cases/enterprise"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />

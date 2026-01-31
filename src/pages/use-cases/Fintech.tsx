@@ -17,6 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const fintechAITools = [
   {
@@ -74,9 +75,24 @@ const features = [
   "Multi-framework mapping (AI Act + existing regulation)"
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Fintech", url: "https://klarvo.io/use-cases/fintech" }
+  ]
+});
+
 export default function FintechUseCase() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Fintech & Banking AI Compliance - Credit Scoring & Fraud Detection"
+        description="EU AI Act compliance for financial services AI. Credit scoring, fraud detection, and algorithmic trading governance made simple."
+        keywords={["fintech AI compliance", "credit scoring regulation", "banking AI governance", "fraud detection AI Act"]}
+        canonical="https://klarvo.io/use-cases/fintech"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />

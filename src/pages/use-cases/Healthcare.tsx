@@ -17,6 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const healthcareAITools = [
   {
@@ -74,9 +75,24 @@ const features = [
   "Healthcare vendor due diligence"
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Healthcare", url: "https://klarvo.io/use-cases/healthcare" }
+  ]
+});
+
 export default function HealthcareUseCase() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Healthcare AI Compliance - EU AI Act & MDR"
+        description="Navigate EU AI Act and MDR compliance for healthcare AI. Medical imaging, clinical decision support, and diagnostic AI governance."
+        keywords={["healthcare AI compliance", "medical AI regulation", "MDR AI Act", "clinical AI governance"]}
+        canonical="https://klarvo.io/use-cases/healthcare"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
