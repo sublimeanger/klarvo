@@ -77,10 +77,15 @@ import Article26Checklist from "@/pages/marketing/templates/Article26Checklist";
 // Tool pages
 import AIDefinitionChecker from "@/pages/marketing/tools/AIDefinitionChecker";
 import HighRiskChecker from "@/pages/marketing/tools/HighRiskChecker";
+import TransparencyChecker from "@/pages/marketing/tools/TransparencyChecker";
+import ProhibitedPracticesScreening from "@/pages/marketing/tools/ProhibitedPracticesScreening";
 
 // Guide pages
 import EUAIActForSMEs from "@/pages/marketing/guides/EUAIActForSMEs";
 import Article26Guide from "@/pages/marketing/guides/Article26Guide";
+import Article50Guide from "@/pages/marketing/guides/Article50Guide";
+import ProhibitedPracticesGuide from "@/pages/marketing/guides/ProhibitedPracticesGuide";
+import HighRiskGuide from "@/pages/marketing/guides/HighRiskGuide";
 
 // Industry pages
 import HRRecruitmentPage from "@/pages/marketing/industries/HRRecruitmentPage";
@@ -164,10 +169,15 @@ const App = () => (
             {/* Tool Pages */}
             <Route path="/tools/ai-system-definition-checker" element={<AIDefinitionChecker />} />
             <Route path="/tools/high-risk-checker-annex-iii" element={<HighRiskChecker />} />
+            <Route path="/tools/transparency-obligation-checker" element={<TransparencyChecker />} />
+            <Route path="/tools/prohibited-practices-screening" element={<ProhibitedPracticesScreening />} />
             
             {/* Guide Pages */}
             <Route path="/guides/eu-ai-act-for-smes" element={<EUAIActForSMEs />} />
             <Route path="/guides/article-26-deployer-obligations" element={<Article26Guide />} />
+            <Route path="/guides/article-50-transparency-obligations" element={<Article50Guide />} />
+            <Route path="/guides/prohibited-ai-practices-article-5" element={<ProhibitedPracticesGuide />} />
+            <Route path="/guides/high-risk-ai-annex-iii" element={<HighRiskGuide />} />
             
             {/* Industry Pages */}
             <Route path="/industries/hr-recruitment-ai-act" element={<HRRecruitmentPage />} />
