@@ -2,7 +2,12 @@ import { LegalLayout } from "@/components/marketing/LegalLayout";
 
 export default function Cookies() {
   return (
-    <LegalLayout title="Cookie Policy" lastUpdated="January 30, 2025">
+    <LegalLayout 
+      title="Cookie Policy" 
+      lastUpdated="January 30, 2025"
+      slug="cookies"
+      description="Cookie Policy for Klarvo. Learn about the cookies we use, their purposes, and how to manage your cookie preferences."
+    >
       <h2>1. What Are Cookies</h2>
       <p>
         Cookies are small text files that are stored on your device when you visit a website. They help websites remember your preferences, understand how you use the site, and improve your experience.
