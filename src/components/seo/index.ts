@@ -2,6 +2,8 @@ export { SEOHead } from "./SEOHead";
 export { 
   SchemaMarkup,
   organizationSchema,
+  websiteSchema,
+  createWebPageSchema,
   createSoftwareApplicationSchema,
   createArticleSchema,
   createHowToSchema,
@@ -10,6 +12,7 @@ export {
   createProductSchema
 } from "./SchemaMarkup";
 export type {
+  WebPageSchemaProps,
   SoftwareApplicationSchemaProps,
   ArticleSchemaProps,
   HowToSchemaProps,

@@ -17,7 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createArticleSchema, createFAQSchema } from "@/components/seo";
 
 const fintechAITools = [
   {
@@ -82,6 +82,21 @@ const breadcrumbSchema = createBreadcrumbSchema({
   ]
 });
 
+const articleSchema = createArticleSchema({
+  headline: "Fintech & Banking AI Compliance - Credit Scoring & Fraud Detection",
+  description: "EU AI Act compliance for financial services AI. Credit scoring, fraud detection, and algorithmic trading governance made simple.",
+  datePublished: "2025-01-25",
+  dateModified: "2025-01-31"
+});
+
+const faqSchema = createFAQSchema({
+  questions: [
+    { question: "Is credit scoring AI high-risk under the EU AI Act?", answer: "Yes. AI systems used to evaluate creditworthiness or establish credit scores are explicitly listed as high-risk in Annex III, Point 5 of the EU AI Act." },
+    { question: "Does the EU AI Act apply on top of existing financial regulations?", answer: "Yes. The AI Act adds AI-specific requirements on top of existing regulations like MiFID II, PSD2, and insurance regulations. An integrated compliance approach is needed." },
+    { question: "What about fraud detection AI?", answer: "Fraud detection AI risk classification varies by use case. Systems that determine access to essential services may be high-risk, while internal security tools may have lighter obligations." }
+  ]
+});
+
 export default function FintechUseCase() {
   return (
     <MarketingLayout>
@@ -91,7 +106,7 @@ export default function FintechUseCase() {
         keywords={["fintech AI compliance", "credit scoring regulation", "banking AI governance", "fraud detection AI Act"]}
         canonical="https://klarvo.io/use-cases/fintech"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, articleSchema, faqSchema]} />
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">

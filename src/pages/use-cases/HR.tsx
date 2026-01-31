@@ -16,7 +16,7 @@ import {
   Scale
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createArticleSchema, createFAQSchema } from "@/components/seo";
 
 const hrAITools = [
   {
@@ -90,6 +90,21 @@ const breadcrumbSchema = createBreadcrumbSchema({
   ]
 });
 
+const articleSchema = createArticleSchema({
+  headline: "HR & Recruitment AI Compliance - High-Risk AI Management",
+  description: "EU AI Act compliance for HR AI tools. Resume screening, video interviews, and psychometric testing are high-risk. Get compliant now.",
+  datePublished: "2025-01-25",
+  dateModified: "2025-01-31"
+});
+
+const faqSchema = createFAQSchema({
+  questions: [
+    { question: "Is AI used in hiring considered high-risk?", answer: "Yes. AI used for recruitment, CV screening, performance evaluation, and employment decisions is explicitly listed as high-risk in EU AI Act Annex III." },
+    { question: "What are the deployer obligations for HR AI?", answer: "Deployers must ensure human oversight, provide transparency notices to candidates, monitor for bias, keep logs for 6 months, and notify workers before deployment." },
+    { question: "When must HR AI systems be compliant?", answer: "Most obligations apply from August 2026. However, building documentation and processes now ensures you're ready well before the deadline." }
+  ]
+});
+
 export default function HRUseCase() {
   return (
     <MarketingLayout>
@@ -99,7 +114,7 @@ export default function HRUseCase() {
         keywords={["HR AI compliance", "recruitment AI regulation", "high-risk AI HR", "hiring AI EU AI Act"]}
         canonical="https://klarvo.io/use-cases/hr"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, articleSchema, faqSchema]} />
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">

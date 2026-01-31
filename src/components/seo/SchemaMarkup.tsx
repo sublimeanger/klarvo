@@ -31,6 +31,18 @@ export const organizationSchema = {
   }
 };
 
+// WebSite schema - for landing page (helps with sitelinks in search)
+export const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://klarvo.io/#website",
+  name: "Klarvo",
+  url: "https://klarvo.io",
+  description: "EU AI Act compliance platform for SMEs. AI system inventory, risk classification, and audit-ready evidence packs.",
+  publisher: organizationSchema,
+  inLanguage: "en"
+};
+
 // WebPage schema - for individual pages
 export interface WebPageSchemaProps {
   name: string;

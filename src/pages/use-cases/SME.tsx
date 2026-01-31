@@ -17,7 +17,7 @@ import {
   Zap
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createArticleSchema } from "@/components/seo";
 
 const benefits = [
   {
@@ -78,6 +78,13 @@ const breadcrumbSchema = createBreadcrumbSchema({
   ]
 });
 
+const articleSchema = createArticleSchema({
+  headline: "EU AI Act Compliance for SMEs - Affordable & Simple",
+  description: "EU AI Act compliance designed for SMEs. Get audit-ready in hours without enterprise pricing or legal consultants.",
+  datePublished: "2025-01-25",
+  dateModified: "2025-01-31"
+});
+
 export default function SMEUseCase() {
   return (
     <MarketingLayout>
@@ -87,7 +94,7 @@ export default function SMEUseCase() {
         keywords={["EU AI Act SME", "small business AI compliance", "affordable AI governance", "SMB compliance"]}
         canonical="https://klarvo.io/use-cases/sme"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, articleSchema]} />
 
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
