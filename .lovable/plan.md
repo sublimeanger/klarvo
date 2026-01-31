@@ -1,125 +1,161 @@
 
 
-# Complete SSG Implementation for Marketing Pages
+# Flawless SEO: Migrate to React Router v7 with Native Prerendering
 
-## Current State
+## The Problem
 
-The SSG infrastructure is set up but not fully activated:
-- `vite-react-ssg` is installed (v0.8.9)
-- `src/main.tsx` uses `ViteReactSSG` entry point
-- `src/ssgRoutes.ts` defines 55 marketing routes
-- `vite.config.ts` has `ssgOptions` configured
-- `BrowserRouter` was removed from `App.tsx` (vite-react-ssg provides its own router)
+The current setup tried to use `vite-react-ssg` which conflicts with your existing React Router architecture, causing the "Nested Router" error. Your 58 marketing pages need to be fully rendered as static HTML so Google can index them perfectly.
 
-## What's Missing
+## The Solution
 
-The build scripts still use standard Vite build commands instead of the SSG-specific commands.
+**Migrate to React Router v7** — the only solution that:
+- Works natively with your existing `<Routes>` structure (no "Nested Router" errors)
+- Generates 58 static `.html` files at build time
+- Keeps your protected dashboard routes as SPA (client-rendered)
+- Is actively maintained and officially supported
 
-## Implementation Plan
+## What Google Will See
 
-### Step 1: Update Build Scripts in `package.json`
+| Before (SPA) | After (Prerendered) |
+|--------------|---------------------|
+| Empty `<div id="root">` | Full HTML content |
+| Requires JavaScript execution | Instant indexing |
+| "Two-wave" crawling delays | First-crawl indexing |
 
-Change the build commands to use the SSG build process:
+## Implementation Steps
 
-```json
-{
-  "scripts": {
-    "dev": "vite",
-    "build": "vite-react-ssg build",
-    "build:dev": "vite-react-ssg build --mode development",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:watch": "vitest"
-  }
-}
+### Step 1: Update Dependencies
+
+Remove the broken `vite-react-ssg` and install React Router v7:
+
+```text
+Remove: vite-react-ssg, react-router-dom
+Add: react-router, @react-router/dev
 ```
 
-### Step 2: Add Auth Pages to SSG Routes (Optional but Recommended)
+### Step 2: Create Route Configuration
 
-While auth pages have `noindex={true}`, pre-rendering them still improves user experience (faster initial load). Add to `ssgRoutes.ts`:
+Create a new `react-router.config.ts` in the project root:
 
 ```typescript
-// Auth pages (pre-rendered for faster load, but noindex for SEO)
-'/auth/login',
-'/auth/signup',
-'/auth/forgot-password',
+import type { Config } from "@react-router/dev/config";
+import { ssgRoutes } from "./src/ssgRoutes";
+
+export default {
+  ssr: false,  // Static site, no runtime server needed
+  
+  async prerender() {
+    // Use your existing 58-route manifest
+    return ssgRoutes;
+  },
+} satisfies Config;
 ```
 
-### Step 3: Verify Route Coverage
+### Step 3: Update Vite Configuration
 
-Cross-check all marketing routes in `App.tsx` are in `ssgRoutes.ts`:
+Replace the existing Vite config to use React Router's build plugin:
 
-**Currently in App.tsx but NOT in ssgRoutes.ts:**
-- `/docs/:slug` - Dynamic route, cannot be pre-rendered without knowing all slugs
+```typescript
+import { reactRouter } from "@react-router/dev/vite";
+import { defineConfig } from "vite";
 
-**Decision:** For dynamic routes like `/docs/:slug`, we'll need to either:
-- List all known slugs explicitly in the manifest
-- Or leave them as client-rendered (acceptable since the hub `/docs` is pre-rendered)
+export default defineConfig({
+  plugins: [reactRouter()],
+  resolve: {
+    alias: { "@": "./src" },
+  },
+});
+```
 
----
+### Step 4: Simplify Entry Point
 
-## Technical Details
+Update `src/main.tsx` to use the framework's hydration:
 
-### How vite-react-ssg Works
+```typescript
+import { hydrateRoot } from "react-dom/client";
+import { HydratedRouter } from "react-router/dom";
 
-1. At **build time**, it renders each route in the manifest to static HTML
-2. The resulting `dist/` folder contains `.html` files for each route
-3. At **runtime**, React hydrates the static HTML for interactivity
-4. Protected routes (not in manifest) remain client-side rendered
+hydrateRoot(
+  document.getElementById("root")!,
+  <HydratedRouter />
+);
+```
 
-### What Gets Pre-Rendered (55 Routes)
+### Step 5: Convert App.tsx to routes.ts
 
-| Category | Count | Example Routes |
-|----------|-------|----------------|
-| Core Marketing | 5 | `/`, `/features`, `/pricing` |
-| Product Pages | 3 | `/eu-ai-act-compliance-software` |
-| SEO Hubs | 5 | `/templates`, `/tools`, `/guides` |
-| Guide Pages | 5 | `/guides/eu-ai-act-for-smes` |
-| Tool Pages | 4 | `/tools/ai-system-definition-checker` |
-| Template Pages | 8 | `/templates/fria-template` |
-| Industry Pages | 4 | `/industries/hr-recruitment-ai-act` |
-| Use Case Pages | 5 | `/use-cases/sme` |
-| Legal Pages | 7 | `/terms`, `/privacy`, `/cookies` |
-| Resource Pages | 7 | `/docs`, `/faq`, `/blog` |
-| Company Pages | 5 | `/careers`, `/partners`, `/press` |
-| **Total** | **58** | (after adding auth pages) |
-
-### What Stays Client-Rendered
-
-| Category | Reason |
-|----------|--------|
-| `/dashboard/*` | Requires authentication |
-| `/ai-systems/*` | Dynamic content, auth required |
-| `/vendors/*` | Dynamic content, auth required |
-| `/settings/*` | Auth required |
-| `/onboarding` | Auth required |
-| `/auth/callback` | OAuth callback, must be dynamic |
+Create a `src/routes.ts` file that defines routes in object format (React Router v7's preferred structure), keeping all your existing pages and the protected route logic.
 
 ---
 
-## Files to Modify
+## What Gets Pre-Rendered (58 Pages)
 
-| File | Change |
+All routes in `ssgRoutes.ts`:
+- `/` → `build/client/index.html`
+- `/pricing` → `build/client/pricing/index.html`
+- `/templates/fria-template` → `build/client/templates/fria-template/index.html`
+- ... (all 58 routes)
+
+## What Stays Client-Rendered (SPA Fallback)
+
+Routes NOT in the manifest get served via `__spa-fallback.html`:
+- `/dashboard/*`
+- `/ai-systems/*`
+- `/settings/*`
+- `/onboarding`
+- `/auth/callback`
+
+---
+
+## Files to Create/Modify
+
+| File | Action |
 |------|--------|
-| `package.json` | Update build scripts to use `vite-react-ssg build` |
-| `src/ssgRoutes.ts` | Add auth pages (login, signup, forgot-password) |
+| `package.json` | Update dependencies (system handles this) |
+| `react-router.config.ts` | Create new — SSG configuration |
+| `vite.config.ts` | Modify — use React Router plugin |
+| `src/main.tsx` | Modify — hydration entry point |
+| `src/routes.ts` | Create new — route definitions |
+| `src/App.tsx` | Simplify — remove Routes, keep providers |
+| `src/ssgRoutes.ts` | Keep as-is — already has all 58 paths |
 
 ---
 
-## Expected Outcome
+## Expected Build Output
 
-After implementation:
+After running `npm run build`:
 
-1. **Build output** will contain 58 static HTML files
-2. **Google** will see fully-rendered content on first crawl
-3. **Protected routes** continue to work normally (client-rendered)
-4. **User experience** improves with faster initial page loads
+```text
+build/client/
+├── index.html                              (/)
+├── features/index.html                     (/features)
+├── pricing/index.html                      (/pricing)
+├── templates/
+│   ├── index.html                          (/templates)
+│   ├── fria-template/index.html            (/templates/fria-template)
+│   └── ...
+├── guides/
+│   ├── eu-ai-act-for-smes/index.html
+│   └── ...
+├── __spa-fallback.html                     (for /dashboard/*, etc.)
+└── assets/
+```
 
-### Verification Steps
+---
 
-1. Run `npm run build`
-2. Check `dist/` folder for `.html` files in each route directory
-3. Open any `.html` file to verify full content is present
-4. Use Google Rich Results Test to confirm crawlability
+## SEO Verification
+
+After deployment:
+1. Visit any marketing page (e.g., `/pricing`)
+2. Right-click → "View Page Source"
+3. Confirm you see all text content in the HTML (not just `<div id="root">`)
+4. Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
+
+---
+
+## Technical Notes
+
+- **React Router v7** is the evolution of both React Router and Remix merged together
+- The `prerender()` function runs at build time, not runtime
+- Your existing `SEOHead` and `SchemaMarkup` components will work perfectly — they inject meta tags that get baked into the static HTML
+- No changes needed to any of your 100+ page components
 
