@@ -1,6 +1,6 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +39,14 @@ export default function Careers() {
     ]
   });
 
+  const webPageSchema = createWebPageSchema({
+    name: "Careers at Klarvo - Join Our Team",
+    description: "Join Klarvo and help build the future of AI governance. Remote-first culture, competitive benefits, and meaningful work.",
+    url: "https://klarvo.io/careers",
+    datePublished: "2025-01-01",
+    dateModified: "2025-01-31"
+  });
+
   return (
     <MarketingLayout>
       <SEOHead
@@ -47,7 +55,7 @@ export default function Careers() {
         keywords={["Klarvo careers", "AI compliance jobs", "remote jobs EU", "startup jobs"]}
         canonical="https://klarvo.io/careers"
       />
-      <SchemaMarkup schema={breadcrumbSchema} />
+      <SchemaMarkup schema={[breadcrumbSchema, webPageSchema]} />
 
       <HeroSection
         badge="We're Hiring"

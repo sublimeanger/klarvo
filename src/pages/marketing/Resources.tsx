@@ -19,7 +19,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 
 const featuredResources = [
   {
@@ -120,6 +120,14 @@ const breadcrumbSchema = createBreadcrumbSchema({
   ]
 });
 
+const webPageSchema = createWebPageSchema({
+  name: "EU AI Act Resources - Guides, Whitepapers & Webinars",
+  description: "Free EU AI Act resources: guides, whitepapers, webinars, and checklists. Learn compliance best practices from industry experts.",
+  url: "https://klarvo.io/resources",
+  datePublished: "2025-01-01",
+  dateModified: "2025-01-31"
+});
+
 export default function Resources() {
   return (
     <MarketingLayout>
@@ -129,7 +137,7 @@ export default function Resources() {
         keywords={["EU AI Act resources", "compliance guides", "AI regulation whitepapers", "webinars"]}
         canonical="https://klarvo.io/resources"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, webPageSchema]} />
 
       {/* Hero Section */}
       <HeroSection
