@@ -12,6 +12,7 @@ import { FAQSection } from "@/components/billing/FAQSection";
 import { CTASection } from "@/components/marketing/CTASection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBilling } from "@/hooks/useBilling";
+import { SEOHead, SchemaMarkup, createProductSchema, createBreadcrumbSchema } from "@/components/seo";
 import { 
   PLANS, 
   ADDONS, 
@@ -59,9 +60,32 @@ export default function Pricing() {
 
   const orderedPlans: PlanId[] = ['free', 'starter', 'growth', 'pro', 'enterprise'];
 
+  const productSchema = createProductSchema({
+    name: "Klarvo EU AI Act Compliance Platform",
+    description: "Complete EU AI Act compliance solution for SMEs. AI inventory, risk classification, evidence management, and audit exports.",
+    brand: "Klarvo",
+    offers: {
+      price: "0",
+      priceCurrency: "EUR"
+    }
+  });
+
+  const breadcrumbSchema = createBreadcrumbSchema({
+    items: [
+      { name: "Home", url: "https://klarvo.io" },
+      { name: "Pricing", url: "https://klarvo.io/pricing" }
+    ]
+  });
+
   return (
     <MarketingLayout>
-      {/* Hero Section */}
+      <SEOHead
+        title="Pricing - EU AI Act Compliance for SMEs"
+        description="Simple, transparent pricing for EU AI Act compliance. Free tier available. Plans from €99/month. No enterprise complexity."
+        keywords={["AI compliance pricing", "EU AI Act software pricing", "compliance platform cost", "SME compliance pricing"]}
+        canonical="https://klarvo.io/pricing"
+      />
+      <SchemaMarkup schema={[productSchema, breadcrumbSchema]} />
       <section className="relative py-20 lg:py-28 overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
