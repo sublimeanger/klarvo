@@ -1,12 +1,11 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { NewsletterForm } from "@/components/marketing/NewsletterForm";
 import { 
   CheckCircle2, 
   AlertCircle,
   Clock,
-  ArrowRight,
   Zap
 } from "lucide-react";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
@@ -233,16 +232,8 @@ export default function Status() {
               <p className="text-muted-foreground mb-6">
                 Subscribe to receive notifications about scheduled maintenance and incidents.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 h-11 px-4 rounded-lg border border-input bg-background text-sm focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <Button className="btn-premium">
-                  Subscribe
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+              <div className="max-w-md mx-auto">
+                <NewsletterForm source="status" variant="inline" buttonText="Subscribe" />
               </div>
             </CardContent>
           </Card>

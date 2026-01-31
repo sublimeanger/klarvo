@@ -229,9 +229,11 @@ export default function Blog() {
                         {featuredPost.readTime}
                       </span>
                     </div>
-                    <Button className="btn-premium">
-                      Read Article
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                    <Button className="btn-premium" asChild>
+                      <Link to={`/blog/${featuredPost.slug}`}>
+                        Read Article
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -349,43 +351,29 @@ export default function Blog() {
                   {filteredPosts.map((post, i) => {
                     const CategoryIcon = getCategoryIcon(post.category);
                     return (
-                      <Card key={i} className="group hover:shadow-xl transition-all duration-300 hover:border-primary/30 border-border/50 flex flex-col">
-                        {/* Thumbnail */}
-                        <div className="aspect-[16/9] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center relative overflow-hidden">
-                          <CategoryIcon className="h-10 w-10 text-primary/50" />
-                        </div>
-                        
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="secondary" className="text-xs">
-                              {post.category}
-                            </Badge>
+                      <Link key={i} to={`/blog/${post.slug}`} className="block">
+                        <Card className="group hover:shadow-xl transition-all duration-300 hover:border-primary/30 border-border/50 flex flex-col h-full">
+                          <div className="aspect-[16/9] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center relative overflow-hidden">
+                            <CategoryIcon className="h-10 w-10 text-primary/50" />
                           </div>
-                          <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">
-                            {post.title}
-                          </CardTitle>
-                        </CardHeader>
-                        
-                        <CardContent className="pt-0 flex-1 flex flex-col">
-                          <CardDescription className="line-clamp-2 mb-4 flex-1">
-                            {post.excerpt}
-                          </CardDescription>
-                          
-                          <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {post.date}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {post.readTime}
-                              </span>
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant="secondary" className="text-xs">{post.category}</Badge>
                             </div>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                          </div>
-                        </CardContent>
-                      </Card>
+                            <CardTitle className="text-lg group-hover:text-primary transition-colors line-clamp-2">{post.title}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="pt-0 flex-1 flex flex-col">
+                            <CardDescription className="line-clamp-2 mb-4 flex-1">{post.excerpt}</CardDescription>
+                            <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{post.date}</span>
+                                <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{post.readTime}</span>
+                              </div>
+                              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
                     );
                   })}
                 </div>

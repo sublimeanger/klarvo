@@ -245,24 +245,34 @@ export default function Features() {
       </section>
 
       {/* Core Features Grid */}
-      <FeatureGrid
-        title="Core Capabilities"
-        subtitle="Built from the ground up for EU AI Act compliance"
-        features={coreFeatures}
-        columns={3}
-      />
+      <section id="inventory" className="scroll-mt-24">
+        <FeatureGrid
+          title="Core Capabilities"
+          subtitle="Built from the ground up for EU AI Act compliance"
+          features={coreFeatures}
+          columns={3}
+        />
+      </section>
 
       {/* Deep Dive Showcase */}
-      <FeatureShowcase items={deepDiveFeatures} />
+      <section id="classification" className="scroll-mt-24">
+        <FeatureShowcase items={deepDiveFeatures} />
+      </section>
 
-      {/* Compliance Helpers */}
-      <FeatureGrid
-        title="Built-In Compliance Intelligence"
-        subtitle="Features that keep you on track automatically"
-        features={complianceFeatures}
-        columns={3}
-        className="bg-surface-1"
-      />
+      {/* Evidence Vault Section */}
+      <section id="evidence" className="scroll-mt-24">
+        <FeatureGrid
+          title="Built-In Compliance Intelligence"
+          subtitle="Features that keep you on track automatically"
+          features={complianceFeatures}
+          columns={3}
+          className="bg-surface-1"
+        />
+      </section>
+
+      {/* Controls & Exports anchors for navigation */}
+      <div id="controls" className="scroll-mt-24" />
+      <div id="exports" className="scroll-mt-24" />
 
       {/* CTA */}
       <CTASection

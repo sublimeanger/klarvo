@@ -55,6 +55,7 @@ import Docs from "@/pages/marketing/Docs";
 import DocsArticle from "@/pages/marketing/DocsArticle";
 import FAQ from "@/pages/marketing/FAQ";
 import Blog from "@/pages/marketing/Blog";
+import BlogArticle from "@/pages/marketing/BlogArticle";
 import APIReference from "@/pages/marketing/APIReference";
 import Templates from "@/pages/marketing/Templates";
 import EUAIActGuide from "@/pages/marketing/EUAIActGuide";
@@ -157,6 +158,7 @@ const App = () => (
             <Route path="/docs/:slug" element={<DocsArticle />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/api" element={<APIReference />} />
             <Route path="/templates" element={<TemplatesHub />} />
             <Route path="/eu-ai-act" element={<EUAIActGuide />} />
