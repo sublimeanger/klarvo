@@ -89,6 +89,9 @@ import HighRiskGuide from "@/pages/marketing/guides/HighRiskGuide";
 
 // Industry pages
 import HRRecruitmentPage from "@/pages/marketing/industries/HRRecruitmentPage";
+import FintechPage from "@/pages/marketing/industries/FintechPage";
+import EducationPage from "@/pages/marketing/industries/EducationPage";
+import SaaSPage from "@/pages/marketing/industries/SaaSPage";
 
 // Additional template pages
 import Article50Disclosure from "@/pages/marketing/templates/Article50Disclosure";
@@ -181,6 +184,9 @@ const App = () => (
             
             {/* Industry Pages */}
             <Route path="/industries/hr-recruitment-ai-act" element={<HRRecruitmentPage />} />
+            <Route path="/industries/fintech-credit-ai-act" element={<FintechPage />} />
+            <Route path="/industries/education-edtech-ai-act" element={<EducationPage />} />
+            <Route path="/industries/saas-ai-act" element={<SaaSPage />} />
             
             {/* Use case pages */}
             <Route path="/use-cases/sme" element={<SMEUseCase />} />
