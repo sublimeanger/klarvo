@@ -1,13 +1,15 @@
 import { ViteReactSSG } from 'vite-react-ssg';
+import { BrowserRouter } from 'react-router-dom';
 import App from "./App.tsx";
 import "./index.css";
-import { ssgRoutes } from './ssgRoutes';
 
-// Convert routes to the format expected by vite-react-ssg
-const routes = ssgRoutes.map(path => ({
-  path,
-  element: <App />,
-}));
+// Single route entry - App handles all routing internally
+const routes = [
+  {
+    path: '/*',
+    element: <BrowserRouter><App /></BrowserRouter>,
+  },
+];
 
 export const createRoot = ViteReactSSG(
   { routes },
