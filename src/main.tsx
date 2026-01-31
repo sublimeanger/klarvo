@@ -1,18 +1,13 @@
-import { ViteReactSSG } from 'vite-react-ssg';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 import "./index.css";
 
-// Single catch-all route - App handles all routing internally via Routes
-const routes = [
-  {
-    path: '/*',
-    element: <App />,
-  },
-];
-
-export const createRoot = ViteReactSSG(
-  { routes },
-  () => {
-    // Setup function - providers are handled inside App component
-  }
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>
 );
