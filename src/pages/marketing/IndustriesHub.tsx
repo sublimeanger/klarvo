@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -54,6 +54,14 @@ export default function IndustriesHub() {
     ]
   });
 
+  const webPageSchema = createWebPageSchema({
+    name: "EU AI Act Compliance by Industry",
+    description: "Industry-specific EU AI Act compliance guides for HR, Fintech, SaaS, and Healthcare. Understand your obligations and get compliant faster.",
+    url: "https://klarvo.io/industries",
+    datePublished: "2025-01-01",
+    dateModified: "2025-01-31"
+  });
+
   return (
     <MarketingLayout>
       <SEOHead
@@ -62,7 +70,7 @@ export default function IndustriesHub() {
         keywords={["EU AI Act HR", "AI Act fintech", "AI Act SaaS", "AI Act healthcare", "industry AI compliance", "sector AI regulation"]}
         canonical="https://klarvo.io/industries"
       />
-      <SchemaMarkup schema={breadcrumbSchema} />
+      <SchemaMarkup schema={[breadcrumbSchema, webPageSchema]} />
 
       <HeroSection
         badge="By Industry"

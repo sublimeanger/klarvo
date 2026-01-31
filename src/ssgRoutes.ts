@@ -35,6 +35,7 @@ export const ssgRoutes: string[] = [
   '/guides',
   '/compare',
   '/industries',
+  '/industries',
   
   // Product Pages (BOFU)
   '/eu-ai-act-compliance-software',
