@@ -10,6 +10,7 @@ import {
   Zap,
   ArrowRight
 } from "lucide-react";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const releases = [
   {
@@ -102,9 +103,24 @@ const getTypeBadge = (type: string) => {
   }
 };
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Changelog", url: "https://klarvo.io/changelog" }
+  ]
+});
+
 export default function Changelog() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Changelog - Latest Updates & Features"
+        description="See what's new in Klarvo. Latest features, improvements, and bug fixes for the EU AI Act compliance platform."
+        keywords={["Klarvo changelog", "product updates", "new features", "release notes"]}
+        canonical="https://klarvo.io/changelog"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="Changelog"

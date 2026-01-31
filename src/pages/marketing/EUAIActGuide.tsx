@@ -21,6 +21,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createArticleSchema, createBreadcrumbSchema } from "@/components/seo";
 
 const keyDates = [
   {
@@ -128,9 +129,32 @@ const obligations = [
   }
 ];
 
+const articleSchema = createArticleSchema({
+  headline: "The EU AI Act Explained - Complete Guide",
+  description: "Comprehensive guide to the EU AI Act. Understand requirements, timeline, risk levels, and compliance obligations for AI systems.",
+  datePublished: "2024-12-01",
+  dateModified: "2025-01-28"
+});
+
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "EU AI Act Guide", url: "https://klarvo.io/eu-ai-act-guide" }
+  ]
+});
+
 export default function EUAIActGuide() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="EU AI Act Explained - Complete SME Guide"
+        description="Comprehensive guide to the EU AI Act for SMEs. Understand timeline, risk levels, prohibited practices, and deployer obligations. Free compliance resources."
+        keywords={["EU AI Act", "AI regulation guide", "AI Act explained", "AI compliance requirements", "high-risk AI"]}
+        canonical="https://klarvo.io/eu-ai-act-guide"
+        ogType="article"
+      />
+      <SchemaMarkup schema={[articleSchema, breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="EU AI Act Guide"

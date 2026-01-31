@@ -21,6 +21,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const featuredPost = {
   slug: "february-2025-deadline",
@@ -128,6 +129,13 @@ const trendingTopics = [
   "Deployer Obligations"
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Blog", url: "https://klarvo.io/blog" }
+  ]
+});
+
 export default function Blog() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -154,6 +162,14 @@ export default function Blog() {
 
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Blog - EU AI Act Insights & Compliance Guides"
+        description="Expert insights on EU AI Act compliance. Practical guides, regulatory updates, and best practices for AI governance in SMEs."
+        keywords={["EU AI Act blog", "AI compliance articles", "AI regulation news", "AI governance insights"]}
+        canonical="https://klarvo.io/blog"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="Blog"

@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { SEOHead, SchemaMarkup, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 
 const faqCategories = [
   {
@@ -216,9 +217,31 @@ const faqCategories = [
   }
 ];
 
+// Extract all FAQ questions for schema
+const allFaqQuestions = faqCategories.flatMap(cat => 
+  cat.faqs.map(faq => ({ question: faq.question, answer: faq.answer }))
+);
+
+const faqSchema = createFAQSchema({ questions: allFaqQuestions.slice(0, 15) });
+
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "FAQ", url: "https://klarvo.io/faq" }
+  ]
+});
+
 export default function FAQ() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="FAQ - EU AI Act Compliance Questions Answered"
+        description="Answers to common questions about EU AI Act compliance, Klarvo platform features, pricing, and getting started with AI governance."
+        keywords={["EU AI Act FAQ", "AI compliance questions", "Klarvo FAQ", "AI Act answers", "compliance help"]}
+        canonical="https://klarvo.io/faq"
+      />
+      <SchemaMarkup schema={[faqSchema, breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="FAQ"

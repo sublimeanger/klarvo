@@ -23,6 +23,14 @@ import {
 import { Link } from "react-router-dom";
 import { docCategories, popularArticles, videoTutorials } from "@/lib/docsContent";
 import { SkipToContent } from "@/components/ui/SkipToContent";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Documentation", url: "https://klarvo.io/docs" }
+  ]
+});
 
 export default function Docs() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,6 +47,13 @@ export default function Docs() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEOHead
+        title="Documentation - EU AI Act Compliance Platform"
+        description="Learn how to use Klarvo for EU AI Act compliance. Guides, tutorials, and reference documentation for AI inventory, classification, and evidence management."
+        keywords={["Klarvo docs", "EU AI Act documentation", "AI compliance guide", "platform tutorials"]}
+        canonical="https://klarvo.io/docs"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
       <SkipToContent />
       <MarketingHeader />
       
