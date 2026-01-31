@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,8 @@ const SUGGESTED_QUESTIONS = [
   "How do I classify my AI system?",
 ];
 
-export function AIAssistant() {
+export const AIAssistant = forwardRef<HTMLDivElement, object>(function AIAssistant(_props, ref) {
+  void ref; // Mark ref as intentionally unused
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -324,4 +325,4 @@ export function AIAssistant() {
       </form>
     </Card>
   );
-}
+});
