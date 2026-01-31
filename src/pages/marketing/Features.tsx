@@ -4,6 +4,7 @@ import { FeatureGrid } from "@/components/marketing/FeatureGrid";
 import { FeatureShowcase } from "@/components/marketing/FeatureShowcase";
 import { CTASection } from "@/components/marketing/CTASection";
 import { Badge } from "@/components/ui/badge";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Cpu,
@@ -172,10 +173,23 @@ const workflowSteps = [
   },
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Features", url: "https://klarvo.io/features" }
+  ]
+});
+
 export default function Features() {
   return (
     <MarketingLayout>
-      {/* Hero */}
+      <SEOHead
+        title="EU AI Act Compliance Features - Full Platform Overview"
+        description="Complete EU AI Act compliance platform. AI inventory, risk classification, evidence vault, control library, training tracking, incident management, and audit-ready exports."
+        keywords={["AI compliance features", "EU AI Act platform", "AI inventory software", "compliance automation", "AI risk management"]}
+        canonical="https://klarvo.io/features"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
       <HeroSection
         badge="Platform Features"
         title={
