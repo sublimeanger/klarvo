@@ -86,6 +86,20 @@ import Article26Guide from "@/pages/marketing/guides/Article26Guide";
 import Article50Guide from "@/pages/marketing/guides/Article50Guide";
 import ProhibitedPracticesGuide from "@/pages/marketing/guides/ProhibitedPracticesGuide";
 import HighRiskGuide from "@/pages/marketing/guides/HighRiskGuide";
+import AIInventoryGuide from "@/pages/marketing/guides/AIInventoryGuide";
+import AIDefinitionGuide from "@/pages/marketing/guides/AIDefinitionGuide";
+import AILiteracyGuide from "@/pages/marketing/guides/AILiteracyGuide";
+import FRIAGuide from "@/pages/marketing/guides/FRIAGuide";
+import EvidencePackGuide from "@/pages/marketing/guides/EvidencePackGuide";
+
+// Comparison pages
+import KlarvoVsSpreadsheets from "@/pages/marketing/compare/KlarvoVsSpreadsheets";
+import KlarvoVsTrustPlatforms from "@/pages/marketing/compare/KlarvoVsTrustPlatforms";
+
+// Additional BOFU product pages
+import EvidencePacksPage from "@/pages/marketing/EvidencePacksPage";
+import TrainingTrackerPage from "@/pages/marketing/TrainingTrackerPage";
+import EvidenceVaultPage from "@/pages/marketing/EvidenceVaultPage";
 
 // Industry pages
 import HRRecruitmentPage from "@/pages/marketing/industries/HRRecruitmentPage";
@@ -180,6 +194,20 @@ const App = () => (
             <Route path="/guides/article-50-transparency-obligations" element={<Article50Guide />} />
             <Route path="/guides/prohibited-ai-practices-article-5" element={<ProhibitedPracticesGuide />} />
             <Route path="/guides/high-risk-ai-annex-iii" element={<HighRiskGuide />} />
+            <Route path="/guides/ai-inventory-eu-ai-act" element={<AIInventoryGuide />} />
+            <Route path="/guides/is-this-an-ai-system" element={<AIDefinitionGuide />} />
+            <Route path="/guides/ai-literacy-article-4" element={<AILiteracyGuide />} />
+            <Route path="/guides/fria-article-27" element={<FRIAGuide />} />
+            <Route path="/guides/evidence-pack-procurement" element={<EvidencePackGuide />} />
+            
+            {/* Comparison Pages */}
+            <Route path="/compare/klarvo-vs-spreadsheets" element={<KlarvoVsSpreadsheets />} />
+            <Route path="/compare/klarvo-vs-trust-platforms" element={<KlarvoVsTrustPlatforms />} />
+            
+            {/* Additional BOFU Product Pages */}
+            <Route path="/ai-governance-evidence-packs" element={<EvidencePacksPage />} />
+            <Route path="/ai-literacy-training-tracker" element={<TrainingTrackerPage />} />
+            <Route path="/product/evidence-vault" element={<EvidenceVaultPage />} />
             
             {/* Industry Pages */}
             <Route path="/industries/hr-recruitment-ai-act" element={<HRRecruitmentPage />} />

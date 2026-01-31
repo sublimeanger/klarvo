@@ -63,6 +63,20 @@ export const ssgRoutes: string[] = [
   '/guides/article-50-transparency-obligations',
   '/guides/prohibited-ai-practices-article-5',
   '/guides/high-risk-ai-annex-iii',
+  '/guides/ai-inventory-eu-ai-act',
+  '/guides/is-this-an-ai-system',
+  '/guides/ai-literacy-article-4',
+  '/guides/fria-article-27',
+  '/guides/evidence-pack-procurement',
+  
+  // Comparison Pages
+  '/compare/klarvo-vs-spreadsheets',
+  '/compare/klarvo-vs-trust-platforms',
+  
+  // Additional BOFU Product Pages
+  '/ai-governance-evidence-packs',
+  '/ai-literacy-training-tracker',
+  '/product/evidence-vault',
   
   // Industry Pages
   '/industries/hr-recruitment-ai-act',
