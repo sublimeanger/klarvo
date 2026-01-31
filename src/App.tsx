@@ -59,6 +59,16 @@ import APIReference from "@/pages/marketing/APIReference";
 import Templates from "@/pages/marketing/Templates";
 import EUAIActGuide from "@/pages/marketing/EUAIActGuide";
 
+// SEO-optimized pages
+import TemplatesHub from "@/pages/marketing/TemplatesHub";
+import ToolsHub from "@/pages/marketing/ToolsHub";
+import GuidesHub from "@/pages/marketing/GuidesHub";
+import CompareHub from "@/pages/marketing/CompareHub";
+import IndustriesHub from "@/pages/marketing/IndustriesHub";
+import ComplianceSoftwarePage from "@/pages/marketing/ComplianceSoftwarePage";
+import AIInventorySoftwarePage from "@/pages/marketing/AIInventorySoftwarePage";
+import FRIASoftwarePage from "@/pages/marketing/FRIASoftwarePage";
+
 // Use case pages
 import SMEUseCase from "@/pages/use-cases/SME";
 import EnterpriseUseCase from "@/pages/use-cases/Enterprise";
@@ -104,8 +114,19 @@ const App = () => (
             <Route path="/faq" element={<FAQ />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/api" element={<APIReference />} />
-            <Route path="/templates" element={<Templates />} />
+            <Route path="/templates" element={<TemplatesHub />} />
             <Route path="/eu-ai-act" element={<EUAIActGuide />} />
+            
+            {/* SEO Hub Pages */}
+            <Route path="/tools" element={<ToolsHub />} />
+            <Route path="/guides" element={<GuidesHub />} />
+            <Route path="/compare" element={<CompareHub />} />
+            <Route path="/industries" element={<IndustriesHub />} />
+            
+            {/* BOFU Product Pages */}
+            <Route path="/eu-ai-act-compliance-software" element={<ComplianceSoftwarePage />} />
+            <Route path="/ai-inventory-software" element={<AIInventorySoftwarePage />} />
+            <Route path="/fria-software" element={<FRIASoftwarePage />} />
             
             {/* Use case pages */}
             <Route path="/use-cases/sme" element={<SMEUseCase />} />
