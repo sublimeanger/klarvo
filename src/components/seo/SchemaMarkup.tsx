@@ -4,9 +4,15 @@ import { useEffect } from "react";
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://klarvo.io/#organization",
   name: "Klarvo",
   url: "https://klarvo.io",
-  logo: "https://klarvo.lovable.app/favicon.png",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://klarvo.io/favicon.png",
+    width: 512,
+    height: 512
+  },
   description: "EU AI Act compliance software for SMEs. Build AI inventories, classify risk, and generate audit-ready evidence packs.",
   foundingDate: "2024",
   sameAs: [
@@ -16,9 +22,44 @@ export const organizationSchema = {
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer service",
-    email: "support@klarvo.io"
+    email: "support@klarvo.io",
+    availableLanguage: ["English"]
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "EU"
   }
 };
+
+// WebPage schema - for individual pages
+export interface WebPageSchemaProps {
+  name: string;
+  description: string;
+  url: string;
+  datePublished?: string;
+  dateModified?: string;
+}
+
+export function createWebPageSchema(props: WebPageSchemaProps) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${props.url}#webpage`,
+    name: props.name,
+    description: props.description,
+    url: props.url,
+    isPartOf: {
+      "@type": "WebSite",
+      "@id": "https://klarvo.io/#website",
+      name: "Klarvo",
+      url: "https://klarvo.io"
+    },
+    publisher: organizationSchema,
+    datePublished: props.datePublished || "2025-01-01",
+    dateModified: props.dateModified || new Date().toISOString().split('T')[0],
+    inLanguage: "en"
+  };
+}
 
 // Software Application schema for product pages
 export interface SoftwareApplicationSchemaProps {
@@ -86,7 +127,7 @@ export function createArticleSchema(props: ArticleSchemaProps) {
     publisher: organizationSchema,
     datePublished: props.datePublished,
     dateModified: props.dateModified || props.datePublished,
-    image: props.image || "https://klarvo.lovable.app/og-image.png",
+    image: props.image || "https://klarvo.io/og-image.png",
     mainEntityOfPage: {
       "@type": "WebPage"
     }

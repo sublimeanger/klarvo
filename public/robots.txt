@@ -1,4 +1,21 @@
+# Klarvo EU AI Act Compliance Platform
+# https://klarvo.io
+
+# Allow all search engines to crawl public pages
+User-agent: *
+Allow: /
+
+# Disallow utility and auth paths (no SEO value)
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /onboarding/
+
+# Allow social media crawlers
 User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
 Allow: /
 
 User-agent: Bingbot
@@ -10,5 +27,17 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://klarvo.io/sitemap.xml
+
+# Crawl-delay suggestion for politeness (optional)
+# Crawl-delay: 1
+
+# Host directive (some crawlers use this)
+Host: https://klarvo.io
