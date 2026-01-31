@@ -521,14 +521,14 @@ export default function AISystemDetail() {
                 <div className="space-y-2">
                   <Label>Vendor</Label>
                   <Select
-                    value={formData.vendor_id}
-                    onValueChange={(v) => setFormData({ ...formData, vendor_id: v })}
+                    value={formData.vendor_id || "__none__"}
+                    onValueChange={(v) => setFormData({ ...formData, vendor_id: v === "__none__" ? "" : v })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select vendor" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None / Internal</SelectItem>
+                      <SelectItem value="__none__">None / Internal</SelectItem>
                       {vendors.map((vendor) => (
                         <SelectItem key={vendor.id} value={vendor.id}>
                           {vendor.name}
@@ -735,14 +735,14 @@ export default function AISystemDetail() {
                   <div className="space-y-2">
                     <Label>Primary Owner</Label>
                     <Select
-                      value={formData.primary_owner_id}
-                      onValueChange={(v) => setFormData({ ...formData, primary_owner_id: v })}
+                      value={formData.primary_owner_id || "__none__"}
+                      onValueChange={(v) => setFormData({ ...formData, primary_owner_id: v === "__none__" ? "" : v })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select owner" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Unassigned</SelectItem>
+                        <SelectItem value="__none__">Unassigned</SelectItem>
                         {members.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
                             {member.full_name || "Unnamed User"}
@@ -754,14 +754,14 @@ export default function AISystemDetail() {
                   <div className="space-y-2">
                     <Label>Backup Owner</Label>
                     <Select
-                      value={formData.backup_owner_id}
-                      onValueChange={(v) => setFormData({ ...formData, backup_owner_id: v })}
+                      value={formData.backup_owner_id || "__none__"}
+                      onValueChange={(v) => setFormData({ ...formData, backup_owner_id: v === "__none__" ? "" : v })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select backup" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">None</SelectItem>
+                        <SelectItem value="__none__">None</SelectItem>
                         {members.map((member) => (
                           <SelectItem key={member.id} value={member.id}>
                             {member.full_name || "Unnamed User"}

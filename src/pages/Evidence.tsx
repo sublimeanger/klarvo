@@ -517,14 +517,14 @@ export default function Evidence() {
               <div className="space-y-2">
                 <Label>Link to AI System</Label>
                 <Select
-                  value={uploadForm.ai_system_id}
-                  onValueChange={(v) => setUploadForm({ ...uploadForm, ai_system_id: v })}
+                  value={uploadForm.ai_system_id || "__none__"}
+                  onValueChange={(v) => setUploadForm({ ...uploadForm, ai_system_id: v === "__none__" ? "" : v })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Optional" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="__none__">None</SelectItem>
                     {systems.map((sys) => (
                       <SelectItem key={sys.id} value={sys.id}>
                         {sys.name}
@@ -538,14 +538,14 @@ export default function Evidence() {
             <div className="space-y-2">
               <Label>Link to Vendor</Label>
               <Select
-                value={uploadForm.vendor_id}
-                onValueChange={(v) => setUploadForm({ ...uploadForm, vendor_id: v })}
+                value={uploadForm.vendor_id || "__none__"}
+                onValueChange={(v) => setUploadForm({ ...uploadForm, vendor_id: v === "__none__" ? "" : v })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Optional" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="__none__">None</SelectItem>
                   {vendors.map((v) => (
                     <SelectItem key={v.id} value={v.id}>
                       {v.name}

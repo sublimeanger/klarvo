@@ -560,14 +560,14 @@ export default function Tasks() {
               <div className="space-y-2">
                 <Label>Assign To</Label>
                 <Select
-                  value={newTask.assigned_to}
-                  onValueChange={(v) => setNewTask({ ...newTask, assigned_to: v })}
+                  value={newTask.assigned_to || "__none__"}
+                  onValueChange={(v) => setNewTask({ ...newTask, assigned_to: v === "__none__" ? "" : v })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select person" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Unassigned</SelectItem>
+                    <SelectItem value="__none__">Unassigned</SelectItem>
                     {members.map((m) => (
                       <SelectItem key={m.id} value={m.id}>
                         {m.full_name || "Unnamed"}
@@ -600,14 +600,14 @@ export default function Tasks() {
             <div className="space-y-2">
               <Label>Link to AI System</Label>
               <Select
-                value={newTask.ai_system_id}
-                onValueChange={(v) => setNewTask({ ...newTask, ai_system_id: v })}
+                value={newTask.ai_system_id || "__none__"}
+                onValueChange={(v) => setNewTask({ ...newTask, ai_system_id: v === "__none__" ? "" : v })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Optional" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="__none__">None</SelectItem>
                   {systems.map((s) => (
                     <SelectItem key={s.id} value={s.id}>
                       {s.name}
