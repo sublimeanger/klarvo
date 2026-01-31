@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from "@/components/seo";
 import { Loader2 } from "lucide-react";
 
 export default function Callback() {
@@ -38,11 +39,18 @@ export default function Callback() {
   }, [navigate]);
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="text-center space-y-4">
-        <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-        <p className="text-muted-foreground">Completing sign in...</p>
+    <>
+      <SEOHead
+        title="Completing Sign In - Klarvo"
+        description="Completing your sign in..."
+        noindex={true}
+      />
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">Completing sign in...</p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

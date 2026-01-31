@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { SEOHead } from "@/components/seo";
 import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 import klarvoLogo from "@/assets/klarvo-logo.png";
 
@@ -61,7 +62,13 @@ export default function ForgotPassword() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+      <>
+        <SEOHead
+          title="Check Your Email - Klarvo"
+          description="Password reset email sent. Check your inbox."
+          noindex={true}
+        />
+        <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
         <div className="w-full max-w-md space-y-6">
           <div className="flex flex-col items-center space-y-2">
             <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
@@ -91,11 +98,19 @@ export default function ForgotPassword() {
           </Card>
         </div>
       </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
+    <>
+      <SEOHead
+        title="Reset Password - Klarvo"
+        description="Reset your Klarvo account password."
+        canonical="https://klarvo.io/auth/forgot-password"
+        noindex={true}
+      />
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="flex flex-col items-center space-y-2">
           <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
@@ -150,5 +165,6 @@ export default function ForgotPassword() {
         </Card>
       </div>
     </div>
+    </>
   );
 }
