@@ -12,7 +12,6 @@ import {
   ArrowRight,
   Calendar,
   Clock,
-  ExternalLink,
   Newspaper,
   FileCheck,
   Zap,
@@ -53,25 +52,29 @@ const resourceCategories = [
     icon: BookOpen,
     title: "EU AI Act Guides",
     description: "In-depth explainers on key requirements",
-    count: 12,
+    count: 10,
+    href: "/guides",
   },
   {
     icon: FileText,
     title: "Templates & Checklists",
     description: "Ready-to-use compliance documents",
     count: 8,
+    href: "/templates",
   },
   {
     icon: Video,
-    title: "Webinars & Videos",
-    description: "Expert-led training sessions",
-    count: 6,
+    title: "Interactive Tools",
+    description: "Free compliance checkers and screeners",
+    count: 4,
+    href: "/tools",
   },
   {
     icon: Newspaper,
     title: "News & Updates",
     description: "Latest AI regulation developments",
-    count: 15,
+    count: 9,
+    href: "/blog",
   }
 ];
 
@@ -94,22 +97,26 @@ const recentArticles = [
   {
     title: "Understanding the EU AI Act Timeline: Key Dates for 2025",
     category: "Regulation",
-    date: "Jan 15, 2025"
+    date: "Jan 15, 2025",
+    href: "/blog/february-2025-deadline"
   },
   {
     title: "5 Common Mistakes in AI System Classification",
     category: "Best Practices",
-    date: "Jan 12, 2025"
+    date: "Jan 12, 2025",
+    href: "/blog/high-risk-classification-mistakes"
   },
   {
     title: "Article 26 Deployer Obligations Explained",
     category: "Deep Dive",
-    date: "Jan 8, 2025"
+    date: "Jan 8, 2025",
+    href: "/guides/article-26-deployer-obligations"
   },
   {
     title: "AI Literacy Requirements: What SMEs Need to Know",
     category: "Training",
-    date: "Jan 5, 2025"
+    date: "Jan 5, 2025",
+    href: "/guides/ai-literacy-article-4"
   }
 ];
 
@@ -158,18 +165,20 @@ export default function Resources() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
             {resourceCategories.map((category, i) => (
-              <Card key={i} className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-border/50 hover:border-primary/30 hover:-translate-y-1">
-                <CardContent className="p-6 text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
-                    <category.icon className="h-7 w-7 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-1">{category.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-3">
-                    {category.description}
-                  </p>
-                  <Badge variant="secondary">{category.count} resources</Badge>
-                </CardContent>
-              </Card>
+              <Link key={i} to={category.href}>
+                <Card className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-border/50 hover:border-primary/30 hover:-translate-y-1 h-full">
+                  <CardContent className="p-6 text-center">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-lg shadow-primary/10">
+                      <category.icon className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-1 group-hover:text-primary transition-colors">{category.title}</h3>
+                    <p className="text-muted-foreground text-sm mb-3">
+                      {category.description}
+                    </p>
+                    <Badge variant="secondary">{category.count} resources</Badge>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
@@ -276,24 +285,28 @@ export default function Resources() {
               
               <div className="space-y-4">
                 {recentArticles.map((article, i) => (
-                  <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30 border-border/50">
-                    <CardContent className="p-6 flex items-start justify-between gap-4">
-                      <div>
-                        <Badge variant="secondary" className="mb-2">{article.category}</Badge>
-                        <h3 className="font-semibold group-hover:text-primary transition-colors">
-                          {article.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mt-1">{article.date}</p>
-                      </div>
-                      <ExternalLink className="h-4 w-4 text-muted-foreground shrink-0 group-hover:text-primary transition-colors" />
-                    </CardContent>
-                  </Card>
+                  <Link key={i} to={article.href}>
+                    <Card className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30 border-border/50">
+                      <CardContent className="p-6 flex items-start justify-between gap-4">
+                        <div>
+                          <Badge variant="secondary" className="mb-2">{article.category}</Badge>
+                          <h3 className="font-semibold group-hover:text-primary transition-colors">
+                            {article.title}
+                          </h3>
+                          <p className="text-sm text-muted-foreground mt-1">{article.date}</p>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 group-hover:text-primary transition-colors" />
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
               
-              <Button variant="outline" className="w-full mt-4">
-                View All Articles
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button variant="outline" className="w-full mt-4" asChild>
+                <Link to="/blog">
+                  View All Articles
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
             </div>
           </div>

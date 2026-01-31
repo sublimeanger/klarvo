@@ -12,3 +12,7 @@ export { TestimonialSection } from './TestimonialSection';
 export { AnimatedCounter } from './AnimatedCounter';
 export { LegalLayout } from './LegalLayout';
 export { ProductWalkthrough } from './ProductWalkthrough';
+export { NewsletterForm } from './NewsletterForm';
+export { RelatedContent } from './RelatedContent';
+export { ContentBreadcrumb } from './ContentBreadcrumb';
+export { HubNavigation } from './HubNavigation';

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { CTASection } from "@/components/marketing/CTASection";
+import { RelatedContent } from "@/components/marketing/RelatedContent";
+import { ContentBreadcrumb } from "@/components/marketing/ContentBreadcrumb";
+import { HubNavigation } from "@/components/marketing/HubNavigation";
 import { SEOHead, SchemaMarkup, createArticleSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,9 +112,17 @@ export default function EUAIActForSMEs() {
         ogType="article"
       />
       <SchemaMarkup schema={[articleSchema, faqSchema, breadcrumbSchema]} />
+      {/* Breadcrumb */}
+      <section className="pt-8 pb-0">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <ContentBreadcrumb currentHref="/guides/eu-ai-act-for-smes" />
+          </div>
+        </div>
+      </section>
 
       {/* Hero */}
-      <section className="py-16 md:py-24">
+      <section className="py-8 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-4 mb-6">
@@ -285,6 +296,21 @@ export default function EUAIActForSMEs() {
                 <p className="text-muted-foreground">{faq.answer}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Related Content */}
+      <RelatedContent 
+        currentHref="/guides/eu-ai-act-for-smes" 
+        title="Continue Learning" 
+      />
+
+      {/* Hub Navigation */}
+      <section className="py-8">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <HubNavigation />
           </div>
         </div>
       </section>
