@@ -21,8 +21,9 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  ssgOptions: {
-    script: 'async',
-    formatting: 'minify',
+  build: {
+    // Ensure clean output for react-snap prerendering
+    outDir: 'dist',
+    emptyDirBeforeWrite: true,
   },
 }));
