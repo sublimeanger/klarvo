@@ -16,7 +16,7 @@ import {
   X
 } from "lucide-react";
 import { useState } from "react";
-import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 
 const brandColors = [
   { name: "Primary", value: "#4338CA", class: "bg-primary" },
@@ -43,6 +43,14 @@ const breadcrumbSchema = createBreadcrumbSchema({
   ]
 });
 
+const webPageSchema = createWebPageSchema({
+  name: "Press Kit - Brand Assets & Media Resources",
+  description: "Download Klarvo brand assets, logos, and media resources. Press kit with company information and brand guidelines.",
+  url: "https://klarvo.io/press",
+  datePublished: "2025-01-01",
+  dateModified: "2025-01-31"
+});
+
 export default function Press() {
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
 
@@ -60,7 +68,7 @@ export default function Press() {
         keywords={["Klarvo press", "brand assets", "media kit", "company logo"]}
         canonical="https://klarvo.io/press"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, webPageSchema]} />
 
       {/* Hero Section */}
       <HeroSection
