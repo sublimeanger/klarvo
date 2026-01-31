@@ -123,7 +123,7 @@ export default function Onboarding() {
       });
 
       await refreshProfile();
-      navigate("/", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (error: any) {
       console.error("Onboarding error:", error);
       toast({

@@ -55,7 +55,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
     try {
       if (mode === "signup") {
         const signupData = data as SignupFormData;
-        const { error } = await supabase.auth.signUp({
+        const { data: signupResult, error } = await supabase.auth.signUp({
           email: signupData.email,
           password: signupData.password,
           options: {
@@ -68,6 +68,17 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
 
         if (error) throw error;
 
+        // Check if session exists (auto-confirm enabled) - user is already logged in
+        if (signupResult?.session) {
+          toast({
+            title: "Welcome to Klarvo!",
+            description: "Your account has been created successfully.",
+          });
+          // The AuthContext will handle redirect to onboarding
+          return;
+        }
+
+        // No session means email confirmation required
         toast({
           title: "Check your email",
           description: "We've sent you a verification link to complete your signup.",
