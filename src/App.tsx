@@ -69,6 +69,22 @@ import ComplianceSoftwarePage from "@/pages/marketing/ComplianceSoftwarePage";
 import AIInventorySoftwarePage from "@/pages/marketing/AIInventorySoftwarePage";
 import FRIASoftwarePage from "@/pages/marketing/FRIASoftwarePage";
 
+// Template pages
+import AIInventoryTemplate from "@/pages/marketing/templates/AIInventoryTemplate";
+import FRIATemplate from "@/pages/marketing/templates/FRIATemplate";
+import Article26Checklist from "@/pages/marketing/templates/Article26Checklist";
+
+// Tool pages
+import AIDefinitionChecker from "@/pages/marketing/tools/AIDefinitionChecker";
+import HighRiskChecker from "@/pages/marketing/tools/HighRiskChecker";
+
+// Guide pages
+import EUAIActForSMEs from "@/pages/marketing/guides/EUAIActForSMEs";
+import Article26Guide from "@/pages/marketing/guides/Article26Guide";
+
+// Industry pages
+import HRRecruitmentPage from "@/pages/marketing/industries/HRRecruitmentPage";
+
 // Use case pages
 import SMEUseCase from "@/pages/use-cases/SME";
 import EnterpriseUseCase from "@/pages/use-cases/Enterprise";
