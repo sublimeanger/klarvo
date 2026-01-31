@@ -1,144 +1,255 @@
-# Production Readiness Plan — Klarvo EU AI Act Compliance Hub
 
-## Status: ✅ 100% Complete + SEO Hyper-Optimized
+# Static Site Generation (SSG) Implementation Plan
 
-All production readiness items have been implemented with world-class SEO.
+## The Problem
 
----
+Your Klarvo platform is a **client-side rendered React SPA**. When Google crawls your pages:
 
-## ✅ Completed Items
+1. It receives an almost empty HTML file (just `<div id="root"></div>`)
+2. It must execute JavaScript to see your content
+3. Google uses "two-wave" indexing—first wave sees empty HTML, second wave (delayed) sees rendered content
+4. Many pages may never get properly indexed, or indexing is delayed by weeks
 
-### Phase 1: Critical Data Fixes — DONE
-- ✅ `useStorageUsage.ts` - Queries `evidence_files` table and sums `file_size`
-- ✅ `useExportHistory.ts` - Queries `export_logs` for history and monthly counts
-- ✅ `Billing.tsx` - Uses real storage usage and export counts
+**What Google currently sees when it visits your site:**
+```html
+<html>
+  <head>...</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
 
-### Phase 2: PDF Export Enhancement — DONE
-- ✅ `AISystemPDF.tsx` - Full 6-page professional evidence pack including:
-  - Cover Page with org, version, date, confidentiality
-  - Table of Contents
-  - Executive Summary & System Overview
-  - EU AI Act Classification
-  - Applicable Obligations (Article 26 for high-risk)
-  - Human Oversight
-  - Logging & Record-keeping
-  - Data & Privacy
-  - Training & AI Literacy
-  - Vendor Information
-  - Document Control & Disclaimer
-
-### Phase 3: Export History & Audit Trail — DONE
-- ✅ `export_logs` table exists with RLS policies
-- ✅ Export logging integrated into `useExports.ts`
-- ✅ `Exports.tsx` shows full export history table with filtering
-
-### Phase 5: Marketing Content Cleanup — DONE
-- ✅ `LogoCloud.tsx` - Uses industry icons instead of fake company names
-- ✅ `TestimonialSection.tsx` - Uses anonymous industry quotes (no fake names)
-
-### Phase 6: Polish & Cleanup — DONE
-- ✅ `AppLayout.tsx` - Added version number (v1.0.0) and build date in footer
-
-### Phase 7: SEO Hyper-Optimization — DONE ⭐
-- ✅ **Sitemap.xml** - Comprehensive XML sitemap with 65+ pages, priorities, and change frequencies
-- ✅ **Robots.txt** - Enhanced with sitemap reference, proper disallow rules, and crawler permissions
-- ✅ **OG Image** - Professional 1200x640 branded image for social sharing
-- ✅ **index.html** - Complete meta tag overhaul:
-  - Organization JSON-LD schema
-  - WebSite JSON-LD with SearchAction
-  - SoftwareApplication JSON-LD
-  - Enhanced OpenGraph and Twitter Cards
-  - Preconnect hints for performance
-  - Proper language and geo tags
-- ✅ **SEOHead.tsx** - Enhanced component with:
-  - Title branding and truncation (60 char limit)
-  - Description truncation (160 char limit)
-  - Enhanced robot directives (`max-image-preview:large`, `max-snippet:-1`)
-  - Googlebot-specific directives
-  - Article-specific meta tags
-  - Canonical URL enforcement
-- ✅ **SchemaMarkup.tsx** - Enhanced with:
-  - Organization schema with @id for entity linking
-  - WebPage schema for individual pages
-  - Consistent `klarvo.io` domain references
-- ✅ **65+ Pages** - Each page has unique:
-  - Title under 60 characters
-  - Description under 160 characters
-  - Canonical URL
-  - Breadcrumb schema
-  - Page-appropriate structured data (FAQ, HowTo, Article, Product)
-  - Unique H1 heading
-  - Keyword-rich unique content
-
-### Testing — DONE
-- ✅ Added comprehensive unit tests (40+ tests)
-- ✅ `wizardTaskGenerator.test.ts` - 27 tests for Article 26 compliance automation
-- ✅ `useGapAnalysis.test.ts` - 12 tests for scoring logic
-- ✅ `status-badge.test.tsx` - Component rendering tests
-
-### Security Hardening — DONE
-- ✅ Restricted sensitive tables to admin roles only
-- ✅ Fixed organization creation policy
-- ✅ Removed conflicting RLS policies
-- ✅ Documented intentional policy decisions
+**What Google needs to see:**
+```html
+<html>
+  <head>...</head>
+  <body>
+    <div id="root">
+      <h1>EU AI Act Compliance Platform for SMEs</h1>
+      <p>Klarvo helps SMEs comply with the EU AI Act...</p>
+      <!-- ALL your actual page content pre-rendered -->
+    </div>
+  </body>
+</html>
+```
 
 ---
 
-## SEO Audit Summary
+## The Solution: Static Site Generation (SSG)
 
-### Technical SEO ✓
-| Check | Status |
+I'll implement **Static Site Generation** using `vite-ssg`, which:
+- Pre-renders all 65+ marketing pages to static HTML at build time
+- Outputs complete, crawlable HTML files that Google indexes immediately
+- Keeps React hydration for interactivity after load
+- Requires minimal changes to your existing codebase
+
+---
+
+## Implementation Overview
+
+### Phase 1: Install & Configure vite-ssg
+
+**What happens:**
+- Install `vite-ssg` package
+- Modify `vite.config.ts` to enable SSG build mode
+- Update `src/main.tsx` to use SSG-compatible rendering
+
+**Result:** Build process generates static `.html` files for each route
+
+### Phase 2: Define Routes for Pre-rendering
+
+**What happens:**
+- Create a route manifest listing all 65+ marketing pages
+- Configure which routes to pre-render (marketing pages only)
+- Exclude protected/dynamic app routes from SSG (dashboard, settings, etc.)
+
+**Routes to pre-render (approx. 55 pages):**
+
+| Category | Routes | Count |
+|----------|--------|-------|
+| Core Marketing | `/`, `/features`, `/pricing`, `/about`, `/contact` | 5 |
+| Product Pages | `/eu-ai-act-compliance-software`, `/ai-inventory-software`, `/fria-software` | 3 |
+| SEO Hubs | `/tools`, `/guides`, `/compare`, `/industries`, `/templates` | 5 |
+| Guide Pages | `/guides/eu-ai-act-for-smes`, `/guides/article-26-deployer-obligations`, etc. | 5 |
+| Tool Pages | `/tools/ai-system-definition-checker`, `/tools/high-risk-checker-annex-iii`, etc. | 4 |
+| Template Pages | `/templates/ai-inventory-template`, `/templates/fria-template`, etc. | 8 |
+| Industry Pages | `/industries/hr-recruitment-ai-act`, `/industries/fintech-credit-ai-act`, etc. | 4 |
+| Use Case Pages | `/use-cases/sme`, `/use-cases/enterprise`, `/use-cases/hr`, etc. | 5 |
+| Legal Pages | `/terms`, `/privacy`, `/cookies`, `/security`, `/dpa`, `/gdpr`, `/aup` | 7 |
+| Resource Pages | `/resources`, `/docs`, `/faq`, `/blog`, `/api`, `/changelog`, `/eu-ai-act` | 7 |
+| Company Pages | `/careers`, `/partners`, `/press`, `/status`, `/integrations` | 5 |
+
+**Routes to EXCLUDE (client-only, require auth):**
+- `/dashboard`, `/ai-systems/*`, `/vendors/*`, `/evidence/*`
+- `/auth/*`, `/onboarding`, `/settings/*`
+
+### Phase 3: Update Build Pipeline
+
+**What happens:**
+- Modify `package.json` build script to use SSG mode
+- Build outputs go to `dist/` with pre-rendered `.html` files
+- Deploy works the same way—just static files
+
+**New build output structure:**
+```text
+dist/
+├── index.html          (pre-rendered homepage)
+├── features/
+│   └── index.html      (pre-rendered features page)
+├── pricing/
+│   └── index.html      (pre-rendered pricing page)
+├── guides/
+│   ├── eu-ai-act-for-smes/
+│   │   └── index.html  (pre-rendered guide)
+│   └── ...
+├── templates/
+│   ├── ai-inventory-template/
+│   │   └── index.html
+│   └── ...
+└── assets/             (JS, CSS, images)
+```
+
+### Phase 4: Update Sitemap with Correct URLs
+
+**What happens:**
+- Audit sitemap URLs to ensure they match actual routes
+- Fix any mismatches (e.g., sitemap shows `/solutions/sme` but route is `/use-cases/sme`)
+- Ensure all 65+ pages are correctly listed
+
+---
+
+## Technical Changes Required
+
+### Files to Create/Modify
+
+| File | Change |
+|------|--------|
+| `vite.config.ts` | Add vite-ssg plugin configuration |
+| `src/main.tsx` | Convert to SSG-compatible entry point |
+| `src/routes.ts` (new) | Create route manifest for pre-rendering |
+| `package.json` | Update build scripts |
+| `public/sitemap.xml` | Fix URL mismatches to actual routes |
+
+### Key Code Changes Preview
+
+**1. New `src/routes.ts` (route manifest):**
+```typescript
+export const ssgRoutes = [
+  '/',
+  '/features',
+  '/pricing',
+  '/about',
+  '/contact',
+  '/eu-ai-act',
+  '/tools',
+  '/guides',
+  // ... all 55+ marketing routes
+];
+```
+
+**2. Updated `src/main.tsx`:**
+```typescript
+import { ViteSSG } from 'vite-ssg';
+import App from './App';
+import { ssgRoutes } from './routes';
+
+export const createApp = ViteSSG(
+  App,
+  { routes: ssgRoutes },
+  // optional: setup function
+);
+```
+
+**3. Updated `vite.config.ts`:**
+```typescript
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import { ssgRoutes } from './src/routes';
+
+export default defineConfig({
+  plugins: [react()],
+  ssgOptions: {
+    script: 'async',
+    formatting: 'minify',
+    includedRoutes: () => ssgRoutes,
+  },
+});
+```
+
+---
+
+## What Google Will See After Implementation
+
+**Before (CSR):**
+```html
+<body>
+  <div id="root"></div>
+</body>
+```
+
+**After (SSG):**
+```html
+<body>
+  <div id="root">
+    <header>...</header>
+    <main>
+      <section>
+        <h1>EU AI Act for SMEs</h1>
+        <p>The practical roadmap for small and medium businesses...</p>
+        <h2>Key Deadlines</h2>
+        <div>1 Aug 2024 - EU AI Act entered into force</div>
+        <div>2 Feb 2025 - Prohibited practices + AI literacy...</div>
+        <!-- ALL visible content pre-rendered -->
+      </section>
+    </main>
+    <footer>...</footer>
+  </div>
+</body>
+```
+
+---
+
+## Expected SEO Outcomes
+
+| Metric | Before (CSR) | After (SSG) |
+|--------|--------------|-------------|
+| Time to First Index | Days to weeks | Hours to days |
+| Content Visibility | Depends on JS execution | 100% visible immediately |
+| Crawl Budget Efficiency | Low (Googlebot must wait for JS) | High (instant HTML) |
+| AI Overview Eligibility | Limited | Full eligibility |
+| Core Web Vitals | Variable | Improved (LCP better) |
+
+---
+
+## Deployment & Verification Steps
+
+After implementation:
+
+1. **Build locally** and inspect `dist/` folder—verify each `.html` file contains full content
+2. **Deploy** normally (same process)
+3. **Verify with Google Rich Results Test**—paste any URL and confirm content is visible
+4. **Submit to Google Search Console**—request re-indexing of priority pages
+5. **Monitor** Search Console coverage report for indexing improvements
+
+---
+
+## Timeline
+
+| Phase | Effort |
 |-------|--------|
-| XML Sitemap | ✅ public/sitemap.xml (65+ URLs) |
-| Robots.txt | ✅ Optimized with sitemap reference |
-| Canonical URLs | ✅ Every page has unique canonical |
-| OG Image | ✅ public/og-image.png (1200x640) |
-| Schema Markup | ✅ Organization, WebSite, SoftwareApplication |
-| Language Tags | ✅ `lang="en"` and content-language |
-| Preconnect | ✅ fonts.googleapis.com, supabase |
-
-### On-Page SEO ✓
-| Page Type | Count | SEO Elements |
-|-----------|-------|--------------|
-| Landing | 1 | SoftwareApplication + FAQ schema |
-| Features | 1 | Breadcrumb schema |
-| Pricing | 1 | Product schema |
-| Guides | 5+ | Article schema + FAQ schema |
-| Templates | 8+ | HowTo schema + FAQ schema |
-| Tools | 4+ | Interactive content + FAQ schema |
-| Industries | 4+ | Article schema |
-| Use Cases | 5+ | Breadcrumb schema |
-| Legal | 7 | Breadcrumb schema |
-| Auth | 4 | noindex (intentional) |
-
-### Content Quality ✓
-- ✅ Unique H1 on every page
-- ✅ Unique meta descriptions
-- ✅ Keyword-targeted content
-- ✅ FAQ sections with schema
-- ✅ Long-form educational guides
-- ✅ Interactive tools for engagement
+| Phase 1: Install & configure vite-ssg | 1 session |
+| Phase 2: Define route manifest | 1 session |
+| Phase 3: Update build pipeline | Same session |
+| Phase 4: Fix sitemap URLs | Same session |
+| **Total** | **1-2 sessions** |
 
 ---
 
-## Platform Summary
+## Note on Protected Routes
 
-The Klarvo EU AI Act Compliance Hub is **production-ready** and **SEO-optimized** with all modules complete:
-
-| Module | Status |
-|--------|--------|
-| Dashboard & Metrics | ✅ Complete |
-| AI System Wizard (20 steps) | ✅ Complete |
-| Classification Engine | ✅ Complete |
-| Gap Analysis | ✅ Complete |
-| FRIA Wizard (7 steps) | ✅ Complete |
-| Evidence Vault | ✅ Complete |
-| Control Library (32 controls) | ✅ Complete |
-| Policy Templates (8 templates) | ✅ Complete |
-| Training Tracking | ✅ Complete |
-| Export System (PDF/ZIP) | ✅ Complete |
-| Billing & Subscriptions | ✅ Complete |
-| Marketing Pages | ✅ Complete |
-| SEO Infrastructure | ✅ Complete |
-| Unit Tests | ✅ 40+ tests |
-| Security | ✅ Hardened |
+The authenticated app routes (`/dashboard`, `/ai-systems`, etc.) will continue to work as client-side rendered. Only marketing pages get pre-rendered—this is the optimal approach since:
+- Marketing pages need SEO
+- App pages require authentication and dynamic data
+- SSG only runs at build time, so protected routes stay client-rendered
