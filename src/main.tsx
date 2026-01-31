@@ -1,13 +1,22 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { hydrate, render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root")!;
+
+// Use hydrate for prerendered content (react-snap), render for fresh loads
+const AppWrapper = (
   <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
   </StrictMode>
 );
+
+if (rootElement.hasChildNodes()) {
+  hydrate(AppWrapper, rootElement);
+} else {
+  render(AppWrapper, rootElement);
+}
