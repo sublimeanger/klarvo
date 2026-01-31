@@ -16,6 +16,7 @@ import {
   Scale
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const hrAITools = [
   {
@@ -82,9 +83,24 @@ const features = [
   "Vendor due diligence for HR tech providers"
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "HR & Recruitment", url: "https://klarvo.io/use-cases/hr" }
+  ]
+});
+
 export default function HRUseCase() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="HR & Recruitment AI Compliance - High-Risk AI Management"
+        description="EU AI Act compliance for HR AI tools. Resume screening, video interviews, and psychometric testing are high-risk. Get compliant now."
+        keywords={["HR AI compliance", "recruitment AI regulation", "high-risk AI HR", "hiring AI EU AI Act"]}
+        canonical="https://klarvo.io/use-cases/hr"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <section className="relative py-20 lg:py-28 overflow-hidden">
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />

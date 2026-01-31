@@ -21,6 +21,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
 const templates = [
   {
@@ -154,9 +155,24 @@ const guides = [
   }
 ];
 
+const breadcrumbSchema = createBreadcrumbSchema({
+  items: [
+    { name: "Home", url: "https://klarvo.io" },
+    { name: "Templates", url: "https://klarvo.io/templates" }
+  ]
+});
+
 export default function Templates() {
   return (
     <MarketingLayout>
+      <SEOHead
+        title="Free Templates - EU AI Act Policies, Checklists & Assessments"
+        description="Download free EU AI Act templates: policies, FRIA assessments, human oversight plans, and compliance checklists. Professional and ready-to-use."
+        keywords={["EU AI Act templates", "AI policy templates", "FRIA template", "compliance checklists"]}
+        canonical="https://klarvo.io/templates"
+      />
+      <SchemaMarkup schema={[breadcrumbSchema]} />
+
       {/* Hero Section */}
       <HeroSection
         badge="Free Templates"
