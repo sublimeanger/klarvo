@@ -114,7 +114,7 @@ export default function Samples() {
         title="Sample EU AI Act Compliance Reports | Klarvo"
         description="Download sample Classification Memos, FRIA Reports, and Evidence Packs. See exactly what audit-ready EU AI Act compliance documentation looks like."
         keywords={["EU AI Act sample reports", "classification memo example", "FRIA template", "evidence pack sample", "AI compliance documentation"]}
-        canonical="/samples"
+        canonical="https://klarvo.io/samples"
       />
       <SchemaMarkup schema={faqSchema} />
 

@@ -77,6 +77,7 @@ export const ssgRoutes: string[] = [
   '/ai-governance-evidence-packs',
   '/ai-literacy-training-tracker',
   '/product/evidence-vault',
+  '/samples',
   
   // Industry Pages
   '/industries/hr-recruitment-ai-act',
