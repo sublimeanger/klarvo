@@ -5,11 +5,25 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Info } from "lucide-react";
+import { useOperatorTrackAccess } from "@/hooks/useAddons";
+import { AddonLockedPage } from "@/components/billing/AddonLockedPage";
 
 export default function TechnicalDocs() {
+  const { canAccessProviderTrack, isLoading: accessLoading } = useOperatorTrackAccess();
+  
   // In production, these would come from context/route params
   const versionId = undefined;
   const organizationId = undefined;
+
+  if (!accessLoading && !canAccessProviderTrack) {
+    return (
+      <AddonLockedPage
+        addonId="provider_track"
+        title="Provider Track Required"
+        description="Access Annex IV technical documentation builder."
+      />
+    );
+  }
 
   return (
     <>

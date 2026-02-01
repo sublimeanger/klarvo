@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { 
   CreditCard, 
@@ -9,7 +9,8 @@ import {
   AlertCircle,
   Cpu,
   HardDrive,
-  FileOutput
+  FileOutput,
+  Sparkles
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -17,12 +18,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { useBilling } from "@/hooks/useBilling";
 import { useStorageUsage } from "@/hooks/useStorageUsage";
 import { useExportHistory } from "@/hooks/useExportHistory";
-import { PLANS, type PlanId } from "@/lib/billing-constants";
+import { OperatorTrackAddons } from "@/components/billing/OperatorTrackAddons";
+import { PLANS, type PlanId, type BillingPeriod } from "@/lib/billing-constants";
 
 export default function BillingSettings() {
   const [searchParams] = useSearchParams();
@@ -290,6 +293,14 @@ export default function BillingSettings() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Market Access Add-ons */}
+      {planId !== "free" && (
+        <>
+          <Separator className="my-4" />
+          <OperatorTrackAddons billingPeriod={billingPeriod || "monthly"} />
+        </>
+      )}
 
       {/* Upgrade CTA for free users */}
       {planId === "free" && (
