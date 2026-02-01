@@ -299,6 +299,22 @@ export default function BillingSettings() {
         <>
           <Separator className="my-4" />
           <OperatorTrackAddons billingPeriod={billingPeriod || "monthly"} />
+          
+          {/* Manage Add-ons hint */}
+          {hasStripeCustomer && (
+            <p className="text-sm text-muted-foreground text-center mt-4">
+              To cancel or modify add-on subscriptions, use the{" "}
+              <Button 
+                variant="link" 
+                className="h-auto p-0 text-sm" 
+                onClick={openCustomerPortal}
+                disabled={billingLoading}
+              >
+                Subscription Management Portal
+                <ExternalLink className="ml-1 h-3 w-3" />
+              </Button>
+            </p>
+          )}
         </>
       )}
 

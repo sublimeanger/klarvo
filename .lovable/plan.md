@@ -74,7 +74,7 @@ Restructure Provider, Importer, and Distributor tracks as purchasable add-ons ra
 
 - [x] Create actual Stripe price IDs for add-ons in Stripe Dashboard
 - [ ] Test end-to-end addon purchase flow with real Stripe test mode
-- [ ] Add addon management in customer portal
+- [x] Add addon management in customer portal (via Stripe portal link)
 
 ---
 
