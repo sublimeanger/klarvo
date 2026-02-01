@@ -1,63 +1,74 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronRight, Boxes, Shield, FileCheck, Download, Settings, Briefcase, Building2, Heart, Laptop, GraduationCap, BookOpen, FileText, Wrench, BarChart3, HelpCircle, Users, Newspaper, MapPin, Phone, Activity } from "lucide-react";
 
-const productLinks = [
+// Product mega menu - What We Do
+const productFeatures = [
   {
     title: "AI System Inventory",
-    description: "Track and manage all your AI systems in one place",
+    description: "Track and manage all AI systems",
     href: "/features#inventory",
+    icon: Boxes,
   },
   {
-    title: "Classification Engine",
-    description: "Automated risk classification per EU AI Act",
+    title: "Risk Classification",
+    description: "Automated EU AI Act risk levels",
     href: "/features#classification",
+    icon: Shield,
   },
   {
     title: "Evidence Vault",
-    description: "Store and organize compliance documentation",
+    description: "Store compliance documentation",
     href: "/features#evidence",
-  },
-  {
-    title: "Control Library",
-    description: "Pre-built controls mapped to regulations",
-    href: "/features#controls",
+    icon: FileCheck,
   },
   {
     title: "Export Packs",
-    description: "Generate audit-ready PDF reports",
+    description: "Audit-ready PDF reports",
     href: "/features#exports",
+    icon: Download,
+  },
+  {
+    title: "Control Library",
+    description: "Pre-built regulatory controls",
+    href: "/features#controls",
+    icon: Settings,
   },
 ];
 
-const resourceLinks = [
-  { title: "Documentation", href: "/docs" },
-  { title: "EU AI Act Guide", href: "/eu-ai-act" },
-  { title: "Templates", href: "/templates" },
-  { title: "Resources", href: "/resources" },
-  { title: "Blog", href: "/blog" },
-  { title: "FAQ", href: "/faq" },
-  { title: "API Reference", href: "/api" },
-  { title: "Changelog", href: "/changelog" },
-  { title: "Status", href: "/status" },
+// Product mega menu - Industries
+const productIndustries = [
+  { title: "HR & Recruitment", href: "/industries/hr-recruitment-ai-act", icon: Briefcase },
+  { title: "Financial Services", href: "/industries/fintech-ai-act", icon: Building2 },
+  { title: "Healthcare", href: "/industries/healthcare-ai-act", icon: Heart },
+  { title: "SaaS Companies", href: "/industries/saas-ai-act", icon: Laptop },
+  { title: "Education", href: "/industries/education-ai-act", icon: GraduationCap },
 ];
 
-const solutionLinks = [
-  { title: "For SMEs", description: "Enterprise compliance without the enterprise price", href: "/use-cases/sme" },
-  { title: "For Enterprise", description: "Scale AI governance across your organization", href: "/use-cases/enterprise" },
-  { title: "HR & Recruitment", description: "Comply with high-risk HR AI requirements", href: "/use-cases/hr" },
-  { title: "Financial Services", description: "Credit scoring, insurance, and banking AI", href: "/use-cases/fintech" },
-  { title: "Healthcare", description: "Medical device and clinical AI compliance", href: "/use-cases/healthcare" },
+// Resources dropdown - Learn
+const resourcesLearn = [
+  { title: "Documentation", href: "/docs", icon: BookOpen },
+  { title: "EU AI Act Guide", href: "/eu-ai-act", icon: FileText },
+  { title: "Blog", href: "/blog", icon: Newspaper },
+  { title: "FAQ", href: "/faq", icon: HelpCircle },
 ];
 
+// Resources dropdown - Get Started
+const resourcesGetStarted = [
+  { title: "Templates", href: "/templates", icon: FileText },
+  { title: "Free Tools", href: "/tools", icon: Wrench },
+  { title: "Sample Exports", href: "/samples", icon: BarChart3 },
+];
+
+// Company dropdown
 const companyLinks = [
-  { title: "About Us", href: "/about" },
-  { title: "Careers", href: "/careers" },
-  { title: "Partners", href: "/partners" },
-  { title: "Press", href: "/press" },
-  { title: "Contact", href: "/contact" },
+  { title: "About Us", href: "/about", icon: Users },
+  { title: "Careers", href: "/careers", icon: Briefcase },
+  { title: "Contact", href: "/contact", icon: Phone },
+  { title: "Partners", href: "/partners", icon: Building2 },
+  { title: "Press", href: "/press", icon: Newspaper },
+  { title: "Status", href: "/status", icon: Activity },
 ];
 
 interface DropdownProps {
@@ -66,9 +77,10 @@ interface DropdownProps {
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
+  wide?: boolean;
 }
 
-function NavDropdown({ label, children, isOpen, onToggle, onClose }: DropdownProps) {
+function NavDropdown({ label, children, isOpen, onToggle, onClose, wide }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -103,7 +115,12 @@ function NavDropdown({ label, children, isOpen, onToggle, onClose }: DropdownPro
         />
       </button>
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 z-50 animate-in fade-in-0 zoom-in-95 duration-150">
+        <div 
+          className={cn(
+            "absolute top-full mt-2 z-50 animate-in fade-in-0 zoom-in-95 duration-150",
+            wide ? "left-1/2 -translate-x-1/2" : "left-0"
+          )}
+        >
           {children}
         </div>
       )}
@@ -115,6 +132,7 @@ export function MarketingHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -128,6 +146,7 @@ export function MarketingHeader() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setOpenDropdown(null);
+    setMobileExpanded(null);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -146,6 +165,10 @@ export function MarketingHeader() {
   };
 
   const closeDropdown = () => setOpenDropdown(null);
+
+  const toggleMobileSection = (section: string) => {
+    setMobileExpanded(mobileExpanded === section ? null : section);
+  };
 
   return (
     <header
@@ -168,69 +191,83 @@ export function MarketingHeader() {
             <span className="text-xl font-bold tracking-tight">Klarvo</span>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - 4 items only */}
           <div className="hidden lg:flex items-center gap-1">
-            {/* Product Dropdown */}
+            {/* Product Mega Menu */}
             <NavDropdown
               label="Product"
               isOpen={openDropdown === "product"}
               onToggle={() => handleDropdownToggle("product")}
               onClose={closeDropdown}
+              wide
             >
-              <div className="w-[480px] rounded-xl border border-border bg-popover p-2 shadow-xl">
-                <div className="grid grid-cols-2 gap-1">
-                  {productLinks.map((link) => (
+              <div className="w-[600px] rounded-xl border border-border bg-popover p-6 shadow-xl">
+                <div className="grid grid-cols-2 gap-8">
+                  {/* What We Do */}
+                  <div>
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                      What We Do
+                    </h4>
+                    <div className="space-y-1">
+                      {productFeatures.map((link) => (
+                        <Link
+                          key={link.title}
+                          to={link.href}
+                          onClick={closeDropdown}
+                          className="flex items-start gap-3 rounded-lg p-2.5 hover:bg-muted transition-colors group"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                            <link.icon className="h-4 w-4 text-primary" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-medium group-hover:text-primary transition-colors">{link.title}</div>
+                            <p className="text-xs text-muted-foreground">{link.description}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                     <Link
-                      key={link.title}
-                      to={link.href}
+                      to="/features"
                       onClick={closeDropdown}
-                      className="block rounded-lg p-3 hover:bg-muted transition-colors"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline mt-4 pl-2.5"
                     >
-                      <div className="text-sm font-medium mb-1">{link.title}</div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {link.description}
-                      </p>
+                      See All Features
+                      <ChevronRight className="h-4 w-4" />
                     </Link>
-                  ))}
+                  </div>
+
+                  {/* For Your Industry */}
+                  <div>
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                      For Your Industry
+                    </h4>
+                    <div className="space-y-1">
+                      {productIndustries.map((link) => (
+                        <Link
+                          key={link.title}
+                          to={link.href}
+                          onClick={closeDropdown}
+                          className="flex items-center gap-3 rounded-lg p-2.5 hover:bg-muted transition-colors group"
+                        >
+                          <link.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <span className="text-sm font-medium group-hover:text-primary transition-colors">{link.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                    <Link
+                      to="/samples"
+                      onClick={closeDropdown}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline mt-4 pl-2.5"
+                    >
+                      See Sample Exports
+                      <ChevronRight className="h-4 w-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </NavDropdown>
 
-            {/* Features Link */}
-            <Link
-              to="/features"
-              className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors"
-            >
-              Features
-            </Link>
-
-            {/* Solutions Dropdown */}
-            <NavDropdown
-              label="Solutions"
-              isOpen={openDropdown === "solutions"}
-              onToggle={() => handleDropdownToggle("solutions")}
-              onClose={closeDropdown}
-            >
-              <div className="w-[400px] rounded-xl border border-border bg-popover p-2 shadow-xl">
-                <div className="grid grid-cols-2 gap-1">
-                  {solutionLinks.map((link) => (
-                    <Link
-                      key={link.title}
-                      to={link.href}
-                      onClick={closeDropdown}
-                      className="block rounded-lg p-3 hover:bg-muted transition-colors"
-                    >
-                      <div className="text-sm font-medium mb-1">{link.title}</div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {link.description}
-                      </p>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </NavDropdown>
-
-            {/* Pricing Link */}
+            {/* Pricing - Direct Link */}
             <Link
               to="/pricing"
               className="inline-flex h-9 items-center rounded-md px-3 text-sm font-medium text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-colors"
@@ -245,18 +282,57 @@ export function MarketingHeader() {
               onToggle={() => handleDropdownToggle("resources")}
               onClose={closeDropdown}
             >
-              <div className="w-[200px] rounded-xl border border-border bg-popover p-2 shadow-xl">
-                <div className="space-y-0.5">
-                  {resourceLinks.map((link) => (
-                    <Link
-                      key={link.title}
-                      to={link.href}
-                      onClick={closeDropdown}
-                      className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
-                    >
-                      {link.title}
-                    </Link>
-                  ))}
+              <div className="w-[380px] rounded-xl border border-border bg-popover p-5 shadow-xl">
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Learn */}
+                  <div>
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                      Learn
+                    </h4>
+                    <div className="space-y-1">
+                      {resourcesLearn.map((link) => (
+                        <Link
+                          key={link.title}
+                          to={link.href}
+                          onClick={closeDropdown}
+                          className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm font-medium hover:bg-muted transition-colors group"
+                        >
+                          <link.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <span className="group-hover:text-primary transition-colors">{link.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Get Started */}
+                  <div>
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                      Get Started
+                    </h4>
+                    <div className="space-y-1">
+                      {resourcesGetStarted.map((link) => (
+                        <Link
+                          key={link.title}
+                          to={link.href}
+                          onClick={closeDropdown}
+                          className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm font-medium hover:bg-muted transition-colors group"
+                        >
+                          <link.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <span className="group-hover:text-primary transition-colors">{link.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 pt-4 border-t">
+                  <Link
+                    to="/resources"
+                    onClick={closeDropdown}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                  >
+                    See All Resources
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             </NavDropdown>
@@ -268,16 +344,17 @@ export function MarketingHeader() {
               onToggle={() => handleDropdownToggle("company")}
               onClose={closeDropdown}
             >
-              <div className="w-[180px] rounded-xl border border-border bg-popover p-2 shadow-xl">
+              <div className="w-[200px] rounded-xl border border-border bg-popover p-2 shadow-xl">
                 <div className="space-y-0.5">
                   {companyLinks.map((link) => (
                     <Link
                       key={link.title}
                       to={link.href}
                       onClick={closeDropdown}
-                      className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
+                      className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors group"
                     >
-                      {link.title}
+                      <link.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                      <span className="group-hover:text-primary transition-colors">{link.title}</span>
                     </Link>
                   ))}
                 </div>
@@ -333,7 +410,7 @@ export function MarketingHeader() {
         </nav>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Accordion Style */}
       <div
         className={cn(
           "lg:hidden fixed inset-x-0 top-[72px] bottom-0 bg-background z-40 transition-all duration-300 overflow-hidden",
@@ -343,94 +420,128 @@ export function MarketingHeader() {
         )}
       >
         <div className="h-full overflow-y-auto">
-          <div className="container mx-auto px-4 py-6 space-y-6">
-            {/* Product */}
-            <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          <div className="container mx-auto px-4 py-4">
+            {/* Product Accordion */}
+            <div className="border-b border-border">
+              <button
+                onClick={() => toggleMobileSection("product")}
+                className="flex items-center justify-between w-full py-4 text-base font-semibold"
+              >
                 Product
-              </h3>
-              <div className="space-y-1">
-                {productLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    to={link.href}
-                    className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
-                  >
-                    {link.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="h-px bg-border" />
-
-            {/* Core Links */}
-            <div className="flex flex-col gap-1">
-              <Link
-                to="/features"
-                className="py-2.5 text-base font-medium hover:text-primary transition-colors"
-              >
-                Features
-              </Link>
-              <Link
-                to="/pricing"
-                className="py-2.5 text-base font-medium hover:text-primary transition-colors"
-              >
-                Pricing
-              </Link>
-            </div>
-
-            <div className="h-px bg-border" />
-
-            {/* Solutions */}
-            <div>
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                Solutions
-              </h3>
-              <div className="space-y-1">
-                {solutionLinks.map((link) => (
-                  <Link
-                    key={link.title}
-                    to={link.href}
-                    className="block py-2.5 text-base font-medium hover:text-primary transition-colors"
-                  >
-                    {link.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="h-px bg-border" />
-
-            {/* Resources & Company Grid */}
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                  Resources
-                </h3>
-                <div className="space-y-1">
-                  {resourceLinks.map((link) => (
-                    <Link
-                      key={link.title}
-                      to={link.href}
-                      className="block py-2 text-sm font-medium hover:text-primary transition-colors"
-                    >
-                      {link.title}
+                <ChevronDown className={cn("h-5 w-5 transition-transform", mobileExpanded === "product" && "rotate-180")} />
+              </button>
+              <div className={cn(
+                "overflow-hidden transition-all duration-200",
+                mobileExpanded === "product" ? "max-h-[600px] pb-4" : "max-h-0"
+              )}>
+                <div className="pl-4 space-y-4">
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">What We Do</p>
+                    {productFeatures.map((link) => (
+                      <Link
+                        key={link.title}
+                        to={link.href}
+                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                      >
+                        <link.icon className="h-4 w-4 text-muted-foreground" />
+                        {link.title}
+                      </Link>
+                    ))}
+                    <Link to="/features" className="flex items-center gap-1 py-2 text-sm font-medium text-primary">
+                      See All Features <ChevronRight className="h-4 w-4" />
                     </Link>
-                  ))}
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Industries</p>
+                    {productIndustries.map((link) => (
+                      <Link
+                        key={link.title}
+                        to={link.href}
+                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                      >
+                        <link.icon className="h-4 w-4 text-muted-foreground" />
+                        {link.title}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-                  Company
-                </h3>
-                <div className="space-y-1">
+            </div>
+
+            {/* Pricing - Direct Link */}
+            <Link
+              to="/pricing"
+              className="flex items-center justify-between w-full py-4 text-base font-semibold border-b border-border"
+            >
+              Pricing
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
+            </Link>
+
+            {/* Resources Accordion */}
+            <div className="border-b border-border">
+              <button
+                onClick={() => toggleMobileSection("resources")}
+                className="flex items-center justify-between w-full py-4 text-base font-semibold"
+              >
+                Resources
+                <ChevronDown className={cn("h-5 w-5 transition-transform", mobileExpanded === "resources" && "rotate-180")} />
+              </button>
+              <div className={cn(
+                "overflow-hidden transition-all duration-200",
+                mobileExpanded === "resources" ? "max-h-[400px] pb-4" : "max-h-0"
+              )}>
+                <div className="pl-4 space-y-4">
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Learn</p>
+                    {resourcesLearn.map((link) => (
+                      <Link
+                        key={link.title}
+                        to={link.href}
+                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                      >
+                        <link.icon className="h-4 w-4 text-muted-foreground" />
+                        {link.title}
+                      </Link>
+                    ))}
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Get Started</p>
+                    {resourcesGetStarted.map((link) => (
+                      <Link
+                        key={link.title}
+                        to={link.href}
+                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                      >
+                        <link.icon className="h-4 w-4 text-muted-foreground" />
+                        {link.title}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Company Accordion */}
+            <div className="border-b border-border">
+              <button
+                onClick={() => toggleMobileSection("company")}
+                className="flex items-center justify-between w-full py-4 text-base font-semibold"
+              >
+                Company
+                <ChevronDown className={cn("h-5 w-5 transition-transform", mobileExpanded === "company" && "rotate-180")} />
+              </button>
+              <div className={cn(
+                "overflow-hidden transition-all duration-200",
+                mobileExpanded === "company" ? "max-h-[300px] pb-4" : "max-h-0"
+              )}>
+                <div className="pl-4">
                   {companyLinks.map((link) => (
                     <Link
                       key={link.title}
                       to={link.href}
-                      className="block py-2 text-sm font-medium hover:text-primary transition-colors"
+                      className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
                     >
+                      <link.icon className="h-4 w-4 text-muted-foreground" />
                       {link.title}
                     </Link>
                   ))}
@@ -438,10 +549,8 @@ export function MarketingHeader() {
               </div>
             </div>
 
-            <div className="h-px bg-border" />
-
             {/* Mobile CTAs */}
-            <div className="space-y-3 pt-2 pb-8">
+            <div className="space-y-3 pt-6 pb-8">
               <Link
                 to="/auth/signup"
                 className="flex items-center justify-center w-full h-12 text-base font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
