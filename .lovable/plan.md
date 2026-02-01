@@ -1,390 +1,180 @@
 
-# World-Class Mobile UX Overhaul — Complete Implementation Plan
+
+# Mobile UX Optimization Plan - Phase 2
 
 ## Executive Summary
 
-This plan transforms the entire Klarvo application from a desktop-first experience with basic mobile accommodations into a **world-class mobile-first experience** that rivals apps like Linear, Stripe Dashboard, and Notion mobile.
-
-The overhaul covers:
-- **Marketing Pages** (14+ pages)
-- **Application Dashboard & Core Pages** (15+ pages)  
-- **Wizard & Assessment Flows** (AI System Wizard, FRIA Wizard, Classification)
-- **Settings & Team Management**
-- **Global Components & Layout System**
+This plan addresses two main areas:
+1. **Mobile Menu Bug Fix** - Marketing header mobile menu links not closing the menu on navigation
+2. **Remaining Mobile Optimizations** - Standardizing card styling, touch targets, and responsive layouts across remaining pages
 
 ---
 
-## Current State Analysis
+## Part 1: Mobile Menu Bug Fix
 
-### Issues Identified
+### Problem Identified
+The marketing site's mobile navigation menu (in `MarketingHeader.tsx`) has links inside accordion sections that navigate correctly but **do not close the mobile menu** after clicking. This creates a broken UX where users must manually close the menu after navigation.
 
-**Marketing Pages:**
-- Hero sections have cramped text on mobile (headlines too large)
-- Feature grids don't stack gracefully (2-col grids cramped)
-- Trust indicators wrap awkwardly
-- Sample Reports page cards have poor content hierarchy on mobile
-- Mobile menu works but lacks polish (no micro-interactions)
-- CTAs feel desktop-sized, not thumb-friendly
+### Root Cause
+Links inside the mobile accordion sections (lines 445-476, 499-557) do not have an `onClick={() => setIsMobileMenuOpen(false)}` handler.
 
-**Application Dashboard:**
-- Metrics grid forces 2-col which is cramped on small screens
-- Cards have inconsistent padding (p-3 vs p-4 vs p-6)
-- Charts don't resize gracefully
-- Mobile nav sheet is functional but basic
+### Solution
+Add click handlers to close the mobile menu when any link is clicked within the accordion sections.
 
-**Wizard Flows:**
-- Progress indicators overflow/truncate on mobile
-- Form fields have inconsistent sizing
-- Navigation buttons are too small for comfortable tapping
-- No swipe gestures for step navigation
+**Files to modify:**
+- `src/components/marketing/MarketingHeader.tsx`
 
-**Data Tables:**
-- Card view on mobile is basic, not scannable
-- Action buttons lack touch-friendly sizing
-- Filter bars overflow without proper scrolling
+**Changes required:**
+- Add `onClick={() => setIsMobileMenuOpen(false)}` to all Link components inside the mobile menu overlay (approximately 15-20 links)
+- Ensure the mobile menu closes on any navigation action
 
 ---
 
-## Implementation Phases
+## Part 2: Remaining Mobile Optimizations
 
-### Phase 1: Foundation & Design System (Mobile Variables)
+### Pages Already Optimized (no changes needed)
+Based on the audit, these pages are already mobile-optimized:
+- Dashboard, AISystems, AISystemDetail
+- Vendors, VendorDetail
+- Evidence, Policies, Training, Incidents
+- Tasks, Controls, Assessments
+- Settings (General + Billing)
+- Exports, AuditLog
+- Provider Track Dashboard
+- FAQ, Docs (marketing)
 
-**1.1 Mobile Spacing Scale**
-Add mobile-specific spacing utilities to `tailwind.config.ts`:
-```
-- Touch targets: minimum 44px height (Apple HIG standard)
-- Thumb-reach zones: critical actions in bottom 60% of screen
-- Safe area insets for notched devices
-```
+### Pages Requiring Updates
 
-**1.2 Mobile Typography Scale**
-Update `src/index.css` with mobile-optimized display classes:
-- `.display-2xl` → 2.5rem on mobile (currently 3rem)
-- `.display-xl` → 2rem on mobile (currently 2.5rem)
-- Body text line-height: 1.6 on mobile for readability
-
-**1.3 New Mobile Utility Classes**
-Add to `src/index.css`:
-```css
-/* Touch-friendly tap areas */
-.tap-target { min-height: 44px; min-width: 44px; }
-
-/* Bottom sheet safe area */
-.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 1rem); }
-
-/* Mobile card styles */
-.mobile-card { @apply p-4 rounded-xl bg-card border; }
-
-/* Swipe indicator */
-.swipe-indicator { @apply w-10 h-1 bg-muted-foreground/30 rounded-full mx-auto; }
-```
-
----
-
-### Phase 2: Marketing Pages Transformation
-
-**2.1 HomepageHero.tsx — Complete Redesign**
-- Stack content vertically on mobile (no grid)
-- Reduce headline to `text-3xl` from `text-4xl sm:text-5xl lg:text-6xl`
-- Make CTAs full-width stacked buttons
-- Hide or simplify AIClassificationViz on mobile (too complex)
-- Trust badges as horizontal scroll on mobile
-
-**2.2 MarketingHeader.tsx — Premium Mobile Menu**
-- Add smooth slide-in animation (not instant opacity)
-- Larger touch targets (py-4 instead of py-2)
-- Subtle separators between sections
-- "Start Free" CTA fixed at bottom of menu
-- Add close button with X icon in top-right
-
-**2.3 FeatureGrid.tsx — Single Column Mobile**
-- Force single column on mobile (`grid-cols-1`)
-- Increase card padding to `p-6`
-- Larger icon containers (56px)
-- Add subtle horizontal rule between cards
-
-**2.4 FeatureShowcase.tsx — Reversed Layout**
-- Always stack vertically on mobile
-- Visual/image first, then content
-- Reduce bullet point text size to 14px
-- Full-width CTA links
-
-**2.5 Samples.tsx — Card Redesign**
-- Collapse preview section into expandable accordion
-- Make download buttons full-width
-- Stack all content vertically
-- Add "Swipe for more" hint if multiple samples
-
-**2.6 CTASection.tsx — Mobile Optimization**
-- Reduce padding to `py-12` from `py-16 md:py-24`
-- Full-width stacked buttons
-- Smaller headline text
-
-**2.7 TimelineSection.tsx — Horizontal Scroll**
-- Timeline as horizontal scrollable on mobile
-- Show current date indicator
-- Snap scrolling between dates
-
-**2.8 TestimonialSection.tsx — Carousel**
-- Single testimonial with swipe navigation
-- Pagination dots at bottom
-- Auto-play disabled on mobile (save battery)
-
-**2.9 Other Marketing Pages (Features, Pricing, Guides, etc.)**
-- Apply consistent mobile card patterns
-- Reduce section padding
-- Stack all grids to single column
-- Ensure all buttons are tap-friendly
-
----
-
-### Phase 3: Application Layout System
-
-**3.1 AppLayout.tsx — Mobile Optimization**
-- Reduce container padding on mobile (`px-3` from `px-4 sm:px-6`)
-- Add bottom navigation bar option for critical actions
-- Ensure footer doesn't overlap content
-
-**3.2 MobileNav.tsx — Premium Redesign**
-- **New bottom sheet style** instead of right-side slide
-- Add user avatar and quick actions at top
-- Group navigation into logical sections with headers
-- Add badge indicators for notifications/alerts
-- Smooth spring animations on open/close
-- Swipe down to dismiss
-
-**3.3 AppSidebar.tsx — Touch Improvements**
-- Already hidden on mobile, but ensure collapse/expand is smooth
-- Add haptic-style visual feedback on nav item tap
-
----
-
-### Phase 4: Dashboard Transformation
-
-**4.1 Dashboard.tsx — Complete Mobile Redesign**
-
-**Metrics Grid:**
-- Single column on mobile (currently forces 2-col)
-- Horizontal swipe carousel for metrics instead of grid
-- OR: 2x2 grid with much smaller cards
-
-**Progress Cards:**
-- Stack vertically with larger progress bars
-- Add sparkline indicators
-
-**Charts:**
-- Full-width with horizontal scroll if needed
-- Reduce chart height on mobile
-- Simplified data points
-
-**Timeline & Tasks:**
-- Collapsible accordion sections
-- Swipe-to-complete for tasks
-
-**4.2 AISystems.tsx — Mobile Card Redesign**
+#### 2.1 Classification Wizard (`src/pages/ClassificationWizard.tsx`)
 
 **Current Issues:**
-- Cards are functional but not scannable
-- Actions require navigation to detail page
+- Alert boxes using `rounded-lg` instead of `rounded-xl`
+- RadioGroup items lack touch-friendly sizing
 
-**New Design:**
-- Larger system icon (48px)
-- Status badge as colored left border
-- Swipe left to reveal quick actions (Edit, Delete)
-- Add chevron-right to indicate tappability
-- Pull-to-refresh gesture
-
-**4.3 Vendors.tsx, Evidence.tsx, Controls.tsx, etc.**
-- Apply same mobile card pattern
-- Consistent swipe actions
-- Floating action button (FAB) for "Add New" on mobile
+**Changes:**
+- Update alert containers (lines 423, 449, 475) from `rounded-lg` to `rounded-xl`
+- Add `min-h-[44px]` to radio item containers for better touch targets
 
 ---
 
-### Phase 5: Wizard & Assessment Flows
-
-**5.1 AISystemWizard.tsx — Mobile-First Redesign**
-
-**Progress Indicator:**
-- Horizontal progress bar with step count (not individual step icons)
-- "Step 3 of 19" text instead of overflowing icons
-- Sticky at top of screen
-
-**Form Fields:**
-- Full-width inputs with larger touch targets (h-12)
-- Improved select dropdowns with sheet/modal picker
-- Multi-select as full-screen modal on mobile
-- Checkbox groups with larger tap areas
-
-**Navigation:**
-- Bottom-fixed navigation bar with Back/Next
-- Large buttons (h-12, full width on very small screens)
-- Add swipe gesture for step navigation
-
-**5.2 FRIAWizard.tsx — Same Pattern**
-- Apply identical mobile patterns
-- Risk matrix as scrollable table or card stack
-
-**5.3 ClassificationWizard.tsx**
-- Step-by-step with one question per screen on mobile
-- Large radio buttons (full-width touch target)
-- Progress circle in header
-
----
-
-### Phase 6: Settings & Forms
-
-**6.1 Settings/General.tsx — Tab Redesign**
+#### 2.2 FRIA Wizard (`src/pages/FRIAWizard.tsx`)
 
 **Current Issues:**
-- Tabs overflow on mobile
-- Forms have inconsistent padding
-- Tables are cramped
+- Progress step icons could be larger on mobile
+- Card containers lack consistent `rounded-xl` styling
 
-**New Design:**
-- Tabs as horizontal scroll with snap
-- OR: Full-width segmented control
-- All form sections as collapsible cards
-- Team member table as card list
-
-**6.2 All Form Pages (Contact, Auth, etc.)**
-- Consistent input sizing (h-12 for touch)
-- Labels above inputs (not inline)
-- Full-width buttons
-- Clear validation error states
+**Changes:**
+- Verify Card components use `rounded-xl` consistently
+- Increase step icon container size on mobile
 
 ---
 
-### Phase 7: Detail Pages & Modals
+#### 2.3 Onboarding (`src/pages/Onboarding.tsx`)
 
-**7.1 AISystemDetail.tsx — Mobile Layout**
-- Tab navigation as sticky horizontal scroll
-- Section cards with collapsible headers
-- Action buttons in fixed bottom bar
-- Evidence attachments as horizontal scroll
+**Current Issues:**
+- Role selection buttons using `rounded-lg` (line 260)
+- Card components not using `rounded-xl`
+- Input/Select elements could have larger touch targets
 
-**7.2 Dialog/Modal Improvements**
-- All dialogs: `max-w-[95vw]` or full-screen on mobile
-- Bottom sheet style for confirmations
-- Stacked buttons (Cancel below, Action above)
-- Add drag-to-dismiss handle
-
-**7.3 Dropdown Menus**
-- Convert to bottom sheets on mobile
-- Larger touch targets (py-3)
-- Clear visual separation
+**Changes:**
+- Update role buttons from `rounded-lg` to `rounded-xl`
+- Add `rounded-xl` to Card components
+- Ensure touch target heights are at least 44px
 
 ---
 
-### Phase 8: Global Component Updates
+#### 2.4 Docs Sidebar (`src/components/docs/DocsSidebar.tsx`)
 
-**8.1 Button Sizing**
-- Add `size="touch"` variant: `h-12 px-6 text-base`
-- Use on all mobile-critical actions
+**Current Issues:**
+- Mobile sidebar is hidden (`hidden lg:flex`) with no alternative mobile navigation
+- Users on mobile cannot access the docs sidebar navigation
 
-**8.2 Input Sizing**
-- Add `size="touch"` variant: `h-12 text-base`
-- Larger placeholder text
-
-**8.3 Card Component**
-- Add `mobile` variant with `p-4` default
-- Consistent border-radius (`rounded-xl`)
-
-**8.4 Table Component**
-- Auto-convert to cards on mobile via utility class
-- `.mobile-cards` class that transforms table to cards
-
-**8.5 Badge Component**
-- Slightly larger on mobile for readability
-- Minimum 24px height
+**Changes:**
+- Add mobile-friendly docs navigation (hamburger or drawer pattern)
+- Ensure search and category navigation work on mobile
 
 ---
 
-## Technical Implementation
+#### 2.5 Disclosures Page (`src/pages/Disclosures.tsx`)
 
-### Files to Create (New)
-1. `src/hooks/useTouchDevice.ts` — Detect touch capability
-2. `src/components/ui/bottom-sheet.tsx` — Reusable bottom sheet component
-3. `src/components/ui/swipe-actions.tsx` — Swipe-to-reveal actions
-4. `src/components/ui/mobile-tabs.tsx` — Touch-optimized tab component
-5. `src/components/layout/BottomNav.tsx` — Optional bottom navigation
-6. `src/components/layout/MobileHeader.tsx` — Simplified mobile header
+**Current Issues:**
+- Page uses `DisclosureSnippetLibrary` component - need to verify mobile optimization
 
-### Files to Update (Extensive Changes)
-1. `src/index.css` — Mobile utility classes, responsive typography
-2. `tailwind.config.ts` — Touch-friendly spacing scale
-3. `src/components/marketing/MarketingHeader.tsx` — Premium mobile menu
-4. `src/components/marketing/hero/HomepageHero.tsx` — Mobile-first hero
-5. `src/components/marketing/FeatureGrid.tsx` — Single column mobile
-6. `src/components/marketing/FeatureShowcase.tsx` — Stack mobile layout
-7. `src/components/layout/MobileNav.tsx` — Bottom sheet redesign
-8. `src/components/layout/AppLayout.tsx` — Mobile container padding
-9. `src/pages/Dashboard.tsx` — Complete mobile redesign
-10. `src/pages/AISystems.tsx` — Mobile card improvements
-11. `src/pages/AISystemWizard.tsx` — Mobile wizard flow
-12. `src/pages/FRIAWizard.tsx` — Mobile FRIA flow
-13. `src/pages/Settings/General.tsx` — Mobile settings tabs
-14. `src/pages/marketing/Samples.tsx` — Mobile sample cards
-15. `src/components/ui/button.tsx` — Touch size variant
-16. `src/components/ui/input.tsx` — Touch size variant
-17. All marketing pages (Features, Pricing, FAQ, etc.)
-18. All application pages (Evidence, Controls, Policies, etc.)
-
-### Files to Update (Minor Changes)
-- All dialog/modal components — Max width and button stacking
-- All table-using pages — Mobile card transformation
-- All form pages — Input sizing consistency
+**Changes:**
+- Audit `DisclosureSnippetLibrary` for mobile responsiveness
+- Apply `rounded-xl` and touch-friendly styling as needed
 
 ---
 
-## Quality Benchmarks
+## Part 3: Technical Implementation Details
 
-### Touch Target Compliance
-- All interactive elements ≥ 44x44px
-- Adequate spacing between touch targets (8px minimum)
+### MarketingHeader Mobile Menu Fix
 
-### Performance
-- No layout shifts on mobile
-- Animations respect `prefers-reduced-motion`
-- Lazy load images below fold
+```text
+Location: src/components/marketing/MarketingHeader.tsx
 
-### Accessibility
-- Focus states visible on all elements
-- Screen reader announcements for swipe actions
-- Adequate color contrast maintained
+Lines 445-476 (Product accordion links):
+- Add onClick={() => setIsMobileMenuOpen(false)} to each Link
 
-### Testing Checklist
-- iPhone SE (smallest modern iPhone)
-- iPhone 15 Pro Max (largest iPhone)
-- Samsung Galaxy S24 (Android reference)
-- iPad Mini (small tablet)
-- Portrait and landscape orientations
+Lines 460-462 ("See All Features" link):
+- Add onClick={() => setIsMobileMenuOpen(false)}
+
+Lines 466-475 (Industry links):
+- Add onClick={() => setIsMobileMenuOpen(false)} to each Link
+
+Lines 499-557 (Resources + Company accordion):
+- Add onClick={() => setIsMobileMenuOpen(false)} to all Link components
+```
+
+### ClassificationWizard Updates
+
+```text
+Location: src/pages/ClassificationWizard.tsx
+
+Lines 423, 449, 475:
+- Change: rounded-lg -> rounded-xl
+
+Lines 398-411 (RadioGroup):
+- Add tap-target styling to radio containers
+```
+
+### Onboarding Updates
+
+```text
+Location: src/pages/Onboarding.tsx
+
+Lines 173-174, 243-244, 293-294 (Card components):
+- Add className="rounded-xl" to Card components
+
+Line 260 (role selection buttons):
+- Change: rounded-lg -> rounded-xl
+```
 
 ---
 
-## Implementation Order
+## Priority Order
 
-1. **Foundation** (CSS variables, utility classes, config updates)
-2. **Layout Components** (MobileNav, AppLayout, MarketingLayout)
-3. **UI Components** (Button, Input, Card variants)
-4. **Marketing Hero & Header** (Most visible, highest impact)
-5. **Dashboard** (Core app experience)
-6. **Wizard Flows** (Critical user journey)
-7. **Remaining Marketing Pages** (Batch update)
-8. **Remaining App Pages** (Batch update)
-9. **Detail Pages & Modals** (Final polish)
-10. **Testing & Refinement**
+1. **High Priority - Bug Fix**
+   - MarketingHeader mobile menu link closing
+
+2. **Medium Priority - Core Wizards**
+   - ClassificationWizard styling
+   - FRIAWizard styling
+   - Onboarding styling
+
+3. **Lower Priority - Additional Polish**
+   - Docs mobile navigation
+   - DisclosureSnippetLibrary audit
 
 ---
 
-## Expected Outcome
+## Testing Checklist
 
-After implementation:
-- **Marketing pages** will feel like a premium fintech landing page on mobile
-- **Dashboard** will be as usable as the desktop version, just differently laid out
-- **Wizards** will feel native-app-like with smooth step transitions
-- **All touch targets** will be comfortable for one-handed use
-- **Load times** will remain fast with optimized assets
-- **Accessibility** will meet WCAG 2.1 AA standards
+After implementation, verify:
+- [ ] Marketing mobile menu closes after clicking any link
+- [ ] All accordion sections work correctly
+- [ ] Classification wizard cards have rounded-xl styling
+- [ ] Onboarding role buttons have rounded-xl styling
+- [ ] Touch targets meet 44px minimum on all interactive elements
+- [ ] No z-index conflicts between mobile overlays
 
-This transforms Klarvo's mobile experience from "it works" to "this is delightful to use."
