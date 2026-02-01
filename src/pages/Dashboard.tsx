@@ -36,6 +36,7 @@ import { AuditReadinessCard } from "@/components/dashboard/AuditReadinessCard";
 import { WelcomeCard } from "@/components/dashboard/WelcomeCard";
 import { EscalationDashboardWidget } from "@/components/provider/EscalationDashboardWidget";
 import { ModificationSummaryWidget } from "@/components/provider/SubstantialModificationAlert";
+import { DashboardRecommendationsCard } from "@/components/recommendations";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -308,12 +309,15 @@ export default function Dashboard() {
       {/* Department Distribution */}
       <DepartmentRiskChart />
 
-      {/* Compliance Alerts */}
+      {/* Compliance Alerts and Recommendations */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <ComplianceAlerts />
         </div>
-        <EscalationDashboardWidget />
+        <div className="space-y-4 sm:space-y-6">
+          <DashboardRecommendationsCard />
+          <EscalationDashboardWidget />
+        </div>
       </div>
 
       {/* Two Column Layout */}

@@ -1034,6 +1034,75 @@ export type Database = {
           },
         ]
       }
+      compliance_recommendations: {
+        Row: {
+          action_path: string | null
+          action_payload: Json | null
+          action_type: string
+          ai_system_id: string | null
+          confidence_score: number | null
+          created_at: string
+          description: string
+          expires_at: string
+          generated_at: string
+          id: string
+          is_dismissed: boolean
+          organization_id: string
+          priority: number
+          recommendation_type: string
+          title: string
+        }
+        Insert: {
+          action_path?: string | null
+          action_payload?: Json | null
+          action_type: string
+          ai_system_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          description: string
+          expires_at?: string
+          generated_at?: string
+          id?: string
+          is_dismissed?: boolean
+          organization_id: string
+          priority: number
+          recommendation_type: string
+          title: string
+        }
+        Update: {
+          action_path?: string | null
+          action_payload?: Json | null
+          action_type?: string
+          ai_system_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          description?: string
+          expires_at?: string
+          generated_at?: string
+          id?: string
+          is_dismissed?: boolean
+          organization_id?: string
+          priority?: number
+          recommendation_type?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_recommendations_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compliance_recommendations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conformity_assessments: {
         Row: {
           ai_system_version_id: string
