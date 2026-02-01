@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,150 +10,177 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { AIAssistant } from "@/components/ai-assistant";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
-// App pages
-import Dashboard from "@/pages/Dashboard";
-import AISystems from "@/pages/AISystems";
-import AISystemWizard from "@/pages/AISystemWizard";
-import AISystemDetail from "@/pages/AISystemDetail";
-import ClassificationWizard from "@/pages/ClassificationWizard";
-import FRIAWizard from "@/pages/FRIAWizard";
-import Vendors from "@/pages/Vendors";
-import VendorDetail from "@/pages/VendorDetail";
-import Evidence from "@/pages/Evidence";
-import Tasks from "@/pages/Tasks";
-import Policies from "@/pages/Policies";
-import Assessments from "@/pages/Assessments";
-import Controls from "@/pages/Controls";
-import Training from "@/pages/Training";
-import Incidents from "@/pages/Incidents";
-import Exports from "@/pages/Exports";
-import Disclosures from "@/pages/Disclosures";
-import AuditLog from "@/pages/AuditLog";
-import Pricing from "@/pages/Pricing";
-import BillingSettings from "@/pages/Settings/Billing";
-import GeneralSettings from "@/pages/Settings/General";
-import NotFound from "@/pages/NotFound";
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex min-h-screen items-center justify-center bg-background">
+    <div className="flex flex-col items-center gap-4">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <p className="text-sm text-muted-foreground">Loading...</p>
+    </div>
+  </div>
+);
+
+// ═══════════════════════════════════════════════════════════════════
+// LAZY-LOADED PAGES - Code-splitting for better initial load performance
+// ═══════════════════════════════════════════════════════════════════
+
+// Core App pages (high priority - prefetched)
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const AISystems = lazy(() => import("@/pages/AISystems"));
+const AISystemWizard = lazy(() => import("@/pages/AISystemWizard"));
+const AISystemDetail = lazy(() => import("@/pages/AISystemDetail"));
+const ClassificationWizard = lazy(() => import("@/pages/ClassificationWizard"));
+const FRIAWizard = lazy(() => import("@/pages/FRIAWizard"));
+const Vendors = lazy(() => import("@/pages/Vendors"));
+const VendorDetail = lazy(() => import("@/pages/VendorDetail"));
+const Evidence = lazy(() => import("@/pages/Evidence"));
+const Tasks = lazy(() => import("@/pages/Tasks"));
+const Policies = lazy(() => import("@/pages/Policies"));
+const Assessments = lazy(() => import("@/pages/Assessments"));
+const Controls = lazy(() => import("@/pages/Controls"));
+const Training = lazy(() => import("@/pages/Training"));
+const Incidents = lazy(() => import("@/pages/Incidents"));
+const Exports = lazy(() => import("@/pages/Exports"));
+const Disclosures = lazy(() => import("@/pages/Disclosures"));
+const AuditLog = lazy(() => import("@/pages/AuditLog"));
+const Pricing = lazy(() => import("@/pages/Pricing"));
+const BillingSettings = lazy(() => import("@/pages/Settings/Billing"));
+const GeneralSettings = lazy(() => import("@/pages/Settings/General"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
 // Auth pages
-import Login from "@/pages/auth/Login";
-import Signup from "@/pages/auth/Signup";
-import Callback from "@/pages/auth/Callback";
-import ForgotPassword from "@/pages/auth/ForgotPassword";
-import ResetPassword from "@/pages/auth/ResetPassword";
-import Onboarding from "@/pages/Onboarding";
-import AcceptInvite from "@/pages/invite/AcceptInvite";
+const Login = lazy(() => import("@/pages/auth/Login"));
+const Signup = lazy(() => import("@/pages/auth/Signup"));
+const Callback = lazy(() => import("@/pages/auth/Callback"));
+const ForgotPassword = lazy(() => import("@/pages/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/auth/ResetPassword"));
+const Onboarding = lazy(() => import("@/pages/Onboarding"));
+const AcceptInvite = lazy(() => import("@/pages/invite/AcceptInvite"));
 
-// Marketing pages
+// Marketing pages - Landing page loaded eagerly for SEO/performance
 import LandingPage from "@/pages/marketing/LandingPage";
-import Features from "@/pages/marketing/Features";
-import About from "@/pages/marketing/About";
-import Contact from "@/pages/marketing/Contact";
-// Demo page removed - system is self-explanatory
-import Resources from "@/pages/marketing/Resources";
-import Integrations from "@/pages/marketing/Integrations";
-import Partners from "@/pages/marketing/Partners";
-import Careers from "@/pages/marketing/Careers";
-import Press from "@/pages/marketing/Press";
-import Status from "@/pages/marketing/Status";
-import Changelog from "@/pages/marketing/Changelog";
-import Docs from "@/pages/marketing/Docs";
-import DocsArticle from "@/pages/marketing/DocsArticle";
-import FAQ from "@/pages/marketing/FAQ";
-import Blog from "@/pages/marketing/Blog";
-import BlogArticle from "@/pages/marketing/BlogArticle";
-import APIReference from "@/pages/marketing/APIReference";
-import Templates from "@/pages/marketing/Templates";
-import EUAIActGuide from "@/pages/marketing/EUAIActGuide";
-import Samples from "@/pages/marketing/Samples";
-import SystemSpec from "@/pages/marketing/SystemSpec";
 
-// SEO-optimized pages
-import TemplatesHub from "@/pages/marketing/TemplatesHub";
-import ToolsHub from "@/pages/marketing/ToolsHub";
-import GuidesHub from "@/pages/marketing/GuidesHub";
-import CompareHub from "@/pages/marketing/CompareHub";
-import IndustriesHub from "@/pages/marketing/IndustriesHub";
-import ComplianceSoftwarePage from "@/pages/marketing/ComplianceSoftwarePage";
-import AIInventorySoftwarePage from "@/pages/marketing/AIInventorySoftwarePage";
-import FRIASoftwarePage from "@/pages/marketing/FRIASoftwarePage";
+const Features = lazy(() => import("@/pages/marketing/Features"));
+const About = lazy(() => import("@/pages/marketing/About"));
+const Contact = lazy(() => import("@/pages/marketing/Contact"));
+const Resources = lazy(() => import("@/pages/marketing/Resources"));
+const Integrations = lazy(() => import("@/pages/marketing/Integrations"));
+const Partners = lazy(() => import("@/pages/marketing/Partners"));
+const Careers = lazy(() => import("@/pages/marketing/Careers"));
+const Press = lazy(() => import("@/pages/marketing/Press"));
+const Status = lazy(() => import("@/pages/marketing/Status"));
+const Changelog = lazy(() => import("@/pages/marketing/Changelog"));
+const Docs = lazy(() => import("@/pages/marketing/Docs"));
+const DocsArticle = lazy(() => import("@/pages/marketing/DocsArticle"));
+const FAQ = lazy(() => import("@/pages/marketing/FAQ"));
+const Blog = lazy(() => import("@/pages/marketing/Blog"));
+const BlogArticle = lazy(() => import("@/pages/marketing/BlogArticle"));
+const APIReference = lazy(() => import("@/pages/marketing/APIReference"));
+const Templates = lazy(() => import("@/pages/marketing/Templates"));
+const EUAIActGuide = lazy(() => import("@/pages/marketing/EUAIActGuide"));
+const Samples = lazy(() => import("@/pages/marketing/Samples"));
+const SystemSpec = lazy(() => import("@/pages/marketing/SystemSpec"));
+
+// SEO Hub pages
+const TemplatesHub = lazy(() => import("@/pages/marketing/TemplatesHub"));
+const ToolsHub = lazy(() => import("@/pages/marketing/ToolsHub"));
+const GuidesHub = lazy(() => import("@/pages/marketing/GuidesHub"));
+const CompareHub = lazy(() => import("@/pages/marketing/CompareHub"));
+const IndustriesHub = lazy(() => import("@/pages/marketing/IndustriesHub"));
+const ComplianceSoftwarePage = lazy(() => import("@/pages/marketing/ComplianceSoftwarePage"));
+const AIInventorySoftwarePage = lazy(() => import("@/pages/marketing/AIInventorySoftwarePage"));
+const FRIASoftwarePage = lazy(() => import("@/pages/marketing/FRIASoftwarePage"));
 
 // Template pages
-import AIInventoryTemplate from "@/pages/marketing/templates/AIInventoryTemplate";
-import FRIATemplate from "@/pages/marketing/templates/FRIATemplate";
-import Article26Checklist from "@/pages/marketing/templates/Article26Checklist";
+const AIInventoryTemplate = lazy(() => import("@/pages/marketing/templates/AIInventoryTemplate"));
+const FRIATemplate = lazy(() => import("@/pages/marketing/templates/FRIATemplate"));
+const Article26Checklist = lazy(() => import("@/pages/marketing/templates/Article26Checklist"));
+const Article50Disclosure = lazy(() => import("@/pages/marketing/templates/Article50Disclosure"));
+const AIAcceptableUsePolicy = lazy(() => import("@/pages/marketing/templates/AIAcceptableUsePolicy"));
+const VendorDueDiligence = lazy(() => import("@/pages/marketing/templates/VendorDueDiligence"));
+const HumanOversightPlan = lazy(() => import("@/pages/marketing/templates/HumanOversightPlan"));
+const AIIncidentRegister = lazy(() => import("@/pages/marketing/templates/AIIncidentRegister"));
 
 // Tool pages
-import AIDefinitionChecker from "@/pages/marketing/tools/AIDefinitionChecker";
-import HighRiskChecker from "@/pages/marketing/tools/HighRiskChecker";
-import TransparencyChecker from "@/pages/marketing/tools/TransparencyChecker";
-import ProhibitedPracticesScreening from "@/pages/marketing/tools/ProhibitedPracticesScreening";
+const AIDefinitionChecker = lazy(() => import("@/pages/marketing/tools/AIDefinitionChecker"));
+const HighRiskChecker = lazy(() => import("@/pages/marketing/tools/HighRiskChecker"));
+const TransparencyChecker = lazy(() => import("@/pages/marketing/tools/TransparencyChecker"));
+const ProhibitedPracticesScreening = lazy(() => import("@/pages/marketing/tools/ProhibitedPracticesScreening"));
 
 // Guide pages
-import EUAIActForSMEs from "@/pages/marketing/guides/EUAIActForSMEs";
-import Article26Guide from "@/pages/marketing/guides/Article26Guide";
-import Article50Guide from "@/pages/marketing/guides/Article50Guide";
-import ProhibitedPracticesGuide from "@/pages/marketing/guides/ProhibitedPracticesGuide";
-import HighRiskGuide from "@/pages/marketing/guides/HighRiskGuide";
-import AIInventoryGuide from "@/pages/marketing/guides/AIInventoryGuide";
-import AIDefinitionGuide from "@/pages/marketing/guides/AIDefinitionGuide";
-import AILiteracyGuide from "@/pages/marketing/guides/AILiteracyGuide";
-import FRIAGuide from "@/pages/marketing/guides/FRIAGuide";
-import EvidencePackGuide from "@/pages/marketing/guides/EvidencePackGuide";
+const EUAIActForSMEs = lazy(() => import("@/pages/marketing/guides/EUAIActForSMEs"));
+const Article26Guide = lazy(() => import("@/pages/marketing/guides/Article26Guide"));
+const Article50Guide = lazy(() => import("@/pages/marketing/guides/Article50Guide"));
+const ProhibitedPracticesGuide = lazy(() => import("@/pages/marketing/guides/ProhibitedPracticesGuide"));
+const HighRiskGuide = lazy(() => import("@/pages/marketing/guides/HighRiskGuide"));
+const AIInventoryGuide = lazy(() => import("@/pages/marketing/guides/AIInventoryGuide"));
+const AIDefinitionGuide = lazy(() => import("@/pages/marketing/guides/AIDefinitionGuide"));
+const AILiteracyGuide = lazy(() => import("@/pages/marketing/guides/AILiteracyGuide"));
+const FRIAGuide = lazy(() => import("@/pages/marketing/guides/FRIAGuide"));
+const EvidencePackGuide = lazy(() => import("@/pages/marketing/guides/EvidencePackGuide"));
 
 // Comparison pages
-import KlarvoVsSpreadsheets from "@/pages/marketing/compare/KlarvoVsSpreadsheets";
-import KlarvoVsTrustPlatforms from "@/pages/marketing/compare/KlarvoVsTrustPlatforms";
+const KlarvoVsSpreadsheets = lazy(() => import("@/pages/marketing/compare/KlarvoVsSpreadsheets"));
+const KlarvoVsTrustPlatforms = lazy(() => import("@/pages/marketing/compare/KlarvoVsTrustPlatforms"));
 
-// Additional BOFU product pages
-import EvidencePacksPage from "@/pages/marketing/EvidencePacksPage";
-import TrainingTrackerPage from "@/pages/marketing/TrainingTrackerPage";
-import EvidenceVaultPage from "@/pages/marketing/EvidenceVaultPage";
+// BOFU product pages
+const EvidencePacksPage = lazy(() => import("@/pages/marketing/EvidencePacksPage"));
+const TrainingTrackerPage = lazy(() => import("@/pages/marketing/TrainingTrackerPage"));
+const EvidenceVaultPage = lazy(() => import("@/pages/marketing/EvidenceVaultPage"));
 
 // Industry pages
-import HRRecruitmentPage from "@/pages/marketing/industries/HRRecruitmentPage";
-import FintechPage from "@/pages/marketing/industries/FintechPage";
-import EducationPage from "@/pages/marketing/industries/EducationPage";
-import SaaSPage from "@/pages/marketing/industries/SaaSPage";
-
-// Additional template pages
-import Article50Disclosure from "@/pages/marketing/templates/Article50Disclosure";
-import AIAcceptableUsePolicy from "@/pages/marketing/templates/AIAcceptableUsePolicy";
-import VendorDueDiligence from "@/pages/marketing/templates/VendorDueDiligence";
-import HumanOversightPlan from "@/pages/marketing/templates/HumanOversightPlan";
-import AIIncidentRegister from "@/pages/marketing/templates/AIIncidentRegister";
+const HRRecruitmentPage = lazy(() => import("@/pages/marketing/industries/HRRecruitmentPage"));
+const FintechPage = lazy(() => import("@/pages/marketing/industries/FintechPage"));
+const EducationPage = lazy(() => import("@/pages/marketing/industries/EducationPage"));
+const SaaSPage = lazy(() => import("@/pages/marketing/industries/SaaSPage"));
 
 // Use case pages
-import SMEUseCase from "@/pages/use-cases/SME";
-import EnterpriseUseCase from "@/pages/use-cases/Enterprise";
-import HRUseCase from "@/pages/use-cases/HR";
-import FintechUseCase from "@/pages/use-cases/Fintech";
-import HealthcareUseCase from "@/pages/use-cases/Healthcare";
+const SMEUseCase = lazy(() => import("@/pages/use-cases/SME"));
+const EnterpriseUseCase = lazy(() => import("@/pages/use-cases/Enterprise"));
+const HRUseCase = lazy(() => import("@/pages/use-cases/HR"));
+const FintechUseCase = lazy(() => import("@/pages/use-cases/Fintech"));
+const HealthcareUseCase = lazy(() => import("@/pages/use-cases/Healthcare"));
 
 // Legal pages
-import Terms from "@/pages/legal/Terms";
-import Privacy from "@/pages/legal/Privacy";
-import Cookies from "@/pages/legal/Cookies";
-import Security from "@/pages/legal/Security";
-import DPA from "@/pages/legal/DPA";
-import GDPR from "@/pages/legal/GDPR";
-import AUP from "@/pages/legal/AUP";
+const Terms = lazy(() => import("@/pages/legal/Terms"));
+const Privacy = lazy(() => import("@/pages/legal/Privacy"));
+const Cookies = lazy(() => import("@/pages/legal/Cookies"));
+const Security = lazy(() => import("@/pages/legal/Security"));
+const DPA = lazy(() => import("@/pages/legal/DPA"));
+const GDPR = lazy(() => import("@/pages/legal/GDPR"));
+const AUP = lazy(() => import("@/pages/legal/AUP"));
 
 // Provider Track pages (hidden, non-indexable)
-import ProviderDashboard from "@/pages/provider-track/Dashboard";
-import ProviderTechnicalDocs from "@/pages/provider-track/TechnicalDocs";
-import ProviderRiskManagement from "@/pages/provider-track/RiskManagement";
-import ProviderQMS from "@/pages/provider-track/QMS";
-import ProviderConformity from "@/pages/provider-track/Conformity";
-import ProviderDeclaration from "@/pages/provider-track/Declaration";
-import ProviderCEMarking from "@/pages/provider-track/CEMarking";
-import ProviderRegistration from "@/pages/provider-track/Registration";
-import ProviderMonitoring from "@/pages/provider-track/Monitoring";
-import ProviderSeriousIncidents from "@/pages/provider-track/SeriousIncidents";
-import ProviderDataGovernance from "@/pages/provider-track/DataGovernance";
-import ProviderImporterVerification from "@/pages/provider-track/ImporterVerification";
-import ProviderDistributorVerification from "@/pages/provider-track/DistributorVerification";
+const ProviderDashboard = lazy(() => import("@/pages/provider-track/Dashboard"));
+const ProviderTechnicalDocs = lazy(() => import("@/pages/provider-track/TechnicalDocs"));
+const ProviderRiskManagement = lazy(() => import("@/pages/provider-track/RiskManagement"));
+const ProviderQMS = lazy(() => import("@/pages/provider-track/QMS"));
+const ProviderConformity = lazy(() => import("@/pages/provider-track/Conformity"));
+const ProviderDeclaration = lazy(() => import("@/pages/provider-track/Declaration"));
+const ProviderCEMarking = lazy(() => import("@/pages/provider-track/CEMarking"));
+const ProviderRegistration = lazy(() => import("@/pages/provider-track/Registration"));
+const ProviderMonitoring = lazy(() => import("@/pages/provider-track/Monitoring"));
+const ProviderSeriousIncidents = lazy(() => import("@/pages/provider-track/SeriousIncidents"));
+const ProviderDataGovernance = lazy(() => import("@/pages/provider-track/DataGovernance"));
+const ProviderImporterVerification = lazy(() => import("@/pages/provider-track/ImporterVerification"));
+const ProviderDistributorVerification = lazy(() => import("@/pages/provider-track/DistributorVerification"));
 
-const queryClient = new QueryClient();
+// ═══════════════════════════════════════════════════════════════════
+// QUERY CLIENT CONFIGURATION
+// ═══════════════════════════════════════════════════════════════════
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes - prevents refetch on navigation
+      gcTime: 10 * 60 * 1000,   // 10 minutes cache
+    },
+  },
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// APP COMPONENT
+// ═══════════════════════════════════════════════════════════════════
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -160,14 +188,17 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
-          <ScrollToTop />
+        <ScrollToTop />
+        <Suspense fallback={<PageLoader />}>
           <Routes>
+            {/* Landing page - loaded eagerly */}
             <Route path="/" element={<LandingPage />} />
+            
+            {/* Marketing pages */}
             <Route path="/features" element={<Features />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            {/* Demo route removed - system is self-explanatory */}
             <Route path="/resources" element={<Resources />} />
             <Route path="/integrations" element={<Integrations />} />
             <Route path="/partners" element={<Partners />} />
@@ -323,6 +354,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+        </Suspense>
         <AIAssistant />
       </AuthProvider>
     </TooltipProvider>
