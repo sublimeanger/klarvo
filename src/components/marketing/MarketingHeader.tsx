@@ -410,7 +410,7 @@ export function MarketingHeader() {
         </nav>
       </div>
 
-      {/* Mobile Menu Overlay - Accordion Style */}
+      {/* Mobile Menu Overlay - Premium Bottom Sheet Style */}
       <div
         className={cn(
           "lg:hidden fixed inset-x-0 top-[72px] bottom-0 bg-background z-40 transition-all duration-300 overflow-hidden",
@@ -419,13 +419,18 @@ export function MarketingHeader() {
             : "opacity-0 pointer-events-none"
         )}
       >
-        <div className="h-full overflow-y-auto">
-          <div className="container mx-auto px-4 py-4">
+        <div className="h-full overflow-y-auto overscroll-contain">
+          {/* Swipe indicator */}
+          <div className="flex justify-center pt-2 pb-1">
+            <div className="w-10 h-1 rounded-full bg-muted-foreground/20" />
+          </div>
+          
+          <div className="container mx-auto px-4 py-2 safe-bottom">
             {/* Product Accordion */}
             <div className="border-b border-border">
               <button
                 onClick={() => toggleMobileSection("product")}
-                className="flex items-center justify-between w-full py-4 text-base font-semibold"
+                className="flex items-center justify-between w-full py-4 text-base font-semibold tap-target"
               >
                 Product
                 <ChevronDown className={cn("h-5 w-5 transition-transform", mobileExpanded === "product" && "rotate-180")} />
@@ -434,30 +439,35 @@ export function MarketingHeader() {
                 "overflow-hidden transition-all duration-200",
                 mobileExpanded === "product" ? "max-h-[600px] pb-4" : "max-h-0"
               )}>
-                <div className="pl-4 space-y-4">
+                <div className="pl-2 space-y-4">
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">What We Do</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">What We Do</p>
                     {productFeatures.map((link) => (
                       <Link
                         key={link.title}
                         to={link.href}
-                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                        className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
-                        <link.icon className="h-4 w-4 text-muted-foreground" />
-                        {link.title}
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                          <link.icon className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <span className="font-medium">{link.title}</span>
+                          <p className="text-xs text-muted-foreground">{link.description}</p>
+                        </div>
                       </Link>
                     ))}
-                    <Link to="/features" className="flex items-center gap-1 py-2 text-sm font-medium text-primary">
+                    <Link to="/features" className="flex items-center gap-1 py-3 px-2 text-sm font-medium text-primary tap-target">
                       See All Features <ChevronRight className="h-4 w-4" />
                     </Link>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Industries</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Industries</p>
                     {productIndustries.map((link) => (
                       <Link
                         key={link.title}
                         to={link.href}
-                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                        className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <link.icon className="h-4 w-4 text-muted-foreground" />
                         {link.title}
@@ -468,10 +478,10 @@ export function MarketingHeader() {
               </div>
             </div>
 
-            {/* Pricing - Direct Link */}
+            {/* Pricing - Direct Link with touch target */}
             <Link
               to="/pricing"
-              className="flex items-center justify-between w-full py-4 text-base font-semibold border-b border-border"
+              className="flex items-center justify-between w-full py-4 text-base font-semibold border-b border-border tap-target"
             >
               Pricing
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -481,7 +491,7 @@ export function MarketingHeader() {
             <div className="border-b border-border">
               <button
                 onClick={() => toggleMobileSection("resources")}
-                className="flex items-center justify-between w-full py-4 text-base font-semibold"
+                className="flex items-center justify-between w-full py-4 text-base font-semibold tap-target"
               >
                 Resources
                 <ChevronDown className={cn("h-5 w-5 transition-transform", mobileExpanded === "resources" && "rotate-180")} />
@@ -490,14 +500,14 @@ export function MarketingHeader() {
                 "overflow-hidden transition-all duration-200",
                 mobileExpanded === "resources" ? "max-h-[400px] pb-4" : "max-h-0"
               )}>
-                <div className="pl-4 space-y-4">
+                <div className="pl-2 space-y-4">
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Learn</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Learn</p>
                     {resourcesLearn.map((link) => (
                       <Link
                         key={link.title}
                         to={link.href}
-                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                        className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <link.icon className="h-4 w-4 text-muted-foreground" />
                         {link.title}
@@ -505,12 +515,12 @@ export function MarketingHeader() {
                     ))}
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Get Started</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2">Get Started</p>
                     {resourcesGetStarted.map((link) => (
                       <Link
                         key={link.title}
                         to={link.href}
-                        className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                        className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <link.icon className="h-4 w-4 text-muted-foreground" />
                         {link.title}
@@ -525,7 +535,7 @@ export function MarketingHeader() {
             <div className="border-b border-border">
               <button
                 onClick={() => toggleMobileSection("company")}
-                className="flex items-center justify-between w-full py-4 text-base font-semibold"
+                className="flex items-center justify-between w-full py-4 text-base font-semibold tap-target"
               >
                 Company
                 <ChevronDown className={cn("h-5 w-5 transition-transform", mobileExpanded === "company" && "rotate-180")} />
@@ -534,12 +544,12 @@ export function MarketingHeader() {
                 "overflow-hidden transition-all duration-200",
                 mobileExpanded === "company" ? "max-h-[300px] pb-4" : "max-h-0"
               )}>
-                <div className="pl-4">
+                <div className="pl-2">
                   {companyLinks.map((link) => (
                     <Link
                       key={link.title}
                       to={link.href}
-                      className="flex items-center gap-3 py-2 text-sm hover:text-primary transition-colors"
+                      className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                     >
                       <link.icon className="h-4 w-4 text-muted-foreground" />
                       {link.title}
@@ -549,18 +559,18 @@ export function MarketingHeader() {
               </div>
             </div>
 
-            {/* Mobile CTAs */}
+            {/* Mobile CTAs - Fixed at bottom style, larger touch targets */}
             <div className="space-y-3 pt-6 pb-8">
               <Link
                 to="/auth/signup"
-                className="flex items-center justify-center w-full h-12 text-base font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="flex items-center justify-center w-full h-14 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors tap-target"
               >
                 Start Free
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
               <Link
                 to="/auth/login"
-                className="flex items-center justify-center w-full h-12 text-base font-semibold rounded-lg border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="flex items-center justify-center w-full h-14 text-base font-semibold rounded-xl border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors tap-target"
               >
                 Log in
               </Link>

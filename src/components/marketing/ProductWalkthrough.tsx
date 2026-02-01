@@ -104,7 +104,7 @@ export function ProductWalkthrough({ className }: ProductWalkthroughProps) {
   return (
     <section
       ref={containerRef}
-      className={cn("py-24 px-4 bg-surface-1", className)}
+      className={cn("py-16 sm:py-20 lg:py-24 px-4 bg-surface-1", className)}
       aria-label="How It Works product walkthrough"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -113,17 +113,17 @@ export function ProductWalkthrough({ className }: ProductWalkthroughProps) {
     >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3 sm:mb-4">
             How It Works
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
             Get from zero to compliant in four simple steps
           </p>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
           {/* Mockup Display */}
           <div className="order-2 lg:order-1">
             <div className="relative">
@@ -142,25 +142,32 @@ export function ProductWalkthrough({ className }: ProductWalkthroughProps) {
           </div>
 
           {/* Step Info & Controls */}
-          <div className="order-1 lg:order-2 space-y-8">
-            {/* Progress Dots */}
-            <div className="flex items-center justify-center lg:justify-start gap-2">
+          <div className="order-1 lg:order-2 space-y-6 sm:space-y-8">
+            {/* Progress Dots - Larger touch targets on mobile */}
+            <div className="flex items-center justify-center lg:justify-start gap-3 sm:gap-2">
               {STEPS.map((step, index) => (
                 <button
                   key={index}
                   onClick={() => goToStep(index)}
                   className={cn(
-                    "relative h-3 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                    "relative rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 tap-target flex items-center justify-center",
                     currentStep === index
-                      ? "w-8 bg-primary"
-                      : "w-3 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                      ? "w-10 h-10 sm:w-8 sm:h-3 bg-primary"
+                      : "w-10 h-10 sm:w-3 sm:h-3 bg-muted-foreground/30 hover:bg-muted-foreground/50"
                   )}
                   aria-label={`Go to step ${index + 1}: ${step.title}`}
                   aria-current={currentStep === index ? "step" : undefined}
                 >
+                  {/* Mobile: show step number */}
+                  <span className={cn(
+                    "sm:hidden text-xs font-bold",
+                    currentStep === index ? "text-primary-foreground" : "text-muted-foreground"
+                  )}>
+                    {index + 1}
+                  </span>
                   {currentStep === index && !isPaused && !reducedMotion && (
                     <span 
-                      className="absolute inset-0 bg-primary/50 rounded-full animate-ping"
+                      className="absolute inset-0 bg-primary/50 rounded-full animate-ping hidden sm:block"
                       style={{ animationDuration: "2s" }}
                     />
                   )}
@@ -174,33 +181,34 @@ export function ProductWalkthrough({ className }: ProductWalkthroughProps) {
               aria-live="polite"
               aria-atomic="true"
             >
-              <div className="flex items-center justify-center lg:justify-start gap-3 mb-4">
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <CurrentIcon className="h-6 w-6 text-primary" />
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-3 sm:mb-4">
+                <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <CurrentIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-muted-foreground">
+                <span className="text-xs sm:text-sm font-medium text-muted-foreground">
                   Step {currentStep + 1} of {STEPS.length}
                 </span>
               </div>
               
-              <h3 className="text-2xl font-bold text-foreground mb-3">
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2 sm:mb-3">
                 {STEPS[currentStep].title}
               </h3>
               
-              <p className="text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-md mx-auto lg:mx-0">
                 {STEPS[currentStep].description}
               </p>
             </div>
 
-            {/* Navigation Controls */}
-            <div className="flex items-center justify-center lg:justify-start gap-3">
+            {/* Navigation Controls - Larger on mobile */}
+            <div className="flex items-center justify-center lg:justify-start gap-2 sm:gap-3">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={goToPrev}
                 aria-label="Previous step"
+                className="h-11 w-11 sm:h-10 sm:w-10"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-5 w-5 sm:h-4 sm:w-4" />
               </Button>
               
               <Button
@@ -208,11 +216,12 @@ export function ProductWalkthrough({ className }: ProductWalkthroughProps) {
                 size="icon"
                 onClick={() => setIsPaused((prev) => !prev)}
                 aria-label={isPaused ? "Play auto-advance" : "Pause auto-advance"}
+                className="h-11 w-11 sm:h-10 sm:w-10"
               >
                 {isPaused ? (
-                  <Play className="h-4 w-4" />
+                  <Play className="h-5 w-5 sm:h-4 sm:w-4" />
                 ) : (
-                  <Pause className="h-4 w-4" />
+                  <Pause className="h-5 w-5 sm:h-4 sm:w-4" />
                 )}
               </Button>
               
@@ -221,12 +230,13 @@ export function ProductWalkthrough({ className }: ProductWalkthroughProps) {
                 size="icon"
                 onClick={goToNext}
                 aria-label="Next step"
+                className="h-11 w-11 sm:h-10 sm:w-10"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-5 w-5 sm:h-4 sm:w-4" />
               </Button>
             </div>
 
-            {/* Step Quick Links */}
+            {/* Step Quick Links - Desktop only */}
             <div className="hidden lg:flex flex-col gap-2">
               {STEPS.map((step, index) => {
                 const StepIcon = step.icon;

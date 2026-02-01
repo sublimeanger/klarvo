@@ -42,19 +42,19 @@ export function LogoCloud({
   const duplicated = [...industries, ...industries];
   
   return (
-    <section className={cn("py-16 md:py-20 overflow-hidden", className)}>
-      <div className="container-wide">
+    <section className={cn("py-10 sm:py-16 md:py-20 overflow-hidden", className)}>
+      <div className="container mx-auto px-4">
         {title && (
-          <p className="text-center text-sm font-medium text-muted-foreground mb-10 animate-fade-up">
+          <p className="text-center text-xs sm:text-sm font-medium text-muted-foreground mb-6 sm:mb-10 animate-fade-up">
             {title}
           </p>
         )}
         
         {/* Marquee container */}
         <div className="relative">
-          {/* Gradient masks */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+          {/* Gradient masks - Smaller on mobile */}
+          <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
           
           {/* Scrolling industry badges */}
           <div className="flex animate-marquee hover:paused">
@@ -63,10 +63,10 @@ export function LogoCloud({
               return (
                 <div
                   key={`${industry.name}-${index}`}
-                  className="flex items-center gap-2 px-6 md:px-10 shrink-0 group"
+                  className="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 md:px-10 shrink-0 group"
                 >
-                  <Icon className="h-5 w-5 text-muted-foreground/40 group-hover:text-primary/60 transition-colors duration-300" />
-                  <span className="text-lg md:text-xl font-medium tracking-tight text-muted-foreground/40 group-hover:text-primary/60 transition-colors duration-300 whitespace-nowrap">
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground/40 group-hover:text-primary/60 transition-colors duration-300" />
+                  <span className="text-sm sm:text-lg md:text-xl font-medium tracking-tight text-muted-foreground/40 group-hover:text-primary/60 transition-colors duration-300 whitespace-nowrap">
                     {industry.name}
                   </span>
                 </div>
