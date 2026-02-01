@@ -446,7 +446,10 @@ export function MarketingHeader() {
                       <Link
                         key={link.title}
                         to={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMobileMenuOpen(false);
+                        }}
                         className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -458,7 +461,14 @@ export function MarketingHeader() {
                         </div>
                       </Link>
                     ))}
-                    <Link to="/features" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-1 py-3 px-2 text-sm font-medium text-primary tap-target">
+                    <Link 
+                      to="/features" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMobileMenuOpen(false);
+                      }} 
+                      className="flex items-center gap-1 py-3 px-2 text-sm font-medium text-primary tap-target"
+                    >
                       See All Features <ChevronRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -468,7 +478,10 @@ export function MarketingHeader() {
                       <Link
                         key={link.title}
                         to={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMobileMenuOpen(false);
+                        }}
                         className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <link.icon className="h-4 w-4 text-muted-foreground" />
@@ -483,7 +496,10 @@ export function MarketingHeader() {
             {/* Pricing - Direct Link with touch target */}
             <Link
               to="/pricing"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMobileMenuOpen(false);
+              }}
               className="flex items-center justify-between w-full py-4 text-base font-semibold border-b border-border tap-target"
             >
               Pricing
@@ -510,7 +526,10 @@ export function MarketingHeader() {
                       <Link
                         key={link.title}
                         to={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMobileMenuOpen(false);
+                        }}
                         className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <link.icon className="h-4 w-4 text-muted-foreground" />
@@ -524,7 +543,10 @@ export function MarketingHeader() {
                       <Link
                         key={link.title}
                         to={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsMobileMenuOpen(false);
+                        }}
                         className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                       >
                         <link.icon className="h-4 w-4 text-muted-foreground" />
@@ -554,7 +576,10 @@ export function MarketingHeader() {
                     <Link
                       key={link.title}
                       to={link.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMobileMenuOpen(false);
+                      }}
                       className="flex items-center gap-3 py-3 px-2 text-sm hover:text-primary hover:bg-muted/50 rounded-lg transition-colors tap-target"
                     >
                       <link.icon className="h-4 w-4 text-muted-foreground" />
@@ -569,7 +594,10 @@ export function MarketingHeader() {
             <div className="space-y-3 pt-6 pb-8">
               <Link
                 to="/auth/signup"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMobileMenuOpen(false);
+                }}
                 className="flex items-center justify-center w-full h-14 text-base font-semibold rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors tap-target"
               >
                 Start Free
@@ -577,7 +605,10 @@ export function MarketingHeader() {
               </Link>
               <Link
                 to="/auth/login"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMobileMenuOpen(false);
+                }}
                 className="flex items-center justify-center w-full h-14 text-base font-semibold rounded-xl border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors tap-target"
               >
                 Log in
