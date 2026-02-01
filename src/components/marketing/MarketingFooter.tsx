@@ -2,47 +2,52 @@ import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Github, Shield, CheckCircle2 } from "lucide-react";
 import { NewsletterForm } from "./NewsletterForm";
 
+// Product column - what we do
 const productLinks = [
-  { title: "Features", href: "/features" },
-  { title: "Pricing", href: "/pricing" },
-  { title: "Integrations", href: "/integrations" },
-  { title: "Templates", href: "/templates" },
-  { title: "API Reference", href: "/api" },
-  { title: "Changelog", href: "/changelog" },
+  { title: "AI System Inventory", href: "/features#inventory" },
+  { title: "Risk Classification", href: "/features#classification" },
+  { title: "Evidence Vault", href: "/features#evidence" },
+  { title: "Export Packs", href: "/features#exports" },
+  { title: "Control Library", href: "/features#controls" },
+  { title: "All Features", href: "/features" },
 ];
 
+// Resources column
 const resourceLinks = [
   { title: "Documentation", href: "/docs" },
   { title: "EU AI Act Guide", href: "/eu-ai-act" },
-  { title: "Resources", href: "/resources" },
+  { title: "Templates", href: "/templates" },
+  { title: "Free Tools", href: "/tools" },
   { title: "Blog", href: "/blog" },
   { title: "FAQ", href: "/faq" },
-  { title: "Status", href: "/status" },
 ];
 
-const solutionLinks = [
-  { title: "For SMEs", href: "/use-cases/sme" },
-  { title: "For Enterprise", href: "/use-cases/enterprise" },
-  { title: "HR & Recruitment", href: "/use-cases/hr" },
-  { title: "Financial Services", href: "/use-cases/fintech" },
-  { title: "Healthcare", href: "/use-cases/healthcare" },
+// Industries column
+const industryLinks = [
+  { title: "HR & Recruitment", href: "/industries/hr-recruitment-ai-act" },
+  { title: "Financial Services", href: "/industries/fintech-ai-act" },
+  { title: "Healthcare", href: "/industries/healthcare-ai-act" },
+  { title: "SaaS Companies", href: "/industries/saas-ai-act" },
+  { title: "Education", href: "/industries/education-ai-act" },
 ];
 
+// Company column
 const companyLinks = [
-  { title: "About", href: "/about" },
+  { title: "About Us", href: "/about" },
   { title: "Careers", href: "/careers" },
   { title: "Partners", href: "/partners" },
   { title: "Press", href: "/press" },
   { title: "Contact", href: "/contact" },
+  { title: "Status", href: "/status" },
 ];
 
+// Legal column
 const legalLinks = [
   { title: "Terms of Service", href: "/terms" },
   { title: "Privacy Policy", href: "/privacy" },
   { title: "Cookie Policy", href: "/cookies" },
   { title: "Security", href: "/security" },
   { title: "DPA", href: "/dpa" },
-  { title: "GDPR", href: "/gdpr" },
 ];
 
 const socialLinks = [
@@ -64,7 +69,7 @@ export function MarketingFooter() {
       
       {/* Main Footer */}
       <div className="container-wide section-padding-sm">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-8 lg:gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-10">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6 group">
@@ -126,11 +131,11 @@ export function MarketingFooter() {
             </ul>
           </div>
 
-          {/* Solutions */}
+          {/* Industries */}
           <div>
-            <h3 className="font-semibold mb-5">Solutions</h3>
+            <h3 className="font-semibold mb-5">Industries</h3>
             <ul className="space-y-3.5">
-              {solutionLinks.map((link) => (
+              {industryLinks.map((link) => (
                 <li key={link.title}>
                   <Link
                     to={link.href}
