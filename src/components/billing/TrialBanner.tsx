@@ -53,28 +53,28 @@ export function TrialBanner({
 
   return (
     <div className={cn(
-      "relative flex items-center justify-between p-4 rounded-lg border",
+      "relative flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 rounded-xl border gap-3",
       isUrgent ? "bg-warning/5 border-warning/30" : "bg-primary/5 border-primary/20",
       className
     )}>
-      <div className="flex items-center gap-3">
+      <div className="flex items-start sm:items-center gap-2.5 sm:gap-3">
         <div className={cn(
-          "p-2 rounded-full",
+          "p-1.5 sm:p-2 rounded-full shrink-0",
           isUrgent ? "bg-warning/10" : "bg-primary/10"
         )}>
           <Clock className={cn(
-            "h-4 w-4",
+            "h-3.5 w-3.5 sm:h-4 sm:w-4",
             isUrgent ? "text-warning" : "text-primary"
           )} />
         </div>
         <div>
-          <p className="font-medium text-sm">
+          <p className="font-medium text-xs sm:text-sm">
             {isUrgent 
               ? `Your trial ends in ${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}`
               : `${daysRemaining} days left in your ${plan.name} trial`
             }
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-[10px] sm:text-xs text-muted-foreground">
             {isUrgent 
               ? 'Upgrade now to keep approvals, auditor links, and unlimited exports'
               : 'You have full access to Growth features during your trial'
@@ -83,8 +83,8 @@ export function TrialBanner({
         </div>
       </div>
       
-      <div className="flex items-center gap-2">
-        <Button size="sm" onClick={onUpgrade}>
+      <div className="flex items-center gap-2 ml-7 sm:ml-0">
+        <Button size="sm" onClick={onUpgrade} className="h-9 text-xs sm:text-sm">
           Upgrade to {plan.name}
           <ArrowRight className="ml-1 h-3 w-3" />
         </Button>
@@ -114,24 +114,24 @@ export function TrialEndedBanner({
 }: TrialEndedBannerProps) {
   return (
     <div className={cn(
-      "p-6 rounded-lg border bg-card text-center",
+      "p-4 sm:p-6 rounded-xl border bg-card text-center",
       className
     )}>
-      <div className="inline-flex p-3 rounded-full bg-muted mb-4">
-        <Clock className="h-6 w-6 text-muted-foreground" />
+      <div className="inline-flex p-2.5 sm:p-3 rounded-full bg-muted mb-3 sm:mb-4">
+        <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
       </div>
       
-      <h3 className="text-lg font-semibold mb-2">Your trial has ended</h3>
-      <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+      <h3 className="text-base sm:text-lg font-semibold mb-2">Your trial has ended</h3>
+      <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 max-w-md mx-auto">
         Your workspace has been moved to Free. Upgrade to keep unlimited exports, approvals, and auditor links.
       </p>
       
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <Button onClick={onUpgrade}>
+      <div className="flex flex-col gap-2 sm:gap-3">
+        <Button onClick={onUpgrade} className="h-11 w-full">
           Upgrade to keep Growth features
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
-        <Button variant="outline" onClick={onContinueFree}>
+        <Button variant="outline" onClick={onContinueFree} className="h-10 w-full">
           Continue on Free
         </Button>
       </div>
@@ -183,26 +183,26 @@ export function TrialChecklist({ progress, className }: TrialChecklistProps) {
   const overallProgress = (completedCount / checklistItems.length) * 100;
 
   return (
-    <div className={cn("p-4 rounded-lg border bg-card", className)}>
-      <div className="flex items-center justify-between mb-3">
-        <h4 className="font-medium text-sm">Trial Checklist</h4>
-        <span className="text-xs text-muted-foreground">
+    <div className={cn("p-3 sm:p-4 rounded-xl border bg-card", className)}>
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
+        <h4 className="font-medium text-xs sm:text-sm">Trial Checklist</h4>
+        <span className="text-[10px] sm:text-xs text-muted-foreground">
           {completedCount}/{checklistItems.length} complete
         </span>
       </div>
       
-      <Progress value={overallProgress} className="h-1.5 mb-4" />
+      <Progress value={overallProgress} className="h-1 sm:h-1.5 mb-3 sm:mb-4" />
       
-      <ul className="space-y-2">
+      <ul className="space-y-1.5 sm:space-y-2">
         {checklistItems.map((item) => {
           const isComplete = item.current >= item.target;
           return (
-            <li key={item.id} className="flex items-center gap-2 text-sm">
+            <li key={item.id} className="flex items-center gap-2 text-xs sm:text-sm">
               <div className={cn(
-                "flex items-center justify-center h-4 w-4 rounded-full border",
+                "flex items-center justify-center h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border",
                 isComplete ? "bg-success border-success" : "border-muted-foreground/30"
               )}>
-                {isComplete && <Check className="h-3 w-3 text-success-foreground" />}
+                {isComplete && <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-success-foreground" />}
               </div>
               <span className={cn(
                 isComplete && "line-through text-muted-foreground"
@@ -210,7 +210,7 @@ export function TrialChecklist({ progress, className }: TrialChecklistProps) {
                 {item.label}
               </span>
               {!isComplete && item.current > 0 && (
-                <span className="text-xs text-muted-foreground ml-auto">
+                <span className="text-[10px] sm:text-xs text-muted-foreground ml-auto">
                   {item.current}/{item.target}
                 </span>
               )}
