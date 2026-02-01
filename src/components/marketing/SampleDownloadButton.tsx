@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -11,6 +11,7 @@ import { generateSampleFRIAReportPDF } from "@/components/exports/SampleFRIARepo
 import { generateSampleEvidencePackZIP } from "@/components/exports/SampleEvidencePackGenerator";
 
 const emailSchema = z.string().email("Please enter a valid email address");
+const STORAGE_KEY = "klarvo_download_email";
 
 type SampleType = "classification-memo" | "fria-report" | "evidence-pack";
 
@@ -41,6 +42,15 @@ export function SampleDownloadButton({
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Check for previously captured email on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem(STORAGE_KEY);
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setIsUnlocked(true);
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -64,6 +74,9 @@ export function SampleDownloadButton({
         throw error;
       }
 
+      // Save email to localStorage for future downloads
+      localStorage.setItem(STORAGE_KEY, email.trim().toLowerCase());
+      
       setIsUnlocked(true);
       toast.success("Access granted! Generating your download...");
       
@@ -122,12 +135,22 @@ export function SampleDownloadButton({
     }
   };
 
+  // If already unlocked (returning visitor), trigger download directly
+  const handleButtonClick = () => {
+    if (isUnlocked) {
+      triggerDownload();
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
           size={buttonSize} 
           className={`btn-premium ${className}`}
+          onClick={handleButtonClick}
         >
           <Download className="mr-1.5 h-4 w-4" />
           {buttonText}
