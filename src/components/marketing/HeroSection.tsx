@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Play, Sparkles, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface HeroSectionProps {
@@ -39,54 +39,66 @@ export function HeroSection({
   className,
   children,
 }: HeroSectionProps) {
+  const isCentered = variant === "centered";
+
   return (
     <section
       className={cn(
-        "relative overflow-hidden min-h-[90vh] flex items-center",
-        variant === "centered" ? "text-center" : "",
+        "relative overflow-hidden",
         className
       )}
     >
       {/* ═══════════════════════════════════════════════════════════════════
-          PREMIUM BACKGROUND - MESH GRADIENT + FLOATING ORBS
+          WORLD-CLASS BACKGROUND - Clean, Minimal, Emerald
           ═══════════════════════════════════════════════════════════════════ */}
       <div className="absolute inset-0 -z-10">
-        {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-surface-1" />
-        
-        {/* Mesh gradient overlay */}
-        <div className="absolute inset-0 bg-mesh-gradient opacity-80" />
-        
-        {/* Animated floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[100px] animate-float-slow" />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-primary/12 blur-[100px] animate-float-reverse" />
-        <div className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] rounded-full bg-primary/10 blur-[100px] animate-float" />
-        <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] rounded-full bg-primary/8 blur-[100px] animate-float-slow" />
-        
-        {/* Grid pattern */}
-        <div className="absolute inset-0 pattern-grid opacity-30" />
-        
-        {/* Top gradient fade for nav */}
-        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-background to-transparent" />
-        
-        {/* Radial glow at top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-gradient-radial from-primary/20 via-primary/5 to-transparent" />
+        {/* Base: Pure white to subtle surface */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-surface-1" />
+
+        {/* Subtle emerald radial glow at top */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-radial from-primary/8 via-primary/3 to-transparent" />
+
+        {/* Very subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <svg className="w-full h-full">
+            <defs>
+              <pattern
+                id="heroGridPattern"
+                x="0"
+                y="0"
+                width="60"
+                height="60"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M 60 0 L 0 0 0 60"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                  className="text-foreground"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#heroGridPattern)" />
+          </svg>
+        </div>
       </div>
 
-      <div className="container-wide section-padding relative">
+      <div className="container mx-auto px-4 lg:px-8 pt-28 pb-16 lg:pt-36 lg:pb-20">
         <div
           className={cn(
-            "max-w-5xl",
-            variant === "centered" ? "mx-auto" : ""
+            "max-w-4xl",
+            isCentered ? "mx-auto text-center" : ""
           )}
         >
           {/* Badge */}
           {badge && (
-            <div className="mb-8 animate-fade-up">
+            <div className={cn("mb-6 animate-fade-up", isCentered && "flex justify-center")}>
               <Badge
-                className="badge-shimmer px-5 py-2 text-sm font-semibold border-0 gap-2"
+                variant="outline"
+                className="px-4 py-1.5 text-sm font-medium border-primary/30 bg-primary/5 text-primary gap-2"
               >
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="h-3.5 w-3.5" />
                 {badge}
               </Badge>
             </div>
@@ -94,13 +106,11 @@ export function HeroSection({
 
           {/* Title */}
           <h1
-            className={cn(
-              "display-xl mb-8 animate-fade-up delay-100",
-              variant === "centered" ? "" : ""
-            )}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6 animate-fade-up"
+            style={{ animationDelay: "0.1s" }}
           >
             {typeof title === "string" ? (
-              <span className="text-gradient-hero">{title}</span>
+              <span className="text-foreground">{title}</span>
             ) : (
               title
             )}
@@ -109,9 +119,10 @@ export function HeroSection({
           {/* Subtitle */}
           <p
             className={cn(
-              "body-xl text-muted-foreground mb-10 animate-fade-up delay-200",
-              variant === "centered" ? "max-w-3xl mx-auto" : "max-w-2xl"
+              "text-lg sm:text-xl text-muted-foreground leading-relaxed mb-8 animate-fade-up",
+              isCentered ? "max-w-2xl mx-auto" : "max-w-2xl"
             )}
+            style={{ animationDelay: "0.2s" }}
           >
             {subtitle}
           </p>
@@ -119,41 +130,45 @@ export function HeroSection({
           {/* CTAs */}
           <div
             className={cn(
-              "flex flex-col sm:flex-row gap-4 mb-12 animate-fade-up delay-300",
-              variant === "centered" ? "justify-center" : ""
+              "flex flex-col sm:flex-row gap-4 mb-10 animate-fade-up",
+              isCentered ? "justify-center" : ""
             )}
+            style={{ animationDelay: "0.3s" }}
           >
             <Link
               to={primaryCta.href}
-              className="inline-flex items-center justify-center h-14 px-8 text-base font-semibold rounded-2xl shadow-colored-primary hover:shadow-glow-lg transition-all duration-300 hover:-translate-y-0.5 btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90"
+              className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
             >
               {primaryCta.label}
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link
-              to={secondaryCta.href}
-              className="inline-flex items-center justify-center h-14 px-8 text-base font-semibold rounded-2xl border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 group border-input bg-background"
-            >
-              {secondaryCta.icon || <Play className="mr-2 h-5 w-5 transition-transform group-hover:scale-110" />}
-              {secondaryCta.label}
-            </Link>
+            {secondaryCta && (
+              <Link
+                to={secondaryCta.href}
+                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+              >
+                {secondaryCta.icon}
+                {secondaryCta.label}
+              </Link>
+            )}
           </div>
 
           {/* Trust Badges */}
           {showTrustBadges && (
             <div
               className={cn(
-                "flex flex-wrap gap-6 text-sm animate-fade-up delay-400",
-                variant === "centered" ? "justify-center" : ""
+                "flex flex-wrap gap-6 text-sm animate-fade-up",
+                isCentered ? "justify-center" : ""
               )}
+              style={{ animationDelay: "0.4s" }}
             >
-              {trustBadges.map((badge) => (
+              {trustBadges.map((trustBadge) => (
                 <span
-                  key={badge}
+                  key={trustBadge}
                   className="flex items-center gap-2 text-muted-foreground"
                 >
-                  <CheckCircle2 className="h-4 w-4 text-success" />
-                  <span className="font-medium">{badge}</span>
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <span className="font-medium">{trustBadge}</span>
                 </span>
               ))}
             </div>
@@ -161,7 +176,7 @@ export function HeroSection({
 
           {/* Optional children (e.g., product screenshot) */}
           {children && (
-            <div className="mt-20 animate-fade-up delay-500">
+            <div className="mt-16 animate-fade-up" style={{ animationDelay: "0.5s" }}>
               {children}
             </div>
           )}
@@ -169,7 +184,7 @@ export function HeroSection({
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-surface-1 to-transparent pointer-events-none" />
     </section>
   );
 }
