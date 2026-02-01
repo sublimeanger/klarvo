@@ -8,7 +8,7 @@ import {
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { baseStyles, colors, formatValue } from "@/lib/pdfStyles";
-import { KLARVO_LOGO_URL } from "@/lib/pdfAssets";
+import { KLARVO_LOGO } from "@/lib/pdfAssets";
 
 // Extended styles for AI System Evidence Pack
 const styles = StyleSheet.create({
@@ -208,7 +208,7 @@ export function AISystemPDF({ system, organization, generatedBy, showWatermark =
       <Page size="A4" style={{ padding: 40, fontFamily: "Helvetica", fontSize: 10 }}>
         {showWatermark && <Text style={styles.watermark}>SAMPLE REPORT</Text>}
         <View style={styles.coverPage}>
-          <Image src={KLARVO_LOGO_URL} style={{ width: 80, marginBottom: 20 }} />
+          <Image src={KLARVO_LOGO} style={{ width: 120, marginBottom: 20 }} />
           <Text style={styles.coverTitle}>AI System Evidence Pack</Text>
           <Text style={styles.coverSubtitle}>{system.name}</Text>
           <Text style={{ fontSize: 12, color: colors.gray[500], marginBottom: 20 }}>
