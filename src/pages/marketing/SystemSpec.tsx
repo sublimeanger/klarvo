@@ -37,18 +37,22 @@ export default function SystemSpec() {
   };
 
   const specSections = [
-    { icon: BookOpen, title: "Executive Summary & Vision", pages: "3-4" },
+    { icon: BookOpen, title: "Executive Summary & Vision", pages: "3-5" },
     { icon: Scale, title: "Regulatory Framework (EU AI Act)", pages: "6-7" },
-    { icon: FileText, title: "8 Core Modules Detailed", pages: "8-9" },
-    { icon: FileText, title: "20-Step Intake Wizard Spec", pages: "10-13" },
-    { icon: Shield, title: "Classification Engine", pages: "14-15" },
-    { icon: FileText, title: "FRIA Workflow (Article 27)", pages: "16" },
-    { icon: Shield, title: "Control Library (30+ Controls)", pages: "17-20" },
-    { icon: FileText, title: "Evidence Pack Export Structure", pages: "21" },
-    { icon: FileText, title: "Database Schema", pages: "22-23" },
-    { icon: Scale, title: "Pricing & Feature Gating", pages: "24-26" },
-    { icon: Shield, title: "Security & Permissions", pages: "27" },
-    { icon: FileText, title: "Implementation Status", pages: "29-30" },
+    { icon: Shield, title: "AI Engine (5 AI-Powered Features)", pages: "8-10" },
+    { icon: FileText, title: "Provider Track (Supply Chain)", pages: "11-12" },
+    { icon: FileText, title: "8 Core Modules Detailed", pages: "13-14" },
+    { icon: FileText, title: "20-Step Intake Wizard Spec", pages: "15-18" },
+    { icon: Shield, title: "Classification Engine", pages: "19-20" },
+    { icon: FileText, title: "FRIA Workflow (Article 27)", pages: "21" },
+    { icon: Shield, title: "Control Library (50+ Controls)", pages: "22-25" },
+    { icon: FileText, title: "Evidence Pack Export Structure", pages: "26" },
+    { icon: FileText, title: "Database Schema (47 Tables)", pages: "27-28" },
+    { icon: Scale, title: "Pricing & Feature Gating", pages: "29-31" },
+    { icon: Shield, title: "Security & Permissions", pages: "32" },
+    { icon: FileText, title: "Marketing Infrastructure", pages: "33" },
+    { icon: Scale, title: "Production Readiness (89%)", pages: "34-35" },
+    { icon: FileText, title: "Implementation Status v2.0", pages: "36-37" },
   ];
 
   return (
@@ -63,21 +67,21 @@ export default function SystemSpec() {
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-16 md:py-24">
         <div className="container max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4">Internal Document</Badge>
+            <Badge variant="outline" className="mb-4">Internal Document • v2.0</Badge>
             <h1 className="text-4xl font-bold tracking-tight mb-4">
               System Specification
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Complete product requirements document covering all functionality, 
-              regulatory mapping, pricing, and implementation status.
+              AI engine, provider track, regulatory mapping, and 89% production readiness score.
             </p>
           </div>
 
           <Card className="mb-8 border-2">
             <CardHeader className="text-center pb-4">
-              <CardTitle className="text-2xl">Klarvo EU AI Act Compliance Hub</CardTitle>
+              <CardTitle className="text-2xl">Klarvo EU AI Act Compliance Hub v2.0</CardTitle>
               <CardDescription className="text-base">
-                30-page comprehensive specification document
+                37-page comprehensive specification document • 89% Production Ready
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
