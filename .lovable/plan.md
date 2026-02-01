@@ -1,260 +1,357 @@
 
-# Functionality Improvement Plan: Marketing Site Fixes
+
+# Flawless Marketing Site — Comprehensive Fix Plan
 
 ## Executive Summary
 
-The marketing site has significant functionality gaps where interactive elements (buttons, forms, links, navigation) either do nothing or lead nowhere. This creates a poor user experience and damages trust, especially critical for a compliance product.
-
-## Issues Identified
-
-### Priority 1: CRITICAL — Navigation That Leads Nowhere
-
-| Issue | Location | Impact |
-|-------|----------|--------|
-| **Product dropdown dead anchors** | `MarketingHeader.tsx` lines 7-33 | Links like `/features#inventory`, `/features#classification` point to non-existent section IDs on the Features page |
-| **Blog posts have no detail pages** | `Blog.tsx` lines 38-111 | 9 blog posts are listed but clicking them does nothing — no article detail pages exist |
-| **Blog cards don't link anywhere** | `Blog.tsx` lines 352-388 | Cards are `<Card>` components with no `<Link>` wrapper or `onClick` |
-
-### Priority 2: HIGH — Forms That Don't Submit
-
-| Issue | Location | Impact |
-|-------|----------|--------|
-| **Footer newsletter** | `MarketingFooter.tsx` line 89 | `onSubmit={(e) => e.preventDefault()}` — does nothing |
-| **Blog sidebar newsletter** | `Blog.tsx` lines 316-324 | No form wrapper, no handlers |
-| **Resources newsletter** | `Resources.tsx` lines 318-328 | No form wrapper, no handlers |
-| **Status page subscription** | `Status.tsx` lines 236-246 | No form wrapper, no handlers |
-| **Changelog subscription** | `Changelog.tsx` lines 200-210 | No form wrapper, no handlers |
-
-### Priority 3: HIGH — Buttons That Do Nothing
-
-| Issue | Location | Impact |
-|-------|----------|--------|
-| **Press page logo downloads** | `Press.tsx` lines 117-125, 144-152 | PNG/SVG buttons have no `onClick` or `href` |
-| **Careers Apply buttons** | `Careers.tsx` line 104 | "Apply" buttons do nothing |
-| **Resources webinar registration** | `Resources.tsx` line 260 | "Register" button is static |
-| **Resources featured content** | `Resources.tsx` lines 215-218 | "Read"/"Download" buttons do nothing |
-| **Templates download buttons** | `Templates.tsx` multiple locations | Download buttons throughout have no logic |
-| **Blog "Read Article" button** | `Blog.tsx` line 234 | Featured post button does nothing |
-| **Blog "Load More" button** | `Blog.tsx` lines 398-401 | Static button, no pagination |
-
-### Priority 4: MEDIUM — Content That Implies More Than Exists
-
-| Issue | Location | Impact |
-|-------|----------|--------|
-| **Docs video tutorials** | `Docs.tsx` lines 159-169 | "Watch videos" button goes nowhere, video cards have no links |
-| **Resources category cards** | `Resources.tsx` lines 159-175 | Category cards (12 guides, 8 templates, etc.) have no destinations |
-| **Resources recent articles** | `Resources.tsx` lines 278-291 | Article cards are clickable-styled but have no links |
+This plan addresses all remaining functionality gaps and polish items to bring the marketing site to a production-ready "flawless" state. The Security page will keep SOC 2 Type II as "In Progress" as you requested.
 
 ---
 
-## Implementation Plan
+## Phase 1: Fix React Warnings & Bug Fixes
 
-### Phase 1: Fix Navigation Dead Ends (Critical)
+### 1.1 Fix React `forwardRef` Warnings
 
-#### 1.1 Add anchor IDs to Features page
+**Issue:** React warnings about function components not being wrapped in `forwardRef` when used with `asChild` pattern.
+
+**Files to fix:**
+- `src/components/marketing/NewsletterForm.tsx`
+- `src/components/marketing/MarketingFooter.tsx`
+
+**Solution:** Review any `Button asChild` patterns and either wrap components properly or use direct `<Link>` components styled with Tailwind.
+
+---
+
+## Phase 2: Contact Form Database Persistence
+
+### 2.1 Create Database Table
+
+Create a `contact_submissions` table to store form submissions:
+
+```sql
+CREATE TABLE contact_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  company TEXT,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  submitted_at TIMESTAMPTZ DEFAULT now(),
+  status TEXT DEFAULT 'new'
+);
+
+ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public contact form submission" ON contact_submissions
+  FOR INSERT WITH CHECK (true);
+```
+
+### 2.2 Update Contact Page
+
+**File:** `src/pages/marketing/Contact.tsx`
+
+Replace the mock `setTimeout` logic with actual Supabase insert:
+
+```typescript
+const { error } = await supabase
+  .from("contact_submissions")
+  .insert({
+    name: formData.name,
+    email: formData.email,
+    company: formData.company || null,
+    subject: formData.subject,
+    message: formData.message
+  });
+```
+
+---
+
+## Phase 3: Template Downloads (Email-Gated)
+
+### 3.1 Strategy Decision
+
+Implement email-gated downloads for templates. User enters email → we store it → reveal download link. This captures leads while still providing value.
+
+### 3.2 Create Download Infrastructure
+
+**New file:** `src/components/marketing/TemplateDownloadGate.tsx`
+
+A reusable component that:
+1. Shows email input form
+2. On submit, stores email in `newsletter_subscribers` with source like `template-fria`
+3. Reveals the download link or triggers browser download
+4. Stores download event for analytics
+
+### 3.3 Create Template Files
+
+Add placeholder PDF templates to `/public/templates/`:
+- `ai-inventory-template.pdf`
+- `fria-template.pdf`
+- `article-26-checklist.pdf`
+- `article-50-disclosure.pdf`
+- `ai-acceptable-use-policy.pdf`
+- `human-oversight-plan.pdf`
+- `vendor-due-diligence.pdf`
+- `ai-incident-register.pdf`
+
+**Note:** These can be simple PDF placeholders initially that display "Full template available in Klarvo app" with signup CTA.
+
+### 3.4 Update Template Pages
+
+Replace all static download buttons with the new `TemplateDownloadGate` component:
+
+| File | Change |
+|------|--------|
+| `Templates.tsx` | All download buttons → `TemplateDownloadGate` |
+| `FRIATemplate.tsx` | Download button → `TemplateDownloadGate` |
+| `AIInventoryTemplate.tsx` | Download button → `TemplateDownloadGate` |
+| All 8 template detail pages | Download buttons → `TemplateDownloadGate` |
+
+---
+
+## Phase 4: Features Page — Complete Anchor Sections
+
+### 4.1 Current State
+
+The Features page has empty `<div id="controls" />` and `<div id="exports" />` placeholders that provide no content.
+
+### 4.2 Add Controls Section Content
 
 **File:** `src/pages/marketing/Features.tsx`
 
-Add `id` attributes to match the Product dropdown links:
-- `id="inventory"` on the AI System Inventory section
-- `id="classification"` on the Classification Engine section
-- `id="evidence"` on the Evidence Vault section
-- `id="controls"` on the Control Library section
-- `id="exports"` on the Export Packs section
+Replace empty `#controls` div with a full section showcasing the Control Library:
 
-Wrap the `FeatureGrid` and `FeatureShowcase` components in `<section>` tags with appropriate IDs, or add IDs directly to existing section elements.
-
-#### 1.2 Option A: Create blog article pages (Full Implementation)
-
-Create a dynamic blog article page similar to how `DocsArticle.tsx` works:
-
-**New File:** `src/pages/marketing/BlogArticle.tsx`
-- Accept `:slug` param from route
-- Look up article content from a `blogContent.ts` file (similar to `docsContent.ts`)
-- Render markdown content with SEO metadata
-
-**New File:** `src/lib/blogContent.ts`
-- Store blog article content with full markdown
-
-**Update:** `src/App.tsx`
-- Add route: `<Route path="/blog/:slug" element={<BlogArticle />} />`
-
-**Update:** `src/pages/marketing/Blog.tsx`
-- Wrap blog cards in `<Link to={`/blog/${post.slug}`}>` components
-- Add `href` to featured post "Read Article" button
-
-#### 1.2 Option B: Remove non-functional elements (Quick Fix)
-
-If full blog implementation is not desired now:
-- Convert blog cards to static "Coming Soon" badges
-- Remove the clickable styling that implies interactivity
-- Update featured post button to link to `/resources` instead
-
-**Recommendation:** Implement Option A to avoid content that misleads visitors.
-
----
-
-### Phase 2: Make Forms Functional
-
-#### 2.1 Create newsletter subscription handler
-
-Create a reusable newsletter component:
-
-**New File:** `src/components/marketing/NewsletterForm.tsx`
-```text
-- Accept variant prop (inline/stacked/compact)
-- Local state for email input
-- onSubmit handler that:
-  1. Validates email format
-  2. Stores in Lovable Cloud database (new `newsletter_subscribers` table)
-  3. Shows success toast
-  4. Optionally integrates with email service later
+```typescript
+const controlFeatures = [
+  { icon: Shield, title: "Pre-Built Control Library", description: "30+ controls mapped to EU AI Act obligations" },
+  { icon: CheckCircle, title: "Implementation Tracking", description: "Track status: Not Started, In Progress, Implemented" },
+  { icon: Link, title: "Evidence Linking", description: "Attach evidence directly to controls for audit trails" },
+  { icon: RefreshCw, title: "Automatic Assignment", description: "Controls auto-assigned based on risk classification" },
+];
 ```
 
-**Database migration:** Create `newsletter_subscribers` table
-- `id`, `email`, `source` (which page), `subscribed_at`, `status`
+Render as a `FeatureGrid` within a `<section id="controls">`.
 
-**Update the following files to use the new component:**
-- `MarketingFooter.tsx` — replace inline form
-- `Blog.tsx` — replace sidebar form
-- `Resources.tsx` — replace newsletter section
-- `Status.tsx` — replace subscription section
-- `Changelog.tsx` — replace subscription section
+### 4.3 Add Exports Section Content
 
-#### 2.2 Create webinar registration modal
+Replace empty `#exports` div with a showcase of export capabilities:
 
-**New File:** `src/components/marketing/WebinarRegistrationModal.tsx`
-- Modal with name, email, company fields
-- Store in `webinar_registrations` table
-- Success confirmation
-
-**Update:** `src/pages/marketing/Resources.tsx`
-- Replace static "Register" button with modal trigger
+```typescript
+const exportFeatures = [
+  { icon: FileText, title: "Classification Memos", description: "One-page PDF with risk decision and rationale" },
+  { icon: Download, title: "Evidence Packs", description: "Complete ZIP bundle with all compliance artifacts" },
+  { icon: Shield, title: "FRIA Reports", description: "Article 27 compliant fundamental rights assessment" },
+  { icon: Printer, title: "Audit Bundles", description: "Everything auditors need in one professional export" },
+];
+```
 
 ---
 
-### Phase 3: Make Buttons Functional
+## Phase 5: Roll Out Internal Linking Components
 
-#### 3.1 Press page downloads
+### 5.1 Current State
 
-**Update:** `src/pages/marketing/Press.tsx`
-- Add actual logo files to `/public/press/` directory:
-  - `klarvo-logo.png`
-  - `klarvo-logo.svg`
-  - `klarvo-logo-white.png`
-  - `klarvo-logo-white.svg`
-- Update buttons to be `<a href="/press/klarvo-logo.png" download>` elements
-
-#### 3.2 Careers apply buttons
-
-**Update:** `src/pages/marketing/Careers.tsx`
-- Change Apply button to link to `mailto:careers@klarvo.io?subject=Application: ${position.title}`
-- Or create a simple application modal that collects name, email, LinkedIn, and resume upload
-
-#### 3.3 Template downloads
-
-For template pages that promise downloads, implement one of:
-- **Option A:** Create actual downloadable files (PDF/Excel templates) in `/public/templates/`
-- **Option B:** Gate behind email capture (collect email, then reveal download link)
-- **Option C:** Redirect to signup with messaging "Access templates in your free account"
-
-**Update affected files:**
-- `Templates.tsx`
+The hub-and-spoke internal linking system (`RelatedContent`, `ContentBreadcrumb`, `HubNavigation`) exists but is only integrated into 2 pages:
+- `EUAIActForSMEs.tsx`
 - `AIInventoryTemplate.tsx`
+
+### 5.2 Integrate Into All Content Pages
+
+Add the linking components to all 40+ content pages:
+
+**Guides (10 pages):**
+- `AIDefinitionGuide.tsx`
+- `AIInventoryGuide.tsx`
+- `AILiteracyGuide.tsx`
+- `Article26Guide.tsx`
+- `Article50Guide.tsx`
+- `EUAIActForSMEs.tsx` ✅ (done)
+- `EvidencePackGuide.tsx`
+- `FRIAGuide.tsx`
+- `HighRiskGuide.tsx`
+- `ProhibitedPracticesGuide.tsx`
+
+**Templates (8 pages):**
+- `AIAcceptableUsePolicy.tsx`
+- `AIIncidentRegister.tsx`
+- `AIInventoryTemplate.tsx` ✅ (done)
+- `Article26Checklist.tsx`
+- `Article50Disclosure.tsx`
 - `FRIATemplate.tsx`
-- Other template detail pages
+- `HumanOversightPlan.tsx`
+- `VendorDueDiligence.tsx`
 
----
+**Tools (4 pages):**
+- `AIDefinitionChecker.tsx`
+- `HighRiskChecker.tsx`
+- `ProhibitedPracticesScreening.tsx`
+- `TransparencyChecker.tsx`
 
-### Phase 4: Remove or Clarify Incomplete Content
+**Industries (4 pages):**
+- `EducationPage.tsx`
+- `FintechPage.tsx`
+- `HRRecruitmentPage.tsx`
+- `SaaSPage.tsx`
 
-#### 4.1 Video tutorials section
+**Compare (2 pages):**
+- `KlarvoVsSpreadsheets.tsx`
+- `KlarvoVsTrustPlatforms.tsx`
 
-**Update:** `src/pages/marketing/Docs.tsx`
-- Either: Add real video embed URLs (YouTube/Loom) to `videoTutorials` array
-- Or: Remove video section entirely until videos are produced
-- Or: Replace with "Coming Soon" messaging
+**Product (5 pages):**
+- `ComplianceSoftwarePage.tsx`
+- `AIInventorySoftwarePage.tsx`
+- `FRIASoftwarePage.tsx`
+- `EvidencePacksPage.tsx`
+- `TrainingTrackerPage.tsx`
 
-#### 4.2 Resources page category cards
+### 5.3 Standard Integration Pattern
 
-**Update:** `src/pages/marketing/Resources.tsx`
-- Make category cards link to filtered views or hub pages:
-  - "EU AI Act Guides" → `/guides`
-  - "Templates & Checklists" → `/templates`
-  - "Webinars & Videos" → section anchor on same page
-  - "News & Updates" → `/blog`
+For each page, add at the bottom before the CTA section:
 
-#### 4.3 Resources recent articles
+```tsx
+import { ContentBreadcrumb, RelatedContent, HubNavigation } from "@/components/marketing";
 
-- Either link to blog posts (once blog articles exist)
-- Or link to existing guide pages that cover the same topics
-- Or remove the section
+// At top of component, add breadcrumb
+<ContentBreadcrumb currentHref="/guides/fria-article-27" />
 
----
+// Before CTA section, add related content
+<RelatedContent 
+  currentHref="/guides/fria-article-27" 
+  title="Related Resources"
+/>
 
-## Technical Implementation Order
-
-```text
-Day 1: Phase 1.1 (anchor IDs) + Phase 3.1 (press downloads)
-       - Quick wins, minimal code changes
-
-Day 2: Phase 2.1 (newsletter form + database)
-       - Create reusable component
-       - Database migration
-       - Replace 5 form instances
-
-Day 3: Phase 1.2 Option A (blog system)
-       - Create BlogArticle.tsx
-       - Create blogContent.ts with 2-3 sample articles
-       - Update routing and links
-
-Day 4: Phase 3.2 + 3.3 (careers + templates)
-       - Implement apply mailto or modal
-       - Decide template download strategy
-       - Create download files or email gates
-
-Day 5: Phase 4 (cleanup)
-       - Fix or remove video tutorials
-       - Link resource category cards
-       - Final QA pass
+// At very bottom, add hub navigation
+<HubNavigation currentHref="/guides/fria-article-27" />
 ```
 
 ---
 
-## Database Changes Required
+## Phase 6: Blog Article Enhancements
+
+### 6.1 Add Reading Progress Indicator
+
+**File:** `src/pages/marketing/BlogArticle.tsx`
+
+Add a fixed progress bar at the top that fills as user scrolls:
+
+```tsx
+const [readingProgress, setReadingProgress] = useState(0);
+
+useEffect(() => {
+  const updateProgress = () => {
+    const scrolled = window.scrollY;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    setReadingProgress((scrolled / height) * 100);
+  };
+  window.addEventListener('scroll', updateProgress);
+  return () => window.removeEventListener('scroll', updateProgress);
+}, []);
+```
+
+### 6.2 Add Author Bio Section
+
+Add an author bio box after the article content:
+
+```tsx
+const authors = {
+  "Klarvo Team": {
+    role: "Compliance Experts",
+    bio: "The Klarvo team brings decades of combined experience in AI governance, privacy, and regulatory compliance.",
+    image: "/team/klarvo-team.png"
+  }
+};
+```
+
+### 6.3 Improve Social Sharing
+
+Current implementation has Twitter/LinkedIn. Add:
+- Copy link button
+- Email share button
+
+---
+
+## Phase 7: UX Polish
+
+### 7.1 Smooth Scroll for Anchor Links
+
+**File:** `src/App.tsx` or create `src/hooks/useSmoothScroll.ts`
+
+Add scroll behavior for hash navigation:
+
+```tsx
+useEffect(() => {
+  const hash = window.location.hash;
+  if (hash) {
+    const element = document.querySelector(hash);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}, [location]);
+```
+
+### 7.2 Add Scroll Margin to All Anchor Sections
+
+Ensure all anchor IDs have `scroll-mt-24` to account for fixed header:
+
+```tsx
+<section id="controls" className="scroll-mt-24">
+```
+
+---
+
+## Implementation Order
+
+| Day | Tasks | Files Affected |
+|-----|-------|----------------|
+| **1** | Phase 1 (React warnings) + Phase 2 (Contact form DB) | `NewsletterForm.tsx`, `MarketingFooter.tsx`, `Contact.tsx`, DB migration |
+| **2** | Phase 3 (Template downloads) | Create `TemplateDownloadGate.tsx`, update 9 template pages |
+| **3** | Phase 4 (Features anchors) | `Features.tsx` |
+| **4** | Phase 5.1 (Guides linking) | 10 guide pages |
+| **5** | Phase 5.2 (Templates linking) | 8 template pages |
+| **6** | Phase 5.3 (Tools + Industries) | 8 pages |
+| **7** | Phase 5.4 (Compare + Product) | 7 pages |
+| **8** | Phase 6 (Blog enhancements) + Phase 7 (UX polish) | `BlogArticle.tsx`, scroll behavior |
+
+---
+
+## Database Changes Summary
 
 ```sql
--- Newsletter subscribers
-CREATE TABLE newsletter_subscribers (
+-- Contact form submissions
+CREATE TABLE contact_submissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT NOT NULL UNIQUE,
-  source TEXT NOT NULL, -- e.g., 'footer', 'blog', 'resources'
-  subscribed_at TIMESTAMPTZ DEFAULT now(),
-  status TEXT DEFAULT 'active' -- 'active', 'unsubscribed'
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  company TEXT,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  submitted_at TIMESTAMPTZ DEFAULT now(),
+  status TEXT DEFAULT 'new'
 );
 
--- RLS: Public insert, admin read
-ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow public newsletter signup" ON newsletter_subscribers
+ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public contact form submission" ON contact_submissions
   FOR INSERT WITH CHECK (true);
 ```
 
 ---
 
-## Files Affected Summary
+## Success Criteria
 
-| Action | Files |
-|--------|-------|
-| **Create** | `NewsletterForm.tsx`, `WebinarRegistrationModal.tsx`, `BlogArticle.tsx`, `blogContent.ts`, press assets |
-| **Modify** | `Features.tsx`, `Blog.tsx`, `MarketingFooter.tsx`, `Resources.tsx`, `Status.tsx`, `Changelog.tsx`, `Press.tsx`, `Careers.tsx`, `Templates.tsx`, `AIInventoryTemplate.tsx`, `Docs.tsx`, `App.tsx` |
-| **Database** | Add `newsletter_subscribers` table |
+1. Zero React console warnings
+2. Contact form saves to database with success feedback
+3. All template downloads work (email-gated with actual file delivery)
+4. Features page `#controls` and `#exports` anchors show real content
+5. All 40+ content pages have breadcrumbs, related content, and hub navigation
+6. Blog articles have reading progress, author bios, and enhanced sharing
+7. Smooth scroll behavior on all anchor links
+8. Security page keeps "SOC 2 Type II (In Progress)" status
 
 ---
 
-## Success Criteria
+## Files Created/Modified Summary
 
-1. Every link in navigation dropdowns leads to a working destination
-2. Every button that implies an action performs that action (or clearly indicates "coming soon")
-3. All newsletter forms store subscriptions in the database
-4. Blog posts are either fully implemented or clearly marked as upcoming
-5. No user clicks result in zero response
+| Action | Files |
+|--------|-------|
+| **Create** | `TemplateDownloadGate.tsx`, 8 PDF placeholder templates in `/public/templates/` |
+| **Database** | `contact_submissions` table |
+| **Modify** | `NewsletterForm.tsx`, `MarketingFooter.tsx`, `Contact.tsx`, `Features.tsx`, `BlogArticle.tsx`, `App.tsx`, 33 content pages for internal linking |
+
