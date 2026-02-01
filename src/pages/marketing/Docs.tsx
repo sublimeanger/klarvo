@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
+import { DocsMobileNav } from "@/components/docs/DocsMobileNav";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -63,6 +64,9 @@ export default function Docs() {
           <div className="hidden lg:block">
             <DocsSidebar />
           </div>
+
+          {/* Mobile Navigation */}
+          <DocsMobileNav />
 
           {/* Main Content */}
           <main id="main-content" className="flex-1 min-w-0" tabIndex={-1}>

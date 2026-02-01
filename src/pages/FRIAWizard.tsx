@@ -325,7 +325,7 @@ export default function FRIAWizard() {
       </div>
 
       {/* Step Content */}
-      <Card>
+      <Card className="rounded-xl">
         <CardContent className="pt-6">
           {/* Step 1: Overview */}
           {currentStep === 1 && (
