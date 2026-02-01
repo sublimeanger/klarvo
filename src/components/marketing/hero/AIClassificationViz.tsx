@@ -72,10 +72,10 @@ function NodeCard({ node, isVisible }: { node: AINode; isVisible: boolean }) {
     >
       {/* Connection lines (decorative) */}
       <div className="absolute inset-0 pointer-events-none">
-        <svg className="absolute -inset-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] opacity-20">
+        <svg className="absolute -inset-8 w-[calc(100%+4rem)] h-[calc(100%+4rem)] opacity-20" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
           <circle
-            cx="50%"
-            cy="50%"
+            cx="50"
+            cy="50"
             r="30"
             fill="none"
             stroke="currentColor"
@@ -149,7 +149,7 @@ export function AIClassificationViz() {
       </div>
 
       {/* Decorative connection lines */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="hsl(161, 94%, 30%)" stopOpacity="0" />
@@ -158,12 +158,12 @@ export function AIClassificationViz() {
           </linearGradient>
         </defs>
         
-        {/* Connection paths */}
+        {/* Connection paths - using numeric coordinates for viewBox 0 0 100 100 */}
         <path
-          d="M 15% 25% Q 35% 35% 50% 45%"
+          d="M 15 25 Q 35 35 50 45"
           fill="none"
           stroke="url(#lineGradient)"
-          strokeWidth="2"
+          strokeWidth="0.5"
           className={cn(
             "transition-all duration-1000",
             isVisible ? "opacity-100" : "opacity-0"
@@ -171,10 +171,10 @@ export function AIClassificationViz() {
           style={{ transitionDelay: "0.5s" }}
         />
         <path
-          d="M 75% 20% Q 60% 30% 50% 45%"
+          d="M 75 20 Q 60 30 50 45"
           fill="none"
           stroke="url(#lineGradient)"
-          strokeWidth="2"
+          strokeWidth="0.5"
           className={cn(
             "transition-all duration-1000",
             isVisible ? "opacity-100" : "opacity-0"
@@ -182,10 +182,10 @@ export function AIClassificationViz() {
           style={{ transitionDelay: "0.7s" }}
         />
         <path
-          d="M 25% 65% Q 35% 55% 50% 45%"
+          d="M 25 65 Q 35 55 50 45"
           fill="none"
           stroke="url(#lineGradient)"
-          strokeWidth="2"
+          strokeWidth="0.5"
           className={cn(
             "transition-all duration-1000",
             isVisible ? "opacity-100" : "opacity-0"
@@ -193,10 +193,10 @@ export function AIClassificationViz() {
           style={{ transitionDelay: "0.9s" }}
         />
         <path
-          d="M 80% 70% Q 65% 60% 50% 45%"
+          d="M 80 70 Q 65 60 50 45"
           fill="none"
           stroke="url(#lineGradient)"
-          strokeWidth="2"
+          strokeWidth="0.5"
           className={cn(
             "transition-all duration-1000",
             isVisible ? "opacity-100" : "opacity-0"
