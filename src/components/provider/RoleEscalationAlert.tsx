@@ -55,34 +55,34 @@ export function RoleEscalationAlert({ aiSystemId, showFullDetails = false }: Rol
 
   // Full details view
   return (
-    <Card className="border-destructive/50 bg-destructive/5">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-destructive/20">
-            <Scale className="h-5 w-5 text-destructive" />
+    <Card className="border-destructive/50 bg-destructive/5 rounded-xl">
+      <CardHeader className="pb-3 p-3 sm:p-6">
+        <div className="flex items-start gap-2.5 sm:gap-3">
+          <div className="p-1.5 sm:p-2 rounded-lg bg-destructive/20 shrink-0">
+            <Scale className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg flex items-center gap-2">
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-sm sm:text-lg flex flex-wrap items-center gap-2">
               Article 25 Role Escalation
-              <Badge variant="destructive">Critical</Badge>
+              <Badge variant="destructive" className="text-xs">Critical</Badge>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Legal obligations may have changed
             </CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
         {/* Current vs Escalated Role */}
-        <div className="flex items-center gap-4 p-4 rounded-lg bg-background border">
+        <div className="flex items-center justify-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl bg-background border">
           <div className="text-center">
-            <p className="text-xs text-muted-foreground mb-1">Current Role</p>
-            <Badge variant="secondary">{escalation.currentRole}</Badge>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Current Role</p>
+            <Badge variant="secondary" className="text-xs">{escalation.currentRole}</Badge>
           </div>
-          <ArrowRight className="h-5 w-5 text-destructive" />
+          <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-destructive shrink-0" />
           <div className="text-center">
-            <p className="text-xs text-muted-foreground mb-1">Escalated To</p>
-            <Badge variant="destructive">{escalation.escalatedRole || "Provider"}</Badge>
+            <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Escalated To</p>
+            <Badge variant="destructive" className="text-xs">{escalation.escalatedRole || "Provider"}</Badge>
           </div>
         </div>
 
@@ -97,19 +97,19 @@ export function RoleEscalationAlert({ aiSystemId, showFullDetails = false }: Rol
 
         {/* Action Required */}
         <div className="pt-2 border-t">
-          <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-            <Shield className="h-4 w-4 text-primary" />
+          <h4 className="font-medium text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2">
+            <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
             Required Actions as Provider
           </h4>
-          <ul className="space-y-2">
+          <ul className="space-y-1.5 sm:space-y-2">
             {(escalation.distributorCheck?.requiredActions || []).slice(0, 5).map((action, i) => (
-              <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                <span className="text-primary font-bold">•</span>
+              <li key={i} className="text-xs sm:text-sm text-muted-foreground flex items-start gap-2">
+                <span className="text-primary font-bold shrink-0">•</span>
                 {action}
               </li>
             ))}
           </ul>
-          <Button variant="outline" size="sm" className="mt-4" asChild>
+          <Button variant="outline" size="sm" className="mt-3 sm:mt-4 h-10 w-full sm:w-auto" asChild>
             <Link to="/provider-track">
               Go to Provider Track
               <ArrowRight className="ml-2 h-4 w-4" />
