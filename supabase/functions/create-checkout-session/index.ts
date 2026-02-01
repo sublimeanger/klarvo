@@ -25,19 +25,18 @@ const PLAN_PRICE_IDS: Record<string, Record<string, string>> = {
 };
 
 // Price IDs mapping for add-ons (operator tracks)
-// These will need to be created in Stripe and IDs updated here
 const ADDON_PRICE_IDS: Record<string, Record<string, string>> = {
   importer_distributor: {
-    monthly: "price_addon_importer_distributor_monthly",
-    annual: "price_addon_importer_distributor_annual",
+    monthly: "price_1Sw3CdE8C88su4Jmn8qJuNqR",
+    annual: "price_1Sw3CoE8C88su4JmJeTSb5iB",
   },
   provider_track: {
-    monthly: "price_addon_provider_track_monthly",
-    annual: "price_addon_provider_track_annual",
+    monthly: "price_1Sw3CeE8C88su4JmntWff0cV",
+    annual: "price_1Sw3CpE8C88su4Jmp50WMdGu",
   },
   provider_assurance: {
-    monthly: "price_addon_provider_assurance_monthly",
-    annual: "price_addon_provider_assurance_annual",
+    monthly: "price_1Sw3CgE8C88su4Jme5Sevrzo",
+    annual: "price_1Sw3CrE8C88su4Jm4RNZAGm9",
   },
 };
 
