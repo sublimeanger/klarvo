@@ -1,281 +1,230 @@
 
-# Smart Compliance Recommendations Engine - Implementation Plan
 
-## Overview
-Build an AI-powered recommendation system that analyzes each AI system's compliance profile, identifies gaps, suggests prioritized next steps, and provides personalized remediation paths. The engine will use the existing gap analysis infrastructure combined with a new AI-powered suggestion layer.
+# AI Engine Integration Testing & Enhancement Plan
 
-## Architecture
+## Current State Analysis
 
+### What's Already Working (Active in UI)
+
+| Feature | Location | Status |
+|---------|----------|--------|
+| **Compliance Copilot** | Dashboard.tsx line 319 | Active - Generates AI digest of compliance status |
+| **Smart Recommendations** | AISystemDetail.tsx line 738 | Active - AI-powered recommendations panel |
+| **AI Help Assistant** | App.tsx - global floating chat | Active - Context-aware streaming chat |
+| **Natural Language Intake** | Component built, not integrated | **Not visible to users** |
+| **Classification Assistant** | Component built, not integrated | **Not visible to users** |
+| **Document Intelligence** | Component built, not integrated | **Not visible to users** |
+
+### Gap Analysis - Missing Integrations
+
+1. **Natural Language Intake** (`NaturalLanguageIntake.tsx`)
+   - Component exists and is fully functional
+   - **NOT integrated** into the AI System Wizard flow
+   - Should appear at Step 0 as an optional "AI Quick Start" option
+
+2. **Classification Assistant** (`ClassificationAssistantPanel.tsx`)
+   - Component exists with full Annex III/Article 5 analysis
+   - **NOT integrated** into either:
+     - ClassificationWizard.tsx (standalone classification)
+     - AISystemDetail.tsx (system detail page)
+
+3. **Document Intelligence** (`DocumentIntelligencePanel.tsx`)
+   - Component exists with clause extraction and control mapping
+   - **NOT integrated** into:
+     - Evidence.tsx (Evidence Vault page)
+     - ControlEvidenceSection.tsx (per-control evidence)
+
+## Required Integrations
+
+### 1. Natural Language Intake Integration
+
+**Location**: `src/pages/AISystemWizard.tsx` and `Step0ModeSelection.tsx`
+
+**Enhancement**:
+- Add a third option on Step 0: "AI-Powered Quick Start"
+- When selected, show the NaturalLanguageIntake component
+- After extraction, auto-populate wizard fields and skip to a review step
+- Maintain existing Quick Capture and Full Assessment options
+
+**User Flow**:
 ```text
-+---------------------------+     +----------------------------+
-|  AI System Profile        |     |  Organization Context      |
-|  - Classification         |     |  - Industry                |
-|  - Controls Status        |     |  - Team Size               |
-|  - Evidence Files         |     |  - Plan/Entitlements       |
-|  - Tasks                  |     |  - Active Systems          |
-+---------------------------+     +----------------------------+
-            |                                   |
-            v                                   v
-+-----------------------------------------------------------+
-|              Recommendation Engine (Edge Function)         |
-|  - Aggregates compliance data                             |
-|  - Analyzes gaps and patterns                             |
-|  - Calls Lovable AI for smart prioritization              |
-|  - Returns structured recommendations                     |
-+-----------------------------------------------------------+
-            |
-            v
-+-----------------------------------------------------------+
-|              Frontend Components                           |
-|  - RecommendationsPanel (AI System Detail page)           |
-|  - DashboardRecommendations (Dashboard overview)          |
-|  - Quick Action Cards (one-click task creation)           |
-+-----------------------------------------------------------+
+Step 0 Mode Selection
+  |
+  +-- Quick Capture (existing)
+  +-- Full Assessment (existing)
+  +-- AI-Powered Quick Start (NEW)
+        |
+        v
+      [NaturalLanguageIntake overlay]
+        |
+        v
+      Preview extracted fields
+        |
+        v
+      "Apply to Wizard" -> Step 1 with pre-filled data
 ```
 
-## Implementation Components
+### 2. Classification Assistant Integration
 
-### 1. Database Schema Extension
-Create a table to cache AI-generated recommendations for performance and audit purposes.
+**Location**: `src/pages/ClassificationWizard.tsx`
 
-**New table: `compliance_recommendations`**
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key |
-| organization_id | uuid | FK to organizations |
-| ai_system_id | uuid | FK to ai_systems (nullable for org-wide) |
-| recommendation_type | text | gap_remediation, control_suggestion, next_step, risk_mitigation |
-| priority | integer | 1-5 priority ranking |
-| title | text | Short recommendation title |
-| description | text | Detailed explanation |
-| action_type | text | task, evidence, control, classification, fria |
-| action_path | text | Navigation path for quick action |
-| action_payload | jsonb | Structured data for auto-creating tasks |
-| confidence_score | decimal | AI confidence (0.0-1.0) |
-| is_dismissed | boolean | User dismissed this recommendation |
-| generated_at | timestamp | When generated |
-| expires_at | timestamp | Recommendation validity window |
-| created_at | timestamp | Record creation |
+**Enhancement**:
+- Add ClassificationAssistantPanel as a sidebar/floating panel
+- Available on all 4 classification steps
+- Shows AI-suggested classification with confidence
+- Users can compare their manual answers with AI suggestion
+- "Apply Suggestion" button to auto-fill answers
 
-### 2. Edge Function: `compliance-recommendations`
-A new edge function that aggregates system data and generates smart recommendations.
+**Location**: `src/pages/AISystemDetail.tsx`
 
-**Inputs:**
-- `ai_system_id` (optional): Get recommendations for a specific system
-- `scope`: "system" | "organization" - scope of analysis
-- `regenerate`: boolean - force fresh generation vs. cached
+**Enhancement**:
+- Add a collapsed panel below the Classification section
+- When system has wizard data but no classification, offer AI assist
+- Show "Get AI Classification Suggestion" button
 
-**Processing Logic:**
-1. Fetch AI system(s) with classifications, controls, evidence, tasks
-2. Build a structured profile including:
-   - Risk level and high-risk categories
-   - Control implementation percentages by category
-   - Evidence coverage and approval rates
-   - Overdue/pending tasks
-   - FRIA status (if applicable)
-   - Transparency obligations status
-3. Call Lovable AI Gateway with structured tool calling to generate:
-   - Prioritized list of 5-10 recommendations
-   - Each with: title, description, priority, action_type, confidence
-4. Store recommendations in database
-5. Return recommendations to client
+### 3. Document Intelligence Integration
 
-**AI Prompt Strategy:**
-Use tool calling to ensure structured output:
-```typescript
-{
-  tools: [{
-    type: "function",
-    function: {
-      name: "generate_recommendations",
-      description: "Generate prioritized compliance recommendations",
-      parameters: {
-        type: "object",
-        properties: {
-          recommendations: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                title: { type: "string" },
-                description: { type: "string" },
-                priority: { type: "integer", minimum: 1, maximum: 5 },
-                action_type: { type: "string", enum: [...] },
-                rationale: { type: "string" },
-                confidence: { type: "number" }
-              }
-            }
-          }
-        }
-      }
-    }
-  }],
-  tool_choice: { type: "function", function: { name: "generate_recommendations" } }
-}
-```
+**Location**: `src/pages/Evidence.tsx`
 
-### 3. React Hook: `useComplianceRecommendations`
-Custom hook to fetch and manage recommendations.
+**Enhancement**:
+- Add a new tab: "AI Analysis" alongside "All Files", "Approval Queue", "History"
+- Or add a button in the upload dialog: "Paste & Analyze with AI"
+- When analyzing, auto-suggest evidence type, linked controls, and risk flags
 
-**Features:**
-- Fetch recommendations for a system or organization
-- Trigger regeneration on demand
-- Handle dismissal (hide specific recommendations)
-- Track loading/error states
-- One-click task creation from recommendations
+**Location**: Upload Dialog in Evidence.tsx
 
-**Interface:**
-```typescript
-interface Recommendation {
-  id: string;
-  priority: number;
-  title: string;
-  description: string;
-  action_type: 'task' | 'evidence' | 'control' | 'classification' | 'fria';
-  action_path?: string;
-  action_payload?: object;
-  confidence_score: number;
-  is_dismissed: boolean;
-}
+**Enhancement**:
+- Add an expandable section: "Paste document text for AI analysis"
+- Show DocumentIntelligencePanel inline
+- Auto-populate evidence metadata from analysis results
 
-function useComplianceRecommendations(aiSystemId?: string): {
-  recommendations: Recommendation[];
-  isLoading: boolean;
-  isGenerating: boolean;
-  error: Error | null;
-  regenerate: () => void;
-  dismiss: (id: string) => void;
-  createTaskFromRecommendation: (id: string) => void;
-}
-```
+### 4. Styling & UX Consistency Audit
 
-### 4. UI Components
+All AI components should share:
+- Gradient background: `bg-gradient-to-br from-primary/5 to-accent/5`
+- Sparkles icon for AI features
+- "AI-powered" or "AI Copilot" labeling
+- Confidence score display with progress bar
+- Clear disclaimer: "AI-powered guidance, not legal advice"
 
-#### a) `RecommendationsPanel` (for AI System Detail page)
-A collapsible card showing AI-powered recommendations for that system.
+**Components to audit for consistency**:
+- ComplianceCopilotCard - Uses gradient background
+- ClassificationAssistantPanel - Uses gradient background
+- DocumentIntelligencePanel - Uses gradient background
+- NaturalLanguageIntake - Uses gradient background
+- RecommendationsPanel - Uses solid background (needs update)
+- AIAssistant - Uses gradient header
 
-**Features:**
-- Displays 3-5 prioritized recommendations
-- Priority badges (Critical, High, Medium, Low)
-- One-click actions: "Create Task", "Go to Control", "Upload Evidence"
-- "Regenerate" button to get fresh analysis
-- Dismiss individual recommendations
-- Loading skeleton during generation
-- Streaming indicator when AI is analyzing
+### 5. Error Handling & Rate Limit UX
 
-**Placement:** AI System Detail page, below Gap Checklist
+All AI features must handle:
+- 429 (Rate Limit): Show toast "Rate limit exceeded. Please try again in a moment."
+- 402 (Credits Exhausted): Show toast "AI credits exhausted. Add credits in Settings > Billing."
+- Generic errors: Show descriptive error with retry option
 
-#### b) `DashboardRecommendationsCard` (for Dashboard)
-Organization-wide recommendations overview.
+**Components to verify**:
+- useComplianceCopilot - Has error handling
+- useClassificationAssistant - Has error handling
+- useDocumentIntelligence - Has error handling
+- useAISystemIntake - Has error handling
+- useComplianceRecommendations - Needs verification
 
-**Features:**
-- Top 3-5 recommendations across all systems
-- "View All" link to dedicated recommendations page (future)
-- Quick stats: X recommendations across Y systems
-- Links to specific systems needing attention
+### 6. Compliance Accuracy Safeguards
 
-**Placement:** Dashboard, in the main content area
+Critical for regulatory compliance:
 
-#### c) `RecommendationActionButton`
-Reusable component for executing recommendation actions.
+1. **Classification Assistant**:
+   - Shows confidence score prominently
+   - Lists "ambiguities" that require human review
+   - Displays article references for transparency
+   - Has "Review Needed" warning when confidence < 70%
 
-**Actions supported:**
-- Create task with pre-filled data
-- Navigate to classification wizard
-- Navigate to evidence upload
-- Navigate to control detail
-- Start FRIA wizard
+2. **Document Intelligence**:
+   - Shows "gaps" that need attention
+   - Maps to specific control IDs for traceability
+   - Lists "risk_flags" explicitly
 
-### 5. Integration Points
+3. **Compliance Copilot**:
+   - Sources recommendations from actual database state
+   - Shows EU AI Act deadlines with accurate dates
+   - Metrics are calculated from real data, not AI-generated
 
-#### AI System Detail Page (`AISystemDetail.tsx`)
-Add RecommendationsPanel after the Gap Checklist section:
-```tsx
-<GapChecklist systemId={id} />
-<RecommendationsPanel aiSystemId={id} />
-```
+4. **Natural Language Intake**:
+   - Shows extraction confidence score
+   - Highlights potential high-risk indicators
+   - Allows user to review and edit before applying
 
-#### Dashboard (`Dashboard.tsx`)
-Add DashboardRecommendationsCard in the alerts section:
-```tsx
-<div className="lg:col-span-2">
-  <ComplianceAlerts />
-</div>
-<DashboardRecommendationsCard />
-```
+## Implementation Priority
 
-### 6. Feature Gating
-Recommendations engine will be available based on plan:
+| Priority | Task | Impact |
+|----------|------|--------|
+| **P0** | Integrate NaturalLanguageIntake into AISystemWizard Step0 | High - Major UX improvement for onboarding |
+| **P0** | Integrate ClassificationAssistantPanel into ClassificationWizard | High - Helps users with classification decisions |
+| **P1** | Integrate DocumentIntelligencePanel into Evidence page | Medium - Streamlines evidence collection |
+| **P1** | Add ClassificationAssistant to AISystemDetail page | Medium - Quick classification for existing systems |
+| **P2** | Update RecommendationsPanel styling for consistency | Low - Visual polish |
+| **P2** | Add comprehensive error boundary for AI failures | Low - Edge case handling |
 
-| Plan | Access |
-|------|--------|
-| Free | No access |
-| Starter | 3 recommendations per system, basic priority |
-| Growth | Full recommendations, regeneration |
-| Pro/Enterprise | Full + organization-wide insights |
+## Technical Changes Summary
 
-Add to `billing-constants.ts`:
-```typescript
-recommendationsEnabled: boolean;
-recommendationsLimit: number;
-```
+### Files to Modify
 
-## Technical Details
+1. **`src/components/ai-systems/wizard/steps/Step0ModeSelection.tsx`**
+   - Add third "AI-Powered Quick Start" card option
+   - Add state for showing NaturalLanguageIntake overlay
+   - Import and render NaturalLanguageIntake conditionally
 
-### Edge Function Implementation
-Location: `supabase/functions/compliance-recommendations/index.ts`
+2. **`src/pages/AISystemWizard.tsx`**
+   - Handle extracted data from NaturalLanguageIntake
+   - Map extracted fields to wizard data structure
+   - Skip to appropriate step after extraction
 
-The function will:
-1. Validate user authentication
-2. Fetch organization_id from the profile
-3. Query the AI system(s) with related data
-4. Check for cached valid recommendations (< 24 hours old)
-5. If regenerate=true or no cache, call Lovable AI
-6. Upsert recommendations to the database
-7. Return formatted recommendations
+3. **`src/pages/ClassificationWizard.tsx`**
+   - Add ClassificationAssistantPanel as collapsible sidebar
+   - Pass current system data to the assistant
+   - Add "Apply AI Suggestion" functionality
 
-### Caching Strategy
-- Recommendations cached for 24 hours by default
-- Auto-invalidate when: classification changes, controls updated, evidence uploaded
-- Manual regenerate button for on-demand refresh
-- Rate limit: 10 regenerations per system per day
+4. **`src/pages/Evidence.tsx`**
+   - Add new "AI Analysis" tab or upload enhancement
+   - Import and render DocumentIntelligencePanel
+   - Wire up analysis results to evidence metadata
 
-### AI Model Selection
-Use `google/gemini-3-flash-preview` for fast response times while maintaining quality recommendations.
+5. **`src/pages/AISystemDetail.tsx`**
+   - Add ClassificationAssistantPanel for unclassified systems
+   - Show in a collapsible card below the classification section
 
-## File Changes Summary
+6. **`src/components/recommendations/RecommendationsPanel.tsx`**
+   - Update background styling for consistency with other AI components
 
-### New Files
-1. `supabase/functions/compliance-recommendations/index.ts` - Edge function
-2. `src/hooks/useComplianceRecommendations.ts` - React hook
-3. `src/components/recommendations/RecommendationsPanel.tsx` - System-level panel
-4. `src/components/recommendations/DashboardRecommendationsCard.tsx` - Dashboard card
-5. `src/components/recommendations/RecommendationCard.tsx` - Individual recommendation
-6. `src/components/recommendations/RecommendationActionButton.tsx` - Action buttons
-7. `src/components/recommendations/index.ts` - Barrel export
+## Testing Plan
 
-### Modified Files
-1. `src/pages/AISystemDetail.tsx` - Add RecommendationsPanel
-2. `src/pages/Dashboard.tsx` - Add DashboardRecommendationsCard
-3. `src/lib/billing-constants.ts` - Add recommendation entitlements
-4. `supabase/config.toml` - Register new edge function
+After implementation, verify:
 
-### Database Migration
-1. Create `compliance_recommendations` table
-2. Add RLS policies for organization-scoped access
-3. Add indexes for ai_system_id and organization_id
+1. **Natural Language Intake Flow**:
+   - Describe a chatbot AI system in plain text
+   - Verify extracted fields are accurate
+   - Apply to wizard and confirm pre-fill
 
-## Success Criteria
-1. Users see relevant, actionable recommendations on AI system pages
-2. Recommendations are properly prioritized based on risk and urgency
-3. One-click actions work to create tasks, navigate to relevant pages
-4. Dashboard shows organization-wide compliance insights
-5. Feature properly gated by subscription plan
-6. Recommendations refresh automatically on relevant changes
+2. **Classification Assistant Flow**:
+   - Navigate to ClassificationWizard for a system
+   - Click "Get AI Classification"
+   - Verify suggested level matches manual assessment
+   - Check confidence score and ambiguities
 
-## Future Enhancements (Not in Scope)
-- Dedicated recommendations page with filtering
-- Email digest of weekly recommendations
-- Cross-framework mapping suggestions
-- Trend analysis and prediction
-- Team performance insights
+3. **Document Intelligence Flow**:
+   - Go to Evidence page
+   - Paste a sample vendor contract text
+   - Verify key clauses and control mappings
+   - Check risk flags are accurate
+
+4. **Compliance Copilot Flow**:
+   - Dashboard loads copilot card
+   - Click "Generate Digest"
+   - Verify metrics match actual database state
+   - Check deadline calculations are correct
+
+5. **Error Handling**:
+   - Simulate rate limit (rapid requests)
+   - Verify toast messages appear
+   - Confirm retry functionality works
+
