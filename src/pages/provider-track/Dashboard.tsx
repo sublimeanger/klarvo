@@ -42,27 +42,27 @@ export default function ProviderDashboard() {
         noindex={true}
       />
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Provider Track</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Provider Track</h1>
+          <p className="text-sm text-muted-foreground">
             Manage your provider obligations under the EU AI Act
           </p>
         </div>
 
         {/* Main Grid */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           {/* Left Column - Readiness Score */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {isLoading ? (
-              <Card>
-                <CardHeader>
-                  <Skeleton className="h-6 w-48" />
+              <Card className="rounded-xl">
+                <CardHeader className="p-3 sm:p-6">
+                  <Skeleton className="h-5 sm:h-6 w-36 sm:w-48" />
                 </CardHeader>
-                <CardContent>
-                  <div className="flex gap-6">
-                    <Skeleton className="h-24 w-24 rounded-full" />
+                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                    <Skeleton className="h-20 w-20 sm:h-24 sm:w-24 rounded-full mx-auto sm:mx-0" />
                     <div className="flex-1 space-y-2">
                       <Skeleton className="h-4 w-full" />
                       <Skeleton className="h-4 w-3/4" />
@@ -80,23 +80,23 @@ export default function ProviderDashboard() {
           </div>
 
           {/* Right Column - Deadlines & Alerts */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Upcoming Deadlines */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+            <Card className="rounded-xl">
+              <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   Key Deadlines
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-6 pt-0 sm:pt-0">
                 {deadlines.map((deadline) => (
-                  <div key={deadline.name} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
-                    <div>
-                      <p className="text-sm font-medium">{deadline.name}</p>
-                      <p className="text-xs text-muted-foreground">{deadline.date}</p>
+                  <div key={deadline.name} className="flex items-center justify-between border-b pb-2 sm:pb-3 last:border-0 last:pb-0 gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs sm:text-sm font-medium truncate">{deadline.name}</p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground">{deadline.date}</p>
                     </div>
-                    <Badge variant={deadline.daysLeft < 60 ? "destructive" : "secondary"}>
+                    <Badge variant={deadline.daysLeft < 60 ? "destructive" : "secondary"} className="shrink-0 text-xs">
                       <Clock className="h-3 w-3 mr-1" />
                       {deadline.daysLeft}d
                     </Badge>
@@ -106,21 +106,21 @@ export default function ProviderDashboard() {
             </Card>
 
             {/* Active Alerts */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
+            <Card className="rounded-xl">
+              <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                   <FileWarning className="h-4 w-4" />
                   Alerts
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                 {blockingIssues.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No active alerts</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">No active alerts</p>
                 ) : (
                   <div className="space-y-2">
                     {blockingIssues.map((issue, i) => (
-                      <div key={i} className="flex items-start gap-2 rounded-lg bg-destructive/10 p-2 text-sm">
-                        <FileWarning className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+                      <div key={i} className="flex items-start gap-2 rounded-lg bg-destructive/10 p-2 text-xs sm:text-sm">
+                        <FileWarning className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive mt-0.5 shrink-0" />
                         <span className="text-destructive">{issue}</span>
                       </div>
                     ))}

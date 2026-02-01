@@ -33,27 +33,27 @@ export default function Declaration() {
         noindex={true}
       />
 
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" asChild className="h-9 w-9 sm:h-10 sm:w-10 shrink-0">
             <Link to="/provider-track">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">EU Declaration of Conformity</h1>
-            <p className="text-muted-foreground">
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">EU Declaration of Conformity</h1>
+            <p className="text-xs sm:text-base text-muted-foreground">
               Annex V structured declaration for high-risk AI systems
             </p>
           </div>
         </div>
 
         {/* Info Alert */}
-        <Alert>
+        <Alert className="rounded-xl">
           <Info className="h-4 w-4" />
-          <AlertTitle>Annex V Requirement</AlertTitle>
-          <AlertDescription>
+          <AlertTitle className="text-sm sm:text-base">Annex V Requirement</AlertTitle>
+          <AlertDescription className="text-xs sm:text-sm">
             The EU declaration of conformity shall state that the provider demonstrates that the 
             requirements set out in Chapter III, Section 2 have been fulfilled. The declaration 
             shall be kept for 10 years after the AI system has been placed on the market.
