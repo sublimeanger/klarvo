@@ -136,6 +136,127 @@ export type Database = {
           },
         ]
       }
+      ai_system_operator_roles: {
+        Row: {
+          ai_system_id: string
+          created_at: string
+          id: string
+          is_primary: boolean
+          jurisdiction_scope: string
+          notes: string | null
+          organization_id: string
+          role_type: Database["public"]["Enums"]["operator_role_type"]
+          updated_at: string
+        }
+        Insert: {
+          ai_system_id: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          jurisdiction_scope?: string
+          notes?: string | null
+          organization_id: string
+          role_type: Database["public"]["Enums"]["operator_role_type"]
+          updated_at?: string
+        }
+        Update: {
+          ai_system_id?: string
+          created_at?: string
+          id?: string
+          is_primary?: boolean
+          jurisdiction_scope?: string
+          notes?: string | null
+          organization_id?: string
+          role_type?: Database["public"]["Enums"]["operator_role_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_system_operator_roles_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_system_operator_roles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_system_versions: {
+        Row: {
+          ai_system_id: string
+          conformity_notes: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          organization_id: string
+          predetermined_changes_summary: string | null
+          relation_to_previous: string | null
+          release_date: string | null
+          requires_new_conformity: boolean
+          status: Database["public"]["Enums"]["version_status"]
+          updated_at: string
+          version_label: string
+        }
+        Insert: {
+          ai_system_id: string
+          conformity_notes?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          organization_id: string
+          predetermined_changes_summary?: string | null
+          relation_to_previous?: string | null
+          release_date?: string | null
+          requires_new_conformity?: boolean
+          status?: Database["public"]["Enums"]["version_status"]
+          updated_at?: string
+          version_label: string
+        }
+        Update: {
+          ai_system_id?: string
+          conformity_notes?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          organization_id?: string
+          predetermined_changes_summary?: string | null
+          relation_to_previous?: string | null
+          release_date?: string | null
+          requires_new_conformity?: boolean
+          status?: Database["public"]["Enums"]["version_status"]
+          updated_at?: string
+          version_label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_system_versions_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_system_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_system_versions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_systems: {
         Row: {
           acquisition_method: string[] | null
@@ -748,6 +869,83 @@ export type Database = {
           },
         ]
       }
+      ce_marking_records: {
+        Row: {
+          ai_system_version_id: string
+          created_at: string
+          evidence_file_id: string | null
+          id: string
+          location_description: string | null
+          marking_type: string
+          notes: string | null
+          notified_body_id_displayed: boolean | null
+          notified_body_number: string | null
+          organization_id: string
+          updated_at: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          ai_system_version_id: string
+          created_at?: string
+          evidence_file_id?: string | null
+          id?: string
+          location_description?: string | null
+          marking_type: string
+          notes?: string | null
+          notified_body_id_displayed?: boolean | null
+          notified_body_number?: string | null
+          organization_id: string
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          ai_system_version_id?: string
+          created_at?: string
+          evidence_file_id?: string | null
+          id?: string
+          location_description?: string | null
+          marking_type?: string
+          notes?: string | null
+          notified_body_id_displayed?: boolean | null
+          notified_body_number?: string | null
+          organization_id?: string
+          updated_at?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ce_marking_records_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ce_marking_records_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ce_marking_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ce_marking_records_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classification_history: {
         Row: {
           ai_system_id: string
@@ -829,6 +1027,102 @@ export type Database = {
           },
           {
             foreignKeyName: "classification_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conformity_assessments: {
+        Row: {
+          ai_system_version_id: string
+          certificate_expiry: string | null
+          certificate_id: string | null
+          closed_date: string | null
+          corrective_actions: Json | null
+          created_at: string
+          created_by: string | null
+          evidence_file_id: string | null
+          findings_summary: string | null
+          id: string
+          notes: string | null
+          notified_body_id: string | null
+          organization_id: string
+          path_type: Database["public"]["Enums"]["conformity_path_type"]
+          status: Database["public"]["Enums"]["conformity_status"]
+          submission_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_system_version_id: string
+          certificate_expiry?: string | null
+          certificate_id?: string | null
+          closed_date?: string | null
+          corrective_actions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          evidence_file_id?: string | null
+          findings_summary?: string | null
+          id?: string
+          notes?: string | null
+          notified_body_id?: string | null
+          organization_id: string
+          path_type: Database["public"]["Enums"]["conformity_path_type"]
+          status?: Database["public"]["Enums"]["conformity_status"]
+          submission_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_system_version_id?: string
+          certificate_expiry?: string | null
+          certificate_id?: string | null
+          closed_date?: string | null
+          corrective_actions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          evidence_file_id?: string | null
+          findings_summary?: string | null
+          id?: string
+          notes?: string | null
+          notified_body_id?: string | null
+          organization_id?: string
+          path_type?: Database["public"]["Enums"]["conformity_path_type"]
+          status?: Database["public"]["Enums"]["conformity_status"]
+          submission_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conformity_assessments_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conformity_assessments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conformity_assessments_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conformity_assessments_notified_body_id_fkey"
+            columns: ["notified_body_id"]
+            isOneToOne: false
+            referencedRelation: "economic_operators"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conformity_assessments_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -1050,6 +1344,479 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      dataset_registry: {
+        Row: {
+          access_restrictions: string | null
+          ai_system_version_id: string
+          bias_checks_performed: Json | null
+          bias_mitigation_measures: string | null
+          collection_date_range: string | null
+          collection_method: string | null
+          created_at: string
+          created_by: string | null
+          data_quality_measures: string | null
+          data_source: string | null
+          description: string | null
+          evidence_file_id: string | null
+          feature_count: number | null
+          geographic_scope: string | null
+          id: string
+          known_limitations: string | null
+          label_distribution: Json | null
+          licenses: Json | null
+          name: string
+          organization_id: string
+          purpose: string
+          record_count: number | null
+          retention_period: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_restrictions?: string | null
+          ai_system_version_id: string
+          bias_checks_performed?: Json | null
+          bias_mitigation_measures?: string | null
+          collection_date_range?: string | null
+          collection_method?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_quality_measures?: string | null
+          data_source?: string | null
+          description?: string | null
+          evidence_file_id?: string | null
+          feature_count?: number | null
+          geographic_scope?: string | null
+          id?: string
+          known_limitations?: string | null
+          label_distribution?: Json | null
+          licenses?: Json | null
+          name: string
+          organization_id: string
+          purpose: string
+          record_count?: number | null
+          retention_period?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_restrictions?: string | null
+          ai_system_version_id?: string
+          bias_checks_performed?: Json | null
+          bias_mitigation_measures?: string | null
+          collection_date_range?: string | null
+          collection_method?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_quality_measures?: string | null
+          data_source?: string | null
+          description?: string | null
+          evidence_file_id?: string | null
+          feature_count?: number | null
+          geographic_scope?: string | null
+          id?: string
+          known_limitations?: string | null
+          label_distribution?: Json | null
+          licenses?: Json | null
+          name?: string
+          organization_id?: string
+          purpose?: string
+          record_count?: number | null
+          retention_period?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dataset_registry_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dataset_registry_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dataset_registry_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dataset_registry_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      distributor_verifications: {
+        Row: {
+          ai_system_id: string
+          corrective_actions_taken: string | null
+          created_at: string
+          escalation_notes: string | null
+          escalation_to_provider_triggered: boolean | null
+          evidence_file_id: string | null
+          has_modified: boolean | null
+          has_rebranded: boolean | null
+          id: string
+          non_compliance_details: string | null
+          notes: string | null
+          organization_id: string
+          status: string
+          updated_at: string
+          verification_data: Json
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          ai_system_id: string
+          corrective_actions_taken?: string | null
+          created_at?: string
+          escalation_notes?: string | null
+          escalation_to_provider_triggered?: boolean | null
+          evidence_file_id?: string | null
+          has_modified?: boolean | null
+          has_rebranded?: boolean | null
+          id?: string
+          non_compliance_details?: string | null
+          notes?: string | null
+          organization_id: string
+          status?: string
+          updated_at?: string
+          verification_data?: Json
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          ai_system_id?: string
+          corrective_actions_taken?: string | null
+          created_at?: string
+          escalation_notes?: string | null
+          escalation_to_provider_triggered?: boolean | null
+          evidence_file_id?: string | null
+          has_modified?: boolean | null
+          has_rebranded?: boolean | null
+          id?: string
+          non_compliance_details?: string | null
+          notes?: string | null
+          organization_id?: string
+          status?: string
+          updated_at?: string
+          verification_data?: Json
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "distributor_verifications_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "distributor_verifications_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "distributor_verifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "distributor_verifications_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      economic_operators: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          eu_established: boolean
+          id: string
+          legal_name: string
+          notes: string | null
+          notified_body_id: string | null
+          operator_type: string
+          organization_id: string
+          postal_code: string | null
+          trading_name: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          eu_established?: boolean
+          id?: string
+          legal_name: string
+          notes?: string | null
+          notified_body_id?: string | null
+          operator_type: string
+          organization_id: string
+          postal_code?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          eu_established?: boolean
+          id?: string
+          legal_name?: string
+          notes?: string | null
+          notified_body_id?: string | null
+          operator_type?: string
+          organization_id?: string
+          postal_code?: string | null
+          trading_name?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "economic_operators_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "economic_operators_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eu_declarations_of_conformity: {
+        Row: {
+          ai_system_name: string
+          ai_system_type: string | null
+          ai_system_version_id: string
+          common_specifications: Json | null
+          conformity_statement: string | null
+          created_at: string
+          created_by: string | null
+          date_of_issue: string | null
+          generated_pdf_evidence_id: string | null
+          harmonised_standards: Json | null
+          id: string
+          notified_body_certificate: string | null
+          notified_body_name: string | null
+          notified_body_number: string | null
+          organization_id: string
+          place_of_issue: string | null
+          provider_address: string | null
+          provider_name: string
+          signatory_name: string | null
+          signatory_position: string | null
+          signed_at: string | null
+          status: Database["public"]["Enums"]["doc_status"]
+          traceable_reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_system_name: string
+          ai_system_type?: string | null
+          ai_system_version_id: string
+          common_specifications?: Json | null
+          conformity_statement?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_issue?: string | null
+          generated_pdf_evidence_id?: string | null
+          harmonised_standards?: Json | null
+          id?: string
+          notified_body_certificate?: string | null
+          notified_body_name?: string | null
+          notified_body_number?: string | null
+          organization_id: string
+          place_of_issue?: string | null
+          provider_address?: string | null
+          provider_name: string
+          signatory_name?: string | null
+          signatory_position?: string | null
+          signed_at?: string | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          traceable_reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_system_name?: string
+          ai_system_type?: string | null
+          ai_system_version_id?: string
+          common_specifications?: Json | null
+          conformity_statement?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_of_issue?: string | null
+          generated_pdf_evidence_id?: string | null
+          harmonised_standards?: Json | null
+          id?: string
+          notified_body_certificate?: string | null
+          notified_body_name?: string | null
+          notified_body_number?: string | null
+          organization_id?: string
+          place_of_issue?: string | null
+          provider_address?: string | null
+          provider_name?: string
+          signatory_name?: string | null
+          signatory_position?: string | null
+          signed_at?: string | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          traceable_reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eu_declarations_of_conformity_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eu_declarations_of_conformity_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eu_declarations_of_conformity_generated_pdf_evidence_id_fkey"
+            columns: ["generated_pdf_evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eu_declarations_of_conformity_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eu_registration_records: {
+        Row: {
+          ai_system_version_id: string
+          created_at: string
+          created_by: string | null
+          eu_database_reference: string | null
+          evidence_file_id: string | null
+          id: string
+          last_updated_at: string | null
+          notes: string | null
+          organization_id: string
+          registered_at: string | null
+          registration_data: Json | null
+          registration_status: string
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_system_version_id: string
+          created_at?: string
+          created_by?: string | null
+          eu_database_reference?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          last_updated_at?: string | null
+          notes?: string | null
+          organization_id: string
+          registered_at?: string | null
+          registration_data?: Json | null
+          registration_status?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_system_version_id?: string
+          created_at?: string
+          created_by?: string | null
+          eu_database_reference?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          last_updated_at?: string | null
+          notes?: string | null
+          organization_id?: string
+          registered_at?: string | null
+          registration_data?: Json | null
+          registration_status?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eu_registration_records_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eu_registration_records_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eu_registration_records_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eu_registration_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       evidence_files: {
         Row: {
@@ -1353,6 +2120,98 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      importer_verifications: {
+        Row: {
+          ai_system_id: string
+          authorised_rep_address: string | null
+          authorised_rep_name: string | null
+          corrective_actions_taken: string | null
+          created_at: string
+          evidence_file_id: string | null
+          id: string
+          non_compliance_details: string | null
+          notes: string | null
+          organization_id: string
+          provider_address: string | null
+          provider_contact: string | null
+          provider_name: string | null
+          status: string
+          updated_at: string
+          verification_data: Json
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          ai_system_id: string
+          authorised_rep_address?: string | null
+          authorised_rep_name?: string | null
+          corrective_actions_taken?: string | null
+          created_at?: string
+          evidence_file_id?: string | null
+          id?: string
+          non_compliance_details?: string | null
+          notes?: string | null
+          organization_id: string
+          provider_address?: string | null
+          provider_contact?: string | null
+          provider_name?: string | null
+          status?: string
+          updated_at?: string
+          verification_data?: Json
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          ai_system_id?: string
+          authorised_rep_address?: string | null
+          authorised_rep_name?: string | null
+          corrective_actions_taken?: string | null
+          created_at?: string
+          evidence_file_id?: string | null
+          id?: string
+          non_compliance_details?: string | null
+          notes?: string | null
+          organization_id?: string
+          provider_address?: string | null
+          provider_contact?: string | null
+          provider_name?: string | null
+          status?: string
+          updated_at?: string
+          verification_data?: Json
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "importer_verifications_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "importer_verifications_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "importer_verifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "importer_verifications_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1706,6 +2565,105 @@ export type Database = {
           },
         ]
       }
+      post_market_monitoring_plans: {
+        Row: {
+          ai_system_version_id: string
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          data_collection_methods: Json | null
+          escalation_procedures: string | null
+          evidence_file_id: string | null
+          id: string
+          last_reviewed_at: string | null
+          next_review_date: string | null
+          organization_id: string
+          performance_kpis: Json | null
+          responsible_roles: Json | null
+          review_frequency: string | null
+          risk_thresholds: Json | null
+          status: Database["public"]["Enums"]["doc_status"]
+          updated_at: string
+        }
+        Insert: {
+          ai_system_version_id: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_collection_methods?: Json | null
+          escalation_procedures?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          last_reviewed_at?: string | null
+          next_review_date?: string | null
+          organization_id: string
+          performance_kpis?: Json | null
+          responsible_roles?: Json | null
+          review_frequency?: string | null
+          risk_thresholds?: Json | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          updated_at?: string
+        }
+        Update: {
+          ai_system_version_id?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          data_collection_methods?: Json | null
+          escalation_procedures?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          last_reviewed_at?: string | null
+          next_review_date?: string | null
+          organization_id?: string
+          performance_kpis?: Json | null
+          responsible_roles?: Json | null
+          review_frequency?: string | null
+          risk_thresholds?: Json | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_market_monitoring_plans_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_market_monitoring_plans_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_market_monitoring_plans_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_market_monitoring_plans_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_market_monitoring_plans_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1753,6 +2711,95 @@ export type Database = {
           },
         ]
       }
+      qms_documents: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          doc_category: string | null
+          doc_number: string | null
+          doc_type: string
+          effective_date: string | null
+          evidence_file_id: string | null
+          id: string
+          organization_id: string
+          review_date: string | null
+          status: Database["public"]["Enums"]["doc_status"]
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          doc_category?: string | null
+          doc_number?: string | null
+          doc_type: string
+          effective_date?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          organization_id: string
+          review_date?: string | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          title: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          doc_category?: string | null
+          doc_number?: string | null
+          doc_type?: string
+          effective_date?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          organization_id?: string
+          review_date?: string | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qms_documents_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qms_documents_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qms_documents_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "qms_documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       regulatory_rulesets: {
         Row: {
           changes_summary: string | null
@@ -1782,6 +2829,247 @@ export type Database = {
           version?: string
         }
         Relationships: []
+      }
+      risk_management_records: {
+        Row: {
+          acceptance_rationale: string | null
+          ai_system_version_id: string
+          created_at: string
+          created_by: string | null
+          hazard: string
+          hazard_category: string | null
+          id: string
+          impacted_stakeholders: string | null
+          last_reviewed_at: string | null
+          likelihood: string
+          linked_incident_id: string | null
+          linked_test_evidence_id: string | null
+          mitigation_measures: string | null
+          next_review_date: string | null
+          notes: string | null
+          organization_id: string
+          owner_id: string | null
+          residual_risk_acceptable: boolean | null
+          residual_risk_level: string | null
+          review_cadence: string | null
+          risk_id: string | null
+          risk_level: string | null
+          severity: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          acceptance_rationale?: string | null
+          ai_system_version_id: string
+          created_at?: string
+          created_by?: string | null
+          hazard: string
+          hazard_category?: string | null
+          id?: string
+          impacted_stakeholders?: string | null
+          last_reviewed_at?: string | null
+          likelihood: string
+          linked_incident_id?: string | null
+          linked_test_evidence_id?: string | null
+          mitigation_measures?: string | null
+          next_review_date?: string | null
+          notes?: string | null
+          organization_id: string
+          owner_id?: string | null
+          residual_risk_acceptable?: boolean | null
+          residual_risk_level?: string | null
+          review_cadence?: string | null
+          risk_id?: string | null
+          risk_level?: string | null
+          severity: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          acceptance_rationale?: string | null
+          ai_system_version_id?: string
+          created_at?: string
+          created_by?: string | null
+          hazard?: string
+          hazard_category?: string | null
+          id?: string
+          impacted_stakeholders?: string | null
+          last_reviewed_at?: string | null
+          likelihood?: string
+          linked_incident_id?: string | null
+          linked_test_evidence_id?: string | null
+          mitigation_measures?: string | null
+          next_review_date?: string | null
+          notes?: string | null
+          organization_id?: string
+          owner_id?: string | null
+          residual_risk_acceptable?: boolean | null
+          residual_risk_level?: string | null
+          review_cadence?: string | null
+          risk_id?: string | null
+          risk_level?: string | null
+          severity?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "risk_management_records_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "risk_management_records_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "risk_management_records_linked_incident_id_fkey"
+            columns: ["linked_incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "risk_management_records_linked_test_evidence_id_fkey"
+            columns: ["linked_test_evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "risk_management_records_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "risk_management_records_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      serious_incident_reports: {
+        Row: {
+          affected_countries: Json | null
+          affected_persons_count: number | null
+          ai_system_id: string
+          ai_system_version_id: string | null
+          aware_at: string
+          category: Database["public"]["Enums"]["serious_incident_category"]
+          corrective_actions: string | null
+          created_at: string
+          deadline_at: string
+          description: string | null
+          evidence_file_id: string | null
+          id: string
+          immediate_actions: string | null
+          market_surveillance_authority: string | null
+          occurred_at: string | null
+          organization_id: string
+          reported_by: string | null
+          root_cause_analysis: string | null
+          status: string
+          submission_reference: string | null
+          submitted_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          affected_countries?: Json | null
+          affected_persons_count?: number | null
+          ai_system_id: string
+          ai_system_version_id?: string | null
+          aware_at: string
+          category: Database["public"]["Enums"]["serious_incident_category"]
+          corrective_actions?: string | null
+          created_at?: string
+          deadline_at: string
+          description?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          immediate_actions?: string | null
+          market_surveillance_authority?: string | null
+          occurred_at?: string | null
+          organization_id: string
+          reported_by?: string | null
+          root_cause_analysis?: string | null
+          status?: string
+          submission_reference?: string | null
+          submitted_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          affected_countries?: Json | null
+          affected_persons_count?: number | null
+          ai_system_id?: string
+          ai_system_version_id?: string | null
+          aware_at?: string
+          category?: Database["public"]["Enums"]["serious_incident_category"]
+          corrective_actions?: string | null
+          created_at?: string
+          deadline_at?: string
+          description?: string | null
+          evidence_file_id?: string | null
+          id?: string
+          immediate_actions?: string | null
+          market_surveillance_authority?: string | null
+          occurred_at?: string | null
+          organization_id?: string
+          reported_by?: string | null
+          root_cause_analysis?: string | null
+          status?: string
+          submission_reference?: string | null
+          submitted_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "serious_incident_reports_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serious_incident_reports_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serious_incident_reports_evidence_file_id_fkey"
+            columns: ["evidence_file_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_files"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serious_incident_reports_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "serious_incident_reports_reported_by_fkey"
+            columns: ["reported_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
@@ -1925,6 +3213,101 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      technical_documentation_annexiv: {
+        Row: {
+          ai_system_version_id: string
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          cybersecurity_measures: Json | null
+          data_requirements: Json | null
+          development_process: Json | null
+          doc_reference: string | null
+          general_description: Json | null
+          human_oversight_measures: Json | null
+          id: string
+          organization_id: string
+          pms_reference: string | null
+          risk_management_description: Json | null
+          standards_applied: Json | null
+          status: Database["public"]["Enums"]["doc_status"]
+          testing_procedures: Json | null
+          updated_at: string
+        }
+        Insert: {
+          ai_system_version_id: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          cybersecurity_measures?: Json | null
+          data_requirements?: Json | null
+          development_process?: Json | null
+          doc_reference?: string | null
+          general_description?: Json | null
+          human_oversight_measures?: Json | null
+          id?: string
+          organization_id: string
+          pms_reference?: string | null
+          risk_management_description?: Json | null
+          standards_applied?: Json | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          testing_procedures?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          ai_system_version_id?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          cybersecurity_measures?: Json | null
+          data_requirements?: Json | null
+          development_process?: Json | null
+          doc_reference?: string | null
+          general_description?: Json | null
+          human_oversight_measures?: Json | null
+          id?: string
+          organization_id?: string
+          pms_reference?: string | null
+          risk_management_description?: Json | null
+          standards_applied?: Json | null
+          status?: Database["public"]["Enums"]["doc_status"]
+          testing_procedures?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technical_documentation_annexiv_ai_system_version_id_fkey"
+            columns: ["ai_system_version_id"]
+            isOneToOne: false
+            referencedRelation: "ai_system_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technical_documentation_annexiv_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technical_documentation_annexiv_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technical_documentation_annexiv_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -2247,19 +3630,41 @@ export type Database = {
         | "transparency_screening"
         | "full_classification"
       billing_period: "monthly" | "annual"
+      conformity_path_type: "annex_vi_internal" | "annex_vii_notified_body"
+      conformity_status:
+        | "draft"
+        | "internal_review"
+        | "submitted"
+        | "findings"
+        | "closed"
+        | "certified"
+        | "reassessment_triggered"
+      doc_status: "draft" | "in_review" | "approved"
       due_diligence_status:
         | "not_started"
         | "in_progress"
         | "completed"
         | "needs_review"
       lifecycle_status: "draft" | "pilot" | "live" | "retired" | "archived"
+      operator_role_type:
+        | "provider"
+        | "deployer"
+        | "importer"
+        | "distributor"
+        | "authorised_representative"
       risk_level:
         | "prohibited"
         | "high_risk"
         | "limited_risk"
         | "minimal_risk"
         | "not_classified"
+      serious_incident_category:
+        | "death_or_serious_damage"
+        | "serious_incident_with_risk"
+        | "malfunctioning_with_risk"
+        | "other"
       subscription_status: "trialing" | "active" | "past_due" | "canceled"
+      version_status: "draft" | "released" | "withdrawn" | "recalled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2403,6 +3808,17 @@ export const Constants = {
         "full_classification",
       ],
       billing_period: ["monthly", "annual"],
+      conformity_path_type: ["annex_vi_internal", "annex_vii_notified_body"],
+      conformity_status: [
+        "draft",
+        "internal_review",
+        "submitted",
+        "findings",
+        "closed",
+        "certified",
+        "reassessment_triggered",
+      ],
+      doc_status: ["draft", "in_review", "approved"],
       due_diligence_status: [
         "not_started",
         "in_progress",
@@ -2410,6 +3826,13 @@ export const Constants = {
         "needs_review",
       ],
       lifecycle_status: ["draft", "pilot", "live", "retired", "archived"],
+      operator_role_type: [
+        "provider",
+        "deployer",
+        "importer",
+        "distributor",
+        "authorised_representative",
+      ],
       risk_level: [
         "prohibited",
         "high_risk",
@@ -2417,7 +3840,14 @@ export const Constants = {
         "minimal_risk",
         "not_classified",
       ],
+      serious_incident_category: [
+        "death_or_serious_damage",
+        "serious_incident_with_risk",
+        "malfunctioning_with_risk",
+        "other",
+      ],
       subscription_status: ["trialing", "active", "past_due", "canceled"],
+      version_status: ["draft", "released", "withdrawn", "recalled"],
     },
   },
 } as const
