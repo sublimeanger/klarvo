@@ -289,7 +289,7 @@ export function SystemSpecificationPDF({ generatedDate, version }: SystemSpecifi
         <BulletList items={[
           "SMB-first: Minimal setup, opinionated templates, simple pricing",
           "Evidence-first: Never 'compliance theatre' — always output artifacts",
-          "Role-aware: Deployer vs provider vs importer/distributor flows",
+          "Deployer-focused: Full Article 26 workflow with provider track coming soon",
           "Guided: Decision trees + ready checklists, not 'read the law'",
           "Export-perfect: PDF/ZIP packs that look like a top consultancy produced them",
         ]} />

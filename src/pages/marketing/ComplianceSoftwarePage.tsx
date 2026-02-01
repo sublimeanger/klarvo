@@ -67,7 +67,7 @@ const faqQuestions = [
   },
   {
     question: "Who needs EU AI Act compliance software?",
-    answer: "Any organization using AI systems in the EU or serving EU customers needs to comply with the EU AI Act. This includes deployers (users of AI), providers (developers of AI), and importers/distributors of AI systems."
+    answer: "Any organization using AI systems in the EU or serving EU customers needs to comply with the EU AI Act. Klarvo is designed for deployers (organizations that use AI in their operations) with full Article 26 workflow support. Provider track coming soon."
   },
   {
     question: "When did the EU AI Act come into force?",

@@ -24,6 +24,7 @@ import {
   Shield,
   Download,
   FileText,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -49,12 +50,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useAISystem, useUpdateAISystem, useDeleteAISystem } from "@/hooks/useAISystems";
 import { useClassification } from "@/hooks/useClassification";
 import { useFRIA } from "@/hooks/useFRIA";
 import { AISystemControls } from "@/components/ai-systems/AISystemControls";
 import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
 import { GapChecklist } from "@/components/ai-systems/GapChecklist";
+import { ClassificationHistoryPanel } from "@/components/ai-systems/ClassificationHistoryPanel";
 import { ActivityFeed } from "@/components/audit/ActivityFeed";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
@@ -822,6 +825,22 @@ export default function AISystemDetail() {
                   </div>
                 </>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Classification History */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <History className="h-5 w-5" />
+                Classification History
+              </CardTitle>
+              <CardDescription>
+                Audit trail of all classification changes
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ClassificationHistoryPanel aiSystemId={id!} />
             </CardContent>
           </Card>
 
