@@ -3127,6 +3127,89 @@ export type Database = {
           },
         ]
       }
+      substantial_modifications: {
+        Row: {
+          ai_system_id: string
+          conformity_assessment_status: string
+          created_at: string
+          description: string
+          detected_at: string
+          detected_by: string | null
+          id: string
+          modification_type: string
+          new_value: string | null
+          old_value: string | null
+          organization_id: string
+          requires_new_conformity: boolean
+          reviewed_at: string | null
+          reviewed_by: string | null
+          waiver_reason: string | null
+        }
+        Insert: {
+          ai_system_id: string
+          conformity_assessment_status?: string
+          created_at?: string
+          description: string
+          detected_at?: string
+          detected_by?: string | null
+          id?: string
+          modification_type: string
+          new_value?: string | null
+          old_value?: string | null
+          organization_id: string
+          requires_new_conformity?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          waiver_reason?: string | null
+        }
+        Update: {
+          ai_system_id?: string
+          conformity_assessment_status?: string
+          created_at?: string
+          description?: string
+          detected_at?: string
+          detected_by?: string | null
+          id?: string
+          modification_type?: string
+          new_value?: string | null
+          old_value?: string | null
+          organization_id?: string
+          requires_new_conformity?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          waiver_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "substantial_modifications_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "substantial_modifications_detected_by_fkey"
+            columns: ["detected_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "substantial_modifications_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "substantial_modifications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           ai_system_id: string | null
