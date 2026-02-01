@@ -58,6 +58,7 @@ import { AISystemControls } from "@/components/ai-systems/AISystemControls";
 import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
 import { GapChecklist } from "@/components/ai-systems/GapChecklist";
 import { ClassificationHistoryPanel } from "@/components/ai-systems/ClassificationHistoryPanel";
+import { SupplyChainTabs } from "@/components/ai-systems/SupplyChainTabs";
 import { ActivityFeed } from "@/components/audit/ActivityFeed";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
@@ -720,6 +721,12 @@ export default function AISystemDetail() {
 
           {/* Gap Checklist */}
           <GapChecklist aiSystemId={id!} />
+
+          {/* Supply Chain Tabs - conditional based on value chain role */}
+          <SupplyChainTabs 
+            aiSystemId={id!} 
+            valueChainRole={system.value_chain_role}
+          />
         </div>
 
         {/* Sidebar */}
