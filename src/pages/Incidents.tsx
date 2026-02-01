@@ -13,6 +13,7 @@ import {
   CheckCircle,
   XCircle,
   ShieldAlert,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,6 +73,8 @@ import {
   type Incident,
 } from "@/hooks/useIncidents";
 import { useAISystems } from "@/hooks/useAISystems";
+import { useSubscription } from "@/hooks/useSubscription";
+import { UpgradeModal } from "@/components/billing/UpgradeModal";
 
 const severityConfig: Record<string, { variant: "draft" | "pending" | "warning" | "destructive" }> = {
   low: { variant: "draft" },
@@ -95,6 +98,7 @@ export default function Incidents() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [viewIncident, setViewIncident] = useState<Incident | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [newIncident, setNewIncident] = useState({
     title: "",
     description: "",
@@ -105,6 +109,7 @@ export default function Incidents() {
     occurred_at: "",
   });
 
+  const { entitlements, isLoading: subscriptionLoading, planId } = useSubscription();
   const { data: incidents = [], isLoading } = useIncidents({ status: statusFilter, severity: severityFilter });
   const { systems } = useAISystems();
   const createIncident = useCreateIncident();
@@ -162,10 +167,53 @@ export default function Incidents() {
   const criticalCount = incidents.filter((i) => i.severity === "critical" && i.status !== "closed").length;
   const resolvedCount = incidents.filter((i) => i.status === "resolved" || i.status === "closed").length;
 
-  if (isLoading) {
+  if (isLoading || subscriptionLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Check if incidents feature is enabled (Pro+ only)
+  if (!entitlements.incidentsEnabled) {
+    return (
+      <div className="space-y-6 animate-fade-up">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Incidents</h1>
+          <p className="text-muted-foreground">
+            Track and manage AI-related incidents
+          </p>
+        </div>
+
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Lock className="h-8 w-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Pro Feature</h3>
+            <p className="text-muted-foreground mb-6 max-w-md text-center">
+              The Incidents module is available on Pro and Enterprise plans. Track AI-related incidents, 
+              manage investigations, and maintain compliance with Article 73 serious incident reporting.
+            </p>
+            <Button onClick={() => setShowUpgradeModal(true)}>
+              Upgrade to Pro
+            </Button>
+          </CardContent>
+        </Card>
+
+        <UpgradeModal
+          open={showUpgradeModal}
+          onOpenChange={setShowUpgradeModal}
+          title="Unlock Incidents & Monitoring"
+          bullets={[
+            "Track AI-related incidents and investigations",
+            "Article 73 serious incident reporting",
+            "Monitoring events and change triggers",
+            "Integration with your AI systems inventory",
+          ]}
+          recommendedPlan="pro"
+        />
       </div>
     );
   }
