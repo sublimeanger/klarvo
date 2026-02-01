@@ -11,7 +11,7 @@ export interface ReassessmentTrigger {
 }
 
 /**
- * Material fields that trigger reassessment when changed
+ * Material fields that trigger reassessment when changed (deployer-focused)
  */
 const MATERIAL_FIELDS: Record<string, { label: string; getChangeReason: (oldVal: any, newVal: any) => string }> = {
   vendor_id: {
@@ -29,6 +29,41 @@ const MATERIAL_FIELDS: Record<string, { label: string; getChangeReason: (oldVal:
       if (newVal === "retired") return "System retired - review if classification still needed";
       return `Status changed to ${newVal}`;
     },
+  },
+};
+
+/**
+ * Fields that trigger substantial modification (provider-focused, Article 25)
+ */
+export const SUBSTANTIAL_MODIFICATION_FIELDS: Record<string, { 
+  label: string; 
+  getChangeReason: (oldVal: any, newVal: any) => string;
+  articleRef: string;
+}> = {
+  foundation_model: {
+    label: "Foundation Model",
+    getChangeReason: (oldVal, newVal) => `Model changed from "${oldVal || 'none'}" to "${newVal}"`,
+    articleRef: "Article 25(1)(c)",
+  },
+  purpose_category: {
+    label: "Intended Purpose",
+    getChangeReason: (oldVal, newVal) => `Purpose changed from "${oldVal}" to "${newVal}"`,
+    articleRef: "Article 25(1)(a)",
+  },
+  affected_groups: {
+    label: "Affected Groups",
+    getChangeReason: (oldVal, newVal) => "Changes to affected population groups",
+    articleRef: "Article 25(1)(a)",
+  },
+  highrisk_screening_result: {
+    label: "High-Risk Status",
+    getChangeReason: (oldVal, newVal) => `Risk classification changed to "${newVal}"`,
+    articleRef: "Article 25",
+  },
+  final_classification: {
+    label: "Final Classification",
+    getChangeReason: (oldVal, newVal) => `Classification changed to "${newVal}"`,
+    articleRef: "Article 25",
   },
 };
 

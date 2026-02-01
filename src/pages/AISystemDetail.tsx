@@ -59,6 +59,7 @@ import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
 import { GapChecklist } from "@/components/ai-systems/GapChecklist";
 import { ClassificationHistoryPanel } from "@/components/ai-systems/ClassificationHistoryPanel";
 import { SupplyChainTabs } from "@/components/ai-systems/SupplyChainTabs";
+import { SubstantialModificationAlert } from "@/components/provider/SubstantialModificationAlert";
 import { ActivityFeed } from "@/components/audit/ActivityFeed";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
@@ -710,6 +711,12 @@ export default function AISystemDetail() {
               </CardContent>
             </Card>
           )}
+
+          {/* Substantial Modification Alert - Article 25 */}
+          <SubstantialModificationAlert 
+            aiSystemId={id!} 
+            showFullDetails 
+          />
 
           {/* Controls Section */}
           <AISystemControls

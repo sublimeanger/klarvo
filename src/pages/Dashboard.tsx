@@ -35,6 +35,7 @@ import { DepartmentRiskChart } from "@/components/dashboard/DepartmentRiskChart"
 import { AuditReadinessCard } from "@/components/dashboard/AuditReadinessCard";
 import { WelcomeCard } from "@/components/dashboard/WelcomeCard";
 import { EscalationDashboardWidget } from "@/components/provider/EscalationDashboardWidget";
+import { ModificationSummaryWidget } from "@/components/provider/SubstantialModificationAlert";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -93,6 +94,9 @@ export default function Dashboard() {
           </Link>
         </Button>
       </div>
+
+      {/* Substantial Modification Alert - Article 25 */}
+      <ModificationSummaryWidget />
 
       {/* Welcome Card for new users */}
       {!metricsLoading && metrics.totalSystems === 0 && <WelcomeCard />}
