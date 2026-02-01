@@ -147,6 +147,8 @@ import ProviderRegistration from "@/pages/provider-track/Registration";
 import ProviderMonitoring from "@/pages/provider-track/Monitoring";
 import ProviderSeriousIncidents from "@/pages/provider-track/SeriousIncidents";
 import ProviderDataGovernance from "@/pages/provider-track/DataGovernance";
+import ProviderImporterVerification from "@/pages/provider-track/ImporterVerification";
+import ProviderDistributorVerification from "@/pages/provider-track/DistributorVerification";
 
 const queryClient = new QueryClient();
 
@@ -309,6 +311,8 @@ const App = () => (
               <Route path="/provider-track/monitoring" element={<ProviderMonitoring />} />
               <Route path="/provider-track/serious-incidents" element={<ProviderSeriousIncidents />} />
               <Route path="/provider-track/data-governance" element={<ProviderDataGovernance />} />
+              <Route path="/provider-track/importer-verification" element={<ProviderImporterVerification />} />
+              <Route path="/provider-track/distributor-verification" element={<ProviderDistributorVerification />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
