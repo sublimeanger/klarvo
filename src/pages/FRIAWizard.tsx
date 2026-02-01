@@ -874,28 +874,39 @@ export default function FRIAWizard() {
       </Card>
 
       {/* Navigation */}
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={handleBack} disabled={currentStep === 1}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back
+      <div className="flex justify-between gap-3">
+        <Button 
+          variant="outline" 
+          onClick={handleBack} 
+          disabled={currentStep === 1}
+          className="h-11 sm:h-10 px-4"
+        >
+          <ArrowLeft className="mr-1.5 sm:mr-2 h-4 w-4" />
+          <span className="hidden xs:inline">Back</span>
         </Button>
 
         {currentStep === STEPS.length ? (
           <Button
             onClick={handleComplete}
             disabled={!finalConclusion || completeFRIA.isPending}
+            className="h-11 sm:h-10 px-4 flex-1 sm:flex-initial"
           >
             {completeFRIA.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-1.5 sm:mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <Check className="mr-2 h-4 w-4" />
+              <Check className="mr-1.5 sm:mr-2 h-4 w-4" />
             )}
-            Complete FRIA
+            <span className="hidden sm:inline">Complete FRIA</span>
+            <span className="sm:hidden">Complete</span>
           </Button>
         ) : (
-          <Button onClick={handleNext} disabled={currentStep === 1 && !title}>
+          <Button 
+            onClick={handleNext} 
+            disabled={currentStep === 1 && !title}
+            className="h-11 sm:h-10 px-4 flex-1 sm:flex-initial"
+          >
             Next
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="ml-1.5 sm:ml-2 h-4 w-4" />
           </Button>
         )}
       </div>

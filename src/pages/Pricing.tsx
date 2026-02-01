@@ -88,45 +88,45 @@ export default function Pricing() {
         canonical="https://klarvo.io/pricing"
       />
       <SchemaMarkup schema={[productSchema, breadcrumbSchema]} />
-      <section className="relative py-20 lg:py-28 overflow-hidden">
+      <section className="relative py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
         <div className="absolute inset-0 pattern-grid opacity-30" />
         
-        {/* Floating orbs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
+        {/* Floating orbs - Hidden on mobile */}
+        <div className="hidden sm:block absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="hidden sm:block absolute bottom-20 right-10 w-96 h-96 bg-accent/15 rounded-full blur-3xl animate-float-delayed" />
         
         <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <Badge variant="outline" className="mb-6 px-4 py-2 text-sm font-medium border-primary/30 bg-primary/5">
-              <Sparkles className="h-4 w-4 mr-2 text-primary" />
+            <Badge variant="outline" className="mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium border-primary/30 bg-primary/5">
+              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 text-primary" />
               Simple, Transparent Pricing
             </Badge>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 sm:mb-6">
               EU AI Act Compliance —{" "}
               <span className="text-gradient-hero">Priced for SMEs</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed mb-6 sm:mb-8 max-w-2xl mx-auto">
               Build your AI inventory, classify risk, track controls & evidence, and export 
               audit-ready packs — without enterprise GRC complexity.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-              <Button size="lg" className="btn-premium" asChild>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
+              <Button size="lg" className="btn-premium w-full sm:w-auto h-12 sm:h-11" asChild>
                 <Link to="/auth/signup">
                   Start Free 
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="border-border/60 hover:border-primary/50">
+              <Button variant="outline" size="lg" className="border-border/60 hover:border-primary/50 w-full sm:w-auto h-12 sm:h-11">
                 Talk to Sales
               </Button>
             </div>
             
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               No credit card required. Upgrade anytime. Keep your data if you downgrade.
             </p>
           </div>
