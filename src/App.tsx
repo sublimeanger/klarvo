@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AIAssistant } from "@/components/ai-assistant";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 // App pages
 import Dashboard from "@/pages/Dashboard";
@@ -139,8 +140,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
+          <ScrollToTop />
           <Routes>
-            {/* Marketing pages (public) */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/features" element={<Features />} />
             <Route path="/pricing" element={<Pricing />} />
