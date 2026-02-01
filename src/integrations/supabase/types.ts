@@ -678,6 +678,39 @@ export type Database = {
           },
         ]
       }
+      contact_submissions: {
+        Row: {
+          company: string | null
+          email: string
+          id: string
+          message: string
+          name: string
+          status: string | null
+          subject: string
+          submitted_at: string | null
+        }
+        Insert: {
+          company?: string | null
+          email: string
+          id?: string
+          message: string
+          name: string
+          status?: string | null
+          subject: string
+          submitted_at?: string | null
+        }
+        Update: {
+          company?: string | null
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          status?: string | null
+          subject?: string
+          submitted_at?: string | null
+        }
+        Relationships: []
+      }
       control_evidence_links: {
         Row: {
           control_implementation_id: string

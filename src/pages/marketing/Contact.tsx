@@ -6,10 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { 
   Mail, 
-  MessageSquare, 
   Building2,
   Clock,
   CheckCircle2,
@@ -23,6 +21,7 @@ import {
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactOptions = [
   {
@@ -59,10 +58,28 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    toast.success("Message sent! We'll get back to you within 24 hours.");
+
+    try {
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim().toLowerCase(),
+          company: formData.company.trim() || null,
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
+        });
+
+      if (error) throw error;
+
+      setIsSubmitted(true);
+      toast.success("Message sent! We'll get back to you within 24 hours.");
+    } catch (error) {
+      console.error("Contact form error:", error);
+      toast.error("Something went wrong. Please try again or email us directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
