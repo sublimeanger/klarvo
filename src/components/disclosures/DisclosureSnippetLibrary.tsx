@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface DisclosureSnippet {
   id: string;
@@ -152,32 +153,32 @@ function SnippetCard({ snippet }: { snippet: DisclosureSnippet }) {
   };
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-3">
+    <Card className="h-full rounded-xl">
+      <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <CategoryIcon className="h-4 w-4 text-muted-foreground" />
-            <CardTitle className="text-base">{snippet.title}</CardTitle>
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <CategoryIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground shrink-0" />
+            <CardTitle className="text-sm sm:text-base truncate">{snippet.title}</CardTitle>
           </div>
-          <Badge variant="outline" className="text-xs shrink-0">
+          <Badge variant="outline" className="text-[10px] sm:text-xs shrink-0">
             {snippet.article}
           </Badge>
         </div>
-        <CardDescription>{snippet.description}</CardDescription>
+        <CardDescription className="text-xs sm:text-sm">{snippet.description}</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="rounded-lg bg-muted p-3 text-sm font-mono">
+      <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-6 pt-0 sm:pt-0">
+        <div className="rounded-lg bg-muted p-2 sm:p-3 text-xs sm:text-sm font-mono">
           {snippet.snippet}
         </div>
-        <div className="flex items-center justify-between">
-          <Badge className={categoryInfo[snippet.category].color}>
+        <div className="flex items-center justify-between gap-2">
+          <Badge className={cn(categoryInfo[snippet.category].color, "text-[10px] sm:text-xs")}>
             {snippet.variant}
           </Badge>
           <Button
             variant="outline"
             size="sm"
             onClick={handleCopy}
-            className="gap-2"
+            className="gap-1.5 h-8 sm:h-9 text-xs sm:text-sm"
           >
             {copied ? (
               <>
@@ -199,36 +200,38 @@ function SnippetCard({ snippet }: { snippet: DisclosureSnippet }) {
 
 export function DisclosureSnippetLibrary() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">Disclosure Snippet Library</h2>
-        <p className="text-muted-foreground mt-1">
+        <h2 className="text-xl sm:text-2xl font-bold">Disclosure Snippet Library</h2>
+        <p className="text-muted-foreground text-sm sm:text-base mt-1">
           Ready-to-use Article 50 transparency notices. Copy, customize, and implement.
         </p>
       </div>
 
       <Tabs defaultValue="all" className="w-full">
-        <TabsList className="flex-wrap h-auto gap-1 p-1">
-          <TabsTrigger value="all">All Snippets</TabsTrigger>
-          <TabsTrigger value="interaction" className="gap-1">
-            <Bot className="h-3 w-3" /> Interaction
-          </TabsTrigger>
-          <TabsTrigger value="synthetic" className="gap-1">
-            <Image className="h-3 w-3" /> Synthetic
-          </TabsTrigger>
-          <TabsTrigger value="deepfake" className="gap-1">
-            <Eye className="h-3 w-3" /> Deepfake
-          </TabsTrigger>
-          <TabsTrigger value="emotion" className="gap-1">
-            <Sparkles className="h-3 w-3" /> Emotion
-          </TabsTrigger>
-          <TabsTrigger value="public_text" className="gap-1">
-            <FileText className="h-3 w-3" /> Public Text
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+          <TabsList className="flex-nowrap sm:flex-wrap h-auto gap-1 p-1 min-w-max sm:min-w-0">
+            <TabsTrigger value="all" className="text-xs sm:text-sm">All</TabsTrigger>
+            <TabsTrigger value="interaction" className="gap-1 text-xs sm:text-sm">
+              <Bot className="h-3 w-3" /> <span className="hidden sm:inline">Interaction</span>
+            </TabsTrigger>
+            <TabsTrigger value="synthetic" className="gap-1 text-xs sm:text-sm">
+              <Image className="h-3 w-3" /> <span className="hidden sm:inline">Synthetic</span>
+            </TabsTrigger>
+            <TabsTrigger value="deepfake" className="gap-1 text-xs sm:text-sm">
+              <Eye className="h-3 w-3" /> <span className="hidden sm:inline">Deepfake</span>
+            </TabsTrigger>
+            <TabsTrigger value="emotion" className="gap-1 text-xs sm:text-sm">
+              <Sparkles className="h-3 w-3" /> <span className="hidden sm:inline">Emotion</span>
+            </TabsTrigger>
+            <TabsTrigger value="public_text" className="gap-1 text-xs sm:text-sm">
+              <FileText className="h-3 w-3" /> <span className="hidden sm:inline">Text</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-        <TabsContent value="all" className="mt-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <TabsContent value="all" className="mt-4 sm:mt-6">
+          <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
             {disclosureSnippets.map((snippet) => (
               <SnippetCard key={snippet.id} snippet={snippet} />
             ))}
@@ -236,8 +239,8 @@ export function DisclosureSnippetLibrary() {
         </TabsContent>
 
         {(["interaction", "synthetic", "deepfake", "emotion", "public_text"] as const).map((category) => (
-          <TabsContent key={category} value={category} className="mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <TabsContent key={category} value={category} className="mt-4 sm:mt-6">
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
               {disclosureSnippets
                 .filter((s) => s.category === category)
                 .map((snippet) => (
