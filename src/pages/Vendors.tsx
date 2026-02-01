@@ -336,7 +336,7 @@ export default function Vendors() {
           {/* Mobile Cards */}
           <div className="space-y-3 md:hidden">
             {filteredVendors.map((vendor) => (
-              <div key={vendor.id} className="rounded-lg border bg-card p-3">
+              <div key={vendor.id} className="rounded-xl border bg-card p-3">
                 <div className="flex items-start justify-between mb-2">
                   <Link
                     to={`/vendors/${vendor.id}`}

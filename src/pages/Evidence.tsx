@@ -315,7 +315,7 @@ export default function Evidence() {
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-lg border bg-card">
+        <div className="rounded-xl border bg-card">
           <Table>
             <TableHeader>
               <TableRow>
