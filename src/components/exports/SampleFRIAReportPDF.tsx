@@ -1,4 +1,5 @@
-import { Document, Page, Text, View, StyleSheet, Font, pdf } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font, Image, pdf } from "@react-pdf/renderer";
+import { KLARVO_LOGO_BASE64, WATERMARK_CONFIG } from "@/lib/pdfAssets";
 
 // Register fonts
 Font.register({
@@ -10,8 +11,21 @@ Font.register({
   ],
 });
 
+// Brand colors - using Klarvo emerald palette
 const emerald = "#0d9373";
 const emeraldLight = "#e6f7f3";
+const gray = {
+  50: "#f9fafb",
+  100: "#f3f4f6",
+  200: "#e5e7eb",
+  300: "#d1d5db",
+  400: "#9ca3af",
+  500: "#6b7280",
+  600: "#4b5563",
+  700: "#374151",
+  800: "#1f2937",
+  900: "#111827",
+};
 
 const styles = StyleSheet.create({
   page: {
@@ -28,7 +42,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   coverBadge: {
-    backgroundColor: "#7c3aed",
+    backgroundColor: emerald,
     color: "#fff",
     fontSize: 8,
     fontWeight: 600,
@@ -36,49 +50,49 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
     alignSelf: "flex-start",
-    marginBottom: 40,
+    marginBottom: 30,
     textTransform: "uppercase",
     letterSpacing: 1,
   },
   coverTitle: {
     fontSize: 24,
     fontWeight: 700,
-    color: "#111",
+    color: gray[900],
     marginBottom: 8,
   },
   coverSubtitle: {
     fontSize: 16,
     fontWeight: 600,
-    color: "#7c3aed",
+    color: emerald,
     marginBottom: 30,
   },
   coverSystemName: {
     fontSize: 20,
     fontWeight: 700,
-    color: "#333",
+    color: gray[800],
     marginBottom: 10,
     paddingBottom: 10,
     borderBottomWidth: 3,
-    borderBottomColor: "#7c3aed",
+    borderBottomColor: emerald,
   },
   coverMeta: {
     fontSize: 10,
-    color: "#666",
+    color: gray[500],
     marginBottom: 6,
   },
   coverMetaLabel: {
     fontWeight: 600,
-    color: "#333",
+    color: gray[800],
   },
   coverFooter: {
     marginTop: "auto",
     paddingTop: 30,
     borderTopWidth: 1,
-    borderTopColor: "#eee",
+    borderTopColor: gray[200],
   },
   articleBadge: {
-    backgroundColor: "#f3e8ff",
-    color: "#7c3aed",
+    backgroundColor: emeraldLight,
+    color: emerald,
     fontSize: 10,
     fontWeight: 600,
     paddingHorizontal: 12,
@@ -93,28 +107,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 10,
     borderBottomWidth: 2,
-    borderBottomColor: "#7c3aed",
+    borderBottomColor: emerald,
   },
   headerTitle: {
     fontSize: 8,
-    color: "#666",
+    color: gray[500],
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   headerPage: {
     fontSize: 8,
-    color: "#666",
+    color: gray[500],
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#7c3aed",
+    color: emerald,
     marginBottom: 12,
     marginTop: 5,
   },
   articleRef: {
     fontSize: 9,
-    color: "#7c3aed",
+    color: emerald,
     fontWeight: 600,
     marginBottom: 10,
     textTransform: "uppercase",
@@ -123,59 +137,59 @@ const styles = StyleSheet.create({
   h2: {
     fontSize: 12,
     fontWeight: 700,
-    color: "#333",
+    color: gray[800],
     marginBottom: 8,
     marginTop: 15,
   },
   h3: {
     fontSize: 11,
     fontWeight: 600,
-    color: "#444",
+    color: gray[700],
     marginBottom: 6,
     marginTop: 10,
   },
   paragraph: {
     fontSize: 10,
-    color: "#333",
+    color: gray[800],
     marginBottom: 8,
     lineHeight: 1.6,
   },
   label: {
     fontSize: 9,
     fontWeight: 600,
-    color: "#666",
+    color: gray[500],
     textTransform: "uppercase",
     letterSpacing: 0.5,
     marginBottom: 4,
   },
   value: {
     fontSize: 10,
-    color: "#333",
+    color: gray[800],
     marginBottom: 12,
   },
   infoBox: {
-    backgroundColor: "#f3e8ff",
+    backgroundColor: emeraldLight,
     padding: 12,
     marginVertical: 10,
     borderLeftWidth: 4,
-    borderLeftColor: "#7c3aed",
+    borderLeftColor: emerald,
     borderRadius: 4,
   },
   infoBoxText: {
     fontSize: 10,
-    color: "#5b21b6",
+    color: emerald,
   },
   table: {
     marginTop: 10,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: gray[200],
     borderRadius: 4,
     overflow: "hidden",
   },
   tableHeader: {
     flexDirection: "row",
-    backgroundColor: "#7c3aed",
+    backgroundColor: emerald,
     padding: 10,
   },
   tableHeaderCell: {
@@ -193,25 +207,25 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: gray[200],
     padding: 10,
   },
   tableRowAlt: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: gray[200],
     padding: 10,
-    backgroundColor: "#faf5ff",
+    backgroundColor: gray[50],
   },
   tableCell: {
     flex: 1,
     fontSize: 9,
-    color: "#333",
+    color: gray[800],
   },
   tableCellWide: {
     flex: 2,
     fontSize: 9,
-    color: "#333",
+    color: gray[800],
   },
   riskBadgeHigh: {
     backgroundColor: "#fee2e2",
@@ -256,16 +270,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     fontSize: 8,
-    color: "#999",
+    color: gray[400],
     borderTopWidth: 1,
-    borderTopColor: "#eee",
+    borderTopColor: gray[200],
     paddingTop: 10,
   },
   signatureSection: {
     marginTop: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: gray[200],
     borderRadius: 4,
   },
   signatureRow: {
@@ -278,13 +292,13 @@ const styles = StyleSheet.create({
   },
   signatureLine: {
     borderBottomWidth: 1,
-    borderBottomColor: "#333",
+    borderBottomColor: gray[800],
     marginTop: 30,
     marginBottom: 5,
   },
   signatureLabel: {
     fontSize: 8,
-    color: "#666",
+    color: gray[500],
   },
   bulletItem: {
     flexDirection: "row",
@@ -293,12 +307,21 @@ const styles = StyleSheet.create({
   bullet: {
     width: 15,
     fontSize: 10,
-    color: "#7c3aed",
+    color: emerald,
   },
   bulletText: {
     flex: 1,
     fontSize: 10,
-    color: "#333",
+    color: gray[800],
+  },
+  watermark: {
+    position: "absolute",
+    top: "45%",
+    left: "15%",
+    fontSize: 60,
+    color: gray[300],
+    transform: "rotate(-45deg)",
+    opacity: 0.15,
   },
 });
 
@@ -324,6 +347,10 @@ export function SampleFRIAReportPDF() {
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
+        <Text style={styles.watermark} fixed>SAMPLE REPORT</Text>
+        
+        <Image src={KLARVO_LOGO_BASE64} style={{ width: 80, marginBottom: 25 }} />
+        
         <Text style={styles.coverBadge}>Fundamental Rights Impact Assessment</Text>
         
         <Text style={styles.coverTitle}>FRIA Report</Text>
@@ -367,11 +394,11 @@ export function SampleFRIAReportPDF() {
         </View>
         
         <View style={styles.coverFooter}>
-          <Text style={{ fontSize: 9, color: "#666", marginBottom: 4 }}>
+          <Text style={{ fontSize: 9, color: gray[500], marginBottom: 4 }}>
             This Fundamental Rights Impact Assessment has been completed in accordance with Article 27 
             of the EU AI Act for high-risk AI systems affecting employment decisions.
           </Text>
-          <Text style={{ fontSize: 9, color: "#666" }}>
+          <Text style={{ fontSize: 9, color: gray[500] }}>
             Generated by Klarvo EU AI Act Compliance Hub • {generatedDate}
           </Text>
         </View>

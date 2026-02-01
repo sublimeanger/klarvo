@@ -1,4 +1,5 @@
-import { Document, Page, Text, View, StyleSheet, Font, pdf } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font, Image, pdf } from "@react-pdf/renderer";
+import { KLARVO_LOGO_BASE64 } from "@/lib/pdfAssets";
 
 // Register fonts
 Font.register({
@@ -9,6 +10,17 @@ Font.register({
     { src: "https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hjp-Ek-_EeA.woff", fontWeight: 700 },
   ],
 });
+
+// Brand colors
+const gray = {
+  50: "#f9fafb",
+  100: "#f3f4f6",
+  200: "#e5e7eb",
+  300: "#d1d5db",
+  400: "#9ca3af",
+  500: "#6b7280",
+  800: "#1f2937",
+};
 
 const emerald = "#0d9373";
 const emeraldLight = "#e6f7f3";
@@ -316,6 +328,15 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: "#666",
   },
+  watermark: {
+    position: "absolute",
+    top: "45%",
+    left: "15%",
+    fontSize: 60,
+    color: gray[300],
+    transform: "rotate(-45deg)",
+    opacity: 0.15,
+  },
 });
 
 // Sample data for the demo
@@ -344,6 +365,10 @@ export function SampleClassificationMemoPDF() {
     <Document>
       {/* Cover Page */}
       <Page size="A4" style={styles.coverPage}>
+        <Text style={styles.watermark} fixed>SAMPLE REPORT</Text>
+        
+        <Image src={KLARVO_LOGO_BASE64} style={{ width: 80, marginBottom: 25 }} />
+        
         <Text style={styles.coverBadge}>Classification Memo</Text>
         
         <Text style={styles.coverTitle}>EU AI Act</Text>
