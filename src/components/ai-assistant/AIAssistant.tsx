@@ -23,10 +23,11 @@ interface Message {
 }
 
 const SUGGESTED_QUESTIONS = [
-  "What are my obligations as a deployer?",
-  "When do I need a FRIA?",
-  "What is the February 2025 deadline?",
+  "Which of my systems need FRIA?",
+  "What should I prioritize this week?",
+  "What's the status of my high-risk systems?",
   "How do I classify my AI system?",
+  "What are my obligations as a deployer?",
 ];
 
 export const AIAssistant = forwardRef<HTMLDivElement, object>(function AIAssistant(_props, ref) {
