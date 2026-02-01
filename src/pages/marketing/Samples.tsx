@@ -3,7 +3,7 @@ import { SEOHead, SchemaMarkup, createFAQSchema } from "@/components/seo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TemplateDownloadGate } from "@/components/marketing/TemplateDownloadGate";
+import { SampleDownloadButton } from "@/components/marketing/SampleDownloadButton";
 import { Link } from "react-router-dom";
 import { 
   FileText, 
@@ -229,10 +229,9 @@ export default function Samples() {
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-3">
-                          <TemplateDownloadGate
+                          <SampleDownloadButton
+                            sampleType={report.id as "classification-memo" | "fria-report" | "evidence-pack"}
                             templateName={report.title}
-                            templateSlug={report.id}
-                            fileName={report.fileName}
                             buttonText={`Download ${report.format}`}
                             buttonSize="lg"
                             className="flex-1"
