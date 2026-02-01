@@ -365,7 +365,9 @@ export default function Vendors() {
                       <DropdownMenuItem asChild>
                         <Link to={`/vendors/${vendor.id}`}>View Details</Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Edit Vendor</DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to={`/vendors/${vendor.id}#edit`}>Edit Vendor</Link>
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive"
@@ -534,8 +536,12 @@ export default function Vendors() {
                           <DropdownMenuItem asChild>
                             <Link to={`/vendors/${vendor.id}`}>View Details</Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>Edit Vendor</DropdownMenuItem>
-                          <DropdownMenuItem>Upload Documents</DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/vendors/${vendor.id}#edit`}>Edit Vendor</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link to={`/vendors/${vendor.id}#documents`}>Upload Documents</Link>
+                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className="text-destructive"

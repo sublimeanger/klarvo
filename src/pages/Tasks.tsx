@@ -91,6 +91,8 @@ export default function Tasks() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [selectedTasks, setSelectedTasks] = useState<Set<string>>(new Set());
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -118,6 +120,18 @@ export default function Tasks() {
     (task.description || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const resetTaskForm = () => {
+    setNewTask({
+      title: "",
+      description: "",
+      priority: "medium",
+      due_date: "",
+      assigned_to: "",
+      ai_system_id: "",
+      task_type: "",
+    });
+  };
+
   const handleCreate = async () => {
     if (!newTask.title.trim()) return;
     
@@ -131,16 +145,27 @@ export default function Tasks() {
       task_type: newTask.task_type || undefined,
     });
 
-    setNewTask({
-      title: "",
-      description: "",
-      priority: "medium",
-      due_date: "",
-      assigned_to: "",
-      ai_system_id: "",
-      task_type: "",
-    });
+    resetTaskForm();
     setShowAddDialog(false);
+  };
+
+  const handleEdit = async () => {
+    if (!editTaskId || !newTask.title.trim()) return;
+    
+    await updateTask.mutateAsync({
+      id: editTaskId,
+      title: newTask.title,
+      description: newTask.description || undefined,
+      priority: newTask.priority,
+      due_date: newTask.due_date || undefined,
+      assigned_to: newTask.assigned_to || undefined,
+      ai_system_id: newTask.ai_system_id || undefined,
+      task_type: newTask.task_type || undefined,
+    });
+
+    resetTaskForm();
+    setEditTaskId(null);
+    setShowEditDialog(false);
   };
 
   const handleStatusToggle = async (task: Task) => {
@@ -482,7 +507,23 @@ export default function Tasks() {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Edit Task</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setNewTask({
+                          title: task.title,
+                          description: task.description || "",
+                          priority: task.priority,
+                          due_date: task.due_date || "",
+                          assigned_to: task.assigned_to || "",
+                          ai_system_id: task.ai_system_id || "",
+                          task_type: task.task_type || "",
+                        });
+                        setEditTaskId(task.id);
+                        setShowEditDialog(true);
+                      }}
+                    >
+                      Edit Task
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="text-destructive"
@@ -627,6 +668,149 @@ export default function Tasks() {
             >
               {createTask.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Task
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Task Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={(open) => {
+        if (!open) {
+          resetTaskForm();
+          setEditTaskId(null);
+        }
+        setShowEditDialog(open);
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Task</DialogTitle>
+            <DialogDescription>
+              Update task details
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Title *</Label>
+              <Input
+                value={newTask.title}
+                onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                placeholder="e.g., Complete classification for ChatGPT"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea
+                value={newTask.description}
+                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                placeholder="Additional details..."
+              />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <Select
+                  value={newTask.priority}
+                  onValueChange={(v) => setNewTask({ ...newTask, priority: v as Task["priority"] })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Due Date</Label>
+                <Input
+                  type="date"
+                  value={newTask.due_date}
+                  onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Assign To</Label>
+                <Select
+                  value={newTask.assigned_to || "__none__"}
+                  onValueChange={(v) => setNewTask({ ...newTask, assigned_to: v === "__none__" ? "" : v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select person" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">Unassigned</SelectItem>
+                    {members.map((m) => (
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.full_name || "Unnamed"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Task Type</Label>
+                <Select
+                  value={newTask.task_type}
+                  onValueChange={(v) => setNewTask({ ...newTask, task_type: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TASK_TYPES.map((t) => (
+                      <SelectItem key={t.value} value={t.value}>
+                        {t.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Link to AI System</Label>
+              <Select
+                value={newTask.ai_system_id || "__none__"}
+                onValueChange={(v) => setNewTask({ ...newTask, ai_system_id: v === "__none__" ? "" : v })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Optional" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">None</SelectItem>
+                  {systems.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => {
+              setShowEditDialog(false);
+              resetTaskForm();
+              setEditTaskId(null);
+            }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleEdit}
+              disabled={!newTask.title.trim() || updateTask.isPending}
+            >
+              {updateTask.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>

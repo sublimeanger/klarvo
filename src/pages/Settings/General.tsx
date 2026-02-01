@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Building2,
   Users,
@@ -11,6 +11,8 @@ import {
   Trash2,
   MoreHorizontal,
   Bell,
+  KeyRound,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +61,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization, useUpdateOrganization } from "@/hooks/useOrganization";
 import { useTeamMembers, useUpdateMemberRole, useRemoveMember } from "@/hooks/useTeamMembers";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import type { Enums } from "@/integrations/supabase/types";
 
 const INDUSTRY_SECTORS = [
@@ -91,7 +95,8 @@ const ROLES: { value: Enums<"app_role">; label: string; description: string }[] 
 ];
 
 export default function GeneralSettings() {
-  const { user, userRole, refreshProfile } = useAuth();
+  const navigate = useNavigate();
+  const { user, userRole, refreshProfile, profile, signOut } = useAuth();
   const { data: org, isLoading: orgLoading } = useOrganization();
   const { data: members, isLoading: membersLoading } = useTeamMembers();
   const updateOrg = useUpdateOrganization();
@@ -102,6 +107,14 @@ export default function GeneralSettings() {
   const [industrySector, setIndustrySector] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
+  
+  // Account settings state
+  const [fullName, setFullName] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const isAdmin = userRole?.role === "admin";
 
@@ -112,6 +125,81 @@ export default function GeneralSettings() {
       setCompanySize(org.company_size || "");
     }
   }, [org]);
+
+  useEffect(() => {
+    if (profile) {
+      setFullName(profile.full_name || "");
+    }
+  }, [profile]);
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    setIsUpdatingProfile(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ full_name: fullName })
+        .eq("id", user.id);
+      
+      if (error) throw error;
+      await refreshProfile();
+      toast.success("Profile updated successfully");
+    } catch (error: any) {
+      toast.error("Failed to update profile", { description: error.message });
+    } finally {
+      setIsUpdatingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!user?.email) return;
+    
+    if (newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters");
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+    try {
+      // Verify current password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      });
+
+      if (signInError) {
+        toast.error("Current password is incorrect");
+        setIsUpdatingPassword(false);
+        return;
+      }
+
+      // Update password
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) throw error;
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      toast.success("Password updated successfully");
+    } catch (error: any) {
+      toast.error("Failed to update password", { description: error.message });
+    } finally {
+      setIsUpdatingPassword(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth/login", { replace: true });
+  };
 
   const handleSaveOrg = async () => {
     await updateOrg.mutateAsync({
@@ -163,8 +251,12 @@ export default function GeneralSettings() {
         </p>
       </div>
 
-      <Tabs defaultValue="organization" className="space-y-4 sm:space-y-6">
+      <Tabs defaultValue="account" className="space-y-4 sm:space-y-6">
         <TabsList className="w-full sm:w-auto overflow-x-auto">
+          <TabsTrigger value="account" className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <User className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            Account
+          </TabsTrigger>
           <TabsTrigger value="organization" className="flex items-center gap-1.5 text-xs sm:text-sm">
             <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Organization</span>
@@ -186,6 +278,127 @@ export default function GeneralSettings() {
             </Link>
           </TabsTrigger>
         </TabsList>
+
+        {/* Account Tab */}
+        <TabsContent value="account" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile</CardTitle>
+              <CardDescription>
+                Manage your personal information
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  value={user?.email || ""}
+                  disabled
+                  className="bg-muted"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Contact support to change your email address
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="full-name">Full Name</Label>
+                <Input
+                  id="full-name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Your full name"
+                />
+              </div>
+
+              <Button
+                onClick={handleSaveProfile}
+                disabled={isUpdatingProfile}
+              >
+                {isUpdatingProfile ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                Save Profile
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <KeyRound className="h-5 w-5" />
+                Change Password
+              </CardTitle>
+              <CardDescription>
+                Update your account password
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="current-password">Current Password</Label>
+                <Input
+                  id="current-password"
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm New Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                />
+              </div>
+
+              <Button
+                onClick={handleChangePassword}
+                disabled={isUpdatingPassword || !currentPassword || !newPassword || !confirmPassword}
+              >
+                {isUpdatingPassword ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <KeyRound className="mr-2 h-4 w-4" />
+                )}
+                Update Password
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Sign Out</CardTitle>
+              <CardDescription>
+                Sign out of your account on this device
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sign Out
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* Organization Tab */}
         <TabsContent value="organization" className="space-y-6">

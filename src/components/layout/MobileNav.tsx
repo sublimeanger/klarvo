@@ -42,10 +42,18 @@ const navigation = [
   { name: "Audit Log", href: "/audit-log", icon: Activity },
 ];
 
+const ROLE_LABELS: Record<string, string> = {
+  admin: "Admin",
+  compliance_owner: "Compliance Owner",
+  system_owner: "System Owner",
+  reviewer: "Reviewer",
+  viewer: "Viewer",
+};
+
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const { profile, signOut } = useAuth();
+  const { profile, userRole, signOut } = useAuth();
 
   const initials = profile?.full_name
     ?.split(" ")
@@ -53,6 +61,8 @@ export function MobileNav() {
     .join("")
     .toUpperCase()
     .slice(0, 2) || "U";
+
+  const displayRole = ROLE_LABELS[userRole?.role || ""] || "Member";
 
   return (
     <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-background/95 backdrop-blur-md border-b px-4 flex items-center justify-between">
@@ -79,7 +89,7 @@ export function MobileNav() {
                 </Avatar>
                 <div>
                   <p className="font-medium text-sm">{profile?.full_name || "User"}</p>
-                  <p className="text-xs text-muted-foreground">Compliance Manager</p>
+                  <p className="text-xs text-muted-foreground">{displayRole}</p>
                 </div>
               </div>
             </div>
