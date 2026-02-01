@@ -113,23 +113,23 @@ export function NotificationSettings() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Bell className="h-5 w-5" />
+    <Card className="rounded-xl">
+      <CardHeader className="p-3 sm:p-6">
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
           Email Notifications
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="text-xs sm:text-sm">
           Configure how and when you receive compliance digest emails
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-center justify-between">
+      <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6 pt-0 sm:pt-0">
+        <div className="flex items-start sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <Label htmlFor="notifications-enabled" className="text-base">
+            <Label htmlFor="notifications-enabled" className="text-sm sm:text-base">
               Enable email notifications
             </Label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Receive digest emails about overdue tasks and expiring items
             </p>
           </div>
@@ -146,8 +146,8 @@ export function NotificationSettings() {
         </div>
 
         {preferences.email_notifications_enabled && (
-          <div className="space-y-2">
-            <Label htmlFor="frequency">Notification frequency</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="frequency" className="text-xs sm:text-sm">Notification frequency</Label>
             <Select
               value={preferences.notification_frequency}
               onValueChange={(value) =>
@@ -157,7 +157,7 @@ export function NotificationSettings() {
                 }))
               }
             >
-              <SelectTrigger id="frequency" className="w-[200px]">
+              <SelectTrigger id="frequency" className="w-full sm:w-[200px] h-10 sm:h-9">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -165,7 +165,7 @@ export function NotificationSettings() {
                 <SelectItem value="weekly">Weekly digest</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
               {preferences.notification_frequency === "daily"
                 ? "Receive a summary every day with items needing attention"
                 : "Receive a weekly summary every Monday"}
@@ -173,8 +173,8 @@ export function NotificationSettings() {
           </div>
         )}
 
-        <div className="flex items-center gap-3 pt-4 border-t">
-          <Button onClick={savePreferences} disabled={isSaving}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 pt-4 border-t">
+          <Button onClick={savePreferences} disabled={isSaving} className="h-10 sm:h-9">
             {isSaving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -188,6 +188,7 @@ export function NotificationSettings() {
               variant="outline"
               onClick={sendTestDigest}
               disabled={isSendingTest}
+              className="h-10 sm:h-9"
             >
               {isSendingTest ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -199,12 +200,12 @@ export function NotificationSettings() {
           )}
         </div>
 
-        <div className="rounded-lg bg-muted/50 p-4 mt-4">
-          <div className="flex items-start gap-3">
-            <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
-            <div className="text-sm">
+        <div className="rounded-xl bg-muted/50 p-3 sm:p-4 mt-3 sm:mt-4">
+          <div className="flex items-start gap-2.5 sm:gap-3">
+            <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground mt-0.5 shrink-0" />
+            <div className="text-xs sm:text-sm">
               <p className="font-medium">What's included in digests?</p>
-              <ul className="mt-1 text-muted-foreground space-y-1">
+              <ul className="mt-1 text-muted-foreground space-y-0.5 sm:space-y-1">
                 <li>• Overdue tasks requiring immediate attention</li>
                 <li>• Evidence files expiring in the next 30 days</li>
                 <li>• Vendor attestations nearing expiration</li>

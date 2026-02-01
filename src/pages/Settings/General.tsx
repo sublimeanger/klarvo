@@ -283,41 +283,43 @@ export default function GeneralSettings() {
         </TabsList>
 
         {/* Account Tab */}
-        <TabsContent value="account" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile</CardTitle>
-              <CardDescription>
+        <TabsContent value="account" className="space-y-4 sm:space-y-6">
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Profile</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Manage your personal information
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="email" className="text-xs sm:text-sm">Email</Label>
                 <Input
                   id="email"
                   value={user?.email || ""}
                   disabled
-                  className="bg-muted"
+                  className="bg-muted h-10 sm:h-9"
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] sm:text-xs text-muted-foreground">
                   Contact support to change your email address
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="full-name">Full Name</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="full-name" className="text-xs sm:text-sm">Full Name</Label>
                 <Input
                   id="full-name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="Your full name"
+                  className="h-10 sm:h-9"
                 />
               </div>
 
               <Button
                 onClick={handleSaveProfile}
                 disabled={isUpdatingProfile}
+                className="w-full sm:w-auto h-10 sm:h-9"
               >
                 {isUpdatingProfile ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -329,53 +331,57 @@ export default function GeneralSettings() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <KeyRound className="h-5 w-5" />
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                <KeyRound className="h-4 w-4 sm:h-5 sm:w-5" />
                 Change Password
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Update your account password
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="current-password" className="text-xs sm:text-sm">Current Password</Label>
                 <Input
                   id="current-password"
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
+                  className="h-10 sm:h-9"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="new-password" className="text-xs sm:text-sm">New Password</Label>
                 <Input
                   id="new-password"
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
+                  className="h-10 sm:h-9"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm New Password</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="confirm-password" className="text-xs sm:text-sm">Confirm New Password</Label>
                 <Input
                   id="confirm-password"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
+                  className="h-10 sm:h-9"
                 />
               </div>
 
               <Button
                 onClick={handleChangePassword}
                 disabled={isUpdatingPassword || !currentPassword || !newPassword || !confirmPassword}
+                className="w-full sm:w-auto h-10 sm:h-9"
               >
                 {isUpdatingPassword ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -387,15 +393,15 @@ export default function GeneralSettings() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Sign Out</CardTitle>
-              <CardDescription>
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Sign Out</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Sign out of your account on this device
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button variant="outline" onClick={handleSignOut}>
+            <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+              <Button variant="outline" onClick={handleSignOut} className="w-full sm:w-auto h-10 sm:h-9">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sign Out
               </Button>
@@ -404,35 +410,36 @@ export default function GeneralSettings() {
         </TabsContent>
 
         {/* Organization Tab */}
-        <TabsContent value="organization" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Organization Profile</CardTitle>
-              <CardDescription>
+        <TabsContent value="organization" className="space-y-4 sm:space-y-6">
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Organization Profile</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Basic information about your organization
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="org-name">Organization Name</Label>
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="org-name" className="text-xs sm:text-sm">Organization Name</Label>
                 <Input
                   id="org-name"
                   value={orgName}
                   onChange={(e) => setOrgName(e.target.value)}
                   placeholder="Your organization name"
                   disabled={!isAdmin}
+                  className="h-10 sm:h-9"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="industry">Industry Sector</Label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="industry" className="text-xs sm:text-sm">Industry Sector</Label>
                   <Select
                     value={industrySector}
                     onValueChange={setIndustrySector}
                     disabled={!isAdmin}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10 sm:h-9">
                       <SelectValue placeholder="Select industry..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -445,14 +452,14 @@ export default function GeneralSettings() {
                   </Select>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="size">Company Size</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="size" className="text-xs sm:text-sm">Company Size</Label>
                   <Select
                     value={companySize}
                     onValueChange={setCompanySize}
                     disabled={!isAdmin}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10 sm:h-9">
                       <SelectValue placeholder="Select size..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -470,7 +477,7 @@ export default function GeneralSettings() {
                 <Button
                   onClick={handleSaveOrg}
                   disabled={updateOrg.isPending}
-                  className="mt-4"
+                  className="mt-3 sm:mt-4 w-full sm:w-auto h-10 sm:h-9"
                 >
                   {updateOrg.isPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -485,23 +492,23 @@ export default function GeneralSettings() {
         </TabsContent>
 
         {/* Team Tab */}
-        <TabsContent value="team" className="space-y-6">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+        <TabsContent value="team" className="space-y-4 sm:space-y-6">
+          <Card className="rounded-xl">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 space-y-0 p-3 sm:p-6">
               <div>
-                <CardTitle>Team Members</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-base sm:text-lg">Team Members</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
                   Manage your team and their access levels
                 </CardDescription>
               </div>
               {(isAdmin || userRole?.role === "compliance_owner") && (
-                <Button onClick={() => setInviteDialogOpen(true)}>
+                <Button onClick={() => setInviteDialogOpen(true)} className="w-full sm:w-auto h-10 sm:h-9">
                   <UserPlus className="mr-2 h-4 w-4" />
                   Invite Member
                 </Button>
               )}
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
               {membersLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -679,35 +686,35 @@ export default function GeneralSettings() {
           </Card>
           {/* Pending Invitations */}
           {(isAdmin || userRole?.role === "compliance_owner") && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Pending Invitations</CardTitle>
-                <CardDescription>
+            <Card className="rounded-xl">
+              <CardHeader className="p-3 sm:p-6">
+                <CardTitle className="text-base sm:text-lg">Pending Invitations</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">
                   Invitations waiting to be accepted
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
                 <PendingInvitesList />
               </CardContent>
             </Card>
           )}
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Role Permissions</CardTitle>
-              <CardDescription>
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Role Permissions</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Overview of what each role can do
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {ROLES.map((role) => (
-                  <div key={role.value} className="rounded-lg border p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Shield className="h-4 w-4 text-primary" />
-                      <h4 className="font-medium">{role.label}</h4>
+                  <div key={role.value} className="rounded-xl border p-3 sm:p-4">
+                    <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                      <Shield className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                      <h4 className="font-medium text-sm sm:text-base">{role.label}</h4>
                     </div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {role.value === "admin" && "Full access to all features, settings, and team management"}
                       {role.value === "compliance_owner" && "Manage compliance, policies, assessments, and evidence"}
                       {role.value === "system_owner" && "Manage AI systems, vendors, and related tasks"}
