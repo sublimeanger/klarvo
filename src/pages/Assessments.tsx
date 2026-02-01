@@ -170,7 +170,7 @@ export default function Assessments() {
 
       {/* Summary Stats */}
       <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
-        <Card className="p-3 sm:p-0">
+        <Card className="rounded-xl p-3 sm:p-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium">Classifications</CardTitle>
             <FileCheck className="h-4 w-4 text-muted-foreground" />
@@ -183,7 +183,7 @@ export default function Assessments() {
           </CardContent>
         </Card>
 
-        <Card className="p-3 sm:p-0">
+        <Card className="rounded-xl p-3 sm:p-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium">High Risk</CardTitle>
             <ShieldAlert className="h-4 w-4 text-warning" />
@@ -196,7 +196,7 @@ export default function Assessments() {
           </CardContent>
         </Card>
 
-        <Card className="p-3 sm:p-0">
+        <Card className="rounded-xl p-3 sm:p-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium">FRIAs</CardTitle>
             <Scale className="h-4 w-4 text-muted-foreground" />
@@ -209,7 +209,7 @@ export default function Assessments() {
           </CardContent>
         </Card>
 
-        <Card className="p-3 sm:p-0">
+        <Card className="rounded-xl p-3 sm:p-0">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0 sm:p-6 sm:pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium">Approved</CardTitle>
             <CheckCircle className="h-4 w-4 text-success" />
@@ -272,7 +272,7 @@ export default function Assessments() {
                   {/* Mobile cards */}
                   <div className="md:hidden space-y-3">
                     {filteredClassifications.map((classification) => (
-                      <div key={classification.id} className="border rounded-lg p-3">
+                      <div key={classification.id} className="border rounded-xl p-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="min-w-0 flex-1">
                             <p className="font-medium text-sm truncate">
@@ -437,7 +437,7 @@ export default function Assessments() {
                     {filteredFRIAs.map((fria) => {
                       const conclusion = getFRIAConclusionBadge(fria.final_conclusion);
                       return (
-                        <div key={fria.id} className="border rounded-lg p-3">
+                        <div key={fria.id} className="border rounded-xl p-3">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0 flex-1">
                               <p className="font-medium text-sm truncate">{fria.title}</p>

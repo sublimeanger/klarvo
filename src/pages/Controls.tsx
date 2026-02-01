@@ -120,7 +120,7 @@ function ControlRow({ control }: { control: Control }) {
 
 function ControlCard({ control }: { control: Control }) {
   return (
-    <div className="md:hidden p-3 rounded-lg border bg-card space-y-2">
+    <div className="md:hidden p-3 rounded-xl border bg-card space-y-2">
       <div className="flex items-start justify-between gap-2">
         <code className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded shrink-0">
           {control.code}
