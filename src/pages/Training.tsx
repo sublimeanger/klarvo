@@ -265,7 +265,7 @@ export default function Training() {
           {/* Mobile cards */}
           <div className="md:hidden space-y-3">
             {filteredRecords.map((record) => (
-              <Card key={record.id} className="p-3">
+              <Card key={record.id} className="rounded-xl p-3">
                 <div className="flex items-start gap-3">
                   <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
                     <User className="h-4 w-4 text-muted-foreground" />

@@ -98,7 +98,7 @@ export function PendingInvitesList({ showAll = false }: PendingInvitesListProps)
           const isExpired = new Date(invite.expires_at) < new Date();
 
           return (
-            <div key={invite.id} className="rounded-lg border bg-card p-3">
+            <div key={invite.id} className="rounded-xl border bg-card p-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-muted p-2">
