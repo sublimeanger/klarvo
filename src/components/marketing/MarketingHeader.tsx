@@ -177,11 +177,11 @@ export function MarketingHeader() {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         isScrolled
           ? "bg-background border-b border-border/50 shadow-sm py-2"
-          : "bg-background/95 backdrop-blur-sm py-3"
+          : "bg-background py-3"
       )}
     >
       <div className="container mx-auto px-4 lg:px-8">
-        <nav className="flex items-center justify-between h-14">
+        <nav className="relative z-10 flex items-center justify-between h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center group shrink-0">
             <img
@@ -381,7 +381,7 @@ export function MarketingHeader() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 -mr-2 rounded-md hover:bg-muted transition-colors"
+            className="lg:hidden relative z-50 p-2 -mr-2 rounded-md hover:bg-muted transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMobileMenuOpen}
