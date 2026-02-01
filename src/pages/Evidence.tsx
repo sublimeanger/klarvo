@@ -19,6 +19,7 @@ import {
   FileSpreadsheet,
   ClipboardCheck,
   History,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,6 +82,7 @@ import { useAISystems } from "@/hooks/useAISystems";
 import { useVendors } from "@/hooks/useVendors";
 import { ApprovalQueue } from "@/components/evidence/ApprovalQueue";
 import { ApprovalHistory } from "@/components/evidence/ApprovalHistory";
+import { DocumentIntelligencePanel } from "@/components/evidence/DocumentIntelligencePanel";
 
 const EVIDENCE_TYPES = [
   { value: "vendor_doc", label: "Vendor Documentation" },
@@ -232,6 +234,11 @@ export default function Evidence() {
             <History className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Approval History</span>
             <span className="sm:hidden">History</span>
+          </TabsTrigger>
+          <TabsTrigger value="ai-analysis" className="gap-1.5 text-xs sm:text-sm">
+            <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">AI Analysis</span>
+            <span className="sm:hidden">AI</span>
           </TabsTrigger>
         </TabsList>
 
@@ -434,6 +441,10 @@ export default function Evidence() {
 
         <TabsContent value="history">
           <ApprovalHistory />
+        </TabsContent>
+
+        <TabsContent value="ai-analysis" className="space-y-6">
+          <DocumentIntelligencePanel />
         </TabsContent>
       </Tabs>
 

@@ -33,11 +33,13 @@ export function RecommendationsPanel({ aiSystemId }: RecommendationsPanelProps) 
 
   if (!isEnabled) {
     return (
-      <Card className="border-dashed">
+      <Card className="border-dashed border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
+              <div className="h-8 w-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
+                <Sparkles className="h-4 w-4 text-primary-foreground" />
+              </div>
               <CardTitle className="text-base">Smart Recommendations</CardTitle>
             </div>
             <Lock className="h-4 w-4 text-muted-foreground" />
@@ -101,11 +103,13 @@ export function RecommendationsPanel({ aiSystemId }: RecommendationsPanelProps) 
   }
 
   return (
-    <Card>
+    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-accent/5">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-primary" />
+            <div className="h-8 w-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
+            </div>
             <CardTitle className="text-base">Smart Recommendations</CardTitle>
           </div>
           <Button

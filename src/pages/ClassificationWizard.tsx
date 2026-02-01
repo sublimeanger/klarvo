@@ -11,6 +11,9 @@ import {
   Loader2,
   HelpCircle,
   XCircle,
+  Sparkles,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -20,12 +23,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Separator } from "@/components/ui/separator";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useAISystem } from "@/hooks/useAISystems";
 import { useClassification, useCreateOrUpdateClassification } from "@/hooks/useClassification";
 import { useControlLibrary, useInitializeControls } from "@/hooks/useControls";
 import { useCreateBulkTasks, BulkTaskInput } from "@/hooks/useTasks";
 import { logClassificationEvent } from "@/lib/auditLogger";
 import { useAuth } from "@/contexts/AuthContext";
+import { ClassificationAssistantPanel } from "@/components/ai-systems/ClassificationAssistantPanel";
 import { toast } from "sonner";
 import { addDays, format } from "date-fns";
 
@@ -149,6 +154,7 @@ export default function ClassificationWizard() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   
   // Answers state
   const [prohibitedAnswers, setProhibitedAnswers] = useState<Record<string, AnswerValue>>({});
@@ -163,6 +169,21 @@ export default function ClassificationWizard() {
   const initializeControls = useInitializeControls();
   const createBulkTasks = useCreateBulkTasks();
   const { profile, user } = useAuth();
+
+  // Build system data for AI assistant
+  const systemDataForAI = system ? {
+    name: system.name,
+    description: system.description,
+    department: system.department,
+    affected_groups: system.affected_groups,
+    value_chain_role: system.value_chain_role,
+    purpose_category: system.purpose_category,
+    workflow_description: system.workflow_description,
+    human_involvement: system.human_involvement,
+    has_workplace_impact: system.has_workplace_impact,
+    is_customer_facing: system.is_customer_facing,
+    processes_personal_data: system.processes_personal_data,
+  } : {};
 
   // Initialize from existing classification
   useEffect(() => {
@@ -646,14 +667,26 @@ export default function ClassificationWizard() {
   return (
     <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
-      <div className="flex items-center gap-3 sm:gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate(`/ai-systems/${id}`)} className="shrink-0">
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="min-w-0">
-          <h1 className="text-lg sm:text-2xl font-semibold tracking-tight truncate">Classify: {system.name}</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">EU AI Act risk classification</p>
+      <div className="flex items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <Button variant="ghost" size="icon" onClick={() => navigate(`/ai-systems/${id}`)} className="shrink-0">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-2xl font-semibold tracking-tight truncate">Classify: {system.name}</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">EU AI Act risk classification</p>
+          </div>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowAIAssistant(!showAIAssistant)}
+          className="gap-2"
+        >
+          <Sparkles className="h-4 w-4" />
+          <span className="hidden sm:inline">AI Assist</span>
+          {showAIAssistant ? <ChevronRight className="h-3 w-3" /> : <ChevronLeft className="h-3 w-3" />}
+        </Button>
       </div>
 
       {/* Progress */}
@@ -674,8 +707,10 @@ export default function ClassificationWizard() {
         </div>
       </div>
 
-      {/* Content */}
-      <Card>
+      {/* Main Content with optional AI sidebar */}
+      <div className={`grid gap-6 ${showAIAssistant ? 'lg:grid-cols-3' : ''}`}>
+        <div className={showAIAssistant ? 'lg:col-span-2' : ''}>
+          <Card>
         <CardHeader>
           <CardTitle>{steps[currentStep - 1]?.title}</CardTitle>
           <CardDescription>
@@ -716,6 +751,56 @@ export default function ClassificationWizard() {
           </div>
         </CardContent>
       </Card>
+        </div>
+
+        {/* AI Classification Assistant Sidebar */}
+        {showAIAssistant && (
+          <div className="lg:col-span-1">
+            <div className="sticky top-4">
+              <ClassificationAssistantPanel
+                systemData={systemDataForAI}
+                onApplyClassification={(result) => {
+                  // Map AI classification to answers
+                  if (result.prohibited_indicators) {
+                    const newProhibitedAnswers: Record<string, AnswerValue> = {};
+                    result.prohibited_indicators.forEach((ind) => {
+                      const matchingQ = PROHIBITED_QUESTIONS.find(q => 
+                        q.question.toLowerCase().includes(ind.indicator.toLowerCase().slice(0, 20))
+                      );
+                      if (matchingQ) {
+                        newProhibitedAnswers[matchingQ.id] = ind.present ? "yes" : "no";
+                      }
+                    });
+                    if (Object.keys(newProhibitedAnswers).length > 0) {
+                      setProhibitedAnswers(prev => ({ ...prev, ...newProhibitedAnswers }));
+                    }
+                  }
+
+                  if (result.high_risk_categories) {
+                    const newHighRiskAnswers: Record<string, AnswerValue> = {};
+                    result.high_risk_categories.forEach((cat) => {
+                      const matchingQ = HIGH_RISK_QUESTIONS.find(q => 
+                        q.category === cat.category?.toLowerCase().replace(/[^a-z]/g, '_')
+                      );
+                      if (matchingQ) {
+                        newHighRiskAnswers[matchingQ.id] = cat.applicable ? "yes" : "no";
+                      }
+                    });
+                    if (Object.keys(newHighRiskAnswers).length > 0) {
+                      setHighRiskAnswers(prev => ({ ...prev, ...newHighRiskAnswers }));
+                    }
+                  }
+
+                  toast.success("AI classification applied. Please review the answers.");
+                }}
+              />
+              <p className="text-xs text-muted-foreground mt-3 text-center">
+                AI-powered guidance, not legal advice
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
