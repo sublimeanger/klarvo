@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -54,9 +55,8 @@ export function MobileNav() {
 
   return (
     <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-16 bg-background/95 backdrop-blur-md border-b px-4 flex items-center justify-between">
-      <Link to="/" className="flex items-center gap-2">
-        <img src="/favicon.png" alt="Klarvo" className="h-8 w-8 rounded-lg" />
-        <span className="font-semibold">Klarvo</span>
+      <Link to="/" className="flex items-center">
+        <img src={klarvoLogo} alt="Klarvo" className="h-7" />
       </Link>
 
       <Sheet open={open} onOpenChange={setOpen}>

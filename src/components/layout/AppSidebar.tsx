@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -64,13 +65,18 @@ export function AppSidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center justify-between border-b px-4">
         <Link to="/" className="flex items-center gap-3">
-          <img 
-            src="/favicon.png" 
-            alt="Klarvo" 
-            className="h-9 w-9 rounded-lg"
-          />
-          {!collapsed && (
-            <span className="text-base font-semibold">Klarvo</span>
+          {collapsed ? (
+            <img 
+              src="/favicon.png" 
+              alt="Klarvo" 
+              className="h-9 w-9 rounded-lg"
+            />
+          ) : (
+            <img 
+              src={klarvoLogo} 
+              alt="Klarvo" 
+              className="h-7"
+            />
           )}
         </Link>
         <Button
