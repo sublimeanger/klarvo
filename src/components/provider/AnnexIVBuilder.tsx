@@ -168,35 +168,36 @@ export function AnnexIVBuilder({ versionId, organizationId }: AnnexIVBuilderProp
 
   if (isLoading) {
     return <div className="animate-pulse space-y-4">
-      <div className="h-8 bg-muted rounded w-1/3" />
-      <div className="h-64 bg-muted rounded" />
+      <div className="h-6 sm:h-8 bg-muted rounded w-1/3" />
+      <div className="h-48 sm:h-64 bg-muted rounded" />
     </div>;
   }
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSave)} className="space-y-4 sm:space-y-6">
       {/* Progress Header */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
+      <Card className="rounded-xl">
+        <CardHeader className="pb-3 p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <CardTitle className="text-lg">Technical Documentation (Annex IV)</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-base sm:text-lg">Technical Documentation (Annex IV)</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Required documentation for high-risk AI systems under Article 11
               </CardDescription>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-muted-foreground">Completion</p>
-                <p className="text-2xl font-bold">{calculateProgress()}%</p>
+            <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+              <div className="text-left sm:text-right">
+                <p className="text-xs sm:text-sm text-muted-foreground">Completion</p>
+                <p className="text-xl sm:text-2xl font-bold">{calculateProgress()}%</p>
               </div>
-              <Button type="submit" disabled={!isDirty}>
+              <Button type="submit" disabled={!isDirty} className="h-10">
                 <Save className="h-4 w-4 mr-2" />
-                Save Draft
+                <span className="hidden sm:inline">Save Draft</span>
+                <span className="sm:hidden">Save</span>
               </Button>
             </div>
           </div>
-          <Progress value={calculateProgress()} className="mt-4" />
+          <Progress value={calculateProgress()} className="mt-3 sm:mt-4" />
         </CardHeader>
       </Card>
 
@@ -207,65 +208,70 @@ export function AnnexIVBuilder({ versionId, organizationId }: AnnexIVBuilderProp
             <TabsTrigger 
               key={section.id} 
               value={section.id}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2"
             >
-              <section.icon className="h-4 w-4 mr-1.5" />
-              {section.label}
+              <section.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+              <span className="hidden sm:inline">{section.label}</span>
+              <span className="sm:hidden">{section.label.split(' ')[0]}</span>
             </TabsTrigger>
           ))}
         </TabsList>
 
         {/* General Description */}
-        <TabsContent value="general" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">1. General Description</CardTitle>
-              <CardDescription>
+        <TabsContent value="general" className="mt-4 sm:mt-6">
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-sm sm:text-base">1. General Description</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Describe the AI system's purpose, provider details, and technical requirements
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="purposeDescription">Intended Purpose & Use Cases</Label>
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="purposeDescription" className="text-xs sm:text-sm">Intended Purpose & Use Cases</Label>
                 <Textarea 
                   id="purposeDescription"
                   placeholder="Describe the intended purpose and use cases of the AI system..."
                   {...register("purposeDescription")}
-                  className="min-h-[120px]"
+                  className="min-h-[100px] sm:min-h-[120px]"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="providerDetails">Provider Details</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="providerDetails" className="text-xs sm:text-sm">Provider Details</Label>
                 <Textarea 
                   id="providerDetails"
                   placeholder="Provider name, address, contact information..."
                   {...register("providerDetails")}
+                  className="min-h-[80px]"
                 />
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="versionInfo">Version Information</Label>
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="versionInfo" className="text-xs sm:text-sm">Version Information</Label>
                   <Input 
                     id="versionInfo"
                     placeholder="e.g., v2.1.0"
                     {...register("versionInfo")}
+                    className="h-10"
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="hardwareRequirements">Hardware Requirements</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="hardwareRequirements" className="text-xs sm:text-sm">Hardware Requirements</Label>
                 <Textarea 
                   id="hardwareRequirements"
                   placeholder="Specify hardware requirements and compute resources..."
                   {...register("hardwareRequirements")}
+                  className="min-h-[80px]"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="softwareRequirements">Software Requirements</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="softwareRequirements" className="text-xs sm:text-sm">Software Requirements</Label>
                 <Textarea 
                   id="softwareRequirements"
                   placeholder="Specify software dependencies and runtime requirements..."
                   {...register("softwareRequirements")}
+                  className="min-h-[80px]"
                 />
               </div>
             </CardContent>

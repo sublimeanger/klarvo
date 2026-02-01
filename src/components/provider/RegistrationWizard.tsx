@@ -112,11 +112,11 @@ export function RegistrationWizard({ versionId, organizationId }: RegistrationWi
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="py-8">
+      <Card className="rounded-xl">
+        <CardContent className="py-6 sm:py-8 p-3 sm:p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3" />
-            <div className="h-32 bg-muted rounded" />
+            <div className="h-6 sm:h-8 bg-muted rounded w-1/3" />
+            <div className="h-24 sm:h-32 bg-muted rounded" />
           </div>
         </CardContent>
       </Card>
@@ -125,18 +125,18 @@ export function RegistrationWizard({ versionId, organizationId }: RegistrationWi
 
   if (!registration) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">EU Database Registration</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">EU Database Registration</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Article 49 registration in the EU database
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">No registration started.</p>
-            <Button onClick={handleStart}>
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="text-center py-6 sm:py-8">
+            <Globe className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+            <p className="text-sm text-muted-foreground mb-4">No registration started.</p>
+            <Button onClick={handleStart} className="h-11 w-full sm:w-auto">
               Start Registration
             </Button>
           </div>
@@ -146,14 +146,14 @@ export function RegistrationWizard({ versionId, organizationId }: RegistrationWi
   }
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSave)} className="space-y-4 sm:space-y-6">
       {/* Status Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-lg">EU Database Registration</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-base sm:text-lg">EU Database Registration</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Annex VIII registration requirements
               </CardDescription>
             </div>
@@ -163,17 +163,17 @@ export function RegistrationWizard({ versionId, organizationId }: RegistrationWi
           </div>
         </CardHeader>
         {registration.eu_database_reference && (
-          <CardContent>
-            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-lg p-4">
+          <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-xl p-3 sm:p-4">
               <div className="flex items-center gap-2 mb-1">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="font-medium text-emerald-700 dark:text-emerald-300">EU Database Reference</span>
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-300">EU Database Reference</span>
               </div>
-              <p className="text-lg font-mono text-emerald-600 dark:text-emerald-400">
+              <p className="text-base sm:text-lg font-mono text-emerald-600 dark:text-emerald-400 break-all">
                 {registration.eu_database_reference}
               </p>
               {registration.registered_at && (
-                <p className="text-sm text-emerald-500 mt-1">
+                <p className="text-xs sm:text-sm text-emerald-500 mt-1">
                   Registered on {format(new Date(registration.registered_at), "MMMM d, yyyy")}
                 </p>
               )}
@@ -184,56 +184,56 @@ export function RegistrationWizard({ versionId, organizationId }: RegistrationWi
 
       {/* Registration Form Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="provider">Provider</TabsTrigger>
-          <TabsTrigger value="system">AI System</TabsTrigger>
-          <TabsTrigger value="classification">Classification</TabsTrigger>
-          <TabsTrigger value="conformity">Conformity</TabsTrigger>
-          <TabsTrigger value="availability">Availability</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto gap-1">
+          <TabsTrigger value="provider" className="text-xs sm:text-sm py-2">Provider</TabsTrigger>
+          <TabsTrigger value="system" className="text-xs sm:text-sm py-2">System</TabsTrigger>
+          <TabsTrigger value="classification" className="text-xs sm:text-sm py-2">Class</TabsTrigger>
+          <TabsTrigger value="conformity" className="text-xs sm:text-sm py-2">Conformity</TabsTrigger>
+          <TabsTrigger value="availability" className="text-xs sm:text-sm py-2 col-span-3 sm:col-span-1">Availability</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="provider" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
+        <TabsContent value="provider" className="space-y-3 sm:space-y-4">
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-sm sm:text-base flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
                 Provider Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="provider_name">Provider Name *</Label>
-                  <Input id="provider_name" {...register("provider_name")} />
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="provider_name" className="text-xs sm:text-sm">Provider Name *</Label>
+                  <Input id="provider_name" {...register("provider_name")} className="h-10" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="provider_contact_email">Contact Email</Label>
-                  <Input id="provider_contact_email" type="email" {...register("provider_contact_email")} />
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="provider_contact_email" className="text-xs sm:text-sm">Contact Email</Label>
+                  <Input id="provider_contact_email" type="email" {...register("provider_contact_email")} className="h-10" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="provider_address">Provider Address *</Label>
-                <Textarea id="provider_address" {...register("provider_address")} />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="provider_address" className="text-xs sm:text-sm">Provider Address *</Label>
+                <Textarea id="provider_address" {...register("provider_address")} className="min-h-[80px]" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="provider_contact_phone">Contact Phone</Label>
-                <Input id="provider_contact_phone" {...register("provider_contact_phone")} />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="provider_contact_phone" className="text-xs sm:text-sm">Contact Phone</Label>
+                <Input id="provider_contact_phone" {...register("provider_contact_phone")} className="h-10" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Authorised Representative (if applicable)</CardTitle>
+          <Card className="rounded-xl">
+            <CardHeader className="p-3 sm:p-6">
+              <CardTitle className="text-sm sm:text-base">Authorised Representative (if applicable)</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="authorised_rep_name">Representative Name</Label>
-                <Input id="authorised_rep_name" {...register("authorised_rep_name")} />
+            <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="authorised_rep_name" className="text-xs sm:text-sm">Representative Name</Label>
+                <Input id="authorised_rep_name" {...register("authorised_rep_name")} className="h-10" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="authorised_rep_address">Representative Address</Label>
-                <Textarea id="authorised_rep_address" {...register("authorised_rep_address")} />
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label htmlFor="authorised_rep_address" className="text-xs sm:text-sm">Representative Address</Label>
+                <Textarea id="authorised_rep_address" {...register("authorised_rep_address")} className="min-h-[80px]" />
               </div>
             </CardContent>
           </Card>
@@ -380,13 +380,13 @@ export function RegistrationWizard({ versionId, organizationId }: RegistrationWi
       </Tabs>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
-        <Button type="submit" variant="outline">
+      <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
+        <Button type="submit" variant="outline" className="h-11 w-full sm:w-auto">
           <Save className="h-4 w-4 mr-2" />
           Save Draft
         </Button>
         {registration.registration_status === 'draft' && (
-          <Button type="button" onClick={handleSubmitRegistration}>
+          <Button type="button" onClick={handleSubmitRegistration} className="h-11 w-full sm:w-auto">
             <Send className="h-4 w-4 mr-2" />
             Submit to EU Database
           </Button>
