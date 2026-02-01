@@ -137,7 +137,11 @@ export function NewsletterForm({
           required
         />
       </div>
-      <Button type="submit" className="h-11 px-5 rounded-xl font-semibold group" disabled={isLoading}>
+      <Button 
+        type="submit" 
+        className="h-11 px-5 rounded-xl font-semibold group" 
+        disabled={isLoading}
+      >
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
