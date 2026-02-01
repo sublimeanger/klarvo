@@ -23,6 +23,7 @@ export function OperatorTrackAddons({ billingPeriod, showTitle = true }: Operato
     canPurchaseProviderAssurance,
     planId,
     isLoading: accessLoading,
+    isAuthenticated,
   } = useOperatorTrackAccess();
   const { createAddonCheckoutSession, isLoading: billingLoading } = useBilling();
 
@@ -52,7 +53,8 @@ export function OperatorTrackAddons({ billingPeriod, showTitle = true }: Operato
     createAddonCheckoutSession(addonId, billingPeriod);
   };
 
-  if (accessLoading) {
+  // Show loading skeleton only for authenticated users still loading
+  if (accessLoading && isAuthenticated) {
     return (
       <div className="space-y-4">
         {showTitle && <div className="h-8 bg-muted animate-pulse rounded w-48" />}

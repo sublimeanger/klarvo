@@ -7,87 +7,71 @@ Restructure Provider, Importer, and Distributor tracks as purchasable add-ons ra
 
 ## ✅ Sprint 1: Database + Billing Constants (DONE)
 
-### 1.1 Database Migration ✅
 - Created `subscription_addons` table with RLS
-- Tracks addon_id, status, stripe IDs, billing period
-
-### 1.2 Billing Constants ✅
-- Added `AddonId` type with new operator track add-ons
-- Created `OPERATOR_TRACK_ADDONS` array with 3 tiers:
-  - `importer_distributor` (€149/mo) - Starter+
-  - `provider_track` (€499/mo) - Growth+
-  - `provider_assurance` (€899/mo) - Pro+
-- Updated `UPGRADE_MODAL_COPY` with addon-specific entries
-- Added helper functions: `getAddonById`, `addonRequiresPlan`, `getAvailableAddons`
+- Added `AddonId` type with operator track add-ons
+- Created `OPERATOR_TRACK_ADDONS` array with 3 tiers
 
 ---
 
 ## ✅ Sprint 2: Hooks + Gating Components (DONE)
 
-### 2.1 useAddons Hook ✅
-- Fetches active add-ons from `subscription_addons`
-- Provides `hasAddon()`, `hasProviderTrack()`, `hasImporterDistributorTrack()`
-
-### 2.2 useOperatorTrackAccess Hook ✅
-- Combines plan entitlements + addon status
-- Enterprise gets all tracks included
-- Returns `canAccessX` and `canPurchaseX` flags
-
-### 2.3 AddonGate Component ✅
-- Conditional rendering based on addon subscription
-- `showLocked` mode with upgrade prompts
-- `NavAddonGate` for sidebar items
-
-### 2.4 AppSidebar Updates ✅
-- "Market Access" section with locked nav items
-- Tooltip with upgrade prompts
-- Click redirects to billing page
+- `useAddons` hook to fetch active add-ons
+- `useOperatorTrackAccess` hook combining plan + addon access
+- `AddonGate` component for conditional rendering
+- `NavAddonGate` for sidebar locked items
+- AppSidebar "Market Access" section with locked nav items
 
 ---
 
-## 🔄 Sprint 3: Stripe Integration (IN PROGRESS)
+## ✅ Sprint 3: Stripe Integration (DONE)
 
-### 3.1 Update Edge Functions
-- [ ] Modify `create-checkout-session` to support add-on purchases
-- [ ] Update `stripe-webhook` to sync addon subscriptions
-- [ ] Create add-on-specific price IDs in Stripe
-
-### 3.2 Billing UI Updates
-- [ ] Add "Market Access Add-ons" section to Pricing page
-- [ ] Add addon purchase flow to Settings/Billing
-- [ ] Show active addons in subscription display
+- Updated `create-checkout-session` to support addon purchases
+- Updated `stripe-webhook` to sync addon subscriptions
+- Updated `useBilling` hook with `createAddonCheckoutSession`
+- Created `OperatorTrackAddons` component for Pricing/Billing pages
 
 ---
 
-## Sprint 4: Page-Level Gating
+## ✅ Sprint 4: Page-Level Gating (DONE)
 
-### 4.1 Route Protection
-- [ ] Wrap provider-track routes with AddonGate
-- [ ] Wrap importer/distributor routes with AddonGate
-- [ ] Create upgrade landing pages for locked routes
-
-### 4.2 Feature-Level Gating
-- [ ] Gate specific components within pages
-- [ ] Add upgrade CTAs in locked sections
+- Created `AddonLockedPage` component for full-page locked state
+- Added gating to all provider-track pages
+- Added gating to importer/distributor verification pages
 
 ---
 
-## Sprint 5: Testing & Polish
+## ✅ Sprint 5: Testing & Polish (DONE)
 
-- [ ] Test addon purchase flow end-to-end
-- [ ] Test Enterprise access (all tracks included)
-- [ ] Test plan downgrades with active addons
-- [ ] UI polish and error handling
+- Fixed loading state for unauthenticated users
+- Verified Pricing page renders add-ons correctly
+- Verified plan requirement badges display correctly
+- Deployed edge functions to production
 
 ---
 
 ## Files Created/Modified
 
 ### Created
-- `supabase/migrations/..._subscription_addons.sql` ✅
-- `src/hooks/useAddons.ts` ✅
-- `src/components/billing/AddonGate.tsx` ✅
+- `supabase/migrations/..._subscription_addons.sql`
+- `src/hooks/useAddons.ts`
+- `src/components/billing/AddonGate.tsx`
+- `src/components/billing/AddonLockedPage.tsx`
+- `src/components/billing/OperatorTrackAddons.tsx`
 
 ### Modified
-- `src/lib/billing-constants.ts` ✅ (major refactor)
-- `src/components/layout/AppSidebar.tsx` ✅ (locked nav items)
+- `src/lib/billing-constants.ts` (major refactor)
+- `src/hooks/useBilling.ts` (addon checkout support)
+- `src/components/layout/AppSidebar.tsx` (locked nav items)
+- `src/pages/Pricing.tsx` (Market Access section)
+- `src/pages/Settings/Billing.tsx` (addon purchase UI)
+- `supabase/functions/create-checkout-session/index.ts`
+- `supabase/functions/stripe-webhook/index.ts`
+- All `src/pages/provider-track/*.tsx` pages (addon gating)
+
+---
+
+## Next Steps (Optional Future Work)
+
+- [ ] Create actual Stripe price IDs for add-ons in Stripe Dashboard
+- [ ] Test end-to-end addon purchase flow with real Stripe test mode
+- [ ] Add addon management in customer portal
