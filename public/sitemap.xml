@@ -221,6 +221,14 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- Sample Reports Page -->
+  <url>
+    <loc>https://klarvo.io/samples</loc>
+    <lastmod>2025-01-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- Industry Pages -->
   <url>
     <loc>https://klarvo.io/industries</loc>
