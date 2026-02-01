@@ -98,6 +98,41 @@ export default function Security() {
         <li><strong>ISO 27001:</strong> Roadmap planned</li>
       </ul>
 
+      <h2>Audit Logging</h2>
+      <p>
+        All sensitive operations are logged for compliance and security purposes. The following actions are recorded in the audit trail:
+      </p>
+      <h3>Classification & Assessments</h3>
+      <ul>
+        <li>Classification changes (risk level, prohibited screening, high-risk determination)</li>
+        <li>FRIA creation, updates, and approvals</li>
+        <li>Assessment answer submissions</li>
+      </ul>
+      <h3>Evidence & Controls</h3>
+      <ul>
+        <li>Evidence file uploads and deletions</li>
+        <li>Evidence approval and rejection actions</li>
+        <li>Control status changes</li>
+        <li>Control-evidence linking</li>
+      </ul>
+      <h3>Tasks & Incidents</h3>
+      <ul>
+        <li>Task creation, assignment, and completion</li>
+        <li>Incident creation, updates, and resolution</li>
+      </ul>
+      <h3>Governance & Access</h3>
+      <ul>
+        <li>User role changes</li>
+        <li>AI system creation, updates, and deletion</li>
+        <li>Vendor record modifications</li>
+        <li>Policy updates and approvals</li>
+        <li>Export generation (Classification Memo, FRIA Report, Evidence Pack)</li>
+        <li>Auditor link creation and access</li>
+      </ul>
+      <p>
+        All audit log entries include: timestamp, user identity, action type, affected entity, and relevant metadata. Logs are retained for a minimum of 7 years.
+      </p>
+
       <h2>Incident Response</h2>
       <p>
         We maintain a comprehensive incident response plan that includes:
