@@ -678,6 +678,76 @@ export type Database = {
           },
         ]
       }
+      auditor_links: {
+        Row: {
+          access_count: number
+          ai_system_id: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          expires_at: string
+          id: string
+          is_active: boolean
+          last_accessed_at: string | null
+          max_access_count: number | null
+          name: string
+          organization_id: string
+          token: string
+        }
+        Insert: {
+          access_count?: number
+          ai_system_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          last_accessed_at?: string | null
+          max_access_count?: number | null
+          name: string
+          organization_id: string
+          token: string
+        }
+        Update: {
+          access_count?: number
+          ai_system_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          last_accessed_at?: string | null
+          max_access_count?: number | null
+          name?: string
+          organization_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auditor_links_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auditor_links_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auditor_links_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       classification_history: {
         Row: {
           ai_system_id: string
@@ -696,6 +766,7 @@ export type Database = {
           is_high_risk_candidate: boolean | null
           organization_id: string
           risk_level: string
+          ruleset_version: string | null
           transparency_categories: string[] | null
           version_number: number
         }
@@ -716,6 +787,7 @@ export type Database = {
           is_high_risk_candidate?: boolean | null
           organization_id: string
           risk_level?: string
+          ruleset_version?: string | null
           transparency_categories?: string[] | null
           version_number?: number
         }
@@ -736,6 +808,7 @@ export type Database = {
           is_high_risk_candidate?: boolean | null
           organization_id?: string
           risk_level?: string
+          ruleset_version?: string | null
           transparency_categories?: string[] | null
           version_number?: number
         }
@@ -1680,6 +1753,36 @@ export type Database = {
           },
         ]
       }
+      regulatory_rulesets: {
+        Row: {
+          changes_summary: string | null
+          created_at: string
+          description: string | null
+          effective_date: string
+          id: string
+          is_current: boolean
+          version: string
+        }
+        Insert: {
+          changes_summary?: string | null
+          created_at?: string
+          description?: string | null
+          effective_date: string
+          id?: string
+          is_current?: boolean
+          version: string
+        }
+        Update: {
+          changes_summary?: string | null
+          created_at?: string
+          description?: string | null
+          effective_date?: string
+          id?: string
+          is_current?: boolean
+          version?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           billing_period: Database["public"]["Enums"]["billing_period"]
@@ -2040,36 +2143,57 @@ export type Database = {
           contact_email: string | null
           contract_renewal_date: string | null
           created_at: string
+          documentation_provided_at: string | null
           due_diligence_status: Database["public"]["Enums"]["due_diligence_status"]
           id: string
+          incident_escalation_contact: string | null
+          last_attestation_date: string | null
+          model_provider: string | null
           name: string
+          next_review_date: string | null
           notes: string | null
           organization_id: string
+          update_cadence: string | null
           updated_at: string
+          version_tracking_method: string | null
           website: string | null
         }
         Insert: {
           contact_email?: string | null
           contract_renewal_date?: string | null
           created_at?: string
+          documentation_provided_at?: string | null
           due_diligence_status?: Database["public"]["Enums"]["due_diligence_status"]
           id?: string
+          incident_escalation_contact?: string | null
+          last_attestation_date?: string | null
+          model_provider?: string | null
           name: string
+          next_review_date?: string | null
           notes?: string | null
           organization_id: string
+          update_cadence?: string | null
           updated_at?: string
+          version_tracking_method?: string | null
           website?: string | null
         }
         Update: {
           contact_email?: string | null
           contract_renewal_date?: string | null
           created_at?: string
+          documentation_provided_at?: string | null
           due_diligence_status?: Database["public"]["Enums"]["due_diligence_status"]
           id?: string
+          incident_escalation_contact?: string | null
+          last_attestation_date?: string | null
+          model_provider?: string | null
           name?: string
+          next_review_date?: string | null
           notes?: string | null
           organization_id?: string
+          update_cadence?: string | null
           updated_at?: string
+          version_tracking_method?: string | null
           website?: string | null
         }
         Relationships: [
