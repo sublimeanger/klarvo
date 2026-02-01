@@ -58,28 +58,28 @@ function ActivityItem({ entry, showEntity = true }: ActivityItemProps) {
   const userName = entry.user?.full_name || "System";
   
   return (
-    <div className="flex items-start gap-3 py-3 border-b last:border-0">
-      <div className={cn("rounded-full p-1.5 bg-muted", config.color)}>
-        <Icon className="h-3.5 w-3.5" />
+    <div className="flex items-start gap-2 sm:gap-3 py-2 sm:py-3 border-b last:border-0">
+      <div className={cn("rounded-full p-1 sm:p-1.5 bg-muted shrink-0", config.color)}>
+        <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm">
+        <p className="text-xs sm:text-sm">
           <span className="font-medium">{userName}</span>
           {" "}
           <span className="text-muted-foreground">{config.label.toLowerCase()}</span>
           {showEntity && entry.entity_name && (
             <>
               {" "}
-              <span className="font-medium">{entry.entity_name}</span>
+              <span className="font-medium truncate">{entry.entity_name}</span>
             </>
           )}
         </p>
         {entry.details && Object.keys(entry.details).length > 0 && (
-          <p className="text-xs text-muted-foreground mt-0.5 truncate">
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 truncate">
             {formatDetails(entry.details)}
           </p>
         )}
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">
           {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}
         </p>
       </div>
@@ -124,19 +124,19 @@ export function ActivityFeed({
 }: ActivityFeedProps) {
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader className="pb-3">
-          <Skeleton className="h-5 w-24" />
-          <Skeleton className="h-4 w-40" />
+      <Card className="rounded-xl">
+        <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+          <Skeleton className="h-4 sm:h-5 w-24" />
+          <Skeleton className="h-3 sm:h-4 w-40" />
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-2 sm:space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-start gap-3">
-                <Skeleton className="h-8 w-8 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-3 w-20" />
+              <div key={i} className="flex items-start gap-2 sm:gap-3">
+                <Skeleton className="h-7 w-7 sm:h-8 sm:w-8 rounded-full" />
+                <div className="flex-1 space-y-1.5 sm:space-y-2">
+                  <Skeleton className="h-3.5 sm:h-4 w-full" />
+                  <Skeleton className="h-2.5 sm:h-3 w-20" />
                 </div>
               </div>
             ))}
@@ -147,22 +147,22 @@ export function ActivityFeed({
   }
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base flex items-center gap-2">
-          <Activity className="h-4 w-4" />
+    <Card className="rounded-xl">
+      <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+        <CardTitle className="text-sm sm:text-base flex items-center gap-2">
+          <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
           {title}
         </CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
+        {description && <CardDescription className="text-xs sm:text-sm">{description}</CardDescription>}
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
         {entries.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-6">
+          <p className="text-xs sm:text-sm text-muted-foreground text-center py-4 sm:py-6">
             {emptyMessage}
           </p>
         ) : (
           <ScrollArea style={{ maxHeight }}>
-            <div className="pr-4">
+            <div className="pr-2 sm:pr-4">
               {entries.map((entry) => (
                 <ActivityItem key={entry.id} entry={entry} showEntity={showEntity} />
               ))}
