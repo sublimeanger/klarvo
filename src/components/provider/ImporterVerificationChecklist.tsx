@@ -122,11 +122,11 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="py-8">
+      <Card className="rounded-xl">
+        <CardContent className="py-6 sm:py-8 p-3 sm:p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3" />
-            <div className="h-32 bg-muted rounded" />
+            <div className="h-6 sm:h-8 bg-muted rounded w-1/3" />
+            <div className="h-24 sm:h-32 bg-muted rounded" />
           </div>
         </CardContent>
       </Card>
@@ -135,18 +135,18 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
 
   if (!verification) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Importer Verification</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Importer Verification</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Article 23 importer obligations checklist
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">No verification started.</p>
-            <Button onClick={handleStart}>
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="text-center py-6 sm:py-8">
+            <Package className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+            <p className="text-sm text-muted-foreground mb-4">No verification started.</p>
+            <Button onClick={handleStart} className="h-11 w-full sm:w-auto">
               Start Verification
             </Button>
           </div>
@@ -156,14 +156,14 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Status Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-lg">Importer Verification</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-base sm:text-lg">Importer Verification</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Article 23 importer obligations
               </CardDescription>
             </div>
@@ -172,19 +172,19 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-1.5 sm:space-y-2">
+            <div className="flex justify-between text-xs sm:text-sm">
               <span>Checklist Progress</span>
               <span>{completionPercentage}%</span>
             </div>
-            <Progress value={completionPercentage} />
+            <Progress value={completionPercentage} className="h-1.5 sm:h-2" />
           </div>
           {verification.verified_at && (
-            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-lg p-4">
+            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-xl p-3 sm:p-4">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="font-medium text-emerald-700 dark:text-emerald-300">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span className="text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-300">
                   Verified on {format(new Date(verification.verified_at), "MMMM d, yyyy")}
                 </span>
               </div>
@@ -194,63 +194,68 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
       </Card>
 
       {/* Provider Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Building2 className="h-4 w-4" />
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base flex items-center gap-2">
+            <Building2 className="h-4 w-4 shrink-0" />
             Provider Information
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-xs sm:text-sm">
             Details of the third-country provider
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="provider_name">Provider Name</Label>
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="provider_name" className="text-xs sm:text-sm">Provider Name</Label>
               <Input
                 id="provider_name"
                 placeholder="Name of the AI system provider"
                 value={providerName}
                 onChange={(e) => setProviderName(e.target.value)}
+                className="h-10"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="provider_contact">Provider Contact</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="provider_contact" className="text-xs sm:text-sm">Provider Contact</Label>
               <Input
                 id="provider_contact"
                 placeholder="Email or phone"
                 value={providerContact}
                 onChange={(e) => setProviderContact(e.target.value)}
+                className="h-10"
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="provider_address">Provider Address</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="provider_address" className="text-xs sm:text-sm">Provider Address</Label>
             <Textarea
               id="provider_address"
               placeholder="Full address of the provider"
               value={providerAddress}
               onChange={(e) => setProviderAddress(e.target.value)}
+              className="min-h-[80px]"
             />
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="auth_rep_name">Authorised Representative Name</Label>
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="auth_rep_name" className="text-xs sm:text-sm">Authorised Representative Name</Label>
               <Input
                 id="auth_rep_name"
                 placeholder="If applicable"
                 value={authorisedRepName}
                 onChange={(e) => setAuthorisedRepName(e.target.value)}
+                className="h-10"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="auth_rep_address">Authorised Representative Address</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="auth_rep_address" className="text-xs sm:text-sm">Authorised Rep Address</Label>
               <Input
                 id="auth_rep_address"
                 placeholder="EU address"
                 value={authorisedRepAddress}
                 onChange={(e) => setAuthorisedRepAddress(e.target.value)}
+                className="h-10"
               />
             </div>
           </div>
@@ -258,32 +263,32 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
       </Card>
 
       {/* Verification Checklist */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Verification Checklist</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Verification Checklist</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Verify each requirement before placing on market
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6 pt-0 sm:pt-0">
           {Object.entries(IMPORTER_CHECKLIST_LABELS).map(([key, label]) => (
-            <div key={key} className="space-y-2 border-b pb-4 last:border-0">
-              <Label className="text-sm font-medium">{label}</Label>
+            <div key={key} className="space-y-2 border-b pb-3 sm:pb-4 last:border-0">
+              <Label className="text-xs sm:text-sm font-medium leading-relaxed">{label}</Label>
               <RadioGroup
                 value={checklistData[key] === null ? "" : checklistData[key] ? "yes" : "no"}
                 onValueChange={(value) => setChecklistItem(key, value === "yes")}
                 className="flex gap-4"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 min-h-[44px]">
                   <RadioGroupItem value="yes" id={`${key}-yes`} />
-                  <Label htmlFor={`${key}-yes`} className="flex items-center gap-1 text-emerald-600 cursor-pointer">
-                    <CheckCircle2 className="h-4 w-4" /> Yes
+                  <Label htmlFor={`${key}-yes`} className="flex items-center gap-1 text-xs sm:text-sm text-emerald-600 cursor-pointer">
+                    <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Yes
                   </Label>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 min-h-[44px]">
                   <RadioGroupItem value="no" id={`${key}-no`} />
-                  <Label htmlFor={`${key}-no`} className="flex items-center gap-1 text-destructive cursor-pointer">
-                    <XCircle className="h-4 w-4" /> No
+                  <Label htmlFor={`${key}-no`} className="flex items-center gap-1 text-xs sm:text-sm text-destructive cursor-pointer">
+                    <XCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> No
                   </Label>
                 </div>
               </RadioGroup>
@@ -293,14 +298,14 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
       </Card>
 
       {/* Notes */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Notes</CardTitle>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Notes</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
           <Textarea
             placeholder="Additional notes or observations..."
-            className="min-h-[100px]"
+            className="min-h-[80px] sm:min-h-[100px]"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
@@ -308,25 +313,27 @@ export function ImporterVerificationChecklist({ aiSystemId, organizationId }: Im
       </Card>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
-        <Button variant="outline" onClick={handleSave}>
+      <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
+        <Button variant="outline" onClick={handleSave} className="h-11 w-full sm:w-auto">
           <Save className="h-4 w-4 mr-2" />
-          Save Progress
+          Save
         </Button>
         <Button
           variant="destructive"
           onClick={() => handleComplete('non_compliant')}
           disabled={verification.status === 'compliant' || verification.status === 'non_compliant'}
+          className="h-11 w-full sm:w-auto"
         >
           <XCircle className="h-4 w-4 mr-2" />
-          Mark Non-Compliant
+          Non-Compliant
         </Button>
         <Button
           onClick={() => handleComplete('compliant')}
           disabled={verification.status === 'compliant' || verification.status === 'non_compliant'}
+          className="h-11 w-full sm:w-auto"
         >
           <CheckCircle2 className="h-4 w-4 mr-2" />
-          Mark Compliant
+          Compliant
         </Button>
       </div>
     </div>
