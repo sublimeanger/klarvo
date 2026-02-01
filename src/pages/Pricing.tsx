@@ -15,12 +15,14 @@ import { useBilling } from "@/hooks/useBilling";
 import { SEOHead, SchemaMarkup, createProductSchema, createBreadcrumbSchema } from "@/components/seo";
 import { 
   PLANS, 
-  ADDONS, 
+  WORKFLOW_ADDONS,
+  PARTNER_ADDONS,
   SERVICES, 
   INCLUDED_IN_ALL_PAID,
   type BillingPeriod,
   type PlanId 
 } from "@/lib/billing-constants";
+import { OperatorTrackAddons } from "@/components/billing/OperatorTrackAddons";
 
 export default function Pricing() {
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('annual');
@@ -225,15 +227,22 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* Add-ons */}
+      {/* Market Access Add-ons (Operator Tracks) */}
       <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <OperatorTrackAddons billingPeriod={billingPeriod} />
+        </div>
+      </section>
+
+      {/* Workflow Add-ons */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-semibold mb-2">Add-ons (Optional)</h2>
+            <h2 className="text-2xl font-semibold mb-2">Workflow Add-ons</h2>
             <p className="text-muted-foreground">Extend your platform with specialized capabilities</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
-            {ADDONS.map((addon) => (
+            {[...WORKFLOW_ADDONS, ...PARTNER_ADDONS].map((addon) => (
               <AddonCard key={addon.id} addon={addon} />
             ))}
           </div>

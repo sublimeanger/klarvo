@@ -8,8 +8,8 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs mapping
-const PRICE_IDS: Record<string, Record<string, string>> = {
+// Price IDs mapping for plans
+const PLAN_PRICE_IDS: Record<string, Record<string, string>> = {
   starter: {
     monthly: "price_1SvFtsE8C88su4JmiYxaajQ3",
     annual: "price_1SvFttE8C88su4JmrPjV2zFt",
@@ -21,6 +21,23 @@ const PRICE_IDS: Record<string, Record<string, string>> = {
   pro: {
     monthly: "price_1SvFtxE8C88su4JmBryivOwL",
     annual: "price_1SvFtxE8C88su4JmWPzqgBcw",
+  },
+};
+
+// Price IDs mapping for add-ons (operator tracks)
+// These will need to be created in Stripe and IDs updated here
+const ADDON_PRICE_IDS: Record<string, Record<string, string>> = {
+  importer_distributor: {
+    monthly: "price_addon_importer_distributor_monthly",
+    annual: "price_addon_importer_distributor_annual",
+  },
+  provider_track: {
+    monthly: "price_addon_provider_track_monthly",
+    annual: "price_addon_provider_track_annual",
+  },
+  provider_assurance: {
+    monthly: "price_addon_provider_assurance_monthly",
+    annual: "price_addon_provider_assurance_annual",
   },
 };
 
@@ -107,45 +124,112 @@ serve(async (req) => {
     }
 
     // Parse request body
-    const { planId, billingPeriod } = await req.json();
+    const body = await req.json();
+    const { planId, billingPeriod, addonId, checkoutType = "plan" } = body;
 
-    if (!planId || !billingPeriod) {
-      throw new Error("planId and billingPeriod are required");
+    if (!billingPeriod) {
+      throw new Error("billingPeriod is required");
     }
 
-    const priceId = PRICE_IDS[planId]?.[billingPeriod];
-    if (!priceId) {
-      throw new Error(`Invalid plan: ${planId} ${billingPeriod}`);
-    }
-
-    // Get the origin for redirect URLs
     const origin = req.headers.get("origin") || "https://localhost:5173";
+    let session: Stripe.Checkout.Session;
 
-    // Create checkout session
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      mode: "subscription",
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
+    if (checkoutType === "addon" && addonId) {
+      // Handle add-on purchase
+      const addonPriceId = ADDON_PRICE_IDS[addonId]?.[billingPeriod];
+      if (!addonPriceId) {
+        throw new Error(`Invalid addon: ${addonId} ${billingPeriod}`);
+      }
+
+      // Check if user has an active subscription first
+      const { data: currentSub } = await supabaseClient
+        .from("subscriptions")
+        .select("stripe_subscription_id, plan_id")
+        .eq("organization_id", profile.organization_id)
+        .single();
+
+      if (!currentSub?.stripe_subscription_id || currentSub.plan_id === "free") {
+        throw new Error("An active subscription is required to purchase add-ons");
+      }
+
+      // Add addon to existing subscription
+      const stripeSubscription = await stripe.subscriptions.retrieve(
+        currentSub.stripe_subscription_id
+      );
+
+      // Check if addon already exists
+      const existingItem = stripeSubscription.items.data.find(
+        (item: Stripe.SubscriptionItem) => ADDON_PRICE_IDS[addonId] && 
+          Object.values(ADDON_PRICE_IDS[addonId]).includes(item.price.id)
+      );
+
+      if (existingItem) {
+        throw new Error("This add-on is already active on your subscription");
+      }
+
+      // Create a checkout session to add the addon
+      session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: addonPriceId,
+            quantity: 1,
+          },
+        ],
+        success_url: `${origin}/settings/billing?success=true&addon=${addonId}`,
+        cancel_url: `${origin}/settings/billing?canceled=true`,
+        metadata: {
+          organization_id: profile.organization_id,
+          addon_id: addonId,
+          billing_period: billingPeriod,
+          checkout_type: "addon",
         },
-      ],
-      success_url: `${origin}/settings/billing?success=true`,
-      cancel_url: `${origin}/settings/billing?canceled=true`,
-      metadata: {
-        organization_id: profile.organization_id,
-        plan_id: planId,
-        billing_period: billingPeriod,
-      },
-      subscription_data: {
+        subscription_data: {
+          metadata: {
+            organization_id: profile.organization_id,
+            addon_id: addonId,
+          },
+        },
+      });
+    } else {
+      // Handle plan purchase (existing logic)
+      if (!planId) {
+        throw new Error("planId is required for plan checkout");
+      }
+
+      const priceId = PLAN_PRICE_IDS[planId]?.[billingPeriod];
+      if (!priceId) {
+        throw new Error(`Invalid plan: ${planId} ${billingPeriod}`);
+      }
+
+      session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        success_url: `${origin}/settings/billing?success=true`,
+        cancel_url: `${origin}/settings/billing?canceled=true`,
         metadata: {
           organization_id: profile.organization_id,
           plan_id: planId,
+          billing_period: billingPeriod,
+          checkout_type: "plan",
         },
-      },
-    });
+        subscription_data: {
+          metadata: {
+            organization_id: profile.organization_id,
+            plan_id: planId,
+          },
+        },
+      });
+    }
 
     return new Response(
       JSON.stringify({ url: session.url }),

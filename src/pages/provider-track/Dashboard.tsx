@@ -6,11 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, FileWarning } from "lucide-react";
+import { useOperatorTrackAccess } from "@/hooks/useAddons";
+import { AddonLockedPage } from "@/components/billing/AddonLockedPage";
 
 export default function ProviderDashboard() {
+  const { canAccessProviderTrack, isLoading: accessLoading } = useOperatorTrackAccess();
+  
   // For now, we'll use a placeholder versionId - in production this would come from context/route
   const versionId = undefined; // Will be set when a version is selected
   const { overallScore, categories, blockingIssues, isLoading } = useProviderReadiness(versionId);
+
+  // Show locked page if no access
+  if (!accessLoading && !canAccessProviderTrack) {
+    return (
+      <AddonLockedPage
+        addonId="provider_track"
+        title="Provider Track Required"
+        description="Access the full provider compliance toolkit for high-risk AI systems."
+      />
+    );
+  }
 
   // Key deadlines (these would come from the database in production)
   const deadlines = [

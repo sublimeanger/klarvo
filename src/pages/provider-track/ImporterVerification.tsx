@@ -4,11 +4,26 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Info } from "lucide-react";
+import { useOperatorTrackAccess } from "@/hooks/useAddons";
+import { AddonLockedPage } from "@/components/billing/AddonLockedPage";
 
 export default function ImporterVerification() {
+  const { canAccessImporterDistributorTrack, isLoading: accessLoading } = useOperatorTrackAccess();
+  
   // In production, these would come from context/route params
   const aiSystemId = undefined;
   const organizationId = undefined;
+
+  // Show locked page if no access
+  if (!accessLoading && !canAccessImporterDistributorTrack) {
+    return (
+      <AddonLockedPage
+        addonId="importer_distributor"
+        title="Importer Track Required"
+        description="Access importer verification checklists and evidence packs."
+      />
+    );
+  }
 
   return (
     <>

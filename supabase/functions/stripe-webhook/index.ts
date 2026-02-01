@@ -60,11 +60,11 @@ serve(async (req) => {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const organizationId = session.metadata?.organization_id;
-        const planId = session.metadata?.plan_id;
-        const billingPeriod = session.metadata?.billing_period;
+        const checkoutType = session.metadata?.checkout_type || "plan";
+        const billingPeriod = session.metadata?.billing_period || "monthly";
 
-        if (!organizationId || !planId) {
-          console.error("Missing metadata in checkout session");
+        if (!organizationId) {
+          console.error("Missing organization_id in checkout session");
           break;
         }
 
@@ -73,26 +73,70 @@ serve(async (req) => {
           session.subscription as string
         );
 
-        // Update subscription in database
-        const { error } = await supabaseClient
-          .from("subscriptions")
-          .update({
-            plan_id: planId,
-            status: "active",
-            billing_period: billingPeriod || "monthly",
-            stripe_subscription_id: stripeSubscription.id,
-            stripe_customer_id: session.customer as string,
-            current_period_start: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
-            current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
-            trial_end: null,
-            cancel_at_period_end: false,
-          })
-          .eq("organization_id", organizationId);
+        if (checkoutType === "addon") {
+          // Handle add-on checkout
+          const addonId = session.metadata?.addon_id;
+          
+          if (!addonId) {
+            console.error("Missing addon_id in addon checkout session");
+            break;
+          }
 
-        if (error) {
-          console.error("Failed to update subscription:", error);
+          // Get the subscription item for this addon
+          const subscriptionItem = stripeSubscription.items.data[0];
+
+          // Insert or update addon in subscription_addons table
+          const { error } = await supabaseClient
+            .from("subscription_addons")
+            .upsert({
+              organization_id: organizationId,
+              addon_id: addonId,
+              status: "active",
+              stripe_subscription_item_id: subscriptionItem.id,
+              stripe_price_id: subscriptionItem.price.id,
+              billing_period: billingPeriod,
+              current_period_start: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
+              current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
+              cancel_at_period_end: stripeSubscription.cancel_at_period_end,
+              updated_at: new Date().toISOString(),
+            }, {
+              onConflict: "organization_id,addon_id",
+            });
+
+          if (error) {
+            console.error("Failed to upsert addon subscription:", error);
+          } else {
+            console.log(`Add-on ${addonId} activated for org ${organizationId}`);
+          }
         } else {
-          console.log(`Subscription activated for org ${organizationId}: ${planId}`);
+          // Handle plan checkout (existing logic)
+          const planId = session.metadata?.plan_id;
+          
+          if (!planId) {
+            console.error("Missing plan_id in plan checkout session");
+            break;
+          }
+
+          const { error } = await supabaseClient
+            .from("subscriptions")
+            .update({
+              plan_id: planId,
+              status: "active",
+              billing_period: billingPeriod,
+              stripe_subscription_id: stripeSubscription.id,
+              stripe_customer_id: session.customer as string,
+              current_period_start: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
+              current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
+              trial_end: null,
+              cancel_at_period_end: false,
+            })
+            .eq("organization_id", organizationId);
+
+          if (error) {
+            console.error("Failed to update subscription:", error);
+          } else {
+            console.log(`Subscription activated for org ${organizationId}: ${planId}`);
+          }
         }
         break;
       }
@@ -100,6 +144,7 @@ serve(async (req) => {
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         const organizationId = subscription.metadata?.organization_id;
+        const addonId = subscription.metadata?.addon_id;
 
         if (!organizationId) {
           console.error("Missing organization_id in subscription metadata");
@@ -112,20 +157,42 @@ serve(async (req) => {
         else if (subscription.status === "canceled") status = "canceled";
         else if (subscription.status === "trialing") status = "trialing";
 
-        const { error } = await supabaseClient
-          .from("subscriptions")
-          .update({
-            status,
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-            cancel_at_period_end: subscription.cancel_at_period_end,
-          })
-          .eq("organization_id", organizationId);
+        if (addonId) {
+          // Update addon subscription
+          const { error } = await supabaseClient
+            .from("subscription_addons")
+            .update({
+              status,
+              current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+              cancel_at_period_end: subscription.cancel_at_period_end,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("organization_id", organizationId)
+            .eq("addon_id", addonId);
 
-        if (error) {
-          console.error("Failed to update subscription:", error);
+          if (error) {
+            console.error("Failed to update addon subscription:", error);
+          } else {
+            console.log(`Addon ${addonId} updated for org ${organizationId}: ${status}`);
+          }
         } else {
-          console.log(`Subscription updated for org ${organizationId}: ${status}`);
+          // Update main subscription
+          const { error } = await supabaseClient
+            .from("subscriptions")
+            .update({
+              status,
+              current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+              cancel_at_period_end: subscription.cancel_at_period_end,
+            })
+            .eq("organization_id", organizationId);
+
+          if (error) {
+            console.error("Failed to update subscription:", error);
+          } else {
+            console.log(`Subscription updated for org ${organizationId}: ${status}`);
+          }
         }
         break;
       }
@@ -133,8 +200,25 @@ serve(async (req) => {
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
         const organizationId = subscription.metadata?.organization_id;
+        const addonId = subscription.metadata?.addon_id;
 
-        if (!organizationId) {
+        if (addonId && organizationId) {
+          // Handle addon cancellation
+          const { error } = await supabaseClient
+            .from("subscription_addons")
+            .update({
+              status: "canceled",
+              updated_at: new Date().toISOString(),
+            })
+            .eq("organization_id", organizationId)
+            .eq("addon_id", addonId);
+
+          if (error) {
+            console.error("Failed to cancel addon:", error);
+          } else {
+            console.log(`Addon ${addonId} canceled for org ${organizationId}`);
+          }
+        } else if (!organizationId) {
           // Try to find by stripe_subscription_id
           const { data: sub } = await supabaseClient
             .from("subscriptions")
@@ -185,6 +269,13 @@ serve(async (req) => {
             .from("subscriptions")
             .update({ status: "past_due" })
             .eq("organization_id", sub.organization_id);
+
+          // Also update any addons to past_due
+          await supabaseClient
+            .from("subscription_addons")
+            .update({ status: "past_due", updated_at: new Date().toISOString() })
+            .eq("organization_id", sub.organization_id)
+            .eq("status", "active");
 
           console.log(`Payment failed for org ${sub.organization_id}`);
         }
