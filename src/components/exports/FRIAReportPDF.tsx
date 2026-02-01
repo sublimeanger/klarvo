@@ -6,217 +6,110 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
+import { baseStyles, colors } from "@/lib/pdfStyles";
 import type { FRIAAssessment, FRIARisk } from "@/hooks/useFRIA";
 
-// Define styles
+// Extend styles for FRIA report
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
-    fontSize: 10,
-    fontFamily: "Helvetica",
-  },
-  header: {
-    marginBottom: 20,
-    borderBottom: "1 solid #e5e7eb",
-    paddingBottom: 15,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-    color: "#111827",
-  },
-  subtitle: {
-    fontSize: 11,
-    color: "#6b7280",
-    marginBottom: 8,
-  },
-  regulatoryRef: {
-    fontSize: 9,
-    color: "#3b82f6",
-    marginTop: 4,
-  },
-  meta: {
-    marginTop: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 16,
-  },
-  metaItem: {
-    fontSize: 9,
-    color: "#6b7280",
-  },
-  metaValue: {
-    fontWeight: "bold",
-    color: "#374151",
-  },
-  section: {
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 11,
-    fontWeight: "bold",
-    marginBottom: 8,
-    color: "#1f2937",
-    backgroundColor: "#f3f4f6",
-    padding: 6,
-  },
-  subsectionTitle: {
-    fontSize: 10,
-    fontWeight: "bold",
-    marginBottom: 4,
-    marginTop: 8,
-    color: "#374151",
-  },
-  row: {
-    flexDirection: "row",
-    marginBottom: 4,
-    paddingBottom: 4,
-  },
-  label: {
-    width: "35%",
-    fontWeight: "bold",
-    color: "#374151",
-    fontSize: 9,
-  },
-  value: {
-    width: "65%",
-    color: "#1f2937",
-    fontSize: 9,
-  },
-  paragraph: {
-    marginBottom: 6,
-    lineHeight: 1.5,
-    fontSize: 9,
-    color: "#374151",
-  },
-  listItem: {
-    flexDirection: "row",
-    marginBottom: 3,
-    paddingLeft: 8,
-  },
-  bullet: {
-    width: 12,
-    fontSize: 9,
-  },
-  listText: {
-    flex: 1,
-    fontSize: 9,
-  },
-  badge: {
-    padding: "3 8",
-    borderRadius: 3,
-    fontSize: 8,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-  },
-  badgeApprove: {
-    backgroundColor: "#dcfce7",
-    color: "#166534",
-  },
-  badgeMitigations: {
-    backgroundColor: "#fef3c7",
-    color: "#92400e",
-  },
-  badgeReject: {
-    backgroundColor: "#fee2e2",
-    color: "#991b1b",
-  },
-  badgeDraft: {
-    backgroundColor: "#f3f4f6",
-    color: "#6b7280",
-  },
-  conclusionBox: {
-    padding: 12,
-    marginVertical: 8,
-    borderRadius: 4,
-    borderWidth: 1,
-  },
-  approveBox: {
-    backgroundColor: "#f0fdf4",
-    borderColor: "#16a34a",
-  },
-  mitigationsBox: {
-    backgroundColor: "#fefce8",
-    borderColor: "#ca8a04",
-  },
-  rejectBox: {
-    backgroundColor: "#fef2f2",
-    borderColor: "#dc2626",
+    ...baseStyles.page,
+    paddingTop: 60,
   },
   riskTable: {
     marginTop: 8,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: colors.gray[200],
     borderRadius: 4,
   },
   riskHeader: {
     flexDirection: "row",
-    backgroundColor: "#f9fafb",
-    padding: 6,
+    backgroundColor: colors.gray[100],
+    padding: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: colors.gray[200],
   },
   riskHeaderCell: {
     fontSize: 8,
-    fontWeight: "bold",
-    color: "#374151",
+    fontWeight: 600,
+    color: colors.gray[700],
   },
   riskRow: {
     flexDirection: "row",
-    padding: 6,
+    padding: 8,
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: colors.gray[200],
+    // @ts-ignore - prevent break
+    minPresenceAhead: 20,
   },
   riskRowLast: {
     borderBottomWidth: 0,
   },
   riskCell: {
     fontSize: 8,
-    color: "#374151",
+    color: colors.gray[700],
   },
   categoryCol: { width: "25%" },
   descriptionCol: { width: "40%" },
   likelihoodCol: { width: "17.5%" },
   severityCol: { width: "17.5%" },
-  lowRisk: { color: "#16a34a" },
-  mediumRisk: { color: "#ca8a04" },
-  highRisk: { color: "#dc2626" },
-  footer: {
-    position: "absolute",
-    bottom: 30,
-    left: 40,
-    right: 40,
-    borderTop: "1 solid #e5e7eb",
-    paddingTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  footerText: {
-    fontSize: 8,
-    color: "#9ca3af",
-  },
-  pageNumber: {
-    fontSize: 8,
-    color: "#9ca3af",
-  },
-  divider: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-    marginVertical: 12,
-  },
-  infoBox: {
-    backgroundColor: "#eff6ff",
-    padding: 10,
+  lowRisk: { color: colors.success },
+  mediumRisk: { color: colors.warning },
+  highRisk: { color: colors.danger },
+  badgeApprove: {
+    backgroundColor: colors.successLight,
+    color: "#166534",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
     borderRadius: 4,
-    marginBottom: 12,
-    borderLeftWidth: 3,
-    borderLeftColor: "#3b82f6",
+    fontSize: 9,
+    fontWeight: 600,
   },
-  infoText: {
-    fontSize: 8,
-    color: "#1e40af",
-    lineHeight: 1.4,
+  badgeMitigations: {
+    backgroundColor: colors.warningLight,
+    color: "#92400e",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 600,
+  },
+  badgeReject: {
+    backgroundColor: colors.dangerLight,
+    color: "#991b1b",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 600,
+  },
+  badgeDraft: {
+    backgroundColor: colors.gray[100],
+    color: colors.gray[600],
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 4,
+    fontSize: 9,
+    fontWeight: 600,
+  },
+  conclusionBox: {
+    padding: 15,
+    marginVertical: 10,
+    borderRadius: 4,
+    borderWidth: 1,
+    // @ts-ignore
+    minPresenceAhead: 40,
+  },
+  approveBox: {
+    backgroundColor: "#f0fdf4",
+    borderColor: colors.success,
+  },
+  mitigationsBox: {
+    backgroundColor: colors.warningLight,
+    borderColor: colors.warning,
+  },
+  rejectBox: {
+    backgroundColor: colors.dangerLight,
+    borderColor: colors.danger,
   },
 });
 
@@ -263,6 +156,27 @@ interface FRIAReportPDFProps {
   organizationName?: string;
   ownerName?: string;
   approverName?: string;
+}
+
+// Running Header
+function RunningHeader({ title, orgName }: { title: string; orgName: string }) {
+  return (
+    <View style={baseStyles.runningHeader} fixed>
+      <Text style={baseStyles.runningHeaderTitle}>FRIA Report — {title}</Text>
+      <Text style={baseStyles.runningHeaderOrg}>{orgName}</Text>
+    </View>
+  );
+}
+
+// Running Footer with dynamic page numbers
+function RunningFooter({ orgName }: { orgName: string }) {
+  return (
+    <View style={baseStyles.runningFooter} fixed>
+      <Text style={baseStyles.footerText}>FRIA Report — {orgName}</Text>
+      <Text style={baseStyles.footerConfidential}>Confidential</Text>
+      <Text style={baseStyles.footerPage} render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+    </View>
+  );
 }
 
 export function FRIAReportPDF({
@@ -332,71 +246,67 @@ export function FRIAReportPDF({
     <Document>
       {/* Page 1: Overview & Process */}
       <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Fundamental Rights Impact Assessment</Text>
-          <Text style={styles.subtitle}>{fria.title}</Text>
-          <Text style={styles.regulatoryRef}>
+        <RunningHeader title={systemName} orgName={organizationName} />
+        <RunningFooter orgName={organizationName} />
+
+        {/* Header */}
+        <View style={{ marginBottom: 20, marginTop: 10 }}>
+          <Text style={{ fontSize: 20, fontWeight: 700, color: colors.emerald, marginBottom: 4 }}>
+            Fundamental Rights Impact Assessment
+          </Text>
+          <Text style={{ fontSize: 12, color: colors.gray[600], marginBottom: 8 }}>
+            {fria.title}
+          </Text>
+          <Text style={{ fontSize: 9, color: colors.emerald, fontWeight: 600 }}>
             EU AI Act — Article 27 Compliance Report
           </Text>
-          <View style={styles.meta}>
-            <Text style={styles.metaItem}>
-              Organization: <Text style={styles.metaValue}>{organizationName}</Text>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16, marginTop: 10 }}>
+            <Text style={{ fontSize: 9, color: colors.gray[500] }}>
+              AI System: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{systemName}</Text>
             </Text>
-            <Text style={styles.metaItem}>
-              AI System: <Text style={styles.metaValue}>{systemName}</Text>
+            <Text style={{ fontSize: 9, color: colors.gray[500] }}>
+              Generated: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{format(new Date(), "PPP")}</Text>
             </Text>
-            <Text style={styles.metaItem}>
-              Generated: <Text style={styles.metaValue}>{format(new Date(), "PPP")}</Text>
+            <Text style={{ fontSize: 9, color: colors.gray[500] }}>
+              Status: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{fria.status.replace("_", " ").toUpperCase()}</Text>
             </Text>
-          </View>
-          <View style={[styles.meta, { marginTop: 8 }]}>
-            <Text style={styles.metaItem}>
-              Status: <Text style={styles.metaValue}>{fria.status.replace("_", " ").toUpperCase()}</Text>
-            </Text>
-            {fria.completed_at && (
-              <Text style={styles.metaItem}>
-                Completed: <Text style={styles.metaValue}>{format(new Date(fria.completed_at), "PPP")}</Text>
-              </Text>
-            )}
           </View>
         </View>
 
         {/* Conclusion Summary */}
-        <View style={[styles.conclusionBox, getConclusionStyle()]}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <View style={[styles.badge, getConclusionBadgeStyle()]}>
-              <Text>{getConclusionLabel()}</Text>
-            </View>
+        <View style={[styles.conclusionBox, getConclusionStyle()]} wrap={false}>
+          <View style={getConclusionBadgeStyle()}>
+            <Text>{getConclusionLabel()}</Text>
           </View>
           {approverName && fria.approved_at && (
-            <Text style={[styles.paragraph, { marginTop: 8, marginBottom: 0 }]}>
+            <Text style={[baseStyles.paragraph, { marginTop: 8, marginBottom: 0 }]}>
               Approved by {approverName} on {format(new Date(fria.approved_at), "PPP")}
             </Text>
           )}
         </View>
 
         {/* Section A: Overview */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>A. Assessment Overview</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Assessment Owner:</Text>
-            <Text style={styles.value}>{ownerName || "Not assigned"}</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>A. Assessment Overview</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Assessment Owner:</Text>
+            <Text style={baseStyles.rowValue}>{ownerName || "Not assigned"}</Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Expected Deployment:</Text>
-            <Text style={styles.value}>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Expected Deployment:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.expected_deployment_date
                 ? format(new Date(fria.expected_deployment_date), "PPP")
                 : "Not specified"}
             </Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>First Use:</Text>
-            <Text style={styles.value}>{fria.is_first_use ? "Yes" : "No"}</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>First Use:</Text>
+            <Text style={baseStyles.rowValue}>{fria.is_first_use ? "Yes" : "No"}</Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Existing DPIA:</Text>
-            <Text style={styles.value}>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Existing DPIA:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.has_existing_dpia === null
                 ? "Not specified"
                 : fria.has_existing_dpia
@@ -407,88 +317,86 @@ export function FRIAReportPDF({
         </View>
 
         {/* Section B: Process Description */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>B. Process Description (Article 27(a))</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>B. Process Description (Article 27(a))</Text>
           
-          <Text style={styles.subsectionTitle}>Deployer's Process</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Deployer's Process</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.process_description || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Intended Purpose</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Intended Purpose</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.intended_purpose || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Decision Points</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Decision Points</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.decision_points || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Human Oversight in Process</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Human Oversight in Process</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.human_oversight_description || "Not documented"}
           </Text>
         </View>
 
         {/* Section C: Time Period & Frequency */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>C. Duration & Frequency (Article 27(b))</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Deployment Duration:</Text>
-            <Text style={styles.value}>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>C. Duration & Frequency (Article 27(b))</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Deployment Duration:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.deployment_duration
                 ? DURATION_LABELS[fria.deployment_duration] || fria.deployment_duration
                 : "Not specified"}
             </Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Usage Frequency:</Text>
-            <Text style={styles.value}>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Usage Frequency:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.usage_frequency
                 ? FREQUENCY_LABELS[fria.usage_frequency] || fria.usage_frequency
                 : "Not specified"}
             </Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Scale (people/month):</Text>
-            <Text style={styles.value}>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Scale (people/month):</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.affected_scale_per_month?.toLocaleString() || "Not specified"}
             </Text>
           </View>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            FRIA Report — {organizationName} — Confidential
-          </Text>
-          <Text style={styles.pageNumber}>Page 1</Text>
         </View>
       </Page>
 
       {/* Page 2: Affected Persons & Risks */}
       <Page size="A4" style={styles.page}>
+        <RunningHeader title={systemName} orgName={organizationName} />
+        <RunningFooter orgName={organizationName} />
+
         {/* Section D: Affected Persons */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>D. Affected Persons & Groups (Article 27(c))</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>D. Affected Persons & Groups (Article 27(c))</Text>
           
-          <Text style={styles.subsectionTitle}>Categories of Affected Persons</Text>
+          <Text style={baseStyles.h3}>Categories of Affected Persons</Text>
           {affectedCategories.length > 0 ? (
-            affectedCategories.map((cat, idx) => (
-              <View key={idx} style={styles.listItem}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.listText}>
-                  {AFFECTED_CATEGORY_LABELS[cat] || cat}
-                </Text>
-              </View>
-            ))
+            <View style={baseStyles.bulletList}>
+              {affectedCategories.map((cat, idx) => (
+                <View key={idx} style={baseStyles.bulletItem}>
+                  <Text style={baseStyles.bullet}>•</Text>
+                  <Text style={baseStyles.bulletText}>
+                    {AFFECTED_CATEGORY_LABELS[cat] || cat}
+                  </Text>
+                </View>
+              ))}
+            </View>
           ) : (
-            <Text style={styles.paragraph}>No categories specified</Text>
+            <Text style={baseStyles.paragraph}>No categories specified</Text>
           )}
 
-          <View style={[styles.row, { marginTop: 8 }]}>
-            <Text style={styles.label}>Vulnerable Groups:</Text>
-            <Text style={styles.value}>
+          <View style={[baseStyles.row, { marginTop: 8 }]}>
+            <Text style={baseStyles.rowLabel}>Vulnerable Groups:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.has_vulnerable_groups === null
                 ? "Not assessed"
                 : fria.has_vulnerable_groups
@@ -497,22 +405,22 @@ export function FRIAReportPDF({
             </Text>
           </View>
 
-          <Text style={styles.subsectionTitle}>Notification Method</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Notification Method</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.affected_notification_method || "Not documented"}
           </Text>
 
           {fria.accessibility_considerations && (
             <>
-              <Text style={styles.subsectionTitle}>Accessibility Considerations</Text>
-              <Text style={styles.paragraph}>{fria.accessibility_considerations}</Text>
+              <Text style={baseStyles.h3}>Accessibility Considerations</Text>
+              <Text style={baseStyles.paragraph}>{fria.accessibility_considerations}</Text>
             </>
           )}
         </View>
 
         {/* Section E: Identified Risks */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>E. Risks of Harm (Article 27(d))</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>E. Risks of Harm (Article 27(d))</Text>
           
           {risks.length > 0 ? (
             <View style={styles.riskTable}>
@@ -529,6 +437,7 @@ export function FRIAReportPDF({
                     styles.riskRow,
                     idx === risks.length - 1 && styles.riskRowLast,
                   ]}
+                  wrap={false}
                 >
                   <Text style={[styles.riskCell, styles.categoryCol]}>
                     {RISK_CATEGORY_LABELS[risk.category] || risk.category}
@@ -558,8 +467,8 @@ export function FRIAReportPDF({
               ))}
             </View>
           ) : (
-            <View style={styles.infoBox}>
-              <Text style={styles.infoText}>
+            <View style={baseStyles.infoBox} wrap={false}>
+              <Text style={baseStyles.infoBoxText}>
                 No risks have been formally identified in this assessment. This may indicate
                 incomplete analysis — all high-risk AI deployments should evaluate potential
                 impacts across fundamental rights categories.
@@ -567,34 +476,30 @@ export function FRIAReportPDF({
             </View>
           )}
         </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            FRIA Report — {organizationName} — Confidential
-          </Text>
-          <Text style={styles.pageNumber}>Page 2</Text>
-        </View>
       </Page>
 
       {/* Page 3: Oversight & Mitigation */}
       <Page size="A4" style={styles.page}>
+        <RunningHeader title={systemName} orgName={organizationName} />
+        <RunningFooter orgName={organizationName} />
+
         {/* Section F: Human Oversight */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>F. Human Oversight Measures (Article 27(e))</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>F. Human Oversight Measures (Article 27(e))</Text>
           
-          <Text style={styles.subsectionTitle}>Oversight Design</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Oversight Design</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.oversight_design || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Competence & Training</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Competence & Training</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.oversight_competence || "Not documented"}
           </Text>
 
-          <View style={[styles.row, { marginTop: 8 }]}>
-            <Text style={styles.label}>Authority to Intervene/Stop:</Text>
-            <Text style={styles.value}>
+          <View style={[baseStyles.row, { marginTop: 8 }]}>
+            <Text style={baseStyles.rowLabel}>Authority to Intervene/Stop:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.has_intervention_authority === null
                 ? "Not specified"
                 : fria.has_intervention_authority
@@ -605,74 +510,77 @@ export function FRIAReportPDF({
         </View>
 
         {/* Section G: Mitigation & Governance */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>G. Mitigation, Governance & Complaints (Article 27(f))</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>G. Mitigation, Governance & Complaints (Article 27(f))</Text>
           
-          <Text style={styles.subsectionTitle}>Mitigation Measures</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Mitigation Measures</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.mitigation_measures || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Governance Arrangements</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Governance Arrangements</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.governance_arrangements || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Complaint Mechanism</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Complaint Mechanism</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.complaint_mechanism || "Not documented"}
           </Text>
 
-          <Text style={styles.subsectionTitle}>Monitoring Plan</Text>
-          <Text style={styles.paragraph}>
+          <Text style={baseStyles.h3}>Monitoring Plan</Text>
+          <Text style={baseStyles.paragraph}>
             {fria.monitoring_plan || "Not documented"}
           </Text>
 
           {reassessmentTriggers.length > 0 && (
             <>
-              <Text style={styles.subsectionTitle}>Reassessment Triggers</Text>
-              {reassessmentTriggers.map((trigger, idx) => (
-                <View key={idx} style={styles.listItem}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.listText}>{trigger}</Text>
-                </View>
-              ))}
+              <Text style={baseStyles.h3}>Reassessment Triggers</Text>
+              <View style={baseStyles.bulletList}>
+                {reassessmentTriggers.map((trigger, idx) => (
+                  <View key={idx} style={baseStyles.bulletItem}>
+                    <Text style={baseStyles.bullet}>•</Text>
+                    <Text style={baseStyles.bulletText}>{trigger}</Text>
+                  </View>
+                ))}
+              </View>
             </>
           )}
         </View>
 
-        <View style={styles.divider} />
+        {/* Divider */}
+        <View style={{ borderBottomWidth: 1, borderBottomColor: colors.gray[200], marginVertical: 15 }} />
 
         {/* Section H: Approval Summary */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>H. Approval & Notification</Text>
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>H. Approval & Notification</Text>
           
-          <View style={[styles.conclusionBox, getConclusionStyle()]}>
-            <View style={styles.row}>
-              <Text style={styles.label}>Final Decision:</Text>
-              <View style={[styles.badge, getConclusionBadgeStyle()]}>
+          <View style={[styles.conclusionBox, getConclusionStyle()]} wrap={false}>
+            <View style={baseStyles.row}>
+              <Text style={baseStyles.rowLabel}>Final Decision:</Text>
+              <View style={getConclusionBadgeStyle()}>
                 <Text>{getConclusionLabel()}</Text>
               </View>
             </View>
             {approverName && (
-              <View style={[styles.row, { marginTop: 4 }]}>
-                <Text style={styles.label}>Approved By:</Text>
-                <Text style={styles.value}>{approverName}</Text>
+              <View style={[baseStyles.row, { marginTop: 4 }]}>
+                <Text style={baseStyles.rowLabel}>Approved By:</Text>
+                <Text style={baseStyles.rowValue}>{approverName}</Text>
               </View>
             )}
             {fria.approved_at && (
-              <View style={styles.row}>
-                <Text style={styles.label}>Approval Date:</Text>
-                <Text style={styles.value}>
+              <View style={baseStyles.row}>
+                <Text style={baseStyles.rowLabel}>Approval Date:</Text>
+                <Text style={baseStyles.rowValue}>
                   {format(new Date(fria.approved_at), "PPP 'at' p")}
                 </Text>
               </View>
             )}
           </View>
 
-          <View style={[styles.row, { marginTop: 8 }]}>
-            <Text style={styles.label}>Notify Market Surveillance Authority:</Text>
-            <Text style={styles.value}>
+          <View style={[baseStyles.row, { marginTop: 8 }]}>
+            <Text style={baseStyles.rowLabel}>Notify Market Surveillance Authority:</Text>
+            <Text style={baseStyles.rowValue}>
               {fria.notify_authority === null
                 ? "Not determined"
                 : fria.notify_authority
@@ -681,26 +589,19 @@ export function FRIAReportPDF({
             </Text>
           </View>
           {fria.notification_evidence_url && (
-            <View style={styles.row}>
-              <Text style={styles.label}>Notification Evidence:</Text>
-              <Text style={styles.value}>{fria.notification_evidence_url}</Text>
+            <View style={baseStyles.row}>
+              <Text style={baseStyles.rowLabel}>Notification Evidence:</Text>
+              <Text style={baseStyles.rowValue}>{fria.notification_evidence_url}</Text>
             </View>
           )}
         </View>
 
-        <View style={styles.infoBox}>
-          <Text style={styles.infoText}>
+        <View style={baseStyles.infoBox} wrap={false}>
+          <Text style={baseStyles.infoBoxText}>
             This Fundamental Rights Impact Assessment has been prepared in accordance with
             Article 27 of the EU AI Act. The assessment must be updated when there are
             material changes to the AI system's deployment, affected persons, or risk profile.
           </Text>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            FRIA Report — {organizationName} — Confidential
-          </Text>
-          <Text style={styles.pageNumber}>Page 3</Text>
         </View>
       </Page>
     </Document>
