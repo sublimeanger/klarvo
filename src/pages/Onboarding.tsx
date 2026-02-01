@@ -171,7 +171,7 @@ export default function Onboarding() {
 
         {/* Step 1: Company Details */}
         {step === 1 && (
-          <Card>
+          <Card className="rounded-xl">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -240,7 +240,7 @@ export default function Onboarding() {
 
         {/* Step 2: Your Role */}
         {step === 2 && (
-          <Card>
+          <Card className="rounded-xl">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -257,7 +257,7 @@ export default function Onboarding() {
                 <button
                   key={role.value}
                   onClick={() => setSelectedRole(role.value)}
-                  className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all min-h-[72px] ${
                     selectedRole === role.value
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-primary/50"
@@ -290,7 +290,7 @@ export default function Onboarding() {
 
         {/* Step 3: Get Started */}
         {step === 3 && (
-          <Card>
+          <Card className="rounded-xl">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">

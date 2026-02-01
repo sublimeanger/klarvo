@@ -420,7 +420,7 @@ export default function ClassificationWizard() {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4">
+            <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-4">
               <div className="flex items-start gap-3">
                 <ShieldAlert className="h-5 w-5 text-destructive mt-0.5" />
                 <div>
@@ -446,7 +446,7 @@ export default function ClassificationWizard() {
       case 2:
         return (
           <div className="space-y-6">
-            <div className="rounded-lg border border-warning/20 bg-warning/5 p-4">
+            <div className="rounded-xl border border-warning/20 bg-warning/5 p-4">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
                 <div>
@@ -472,7 +472,7 @@ export default function ClassificationWizard() {
       case 3:
         return (
           <div className="space-y-6">
-            <div className="rounded-lg border border-info/20 bg-info/5 p-4">
+            <div className="rounded-xl border border-info/20 bg-info/5 p-4">
               <div className="flex items-start gap-3">
                 <Eye className="h-5 w-5 text-info mt-0.5" />
                 <div>
