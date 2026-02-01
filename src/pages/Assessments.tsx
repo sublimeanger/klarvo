@@ -10,6 +10,7 @@ import {
   Loader2,
   ExternalLink,
   Filter,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +38,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useAllClassifications, useAllFRIAs } from "@/hooks/useAssessments";
+import { useSubscription } from "@/hooks/useSubscription";
+import { UpgradeModal } from "@/components/billing/UpgradeModal";
 
 const RISK_LEVELS = [
   { value: "all", label: "All Risk Levels" },
@@ -114,7 +117,9 @@ function getFRIAConclusionBadge(conclusion: string | null) {
 export default function Assessments() {
   const [riskFilter, setRiskFilter] = useState("all");
   const [friaStatusFilter, setFriaStatusFilter] = useState("all");
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
+  const { entitlements, isLoading: subscriptionLoading } = useSubscription();
   const { data: classifications, isLoading: classLoading } = useAllClassifications();
   const { data: frias, isLoading: friasLoading } = useAllFRIAs();
 
@@ -141,7 +146,10 @@ export default function Assessments() {
     approved: frias?.filter((f) => f.final_conclusion === "approve" || f.final_conclusion === "approve_with_mitigations").length || 0,
   };
 
-  const isLoading = classLoading || friasLoading;
+  const isLoading = classLoading || friasLoading || subscriptionLoading;
+
+  // Helper to determine if FRIA is gated
+  const friaGated = !entitlements.friaEnabled;
 
   if (isLoading) {
     return (
@@ -378,6 +386,23 @@ export default function Assessments() {
 
         {/* FRIAs Tab */}
         <TabsContent value="frias" className="space-y-4">
+          {friaGated ? (
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-16">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Lock className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Pro Feature</h3>
+                <p className="text-muted-foreground mb-6 max-w-md text-center">
+                  The FRIA (Fundamental Rights Impact Assessment) module is available on Pro and Enterprise plans.
+                  Required for deployers of high-risk AI systems under Article 27 of the EU AI Act.
+                </p>
+                <Button onClick={() => setShowUpgradeModal(true)}>
+                  Upgrade to Pro
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
           <Card>
             <CardHeader className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -527,8 +552,22 @@ export default function Assessments() {
               )}
             </CardContent>
           </Card>
+          )}
         </TabsContent>
       </Tabs>
+
+      <UpgradeModal
+        open={showUpgradeModal}
+        onOpenChange={setShowUpgradeModal}
+        title="Unlock FRIA Module"
+        bullets={[
+          "Article 27 Fundamental Rights Impact Assessments",
+          "Guided FRIA workflow and templates",
+          "FRIA report exports (PDF)",
+          "Required for high-risk AI system deployers",
+        ]}
+        recommendedPlan="pro"
+      />
     </div>
   );
 }
