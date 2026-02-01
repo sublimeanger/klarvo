@@ -3,15 +3,12 @@ import { AppSidebar } from "./AppSidebar";
 import { MobileNav } from "./MobileNav";
 import { SkipToContent } from "@/components/ui/SkipToContent";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
 // App version - update on releases
 const APP_VERSION = "1.0.0";
 const BUILD_DATE = "2026-01-31";
 
 export function AppLayout() {
-  const [sidebarCollapsed] = useState(false);
-
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <SkipToContent />
@@ -31,21 +28,22 @@ export function AppLayout() {
           "flex-1 transition-all duration-300",
           // Desktop: offset by sidebar
           "lg:pl-64",
-          // Mobile: offset by header
-          "pt-16 lg:pt-0"
+          // Mobile: offset by header with safe area
+          "pt-14 sm:pt-16 lg:pt-0"
         )}
       >
-        <div className="container mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-8">
+        {/* Reduced padding on mobile, larger on desktop */}
+        <div className="container mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
           <Outlet />
         </div>
       </main>
       
-      {/* Footer with version */}
+      {/* Footer with version - smaller on mobile */}
       <footer className={cn(
-        "border-t py-4 text-center text-xs text-muted-foreground",
+        "border-t py-3 sm:py-4 text-center text-[10px] sm:text-xs text-muted-foreground",
         "lg:pl-64"
       )}>
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-3 sm:px-4">
           Klarvo v{APP_VERSION} · Build {BUILD_DATE}
         </div>
       </footer>

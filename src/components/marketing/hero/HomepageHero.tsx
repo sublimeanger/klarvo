@@ -20,10 +20,10 @@ export function HomepageHero() {
         <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-surface-1" />
 
         {/* Subtle emerald glow at top */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-gradient-radial from-primary/8 via-primary/3 to-transparent" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] sm:w-[1200px] h-[400px] sm:h-[600px] bg-gradient-radial from-primary/8 via-primary/3 to-transparent" />
 
-        {/* Very subtle grid */}
-        <div className="absolute inset-0 opacity-[0.03]">
+        {/* Very subtle grid - hidden on mobile for cleaner look */}
+        <div className="absolute inset-0 opacity-[0.03] hidden sm:block">
           <svg className="w-full h-full">
             <defs>
               <pattern
@@ -48,33 +48,33 @@ export function HomepageHero() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 lg:px-8 pt-32 pb-16 lg:pt-40 lg:pb-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 sm:pt-28 sm:pb-16 lg:pt-40 lg:pb-24">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           {/* ═══════════════════════════════════════════════════════════════════
-              LEFT: CONTENT
+              LEFT: CONTENT - Mobile-first typography
               ═══════════════════════════════════════════════════════════════════ */}
-          <div className="max-w-2xl">
+          <div className="max-w-2xl text-center lg:text-left mx-auto lg:mx-0">
             {/* Badge */}
-            <div className="mb-6 animate-fade-up">
+            <div className="mb-4 sm:mb-6 animate-fade-up">
               <Badge
                 variant="outline"
-                className="px-4 py-1.5 text-sm font-medium border-primary/30 bg-primary/5 text-primary gap-2"
+                className="px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm font-medium border-primary/30 bg-primary/5 text-primary gap-1.5 sm:gap-2"
               >
-                <Sparkles className="h-3.5 w-3.5" />
+                <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 EU AI Act Compliance Made Simple
               </Badge>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
+            {/* Headline - Dramatically scaled for mobile */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.15] sm:leading-[1.1] mb-4 sm:mb-6 animate-fade-up" style={{ animationDelay: "0.1s" }}>
               <span className="text-foreground">Know Your AI.</span>
               <br />
               <span className="text-foreground">Own Your</span>{" "}
-              <span className="relative">
+              <span className="relative inline-block">
                 <span className="text-primary">Compliance.</span>
                 {/* Underline accent */}
                 <svg
-                  className="absolute -bottom-2 left-0 w-full h-3 text-primary/30"
+                  className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-2 sm:h-3 text-primary/30"
                   viewBox="0 0 200 12"
                   preserveAspectRatio="none"
                 >
@@ -89,37 +89,37 @@ export function HomepageHero() {
               </span>
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-8 animate-fade-up" style={{ animationDelay: "0.2s" }}>
+            {/* Subheadline - Readable on mobile */}
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed mb-6 sm:mb-8 animate-fade-up" style={{ animationDelay: "0.2s" }}>
               The complete EU AI Act compliance platform. Inventory every AI system, 
-              classify risk levels, track obligations, and generate audit-ready evidence packs—all in one place.
+              classify risk levels, track obligations, and generate audit-ready evidence packs.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-10 animate-fade-up" style={{ animationDelay: "0.3s" }}>
+            {/* CTAs - Full width stacked on mobile */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10 animate-fade-up sm:justify-center lg:justify-start" style={{ animationDelay: "0.3s" }}>
               <Link
                 to="/auth/signup"
-                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center h-12 sm:h-13 px-6 sm:px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]"
               >
                 Start Free
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 to="/features"
-                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                className="group inline-flex items-center justify-center h-12 sm:h-13 px-6 sm:px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 active:scale-[0.98]"
               >
                 See How It Works
               </Link>
             </div>
 
-            {/* Trust Badges */}
-            <div className="flex flex-wrap gap-6 text-sm animate-fade-up" style={{ animationDelay: "0.4s" }}>
+            {/* Trust Badges - Horizontal scroll on mobile */}
+            <div className="flex justify-center lg:justify-start gap-4 sm:gap-6 text-xs sm:text-sm animate-fade-up overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible" style={{ animationDelay: "0.4s" }}>
               {trustBadges.map((badge) => (
                 <span
                   key={badge}
-                  className="flex items-center gap-2 text-muted-foreground"
+                  className="flex items-center gap-1.5 sm:gap-2 text-muted-foreground whitespace-nowrap shrink-0 sm:shrink"
                 >
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                   <span className="font-medium">{badge}</span>
                 </span>
               ))}
@@ -128,8 +128,9 @@ export function HomepageHero() {
 
           {/* ═══════════════════════════════════════════════════════════════════
               RIGHT: AI CLASSIFICATION VISUALIZATION
+              Hidden on small mobile, simplified on tablet
               ═══════════════════════════════════════════════════════════════════ */}
-          <div className="relative animate-fade-up" style={{ animationDelay: "0.3s" }}>
+          <div className="relative animate-fade-up hidden sm:block" style={{ animationDelay: "0.3s" }}>
             {/* Glow behind viz */}
             <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent blur-3xl" />
             
@@ -139,7 +140,7 @@ export function HomepageHero() {
       </div>
 
       {/* Bottom gradient fade into next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-surface-1 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-24 bg-gradient-to-t from-surface-1 to-transparent pointer-events-none" />
     </section>
   );
 }

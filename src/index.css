@@ -1403,6 +1403,217 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   WORLD-CLASS MOBILE UX SYSTEM
+   Touch-optimized utilities for premium mobile experience
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Touch-friendly tap targets (Apple HIG: 44px minimum) */
+.tap-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.tap-target-lg {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/* Touch-optimized button sizing */
+.touch-button {
+  @apply h-12 px-6 text-base font-medium;
+}
+
+.touch-button-sm {
+  @apply h-11 px-5 text-sm font-medium;
+}
+
+/* Touch-optimized input sizing */
+.touch-input {
+  @apply h-12 px-4 text-base;
+}
+
+/* Mobile card styles */
+.mobile-card {
+  @apply p-4 rounded-xl bg-card border transition-all active:scale-[0.98];
+}
+
+.mobile-card-interactive {
+  @apply p-4 rounded-xl bg-card border transition-all active:scale-[0.98] hover:shadow-md cursor-pointer;
+}
+
+/* Safe area insets for notched devices */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+.safe-left {
+  padding-left: env(safe-area-inset-left, 0);
+}
+
+.safe-right {
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+.safe-all {
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+}
+
+/* Bottom sheet swipe indicator */
+.swipe-indicator {
+  @apply w-10 h-1 bg-muted-foreground/30 rounded-full mx-auto;
+}
+
+.swipe-indicator-lg {
+  @apply w-12 h-1.5 bg-muted-foreground/30 rounded-full mx-auto;
+}
+
+/* Mobile-optimized section padding */
+.section-padding-mobile {
+  @apply py-12 sm:py-16 md:py-20 lg:py-24;
+}
+
+/* Mobile-first container padding */
+.container-mobile {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+/* Mobile horizontal scroll container */
+.mobile-scroll-x {
+  @apply flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible sm:flex-wrap snap-x snap-mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-scroll-x > * {
+  @apply snap-start shrink-0 sm:shrink;
+}
+
+/* Mobile-only visibility */
+@media (max-width: 639px) {
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .mobile-text-center {
+    text-align: center !important;
+  }
+  
+  .mobile-p-4 {
+    padding: 1rem !important;
+  }
+  
+  .mobile-gap-3 {
+    gap: 0.75rem !important;
+  }
+}
+
+/* Touch feedback for interactive elements */
+@media (hover: none) and (pointer: coarse) {
+  .touch-feedback {
+    @apply active:bg-muted/80 active:scale-[0.98] transition-transform duration-100;
+  }
+  
+  /* Disable hover effects on touch devices */
+  .hover-lift:hover,
+  .hover-scale:hover {
+    transform: none;
+  }
+}
+
+/* Sticky mobile bottom bar */
+.mobile-bottom-bar {
+  @apply fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t px-4 py-3;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0));
+}
+
+/* Mobile drawer/sheet overlay */
+.mobile-drawer-overlay {
+  @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm;
+}
+
+.mobile-drawer-content {
+  @apply fixed bottom-0 left-0 right-0 z-50 bg-background rounded-t-2xl max-h-[90vh] overflow-y-auto;
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+/* Progress indicator for wizards (mobile-optimized) */
+.mobile-progress {
+  @apply sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b px-4 py-3;
+}
+
+/* Mobile-optimized grid that stacks on small screens */
+.mobile-grid-1 {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.mobile-grid-2 {
+  @apply grid grid-cols-2 gap-3 sm:gap-4;
+}
+
+/* Responsive text that scales down on mobile */
+.text-responsive-xl {
+  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl;
+}
+
+.text-responsive-lg {
+  @apply text-xl sm:text-2xl md:text-3xl;
+}
+
+.text-responsive-md {
+  @apply text-lg sm:text-xl md:text-2xl;
+}
+
+.text-responsive-sm {
+  @apply text-base sm:text-lg;
+}
+
+/* Mobile-optimized list items */
+.mobile-list-item {
+  @apply flex items-center gap-3 p-4 rounded-xl border bg-card transition-all;
+  min-height: 64px;
+}
+
+.mobile-list-item:active {
+  @apply bg-muted scale-[0.99];
+}
+
+/* Floating action button */
+.fab {
+  @apply fixed bottom-20 right-4 z-30 h-14 w-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.fab:active {
+  @apply scale-95;
+}
+
+@media (min-width: 640px) {
+  .fab {
+    @apply hidden;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    PRINT STYLES
    ═══════════════════════════════════════════════════════════════════════════ */
 @media print {

@@ -21,23 +21,32 @@ interface WizardProgressProps {
 
 export function WizardProgress({ steps, currentStep, className }: WizardProgressProps) {
   const progress = ((currentStep + 1) / steps.length) * 100;
-
-  // Show a limited number of step indicators on mobile
-  const visibleSteps = steps.length <= 6 ? steps : [
-    steps[0],
-    ...(currentStep > 2 ? [{ ...steps[currentStep - 1], id: currentStep - 1 }] : []),
-    steps[currentStep],
-    ...(currentStep < steps.length - 2 ? [{ ...steps[currentStep + 1], id: currentStep + 1 }] : []),
-    steps[steps.length - 1],
-  ].filter((s, i, arr) => arr.findIndex(x => x.id === s.id) === i);
+  const currentStepData = steps[currentStep];
+  const IconComponent = currentStepData ? (iconMap[currentStepData.icon] || Cpu) : Cpu;
 
   return (
-    <div className={cn("space-y-3 sm:space-y-4", className)}>
-      <Progress value={progress} className="h-1.5 sm:h-2" />
+    <div className={cn("space-y-3", className)}>
+      {/* Clean progress bar - works on all screens */}
+      <Progress value={progress} className="h-2" />
       
-      <div className="flex justify-between items-center overflow-x-auto pb-2 gap-1">
-        {(steps.length <= 8 ? steps : visibleSteps).map((step) => {
-          const IconComponent = iconMap[step.icon] || Cpu;
+      {/* Mobile: Simple step counter with current step info */}
+      <div className="flex items-center justify-between sm:hidden">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+            <IconComponent className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-sm font-medium">{currentStepData?.title}</p>
+            <p className="text-xs text-muted-foreground">Step {currentStep + 1} of {steps.length}</p>
+          </div>
+        </div>
+        <span className="text-lg font-bold text-primary">{Math.round(progress)}%</span>
+      </div>
+      
+      {/* Desktop: Step indicators - only show on larger screens */}
+      <div className="hidden sm:flex justify-between items-center overflow-x-auto pb-2 gap-1">
+        {steps.slice(0, 8).map((step, idx) => {
+          const StepIcon = iconMap[step.icon] || Cpu;
           const isActive = step.id === currentStep;
           const isCompleted = step.id < currentStep;
 
@@ -45,27 +54,31 @@ export function WizardProgress({ steps, currentStep, className }: WizardProgress
             <div
               key={step.id}
               className={cn(
-                "flex items-center gap-1 sm:gap-1.5 text-xs whitespace-nowrap px-0.5 sm:px-1",
+                "flex items-center gap-1.5 text-xs whitespace-nowrap px-1",
                 isActive && "text-primary font-medium",
                 isCompleted && "text-muted-foreground",
                 !isActive && !isCompleted && "text-muted-foreground/50"
               )}
             >
-              <IconComponent className={cn(
-                "h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0",
+              <StepIcon className={cn(
+                "h-4 w-4 shrink-0",
                 isActive && "text-primary",
                 isCompleted && "text-success"
               )} />
-              <span className="hidden sm:inline">{step.title}</span>
+              <span className="hidden md:inline">{step.title}</span>
             </div>
           );
         })}
+        {steps.length > 8 && (
+          <span className="text-xs text-muted-foreground">+{steps.length - 8} more</span>
+        )}
       </div>
       
-      <div className="text-xs sm:text-sm text-muted-foreground">
+      {/* Desktop step counter */}
+      <div className="hidden sm:block text-sm text-muted-foreground">
         Step {currentStep + 1} of {steps.length}
-        {steps.length > 6 && (
-          <span className="ml-2">• {steps[currentStep]?.title}</span>
+        {steps.length > 8 && (
+          <span className="ml-2">• {currentStepData?.title}</span>
         )}
       </div>
     </div>
