@@ -77,34 +77,81 @@ export function TimelineSection({
   };
 
   return (
-    <section className={cn("section-padding bg-surface-1", className)}>
-      <div className="container-wide">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="display-md mb-4">{title}</h2>
-          <p className="body-lg text-muted-foreground">{subtitle}</p>
+    <section className={cn("py-12 sm:py-16 md:py-20 lg:py-24 bg-surface-1", className)}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header - Mobile optimized */}
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3 sm:mb-4">{title}</h2>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground">{subtitle}</p>
         </div>
 
-        {/* Timeline */}
+        {/* Timeline - Horizontal scroll on mobile, vertical on desktop */}
         <div className="max-w-4xl mx-auto">
-          <div className="relative">
+          {/* Mobile: Horizontal scroll */}
+          <div className="md:hidden -mx-4 px-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+              {items.map((item, index) => (
+                <div
+                  key={item.date}
+                  className={cn(
+                    "flex-shrink-0 w-[280px] snap-start animate-fade-up"
+                  )}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div
+                    className={cn(
+                      "p-5 rounded-xl border bg-card",
+                      item.status === "current" && "border-warning shadow-md ring-1 ring-warning/20"
+                    )}
+                  >
+                    {/* Status indicator */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div
+                        className={cn(
+                          "w-10 h-10 rounded-full border-2 flex items-center justify-center",
+                          getStatusColor(item.status)
+                        )}
+                      >
+                        {getStatusIcon(item.status)}
+                      </div>
+                      <span className="text-sm font-semibold text-primary">{item.date}</span>
+                    </div>
+                    
+                    <h3 className="text-base font-semibold mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                    
+                    {item.status === "current" && (
+                      <span className="inline-block mt-3 px-2.5 py-1 text-xs font-medium rounded-full bg-warning/10 text-warning">
+                        Act Now
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Scroll hint */}
+            <p className="text-center text-xs text-muted-foreground mt-2">Swipe to see more →</p>
+          </div>
+          
+          {/* Desktop: Vertical timeline */}
+          <div className="hidden md:block relative">
             {/* Vertical line */}
-            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-border md:-translate-x-px" />
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border -translate-x-px" />
 
             {items.map((item, index) => (
               <div
                 key={item.date}
                 className={cn(
                   "relative mb-8 last:mb-0 animate-fade-up",
-                  "md:grid md:grid-cols-2 md:gap-8"
+                  "grid grid-cols-2 gap-8"
                 )}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 {/* Left side (date on desktop) */}
                 <div
                   className={cn(
-                    "hidden md:block text-right pr-12",
-                    index % 2 === 1 && "md:order-2 md:text-left md:pl-12 md:pr-0"
+                    "text-right pr-12",
+                    index % 2 === 1 && "order-2 text-left pl-12 pr-0"
                   )}
                 >
                   <span className="text-sm font-semibold text-primary">
@@ -115,8 +162,8 @@ export function TimelineSection({
                 {/* Timeline node */}
                 <div
                   className={cn(
-                    "absolute left-0 md:left-1/2 w-12 h-12 rounded-full border-2 flex items-center justify-center bg-background z-10",
-                    "md:-translate-x-1/2",
+                    "absolute left-1/2 w-12 h-12 rounded-full border-2 flex items-center justify-center bg-background z-10",
+                    "-translate-x-1/2",
                     getStatusColor(item.status)
                   )}
                 >
@@ -126,8 +173,7 @@ export function TimelineSection({
                 {/* Content card */}
                 <div
                   className={cn(
-                    "ml-20 md:ml-0",
-                    index % 2 === 1 && "md:order-1 md:text-right"
+                    index % 2 === 1 && "order-1 text-right"
                   )}
                 >
                   <div
@@ -136,11 +182,7 @@ export function TimelineSection({
                       item.status === "current" && "border-warning shadow-md"
                     )}
                   >
-                    {/* Mobile date */}
-                    <span className="md:hidden text-sm font-semibold text-primary">
-                      {item.date}
-                    </span>
-                    <h3 className="text-lg font-semibold mt-1 md:mt-0 mb-2">
+                    <h3 className="text-lg font-semibold mb-2">
                       {item.title}
                     </h3>
                     <p className="text-muted-foreground">{item.description}</p>

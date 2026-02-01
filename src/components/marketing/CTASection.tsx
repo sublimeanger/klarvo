@@ -66,19 +66,19 @@ export function CTASection({
         </div>
       )}
 
-      <div className="container-wide section-padding relative">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24 relative">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Decorative sparkle */}
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-8 animate-bounce-subtle">
+          {/* Decorative sparkle - smaller on mobile */}
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white/10 mb-6 sm:mb-8 animate-bounce-subtle">
             <Sparkles className={cn(
-              "h-8 w-8",
+              "h-6 w-6 sm:h-8 sm:w-8",
               variant === "gradient" ? "text-white" : "text-primary"
             )} />
           </div>
           
           <h2
             className={cn(
-              "display-md mb-6 animate-fade-up",
+              "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6 animate-fade-up",
               variant === "gradient" && "text-white",
               variant === "dark" && "text-background"
             )}
@@ -89,7 +89,7 @@ export function CTASection({
           {subtitle && (
             <p
               className={cn(
-                "body-lg mb-10 max-w-2xl mx-auto animate-fade-up delay-100",
+                "text-base sm:text-lg md:text-xl mb-8 sm:mb-10 max-w-2xl mx-auto animate-fade-up delay-100 leading-relaxed",
                 variant === "gradient" && "text-white/80",
                 variant === "dark" && "text-background/80",
                 variant === "default" && "text-muted-foreground"
@@ -99,11 +99,12 @@ export function CTASection({
             </p>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up delay-200">
+          {/* CTAs - Full width stacked on mobile */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-up delay-200">
             <Link
               to={primaryCta.href}
               className={cn(
-                "inline-flex items-center justify-center h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5 btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90",
+                "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90",
                 variant === "gradient" && "bg-white text-primary hover:bg-white/90 shadow-dramatic",
                 variant === "dark" && "bg-background text-foreground hover:bg-background/90 shadow-dramatic"
               )}
@@ -115,7 +116,7 @@ export function CTASection({
               <Link
                 to={secondaryCta.href}
                 className={cn(
-                  "inline-flex items-center justify-center h-14 px-10 text-base font-semibold rounded-2xl transition-all duration-300 hover:-translate-y-0.5 border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                  "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] border border-input bg-background hover:bg-accent hover:text-accent-foreground",
                   variant === "gradient" && "bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white/50",
                   variant === "dark" && "bg-transparent border-background/30 text-background hover:bg-background/10"
                 )}
@@ -125,22 +126,22 @@ export function CTASection({
             )}
           </div>
           
-          {/* Trust indicators */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 animate-fade-up delay-300">
-            <div className="flex items-center gap-2 text-sm opacity-70">
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+          {/* Trust indicators - Horizontal scroll on mobile */}
+          <div className="mt-8 sm:mt-12 flex items-center justify-center gap-4 sm:gap-8 animate-fade-up delay-300 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm opacity-70 whitespace-nowrap shrink-0 sm:shrink">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <span>No credit card required</span>
+              <span>No credit card</span>
             </div>
-            <div className="flex items-center gap-2 text-sm opacity-70">
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm opacity-70 whitespace-nowrap shrink-0 sm:shrink">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <span>14-day free trial</span>
+              <span>14-day trial</span>
             </div>
-            <div className="flex items-center gap-2 text-sm opacity-70">
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm opacity-70 whitespace-nowrap shrink-0 sm:shrink">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
               <span>Cancel anytime</span>

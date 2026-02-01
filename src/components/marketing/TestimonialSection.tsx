@@ -49,20 +49,20 @@ export function TestimonialSection({
     const featured = testimonials[0];
     const Icon = featured.icon;
     return (
-      <section className={cn("section-padding bg-surface-1", className)}>
-        <div className="container-narrow">
+      <section className={cn("py-12 sm:py-16 md:py-20 lg:py-24 bg-surface-1", className)}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
           <div className="text-center">
-            <Quote className="h-12 w-12 text-primary/20 mx-auto mb-6" />
-            <blockquote className="display-sm mb-8 text-balance">
+            <Quote className="h-10 w-10 sm:h-12 sm:w-12 text-primary/20 mx-auto mb-4 sm:mb-6" />
+            <blockquote className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-6 sm:mb-8 text-balance leading-relaxed">
               "{featured.quote}"
             </blockquote>
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon className="h-6 w-6 text-primary" />
+            <div className="flex items-center justify-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
               </div>
               <div className="text-left">
-                <p className="font-semibold">{featured.role}</p>
-                <p className="text-sm text-muted-foreground">{featured.industry}</p>
+                <p className="font-semibold text-sm sm:text-base">{featured.role}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground">{featured.industry}</p>
               </div>
             </div>
           </div>
@@ -72,16 +72,46 @@ export function TestimonialSection({
   }
 
   return (
-    <section className={cn("section-padding", className)}>
-      <div className="container-wide">
+    <section className={cn("py-12 sm:py-16 md:py-20 lg:py-24", className)}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="display-md mb-4">{title}</h2>
-          <p className="body-lg text-muted-foreground">{subtitle}</p>
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3 sm:mb-4">{title}</h2>
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground">{subtitle}</p>
         </div>
 
-        {/* Testimonial Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Mobile: Horizontal scroll, Desktop: Grid */}
+        <div className="md:hidden -mx-4 px-4">
+          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
+            {testimonials.map((testimonial, index) => {
+              const Icon = testimonial.icon;
+              return (
+                <div
+                  key={index}
+                  className="flex-shrink-0 w-[300px] p-5 rounded-2xl bg-card border snap-start animate-fade-up"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <Quote className="h-6 w-6 text-primary/20 mb-3" />
+                  <blockquote className="text-base mb-4 line-clamp-4">
+                    "{testimonial.quote}"
+                  </blockquote>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm">{testimonial.role}</p>
+                      <p className="text-xs text-muted-foreground">{testimonial.industry}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        
+        {/* Desktop Grid */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {testimonials.map((testimonial, index) => {
             const Icon = testimonial.icon;
             return (
