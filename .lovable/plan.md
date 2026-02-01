@@ -1,493 +1,476 @@
+# Klarvo Supply-Chain Operator Track & Pricing Restructure Plan
 
-# Provider / Importer / Distributor Track Implementation Plan
+## Executive Summary
 
-## Overview
-
-This plan outlines the implementation of the "Supply-Chain Operator Track" for Klarvo, extending beyond deployer-focused workflows to support **Providers**, **Importers**, and **Distributors** under the EU AI Act. All new functionality will be **hidden from public indexing** until fully functional.
+This plan implements **Model A (Add-ons Model)** from the pricing document, restructuring how Provider, Importer, and Distributor tracks are accessed. Instead of baking these into plan tiers, they become purchasable add-ons that can be added to any eligible base plan.
 
 ---
 
-## Technical Context
+## Part A: Pricing Restructure (PRIORITY: CRITICAL)
 
 ### Current State
-- Klarvo has a robust deployer-focused architecture with 30+ controls (GOV, CLS, TRN, DEP, LOG, DATA, VEN, LIT, MON)
-- The `ai_systems` table already captures `value_chain_role` as an array field
-- Existing control library, evidence vault, and export infrastructure can be extended
-- RBAC system supports admin, compliance_owner, system_owner, reviewer, viewer roles
+- Provider/Importer/Distributor access is baked into `PLAN_ENTITLEMENTS`
+- `providerTrackEnabled: true` only for Pro/Enterprise
+- `importerDistributorTrackEnabled: true` only for Growth/Pro/Enterprise
+- No mechanism for add-on purchases
 
-### Non-Indexing Strategy
-- All new routes will use `noindex={true}` in SEOHead
-- Routes will NOT be added to `ssgRoutes.ts`
-- Routes will NOT be added to public navigation (marketing header/footer)
-- Protected routes behind authentication only
+### Target State (Model A)
+- Base tiers remain unchanged (Free/Starter/Growth/Pro/Enterprise)
+- New add-ons can be purchased on top of eligible base plans
+- Enterprise includes all add-ons by default
 
 ---
 
-## Phase 1: Database Schema Foundation
+## A1: New Add-on Definitions
 
-### 1.1 New Enums
+### Market Access Add-ons
+
+| Add-on ID | Name | Monthly | Annual | Min Plan | What It Unlocks |
+|-----------|------|---------|--------|----------|-----------------|
+| `importer_distributor` | Importer + Distributor Track | €149 | €1,490 | Growth | Importer verification checklist, Importer Pack ZIP, Distributor verification checklist, Distributor Pack ZIP, role escalation warnings, CHAIN controls |
+| `provider_track` | Provider Track (Market Access) | €499 | €4,990 | Growth | System versioning, Annex IV builder, EU DoC generator, Provider Pack export, PMS plan builder, serious incident timers, PROV/DOC/CEM/REG/PMS/SIR controls |
+| `provider_assurance` | Provider Assurance | €899 | €8,990 | Pro | QMS module, conformity workflow, notified body portal, EU registration dossier, advanced release gating, QMS/CONF controls |
+
+### Metering (Optional for V2)
+- Provider add-on includes 3 "provider-enabled systems"
+- Extra provider-enabled systems: €25/system/month
+
+---
+
+## A2: Database Schema for Add-ons
+
+### New Table: `subscription_addons`
+
 ```sql
-CREATE TYPE operator_role_type AS ENUM (
-  'provider', 'deployer', 'importer', 
-  'distributor', 'authorised_representative'
+CREATE TABLE public.subscription_addons (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organization_id UUID REFERENCES organizations(id) ON DELETE CASCADE NOT NULL,
+  addon_id TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active', -- active, canceled, past_due
+  billing_period TEXT NOT NULL, -- monthly, annual
+  stripe_subscription_item_id TEXT,
+  stripe_price_id TEXT,
+  activated_at TIMESTAMPTZ DEFAULT now(),
+  current_period_start TIMESTAMPTZ,
+  current_period_end TIMESTAMPTZ,
+  cancel_at_period_end BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(organization_id, addon_id)
 );
 
-CREATE TYPE conformity_status AS ENUM (
-  'draft', 'internal_review', 'submitted', 
-  'findings', 'closed', 'certified', 'reassessment_triggered'
-);
+ALTER TABLE public.subscription_addons ENABLE ROW LEVEL SECURITY;
 
-CREATE TYPE version_status AS ENUM (
-  'draft', 'released', 'withdrawn', 'recalled'
-);
-
-CREATE TYPE doc_status AS ENUM (
-  'draft', 'in_review', 'approved'
-);
+CREATE POLICY "Users can view their org addons"
+  ON public.subscription_addons FOR SELECT
+  USING (organization_id IN (
+    SELECT organization_id FROM profiles WHERE id = auth.uid()
+  ));
 ```
 
-### 1.2 New Tables
+---
 
-**ai_system_operator_roles** - Track multiple roles per AI system
-- id, ai_system_id, role_type (enum), jurisdiction_scope (EU/UK/global), created_at
+## A3: Updated Gating Matrix
 
-**ai_system_versions** - Version tracking for providers
-- id, ai_system_id, version_label, release_date, relation_to_previous, predetermined_changes_summary, status (enum), created_by, created_at
-
-**economic_operators** - External operators (notified bodies, authorized reps)
-- id, organization_id, operator_type, legal_name, address fields, contact info, eu_established (bool), notes
-
-**technical_documentation_annexiv** - Annex IV structured data
-- id, ai_system_version_id, structured_json (JSONB), status (enum), approved_by, approved_at, created_at
-
-**qms_documents** - Quality Management System library
-- id, organization_id, doc_type, title, version, status, file_path (to evidence), created_by, created_at
-
-**conformity_assessments** - Conformity assessment workflow
-- id, ai_system_version_id, path_type (annex_vi_internal/annex_vii_notified_body), notified_body_id, status (enum), certificate_id, submission_date, closed_date
-
-**eu_declarations_of_conformity** - DoC generator
-- id, ai_system_version_id, fields_json (JSONB), generated_pdf_evidence_id, signed_by, signed_at
-
-**ce_marking_records** - CE marking evidence
-- id, ai_system_version_id, marking_type (digital/physical/packaging/documentation), location_description, evidence_id
-
-**eu_registration_records** - EU database registration
-- id, ai_system_version_id, eu_database_reference, status, submitted_at, evidence_id
-
-**post_market_monitoring_plans** - PMS plans (Article 72)
-- id, ai_system_version_id, plan_json (JSONB), status, next_review_date, evidence_id
-
-**serious_incident_reports** - Serious incidents with deadline tracking (Article 73)
-- id, ai_system_id, ai_system_version_id, aware_at, category, deadline_at (computed), status, submitted_at, evidence_id
-
-**risk_management_records** - Provider risk register (Article 9)
-- id, ai_system_version_id, hazard, impacted_stakeholders, severity, likelihood, mitigation, residual_risk, owner_id, review_cadence, created_at
-
-**dataset_registry** - Data governance datasets (Article 10)
-- id, ai_system_version_id, name, purpose, provenance, licenses, known_limitations, bias_checks, created_at
-
-**importer_verifications** - Importer checklist records
-- id, ai_system_id, verification_data (JSONB), status, verified_by, verified_at
-
-**distributor_verifications** - Distributor checklist records
-- id, ai_system_id, verification_data (JSONB), status, verified_by, verified_at
-
-### 1.3 Control Library Expansion
-
-Add new control categories with seed data:
-- **PROV** (7 controls): Risk management, data governance, technical docs, logging, deployer instructions, accuracy/robustness, cybersecurity
-- **QMS** (4 controls): QMS policies, change control, internal audit, management review
-- **CONF** (1 control): Conformity assessment workflow
-- **DOC** (1 control): EU Declaration of Conformity
-- **CEM** (1 control): CE marking evidence
-- **REG** (1 control): EU database registration
-- **PMS** (2 controls): Post-market monitoring plan, monitoring system
-- **SIR** (1 control): Serious incident reporting workflow
-- **IMP** (3 controls): Importer verification, storage/transport, documentation retention
-- **DIST** (2 controls): Distributor verification, non-compliance workflow
-- **CHAIN** (1 control): Role escalation rules
+| Feature | Free | Starter | Growth | Pro | Enterprise |
+|---------|------|---------|--------|-----|------------|
+| **Base Deployer Track** | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Importer/Distributor Track** | — | — | Add-on (€149/mo) | Add-on (€149/mo) | ✓ Included |
+| **Provider Track Core** | — | — | Add-on (€499/mo) | Add-on (€499/mo) | ✓ Included |
+| **Provider Assurance (QMS+Conformity)** | — | — | — | Add-on (€899/mo) | ✓ Included |
+| **Can purchase add-ons** | ✗ | ✗ | ✓ | ✓ | N/A |
 
 ---
 
-## Phase 2: Core Provider Track UI
+## A4: Billing Constants Updates
 
-### 2.1 Protected Routes (Hidden)
+### Update `src/lib/billing-constants.ts`
 
-```text
-/provider-track                    - Provider Dashboard
-/provider-track/technical-docs     - Annex IV Builder
-/provider-track/risk-management    - Risk Register
-/provider-track/data-governance    - Dataset Registry
-/provider-track/qms                - QMS Library
-/provider-track/conformity         - Conformity Assessment Workflow
-/provider-track/declaration        - EU DoC Generator
-/provider-track/ce-marking         - CE Marking Checklist
-/provider-track/registration       - EU Registration Wizard
-/provider-track/monitoring         - Post-Market Monitoring
-/provider-track/serious-incidents  - Serious Incident Reporting
-/importer-track                    - Importer Dashboard
-/importer-track/verification       - Importer Verification Checklist
-/distributor-track                 - Distributor Dashboard
-/distributor-track/verification    - Distributor Verification Checklist
-```
-
-### 2.2 Provider Dashboard Page
-- Provider readiness score (0-100) with weighted components
-- Blocking issues panel
-- Quick access to Annex IV, QMS, DoC
-- Timeline-aware deadlines
-
-### 2.3 Technical Documentation Builder (Annex IV)
-Multi-section form with evidence attachment:
-1. General description (purpose, provider, version, hardware/software)
-2. Development process (methods, third-party tools, architecture)
-3. Data requirements (datasheets, provenance, labeling)
-4. Human oversight measures
-5. Testing procedures (datasets, metrics, logs)
-6. Cybersecurity measures
-7. Risk management system description
-8. Standards applied
-9. DoC reference
-10. Post-market monitoring plan reference
-
-### 2.4 Risk Management Module (Article 9)
-- Risk register with versioning
-- Hazard, severity, likelihood, mitigation tracking
-- Version comparison (diff view)
-- Link to test results and incidents
-
-### 2.5 Data Governance Module (Article 10)
-- Dataset registry (name, purpose, provenance, licenses, limitations)
-- Data pipeline documentation
-- Bias checks and mitigation tracking
-
-### 2.6 QMS Library (Article 17)
-- Document library with categories
-- Approval workflow integration
-- Version history
-- Export as QMS Pack
-
-### 2.7 Conformity Assessment Workflow (Article 43)
-- Kanban-style workflow board
-- Path selection (Annex VI internal / Annex VII notified body)
-- Findings tracker with corrective actions
-- Re-assessment triggers on version change
-
-### 2.8 EU Declaration Generator (Annex V)
-Structured form with required fields:
-- AI system name/type + traceable reference
-- Provider name/address
-- Conformity statement
-- Harmonised standards references
-- Notified body details (if applicable)
-- Signature fields
-- PDF export
-
-### 2.9 CE Marking Checklist (Article 48)
-- Marking method selection (digital/physical)
-- Location description
-- Evidence upload (screenshots, packaging)
-- Notified body ID presence check
-
-### 2.10 EU Registration Wizard (Article 49)
-- Annex VIII field entry wizard
-- Status tracking
-- Export registration dossier
-
-### 2.11 Post-Market Monitoring (Article 72)
-- Plan builder with data sources, KPIs, thresholds
-- Review cadence
-- Manual KPI entry (MVP)
-- Export plan PDF
-
-### 2.12 Serious Incident Reporting (Article 73)
-- Incident register with auto-calculated deadlines
-- Category-based deadlines (15 days / 2 days / 10 days)
-- Timer alerts
-- Status tracking
-- Evidence attachment
-- PDF export
-
----
-
-## Phase 3: Importer & Distributor Tracks
-
-### 3.1 Importer Track (Article 23)
-- Verification checklist UI
-- Provider/authorized rep details
-- Documentation retention records
-- Storage/transport conditions
-- Non-compliance actions workflow
-- Export: Importer Market Access Pack
-
-### 3.2 Distributor Track (Article 24)
-- Verification checklist UI
-- CE marking/documentation checks
-- Storage/transport conditions
-- Suspected non-compliance workflow
-- Export: Distributor Compliance Pack
-
-### 3.3 Role Escalation Engine (Article 25)
-- Auto-detect rebrand/modification triggers
-- Warning banner when importer/distributor may become provider
-- Auto-create provider track tasks (locked state)
-- Extend reassessment triggers for version/model/dataset changes
-
----
-
-## Phase 4: Navigation & Sidebar Updates
-
-### 4.1 AppSidebar Extension
-Add conditional navigation section based on value_chain_role:
 ```typescript
-// When system has provider/importer/distributor role
-{ name: "Provider Track", href: "/provider-track", icon: Package },
-{ name: "Importer Track", href: "/importer-track", icon: Import },
-{ name: "Distributor Track", href: "/distributor-track", icon: Truck },
+// Add new addon interface
+export interface OperatorAddon {
+  id: string;
+  name: string;
+  description: string;
+  priceMonthly: number;
+  priceAnnual: number;
+  minimumPlan: PlanId;
+  features: string[];
+  unlocks: string[]; // feature keys
+}
+
+// New add-ons constant
+export const OPERATOR_ADDONS: OperatorAddon[] = [
+  {
+    id: 'importer_distributor',
+    name: 'Importer + Distributor Track',
+    description: 'Verification checklists, documentation retention, and pack exports for importers and distributors.',
+    priceMonthly: 149,
+    priceAnnual: 1490,
+    minimumPlan: 'growth',
+    features: [
+      'Importer verification checklist',
+      'Distributor verification checklist',
+      'Role escalation warnings (Article 25)',
+      'Importer Pack export (ZIP)',
+      'Distributor Pack export (ZIP)',
+      'Storage/transport documentation',
+      'Non-compliance workflow',
+    ],
+    unlocks: ['importerTrack', 'distributorTrack'],
+  },
+  {
+    id: 'provider_track',
+    name: 'Provider Track (Market Access)',
+    description: 'Everything you need to place a high-risk AI system on the EU market.',
+    priceMonthly: 499,
+    priceAnnual: 4990,
+    minimumPlan: 'growth',
+    features: [
+      'AI system versioning',
+      'Annex IV Technical Documentation builder',
+      'EU Declaration of Conformity generator',
+      'CE marking checklist',
+      'EU registration dossier',
+      'Post-market monitoring plan builder',
+      'Serious incident reporting with deadlines',
+      'Provider Pack export (PDF + ZIP)',
+    ],
+    unlocks: ['providerTrack', 'providerPackExport'],
+  },
+  {
+    id: 'provider_assurance',
+    name: 'Provider Assurance',
+    description: 'Advanced QMS, conformity workflow, and notified body collaboration.',
+    priceMonthly: 899,
+    priceAnnual: 8990,
+    minimumPlan: 'pro',
+    features: [
+      'Quality Management System library',
+      'Conformity assessment workflow',
+      'Findings tracker & corrective actions',
+      'Notified body collaboration portal',
+      'Advanced release gating',
+      'QMS Pack export',
+    ],
+    unlocks: ['qmsModule', 'conformityWorkflow', 'notifiedBodyPortal'],
+  },
+];
+
+// Update PlanEntitlements - remove baked-in operator track flags
+export interface PlanEntitlements {
+  aiSystemsIncluded: number;
+  storageGbIncluded: number;
+  watermarkExports: boolean;
+  unlimitedUsers: boolean;
+  approvalsEnabled: boolean;
+  auditorLinksEnabled: boolean;
+  policyVersioningEnabled: boolean;
+  orgDashboardsEnabled: boolean;
+  friaEnabled: boolean;
+  incidentsEnabled: boolean;
+  integrationsEnabled: boolean;
+  apiEnabled: boolean;
+  multiWorkspaceEnabled: boolean;
+  ssoEnabled: boolean;
+  canPurchaseAddons: boolean; // NEW: whether plan can buy add-ons
+  allOperatorTracksIncluded: boolean; // NEW: Enterprise gets all
+}
 ```
 
-### 4.2 AI System Detail Tabs
-Add conditional tabs based on role:
-- Provider Compliance (if provider)
-- Importer Compliance (if importer)
-- Distributor Compliance (if distributor)
-- Conformity & CE (provider)
-- Registration (provider)
-- Post-Market Monitoring (provider)
-- Serious Incidents (provider + deployer integration)
-
 ---
 
-## Phase 5: Export Infrastructure
+## A5: New Hooks
 
-### 5.1 Provider Pack ZIP Structure
-```text
-EU-AI-Act_ProviderPack_[Org]_[System]_[Version]_[Date]/
-├── 00_Executive/
-│   └── Provider_Executive_Summary.pdf
-├── 01_Inventory/
-│   └── System_Record.pdf
-├── 02_Classification/
-│   └── Classification_Memo.pdf
-├── 03_Technical_Documentation_AnnexIV/
-│   └── AnnexIV_Technical_Documentation.pdf
-├── 04_QMS_Article17/
-│   └── QMS_Pack.pdf
-├── 05_Conformity_Assessment_Article43/
-│   ├── CA_Summary.pdf
-│   └── NotifiedBody_Findings/
-├── 06_EU_Declaration_AnnexV/
-│   └── EU_Declaration_of_Conformity.pdf
-├── 07_CE_Marking_Article48/
-│   └── CE_Evidence.pdf
-├── 08_EU_Registration_Article49/
-│   └── Registration_Dossier.pdf
-├── 09_PostMarketMonitoring_Article72/
-│   └── PostMarketMonitoringPlan.pdf
-├── 10_Serious_Incidents_Article73/
-│   ├── SeriousIncidentProcedure.pdf
-│   └── SeriousIncidentReports/
-├── 98_Supporting_Evidence/
-└── Evidence_Index.csv
-```
+### `src/hooks/useAddons.ts`
 
-### 5.2 New PDF Generators
-- AnnexIVDocumentationPDF.tsx
-- EUDeclarationPDF.tsx
-- QMSPackPDF.tsx
-- ConformityAssessmentPDF.tsx
-- CEMarkingEvidencePDF.tsx
-- RegistrationDossierPDF.tsx
-- PostMarketMonitoringPlanPDF.tsx
-- SeriousIncidentReportPDF.tsx
-- ImporterPackPDF.tsx
-- DistributorPackPDF.tsx
-
-### 5.3 Importer/Distributor Exports
-- Importer Market Access Pack (verification + copies + retention)
-- Distributor Compliance Pack (checklist + storage + corrective actions)
-
----
-
-## Phase 6: Wizard & Intake Updates
-
-### 6.1 Enhanced Value Chain Role Step
-Expand Step 5 to multi-select with definitions:
-- [ ] Provider
-- [ ] Deployer
-- [ ] Importer
-- [ ] Distributor
-- [ ] Authorized Representative
-
-### 6.2 Provider Conditional Questions
-- EU establishment status
-- Authorized representative details
-- Market placement method
-- Versioning scheme
-- Delivery method (SaaS, API, embedded, on-prem)
-
-### 6.3 Importer Conditional Questions
-- Provider established outside EU?
-- Authorized rep details
-- Storage/transport constraints
-
-### 6.4 Distributor Conditional Questions
-- Do you rebrand? (warn about becoming provider)
-- Do you modify? (warn about substantial modification)
-
----
-
-## Phase 7: RBAC Extensions
-
-### 7.1 New Roles (extend app_role enum)
-- provider_admin
-- qms_owner
-- conformity_manager
-- importer_user
-- distributor_user
-- notified_body (external)
-
-### 7.2 Permission Mapping
-- Provider Admin: all provider modules
-- QMS Owner: QMS docs + approvals
-- Conformity Manager: CA workflow + submissions
-- Importer User: importer verification + docs
-- Distributor User: distributor verification + docs
-
----
-
-## Phase 8: Feature Gating
-
-### 8.1 Billing Integration
-- Provider Track: Pro+ tier
-- Conformity & CE/Registration: Enterprise or paid add-on
-- Importer/Distributor Track: Growth+
-- Customer/Deployer Portal: Pro add-on or Enterprise
-- Notified Body access: Enterprise
-
-### 8.2 Implementation
-Extend `useEntitlements.ts` to check for provider track access:
 ```typescript
-const hasProviderTrack = plan === 'pro' || plan === 'enterprise';
-const hasImporterDistributorTrack = plan === 'growth' || plan === 'pro' || plan === 'enterprise';
+export function useAddons() {
+  const { profile } = useAuth();
+  
+  const { data: addons, isLoading } = useQuery({
+    queryKey: ['subscription-addons', profile?.organization_id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('subscription_addons')
+        .select('*')
+        .eq('organization_id', profile.organization_id)
+        .eq('status', 'active');
+      // ...
+    }
+  });
+
+  const hasAddon = (addonId: string) => {
+    return addons?.some(a => a.addon_id === addonId) ?? false;
+  };
+
+  return { addons, hasAddon, isLoading };
+}
+```
+
+### `src/hooks/useOperatorTrackAccess.ts`
+
+```typescript
+export function useOperatorTrackAccess(track: 'provider' | 'importer' | 'distributor' | 'provider_assurance') {
+  const { planId, entitlements } = useSubscription();
+  const { hasAddon } = useAddons();
+  
+  // Enterprise always has access
+  if (entitlements.allOperatorTracksIncluded) {
+    return { hasAccess: true, reason: 'included', upgradeAction: null };
+  }
+  
+  // Check add-on
+  const addonMap = {
+    provider: 'provider_track',
+    importer: 'importer_distributor',
+    distributor: 'importer_distributor',
+    provider_assurance: 'provider_assurance',
+  };
+  
+  if (hasAddon(addonMap[track])) {
+    return { hasAccess: true, reason: 'addon', upgradeAction: null };
+  }
+  
+  // Check if can purchase
+  if (entitlements.canPurchaseAddons) {
+    return { 
+      hasAccess: false, 
+      reason: 'addon_available', 
+      upgradeAction: { type: 'purchase_addon', addonId: addonMap[track] }
+    };
+  }
+  
+  // Need to upgrade plan first
+  return { 
+    hasAccess: false, 
+    reason: 'plan_required', 
+    upgradeAction: { type: 'upgrade_plan', targetPlan: 'growth' }
+  };
+}
 ```
 
 ---
 
-## Implementation Order
+## A6: Gating Components
 
-### Sprint 1: Database & Core Infrastructure
-1. Database migration with all new tables and enums
-2. Control library expansion (PROV, QMS, CONF, etc.)
-3. RLS policies for new tables
-4. Base hooks for new tables
+### `src/components/billing/AddonGate.tsx`
 
-### Sprint 2: Provider Dashboard & Technical Docs
-1. Provider dashboard with readiness scoring
-2. Annex IV builder (multi-section form)
-3. Evidence linking for technical docs
-4. Risk management module
+```tsx
+interface AddonGateProps {
+  addon: 'importer_distributor' | 'provider_track' | 'provider_assurance';
+  children: ReactNode;
+  fallback?: ReactNode;
+  showLocked?: boolean;
+  onLockedClick?: () => void;
+}
 
-### Sprint 3: QMS & Conformity
-1. QMS document library
-2. Conformity assessment workflow (Kanban)
-3. EU Declaration generator
-4. CE marking checklist
+export function AddonGate({ addon, children, fallback, showLocked, onLockedClick }: AddonGateProps) {
+  const { hasAddon } = useAddons();
+  const { entitlements } = useSubscription();
+  
+  // Enterprise includes all
+  if (entitlements.allOperatorTracksIncluded || hasAddon(addon)) {
+    return <>{children}</>;
+  }
+  
+  if (fallback) return <>{fallback}</>;
+  if (showLocked) return <LockedOverlay onClick={onLockedClick}>{children}</LockedOverlay>;
+  return null;
+}
+```
 
-### Sprint 4: Monitoring & Incidents
-1. EU registration wizard
-2. Post-market monitoring plan builder
-3. Serious incident reporting with deadlines
-4. Data governance module
+### `src/components/billing/OperatorTrackUpgradeModal.tsx`
 
-### Sprint 5: Importer & Distributor
-1. Importer verification checklist
-2. Distributor verification checklist
-3. Role escalation engine
-4. Non-compliance workflows
-
-### Sprint 6: Exports & Polish
-1. Provider Pack ZIP generator
-2. All new PDF generators
-3. Importer/Distributor pack exports
-4. Feature gating integration
-5. Navigation updates
+Modal with:
+- Add-on name and price
+- Feature list
+- "Add to Subscription" CTA (if on Growth/Pro)
+- "Upgrade to Growth" CTA (if on Free/Starter)
+- Annual savings callout
 
 ---
 
-## Files to Create
+## A7: Stripe Integration Updates
 
-### Pages (16 new)
-- src/pages/provider-track/Dashboard.tsx
-- src/pages/provider-track/TechnicalDocs.tsx
-- src/pages/provider-track/RiskManagement.tsx
-- src/pages/provider-track/DataGovernance.tsx
-- src/pages/provider-track/QMS.tsx
-- src/pages/provider-track/Conformity.tsx
-- src/pages/provider-track/Declaration.tsx
-- src/pages/provider-track/CEMarking.tsx
-- src/pages/provider-track/Registration.tsx
-- src/pages/provider-track/Monitoring.tsx
-- src/pages/provider-track/SeriousIncidents.tsx
-- src/pages/importer-track/Dashboard.tsx
-- src/pages/importer-track/Verification.tsx
-- src/pages/distributor-track/Dashboard.tsx
-- src/pages/distributor-track/Verification.tsx
+### Products/Prices to Create in Stripe
 
-### Hooks (12 new)
-- src/hooks/useProviderReadiness.ts
-- src/hooks/useTechnicalDocumentation.ts
-- src/hooks/useRiskManagement.ts
-- src/hooks/useDataGovernance.ts
-- src/hooks/useQMS.ts
-- src/hooks/useConformityAssessment.ts
-- src/hooks/useEUDeclaration.ts
-- src/hooks/useCEMarking.ts
-- src/hooks/useEURegistration.ts
-- src/hooks/usePostMarketMonitoring.ts
-- src/hooks/useSeriousIncidents.ts
-- src/hooks/useOperatorRoles.ts
+| Product Name | Monthly Price ID | Annual Price ID |
+|--------------|------------------|-----------------|
+| Importer + Distributor Track | `price_imp_dist_monthly` | `price_imp_dist_annual` |
+| Provider Track | `price_provider_monthly` | `price_provider_annual` |
+| Provider Assurance | `price_assurance_monthly` | `price_assurance_annual` |
 
-### Components (15+ new)
-- src/components/provider/ProviderDashboard.tsx
-- src/components/provider/AnnexIVBuilder.tsx
-- src/components/provider/RiskRegister.tsx
-- src/components/provider/DatasetRegistry.tsx
-- src/components/provider/QMSLibrary.tsx
-- src/components/provider/ConformityBoard.tsx
-- src/components/provider/DeclarationForm.tsx
-- src/components/provider/CEMarkingChecklist.tsx
-- src/components/provider/RegistrationWizard.tsx
-- src/components/provider/MonitoringPlanBuilder.tsx
-- src/components/provider/SeriousIncidentForm.tsx
-- src/components/importer/VerificationChecklist.tsx
-- src/components/distributor/VerificationChecklist.tsx
-- src/components/provider/RoleEscalationAlert.tsx
+### Edge Function: `create-checkout-session`
 
-### PDF Exports (10 new)
-- src/components/exports/AnnexIVDocumentationPDF.tsx
-- src/components/exports/EUDeclarationPDF.tsx
-- src/components/exports/QMSPackPDF.tsx
-- src/components/exports/ConformityAssessmentPDF.tsx
-- src/components/exports/CEMarkingEvidencePDF.tsx
-- src/components/exports/RegistrationDossierPDF.tsx
-- src/components/exports/PostMarketMonitoringPlanPDF.tsx
-- src/components/exports/SeriousIncidentReportPDF.tsx
-- src/components/exports/ImporterPackPDF.tsx
-- src/components/exports/DistributorPackPDF.tsx
+Update to support:
+1. Adding add-on to existing subscription (creates checkout with subscription_item)
+2. New subscription with base plan + add-on(s)
+
+### Edge Function: `stripe-webhook`
+
+Handle:
+- `checkout.session.completed` → sync add-ons to `subscription_addons`
+- `customer.subscription.updated` → update add-on status
+- `customer.subscription.deleted` → mark add-on canceled
 
 ---
 
-## Success Criteria
+## A8: Pricing Page Updates
 
-1. Provider can produce Annex IV technical documentation PDF
-2. Provider can produce EU Declaration of Conformity PDF
-3. Provider can generate full Provider Pack ZIP with Evidence_Index.csv
-4. Provider readiness score updates live as evidence is approved
-5. Version changes trigger re-review tasks and "new conformity assessment required" flag
-6. Serious incident creation auto-calculates reporting deadlines
-7. Importer/Distributor can complete verification checklists and export packs
-8. Role escalation warnings display when rebrand/modification detected
-9. All routes are protected and non-indexable
-10. Feature gating respects subscription tiers
+### New Section: "Market Access Add-ons"
+
+After plan cards, add:
+```
+## Extend Your Compliance Capabilities
+
+These add-ons are available for Growth and Pro plans.
+Enterprise includes all add-ons.
+
+[Importer + Distributor Track Card] [Provider Track Card] [Provider Assurance Card]
+```
+
+### Add-on Card Component
+
+```tsx
+<OperatorAddonCard
+  addon={OPERATOR_ADDONS[0]}
+  billingPeriod={billingPeriod}
+  canPurchase={planId === 'growth' || planId === 'pro'}
+  onPurchase={() => handleAddonPurchase('importer_distributor')}
+/>
+```
+
+---
+
+## A9: Navigation Gating
+
+### Update `AppSidebar.tsx`
+
+```tsx
+// Supply Chain section
+{
+  label: "Supply Chain",
+  items: [
+    {
+      name: "Provider Track",
+      href: "/provider-track",
+      icon: Package,
+      locked: !hasProviderAccess,
+      onLockedClick: () => openAddonUpgrade('provider_track'),
+    },
+    {
+      name: "Importer Track", 
+      href: "/provider-track/importer-verification",
+      icon: Import,
+      locked: !hasImporterAccess,
+      onLockedClick: () => openAddonUpgrade('importer_distributor'),
+    },
+    // ...
+  ]
+}
+```
+
+---
+
+## Part B: Implementation Sprints
+
+### Sprint 1: Database & Constants (2 days)
+- [ ] Create `subscription_addons` migration
+- [ ] Update `billing-constants.ts` with new types and OPERATOR_ADDONS
+- [ ] Update PLAN_ENTITLEMENTS with new flags
+- [ ] Create `useAddons` hook
+- [ ] Create `useOperatorTrackAccess` hook
+
+### Sprint 2: Stripe Integration (2 days)
+- [ ] Create Stripe products/prices for add-ons (manual in Stripe dashboard)
+- [ ] Store price IDs in billing-constants.ts
+- [ ] Update `create-checkout-session` for add-on purchases
+- [ ] Update `stripe-webhook` for add-on syncing
+- [ ] Test add-on purchase flow end-to-end
+
+### Sprint 3: Gating Infrastructure (2 days)
+- [ ] Create `AddonGate` component
+- [ ] Create `OperatorTrackUpgradeModal` component
+- [ ] Update `AppSidebar` with locked nav items
+- [ ] Gate all provider-track pages
+- [ ] Gate importer/distributor pages
+- [ ] Gate pack exports
+
+### Sprint 4: Pricing Page & Billing UI (1 day)
+- [ ] Add Market Access Add-ons section to Pricing.tsx
+- [ ] Create `OperatorAddonCard` component
+- [ ] Update Settings/Billing with active add-ons display
+- [ ] Add "Manage Add-ons" functionality
+
+### Sprint 5: Testing & Polish (1 day)
+- [ ] Test Free user sees locked tracks
+- [ ] Test Starter user sees locked tracks
+- [ ] Test Growth user can purchase add-ons
+- [ ] Test Pro user with Provider Assurance add-on
+- [ ] Test Enterprise user has all access
+- [ ] Test upgrade/downgrade flows
+- [ ] Test add-on cancellation
+
+---
+
+## Part C: Files to Create/Modify
+
+### New Files
+- `src/hooks/useAddons.ts`
+- `src/hooks/useOperatorTrackAccess.ts`
+- `src/components/billing/AddonGate.tsx`
+- `src/components/billing/OperatorAddonCard.tsx`
+- `src/components/billing/OperatorTrackUpgradeModal.tsx`
+- `supabase/migrations/XXXXXX_subscription_addons.sql`
+
+### Modified Files
+- `src/lib/billing-constants.ts` - Major refactor
+- `src/hooks/useSubscription.ts` - Add entitlement checks
+- `src/hooks/useEntitlements.ts` - Integrate add-on checks
+- `src/pages/Pricing.tsx` - Add add-ons section
+- `src/pages/Settings/Billing.tsx` - Show add-ons
+- `src/components/layout/AppSidebar.tsx` - Gate navigation
+- `src/components/billing/PlanGate.tsx` - Update for add-ons
+- `supabase/functions/create-checkout-session/index.ts`
+- `supabase/functions/stripe-webhook/index.ts`
+- All provider-track pages - Add AddonGate wrapper
+
+---
+
+## Part D: Success Criteria
+
+1. ✅ Base plan tiers remain unchanged in structure
+2. ✅ Free/Starter users cannot access operator tracks, see locked state
+3. ✅ Growth/Pro users see add-on purchase option for locked tracks
+4. ✅ Purchasing add-on via Stripe unlocks access immediately
+5. ✅ Enterprise users have all tracks included automatically
+6. ✅ Pricing page clearly shows add-on model
+7. ✅ Billing settings show active add-ons with management options
+8. ✅ Existing deployer functionality completely unchanged
+9. ✅ Add-on status syncs correctly with Stripe webhooks
+10. ✅ Canceling add-on removes access at period end
+
+---
+
+## Part E: Migration Notes for Existing Users
+
+1. **Existing Pro users**: If they were using Provider Track features, consider:
+   - Option A: Grandfather them with Provider Track included
+   - Option B: Notify and offer grace period to add the add-on
+   
+2. **Existing Growth users with Importer/Distributor**: Same consideration
+
+3. **Data migration**: None required - add-ons only gate access, not data
+
+---
+
+## Appendix: Original Provider/Importer/Distributor Implementation
+
+The underlying Provider, Importer, and Distributor functionality remains as implemented:
+- Database tables for operator roles, versions, technical docs, etc.
+- UI components for verification checklists, pack exports
+- PDF generators for all pack types
+- Readiness scoring and dashboards
+
+This pricing restructure only changes **how access is granted**, not **what features exist**.
