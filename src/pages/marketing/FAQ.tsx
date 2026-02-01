@@ -203,7 +203,7 @@ const faqCategories = [
       },
       {
         question: "What information do I need to add an AI system?",
-        answer: "At minimum, you need the system name, your role (deployer/provider), and a brief description. Our wizard guides you through additional details like vendor info, affected groups, and oversight setup. You can start with Quick Capture and add details later."
+        answer: "At minimum, you need the system name, department, and a brief description. Our wizard guides you through additional details like vendor info, affected groups, and oversight setup. You can start with Quick Capture and add details later."
       },
       {
         question: "Can I import existing AI system inventories?",

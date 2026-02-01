@@ -678,6 +678,91 @@ export type Database = {
           },
         ]
       }
+      classification_history: {
+        Row: {
+          ai_system_id: string
+          change_reason: string | null
+          classification_rationale: string | null
+          classified_at: string
+          classified_by: string | null
+          confidence_level: string | null
+          created_at: string
+          has_prohibited_indicators: boolean | null
+          has_transparency_obligations: boolean | null
+          high_risk_categories: string[] | null
+          id: string
+          is_ai_system: boolean | null
+          is_current: boolean
+          is_high_risk_candidate: boolean | null
+          organization_id: string
+          risk_level: string
+          transparency_categories: string[] | null
+          version_number: number
+        }
+        Insert: {
+          ai_system_id: string
+          change_reason?: string | null
+          classification_rationale?: string | null
+          classified_at?: string
+          classified_by?: string | null
+          confidence_level?: string | null
+          created_at?: string
+          has_prohibited_indicators?: boolean | null
+          has_transparency_obligations?: boolean | null
+          high_risk_categories?: string[] | null
+          id?: string
+          is_ai_system?: boolean | null
+          is_current?: boolean
+          is_high_risk_candidate?: boolean | null
+          organization_id: string
+          risk_level?: string
+          transparency_categories?: string[] | null
+          version_number?: number
+        }
+        Update: {
+          ai_system_id?: string
+          change_reason?: string | null
+          classification_rationale?: string | null
+          classified_at?: string
+          classified_by?: string | null
+          confidence_level?: string | null
+          created_at?: string
+          has_prohibited_indicators?: boolean | null
+          has_transparency_obligations?: boolean | null
+          high_risk_categories?: string[] | null
+          id?: string
+          is_ai_system?: boolean | null
+          is_current?: boolean
+          is_high_risk_candidate?: boolean | null
+          organization_id?: string
+          risk_level?: string
+          transparency_categories?: string[] | null
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classification_history_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classification_history_classified_by_fkey"
+            columns: ["classified_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "classification_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_submissions: {
         Row: {
           company: string | null

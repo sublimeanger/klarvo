@@ -95,7 +95,7 @@ const landingFaqQuestions = [
   },
   {
     question: "Who needs to comply with the EU AI Act?",
-    answer: "Any organization that develops, deploys, or uses AI systems affecting people in the EU—regardless of where the organization is based. This includes both AI providers (builders) and deployers (users)."
+    answer: "Any organization that uses AI systems affecting people in the EU—regardless of where the organization is based. Klarvo focuses on deployer compliance (Article 26) with provider track coming soon."
   },
   {
     question: "When does the EU AI Act apply?",
