@@ -135,11 +135,11 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="py-8">
+      <Card className="rounded-xl">
+        <CardContent className="py-6 sm:py-8 p-3 sm:p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3" />
-            <div className="h-32 bg-muted rounded" />
+            <div className="h-6 sm:h-8 bg-muted rounded w-1/3" />
+            <div className="h-24 sm:h-32 bg-muted rounded" />
           </div>
         </CardContent>
       </Card>
@@ -148,18 +148,18 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
 
   if (!plan) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Post-Market Monitoring Plan</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Post-Market Monitoring Plan</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Article 72 monitoring requirements
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground mb-4">No monitoring plan created.</p>
-            <Button onClick={handleStart}>
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="text-center py-6 sm:py-8">
+            <Activity className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+            <p className="text-sm text-muted-foreground mb-4">No monitoring plan created.</p>
+            <Button onClick={handleStart} className="h-11 w-full sm:w-auto">
               Create Plan
             </Button>
           </div>
@@ -169,14 +169,14 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Status Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-lg">Post-Market Monitoring Plan</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-base sm:text-lg">Post-Market Monitoring Plan</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Article 72 monitoring requirements
               </CardDescription>
             </div>
@@ -186,11 +186,11 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
           </div>
         </CardHeader>
         {plan.approved_at && (
-          <CardContent>
-            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-lg p-4">
+          <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+            <div className="bg-emerald-50 dark:bg-emerald-950 rounded-xl p-3 sm:p-4">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="font-medium text-emerald-700 dark:text-emerald-300">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span className="font-medium text-xs sm:text-sm text-emerald-700 dark:text-emerald-300">
                   Approved on {format(new Date(plan.approved_at), "MMMM d, yyyy")}
                 </span>
               </div>
@@ -200,23 +200,24 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
       </Card>
 
       {/* Data Collection Methods */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Data Collection Methods</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Data Collection Methods</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Select all methods used to collect post-market data
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-3">
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             {DATA_COLLECTION_METHODS.map((method) => (
-              <div key={method.value} className="flex items-center space-x-2">
+              <div key={method.value} className="flex items-center space-x-2 min-h-[44px]">
                 <Checkbox 
                   id={method.value}
                   checked={selectedMethods.includes(method.value)}
                   onCheckedChange={() => toggleMethod(method.value)}
+                  className="h-5 w-5"
                 />
-                <Label htmlFor={method.value} className="text-sm cursor-pointer">
+                <Label htmlFor={method.value} className="text-xs sm:text-sm cursor-pointer">
                   {method.label}
                 </Label>
               </div>
@@ -226,46 +227,49 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
       </Card>
 
       {/* Performance KPIs */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-base">Performance KPIs</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-sm sm:text-base">Performance KPIs</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Define key performance indicators and thresholds
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm" onClick={addKPI}>
+            <Button variant="outline" size="sm" onClick={addKPI} className="h-9 w-full sm:w-auto">
               <Plus className="h-4 w-4 mr-1" />
               Add KPI
             </Button>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
           {kpis.map((kpi, index) => (
-            <div key={index} className="grid gap-3 md:grid-cols-4 items-end border-b pb-4 last:border-0">
-              <div className="space-y-2 md:col-span-1">
-                <Label>KPI Name</Label>
+            <div key={index} className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-4 items-end border-b pb-3 sm:pb-4 last:border-0">
+              <div className="space-y-1.5 sm:space-y-2 sm:col-span-1">
+                <Label className="text-xs sm:text-sm">KPI Name</Label>
                 <Input 
                   placeholder="e.g., Accuracy"
                   value={kpi.name}
                   onChange={(e) => updateKPI(index, "name", e.target.value)}
+                  className="h-10"
                 />
               </div>
-              <div className="space-y-2">
-                <Label>Target</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label className="text-xs sm:text-sm">Target</Label>
                 <Input 
                   placeholder="e.g., 95%"
                   value={kpi.target}
                   onChange={(e) => updateKPI(index, "target", e.target.value)}
+                  className="h-10"
                 />
               </div>
-              <div className="space-y-2">
-                <Label>Alert Threshold</Label>
+              <div className="space-y-1.5 sm:space-y-2">
+                <Label className="text-xs sm:text-sm">Alert Threshold</Label>
                 <Input 
                   placeholder="e.g., < 90%"
                   value={kpi.threshold}
                   onChange={(e) => updateKPI(index, "threshold", e.target.value)}
+                  className="h-10"
                 />
               </div>
               <Button 
@@ -273,6 +277,7 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
                 size="sm" 
                 onClick={() => removeKPI(index)}
                 disabled={kpis.length === 1}
+                className="h-10 w-full sm:w-auto"
               >
                 Remove
               </Button>
@@ -282,19 +287,19 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
       </Card>
 
       {/* Review Schedule */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base flex items-center gap-2">
             <Calendar className="h-4 w-4" />
             Review Schedule
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label>Review Frequency</Label>
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">Review Frequency</Label>
               <Select value={reviewFrequency} onValueChange={setReviewFrequency}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -306,12 +311,13 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label>Next Review Date</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label className="text-xs sm:text-sm">Next Review Date</Label>
               <Input 
                 type="date"
                 value={nextReviewDate}
                 onChange={(e) => setNextReviewDate(e.target.value)}
+                className="h-10"
               />
             </div>
           </div>
@@ -319,17 +325,17 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
       </Card>
 
       {/* Escalation Procedures */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Escalation Procedures</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Escalation Procedures</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Define what happens when thresholds are breached
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
           <Textarea 
             placeholder="Describe the escalation procedures when KPI thresholds are breached or incidents occur..."
-            className="min-h-[120px]"
+            className="min-h-[100px] sm:min-h-[120px]"
             value={escalationProcedures}
             onChange={(e) => setEscalationProcedures(e.target.value)}
           />
@@ -337,14 +343,15 @@ export function MonitoringPlanBuilder({ versionId, organizationId }: MonitoringP
       </Card>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
-        <Button variant="outline" onClick={handleSave}>
+      <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
+        <Button variant="outline" onClick={handleSave} className="h-11 w-full sm:w-auto">
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>
         <Button 
           onClick={handleApprove}
           disabled={plan.status === 'approved'}
+          className="h-11 w-full sm:w-auto"
         >
           <CheckCircle2 className="h-4 w-4 mr-2" />
           {plan.status === 'approved' ? 'Approved' : 'Approve Plan'}

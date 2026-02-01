@@ -137,57 +137,58 @@ export function SeriousIncidentForm({ aiSystemId, organizationId }: SeriousIncid
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header Card */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <CardTitle className="text-lg">Serious Incident Register</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-base sm:text-lg">Serious Incident Register</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 Article 73 serious incident reporting
               </CardDescription>
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button>
+                <Button className="h-10 w-full sm:w-auto">
                   <Plus className="h-4 w-4 mr-2" />
                   Report Incident
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-lg">
                 <DialogHeader>
-                  <DialogTitle>Report Serious Incident</DialogTitle>
-                  <DialogDescription>
+                  <DialogTitle className="text-base sm:text-lg">Report Serious Incident</DialogTitle>
+                  <DialogDescription className="text-xs sm:text-sm">
                     Log a serious incident for reporting to market surveillance authorities
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Incident Title *</Label>
+                <div className="space-y-3 sm:space-y-4 py-3 sm:py-4 max-h-[60vh] overflow-y-auto">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="title" className="text-xs sm:text-sm">Incident Title *</Label>
                     <Input
                       id="title"
                       placeholder="Brief description of the incident"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      className="h-10"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Category *</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label className="text-xs sm:text-sm">Category *</Label>
                     <Select
                       value={formData.category}
                       onValueChange={(value: SeriousIncidentCategory) => 
                         setFormData({ ...formData, category: value })
                       }
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(INCIDENT_CATEGORY_LABELS).map(([value, { label, deadline }]) => (
                           <SelectItem key={value} value={value}>
                             <div className="flex flex-col">
-                              <span>{label}</span>
+                              <span className="text-sm">{label}</span>
                               <span className="text-xs text-muted-foreground">Deadline: {deadline}</span>
                             </div>
                           </SelectItem>
@@ -195,37 +196,40 @@ export function SeriousIncidentForm({ aiSystemId, organizationId }: SeriousIncid
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="aware_at">Became Aware At *</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="aware_at" className="text-xs sm:text-sm">Became Aware At *</Label>
                     <Input
                       id="aware_at"
                       type="datetime-local"
                       value={formData.aware_at}
                       onChange={(e) => setFormData({ ...formData, aware_at: e.target.value })}
+                      className="h-10"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="description" className="text-xs sm:text-sm">Description</Label>
                     <Textarea
                       id="description"
                       placeholder="Detailed description of the incident..."
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      className="min-h-[80px]"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="immediate_actions">Immediate Actions Taken</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="immediate_actions" className="text-xs sm:text-sm">Immediate Actions Taken</Label>
                     <Textarea
                       id="immediate_actions"
                       placeholder="Actions taken immediately upon becoming aware..."
                       value={formData.immediate_actions}
                       onChange={(e) => setFormData({ ...formData, immediate_actions: e.target.value })}
+                      className="min-h-[80px]"
                     />
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={handleCreate}>Report Incident</Button>
+                <DialogFooter className="flex-col sm:flex-row gap-2">
+                  <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="h-11 w-full sm:w-auto">Cancel</Button>
+                  <Button onClick={handleCreate} className="h-11 w-full sm:w-auto">Report Incident</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -233,79 +237,123 @@ export function SeriousIncidentForm({ aiSystemId, organizationId }: SeriousIncid
         </CardHeader>
       </Card>
 
-      {/* Incidents Table */}
-      <Card>
-        <CardContent className="pt-6">
+      {/* Incidents List */}
+      <Card className="rounded-xl">
+        <CardContent className="p-3 sm:p-6">
           {isLoading ? (
             <div className="animate-pulse space-y-2">
               <div className="h-10 bg-muted rounded" />
               <div className="h-10 bg-muted rounded" />
             </div>
           ) : incidents && incidents.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Incident</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead>Deadline</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[100px]">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <>
+              {/* Mobile Card View */}
+              <div className="sm:hidden space-y-3">
                 {incidents.map((incident) => {
                   const deadlineStatus = getDeadlineStatus(incident.deadline_at);
                   return (
-                    <TableRow key={incident.id}>
-                      <TableCell>
-                        <div className="flex items-start gap-2">
-                          <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
-                          <div>
-                            <p className="font-medium">{incident.title}</p>
-                            <p className="text-xs text-muted-foreground">
-                              Aware: {format(new Date(incident.aware_at), "MMM d, yyyy HH:mm")}
-                            </p>
-                          </div>
+                    <div key={incident.id} className="border rounded-xl p-3 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium line-clamp-2">{incident.title}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            Aware: {format(new Date(incident.aware_at), "MMM d, HH:mm")}
+                          </p>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-sm">
-                        {INCIDENT_CATEGORY_LABELS[incident.category].label}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={deadlineStatus.color}>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        <Badge className={deadlineStatus.color} variant="secondary">
                           <Clock className="h-3 w-3 mr-1" />
                           {deadlineStatus.label}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={statusColors[incident.status]}>
+                        <Badge className={statusColors[incident.status]} variant="secondary">
                           {INCIDENT_STATUS_LABELS[incident.status]}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {incident.status === 'draft' || incident.status === 'pending_submission' ? (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSubmit(incident.id)}
-                          >
-                            <Send className="h-3 w-3 mr-1" />
-                            Submit
-                          </Button>
-                        ) : incident.status === 'submitted' || incident.status === 'acknowledged' ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                        ) : null}
-                      </TableCell>
-                    </TableRow>
+                      </div>
+                      {(incident.status === 'draft' || incident.status === 'pending_submission') && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSubmit(incident.id)}
+                          className="w-full h-9"
+                        >
+                          <Send className="h-3 w-3 mr-1" />
+                          Submit to Authority
+                        </Button>
+                      )}
+                    </div>
                   );
                 })}
-              </TableBody>
-            </Table>
+              </div>
+              {/* Desktop Table View */}
+              <div className="hidden sm:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Incident</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Deadline</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="w-[100px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {incidents.map((incident) => {
+                      const deadlineStatus = getDeadlineStatus(incident.deadline_at);
+                      return (
+                        <TableRow key={incident.id}>
+                          <TableCell>
+                            <div className="flex items-start gap-2">
+                              <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+                              <div>
+                                <p className="font-medium">{incident.title}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Aware: {format(new Date(incident.aware_at), "MMM d, yyyy HH:mm")}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            {INCIDENT_CATEGORY_LABELS[incident.category].label}
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={deadlineStatus.color}>
+                              <Clock className="h-3 w-3 mr-1" />
+                              {deadlineStatus.label}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={statusColors[incident.status]}>
+                              {INCIDENT_STATUS_LABELS[incident.status]}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {incident.status === 'draft' || incident.status === 'pending_submission' ? (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleSubmit(incident.id)}
+                              >
+                                <Send className="h-3 w-3 mr-1" />
+                                Submit
+                              </Button>
+                            ) : incident.status === 'submitted' || incident.status === 'acknowledged' ? (
+                              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                            ) : null}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           ) : (
-            <div className="text-center py-8">
-              <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">No serious incidents reported.</p>
-              <p className="text-sm text-muted-foreground">
+            <div className="text-center py-6 sm:py-8">
+              <AlertTriangle className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+              <p className="text-sm text-muted-foreground">No serious incidents reported.</p>
+              <p className="text-xs text-muted-foreground">
                 Report any serious incidents as required by Article 73.
               </p>
             </div>
