@@ -60,6 +60,7 @@ import { GapChecklist } from "@/components/ai-systems/GapChecklist";
 import { ClassificationHistoryPanel } from "@/components/ai-systems/ClassificationHistoryPanel";
 import { SupplyChainTabs } from "@/components/ai-systems/SupplyChainTabs";
 import { SubstantialModificationAlert } from "@/components/provider/SubstantialModificationAlert";
+import { ModificationHistoryPanel } from "@/components/provider/ModificationHistoryPanel";
 import { ActivityFeed } from "@/components/audit/ActivityFeed";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
@@ -717,6 +718,9 @@ export default function AISystemDetail() {
             aiSystemId={id!} 
             showFullDetails 
           />
+
+          {/* Modification History Panel - Article 25 */}
+          <ModificationHistoryPanel aiSystemId={id!} />
 
           {/* Controls Section */}
           <AISystemControls
