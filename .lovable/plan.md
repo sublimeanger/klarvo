@@ -1,181 +1,106 @@
 
-# PDF Branding & Watermark Fixes
+# Fix PDF Logo Rendering — Final Solution
 
-## Problem Summary
+## Root Cause Analysis
 
-You've identified three critical branding issues in the PDF exports:
+The logo isn't appearing on any PDFs because:
 
-1. **Purple Color on FRIA Sample**: The Sample FRIA Report uses `#7c3aed` (purple) instead of your emerald brand color `#0d9373`
-2. **No Logo**: None of the PDFs include the Klarvo logo on cover pages or headers
-3. **Watermark Clarity**: The watermark system exists but isn't visible in samples
+1. **External URL fails in react-pdf**: The current approach uses `https://klarvo.lovable.app/favicon.png`, but browser-based PDF rendering (client-side) cannot reliably fetch external URLs due to CORS restrictions
+2. **Favicon is too small**: The favicon.png is likely 32x32 or 64x64 pixels — even if it loaded, it would be blurry at 80px width
+3. **Local asset exists but isn't used**: There's a proper `src/assets/klarvo-logo.png` file that should be imported directly
 
----
+## The Fix
 
-## What the Watermark Currently Is
-
-The watermark displays **"FREE TIER"** diagonally across each page in light gray (opacity 0.3) when a user is on the Free plan. It's defined in `AISystemPDF.tsx`:
-
-```text
-Position: Centered, rotated -45°
-Font Size: 60pt
-Color: Gray (#e5e7eb)
-Text: "FREE TIER"
-```
-
----
-
-## Recommended Fixes
-
-### Fix 1: Correct the Purple Color in Sample FRIA Report
-
-**File**: `src/components/exports/SampleFRIAReportPDF.tsx`
-
-Replace all purple (`#7c3aed`) references with the correct emerald palette:
-- Cover badge background: `#7c3aed` → `#0d9373` (emerald)
-- Cover subtitle color: `#7c3aed` → `#0d9373` 
-- Border colors: `#7c3aed` → `#0d9373`
-- Table headers: `#7c3aed` → `#0d9373`
-- Article badge: `#f3e8ff` background → `#e6f7f3` (emeraldLight)
-- Bullets: `#7c3aed` → `#0d9373`
-
-### Fix 2: Add Klarvo Logo to All PDF Cover Pages
-
-**Approach**: Create a shared `PDFLogo` component that embeds the logo as a PNG (SVG is unreliable in react-pdf). Add this to cover pages of all PDF exports.
-
-**Files to Update**:
-- `src/lib/pdfStyles.ts` - Add logo styles
-- `src/components/exports/PDFComponents.tsx` - Add `PDFLogo` component
-- All PDF files with cover pages:
-  - `SampleClassificationMemoPDF.tsx`
-  - `SampleFRIAReportPDF.tsx`
-  - `SampleEvidencePackGenerator.tsx`
-  - `ClassificationMemoPDF.tsx` (add cover page)
-  - `FRIAReportPDF.tsx` (add cover page)
-  - `ProviderExecutiveSummaryPDF.tsx`
-  - `ImporterVerificationPDF.tsx`
-  - `DistributorVerificationPDF.tsx`
-
-**Logo Placement**: Top-left of cover page, above the document title badge
-
-### Fix 3: Enhance Watermark Visibility
-
-**Current**: "FREE TIER" in light gray
-**Proposed Enhancement**: 
-- Change to "SAMPLE REPORT" for `/samples` page exports
-- Make slightly more visible (opacity 0.35)
-- Add watermark to Sample PDFs so prospects see what free-tier looks like
-
-### Fix 4: Add "Powered by Klarvo" Footer on Paid Tiers
-
-For paid tiers, add a small "Powered by Klarvo" text with logo in the cover page footer (instead of watermark).
+Import the local PNG directly using Vite's asset handling. When you import a PNG in a Vite project, it gets bundled as a data URL or hashed path that react-pdf can render reliably.
 
 ---
 
 ## Technical Implementation
 
-### Step 1: Create PDF Logo Component
+### Step 1: Update `src/lib/pdfAssets.ts`
 
-Add a base64-encoded version of the logo (PNG) to `src/lib/pdfAssets.ts`:
+Replace the URL approach with a direct import of the local PNG:
+
 ```typescript
-// Base64 encoded Klarvo logo for PDF embedding
-export const KLARVO_LOGO_BASE64 = "data:image/png;base64,...";
+// Import the PNG directly - Vite will handle bundling
+import klarvoLogoPng from "@/assets/klarvo-logo.png";
+
+// This becomes a data URL or bundled path that react-pdf can render
+export const KLARVO_LOGO = klarvoLogoPng;
 ```
 
-### Step 2: Update Shared PDF Components
+### Step 2: Update `src/components/exports/PDFComponents.tsx`
 
-Add to `src/components/exports/PDFComponents.tsx`:
+Change the `PDFLogo` component to use the imported asset:
+
 ```typescript
-import { Image } from "@react-pdf/renderer";
-import { KLARVO_LOGO_BASE64 } from "@/lib/pdfAssets";
+import { KLARVO_LOGO } from "@/lib/pdfAssets";
 
-export function PDFLogo({ width = 100 }) {
+export function PDFLogo({ width = 80, style }: PDFLogoProps) {
   return (
-    <Image src={KLARVO_LOGO_BASE64} style={{ width, marginBottom: 20 }} />
+    <Image 
+      src={KLARVO_LOGO}  // Uses the bundled import
+      style={{ width, marginBottom: 20, ...style }} 
+    />
   );
 }
-
-export function Watermark({ text = "SAMPLE" }) {
-  return (
-    <Text style={watermarkStyle}>{text}</Text>
-  );
-}
 ```
 
-### Step 3: Refactor SampleFRIAReportPDF
+### Step 3: Update All PDF Files Using Direct Imports
 
-Replace all hardcoded purple colors with emerald, import from `pdfStyles.ts`:
-```typescript
-import { colors, baseStyles } from "@/lib/pdfStyles";
+Each PDF file currently imports `KLARVO_LOGO_URL` directly. Update them to use the new import:
 
-// Replace all #7c3aed with colors.emerald
-// Replace all #f3e8ff with colors.emeraldLight
-```
-
-### Step 4: Add Logo to All Cover Pages
-
-Each PDF with a cover page will include:
-```typescript
-<Page size="A4" style={styles.coverPage}>
-  <PDFLogo />
-  <Text style={styles.coverBadge}>CLASSIFICATION MEMO</Text>
-  ...
-</Page>
-```
+**Files to update:**
+- `SampleClassificationMemoPDF.tsx`
+- `SampleFRIAReportPDF.tsx`
+- `AISystemPDF.tsx`
+- `ProviderExecutiveSummaryPDF.tsx`
+- `ImporterVerificationPDF.tsx`
+- `DistributorVerificationPDF.tsx`
+- `EUDeclarationPDF.tsx` (if applicable)
 
 ---
 
-## Affected Files Summary
+## Why This Works
 
-| File | Changes |
-|------|---------|
-| `src/lib/pdfAssets.ts` | **NEW** - Logo base64 |
-| `src/lib/pdfStyles.ts` | Add logo/watermark styles |
-| `src/components/exports/PDFComponents.tsx` | Add `PDFLogo`, `Watermark` components |
-| `src/components/exports/SampleFRIAReportPDF.tsx` | **FIX PURPLE** → emerald |
-| `src/components/exports/SampleClassificationMemoPDF.tsx` | Add logo |
-| `src/components/exports/SampleEvidencePackGenerator.tsx` | Add logo, watermark |
-| `src/components/exports/ClassificationMemoPDF.tsx` | Add cover page with logo |
-| `src/components/exports/FRIAReportPDF.tsx` | Add cover page with logo |
-| `src/components/exports/AISystemPDF.tsx` | Use shared watermark component |
-| `src/components/exports/provider/ProviderExecutiveSummaryPDF.tsx` | Add logo |
-| `src/components/exports/importer/ImporterVerificationPDF.tsx` | Add logo |
-| `src/components/exports/distributor/DistributorVerificationPDF.tsx` | Add logo |
+| Approach | Problem | Solution |
+|----------|---------|----------|
+| External URL (`https://...`) | CORS blocks fetch, unreliable in browser PDF | Avoid |
+| Base64 placeholder | Was never a real logo, just a placeholder | Replace |
+| **Direct PNG import** | Vite bundles it, react-pdf can render reliably | **Use this** |
+
+When you use `import logo from "./logo.png"` in Vite:
+- For small files: Inlines as base64 data URL
+- For larger files: Serves from bundled `/assets/` with hashed filename
+- Either way: Works reliably with react-pdf's `<Image src={...}>`
 
 ---
 
-## Visual Result
+## Files to Modify
 
-**Cover Page Structure** (after fix):
-```text
-┌─────────────────────────────────────┐
-│  [KLARVO LOGO]                      │
-│                                     │
-│  ┌─────────────────────┐            │
-│  │ CLASSIFICATION MEMO │ (emerald)  │
-│  └─────────────────────┘            │
-│                                     │
-│  EU AI Act                          │
-│  Risk Classification Assessment     │
-│  ────────────────────────────────   │
-│  TalentMatch AI                     │
-│                                     │
-│  System ID: AI-SYS-2024-001         │
-│  ...                                │
-│                                     │
-│  ─────────────────────────────────  │
-│  Generated by Klarvo • Jan 2025     │
-│  [POWERED BY KLARVO] (paid only)    │
-└─────────────────────────────────────┘
-```
-
-**Free Tier** shows diagonal "SAMPLE REPORT" watermark across each page.
+| File | Change |
+|------|--------|
+| `src/lib/pdfAssets.ts` | Add direct import of `src/assets/klarvo-logo.png` |
+| `src/components/exports/PDFComponents.tsx` | Use imported logo instead of URL |
+| `src/components/exports/SampleClassificationMemoPDF.tsx` | Import from pdfAssets, use bundled logo |
+| `src/components/exports/SampleFRIAReportPDF.tsx` | Import from pdfAssets, use bundled logo |
+| `src/components/exports/AISystemPDF.tsx` | Use bundled logo |
+| `src/components/exports/provider/ProviderExecutiveSummaryPDF.tsx` | Use bundled logo |
+| `src/components/exports/provider/EUDeclarationPDF.tsx` | Use bundled logo |
+| `src/components/exports/importer/ImporterVerificationPDF.tsx` | Use bundled logo |
+| `src/components/exports/distributor/DistributorVerificationPDF.tsx` | Use bundled logo |
 
 ---
 
-## Watermark Behavior Summary
+## Expected Result
 
-| Tier | Watermark | Footer |
-|------|-----------|--------|
-| Free | "SAMPLE REPORT" (diagonal, gray) | "Generated by Klarvo" |
-| Starter+ | None | "Powered by Klarvo" + small logo |
-| Enterprise | None | Clean (optional) |
+After this fix:
+- The Klarvo logo will appear on the cover page of all Sample PDFs (Classification Memo, FRIA Report)
+- The logo will appear on all production PDFs (Evidence Packs, Operator Packs, EU Declaration)
+- The logo will be crisp and properly sized (if the source PNG is high-resolution)
+
+---
+
+## Additional Check Needed
+
+You mentioned "do you need me to give you the logo in a different format?" — **Yes, please confirm the `src/assets/klarvo-logo.png` is high-resolution** (ideally 512px+ wide). If the existing PNG is low resolution, you may want to upload a higher-quality version for best results in the PDF exports.
