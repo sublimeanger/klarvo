@@ -80,50 +80,50 @@ export function SubstantialModificationAlert({
 
   return (
     <>
-      <Alert variant="destructive" className="border-destructive/50 bg-destructive/10">
-        <AlertTriangle className="h-5 w-5" />
-        <AlertTitle className="flex items-center gap-2">
-          <span>Substantial Modification Detected</span>
-          <Badge variant="destructive" className="ml-2">
+      <Alert variant="destructive" className="border-destructive/50 bg-destructive/10 rounded-xl">
+        <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5" />
+        <AlertTitle className="flex flex-wrap items-center gap-2">
+          <span className="text-sm sm:text-base">Substantial Modification Detected</span>
+          <Badge variant="destructive" className="text-xs">
             {modifications.length} pending
           </Badge>
         </AlertTitle>
-        <AlertDescription className="mt-3 space-y-4">
-          <p className="text-sm">
+        <AlertDescription className="mt-2 sm:mt-3 space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm">
             Under <strong>Article 25</strong> of the EU AI Act, substantial modifications 
             may require a new conformity assessment before the system can continue to be 
             placed on the market.
           </p>
 
           {showFullDetails && (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               {modifications.map((mod) => (
                 <div 
                   key={mod.id} 
-                  className="p-3 rounded-lg border border-destructive/30 bg-background"
+                  className="p-2.5 sm:p-3 rounded-xl border border-destructive/30 bg-background"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <FileWarning className="h-4 w-4 text-destructive" />
-                        <span className="font-medium">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                        <FileWarning className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-destructive shrink-0" />
+                        <span className="text-xs sm:text-sm font-medium">
                           {getModificationTypeLabel(mod.modification_type)}
                         </span>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-[10px] sm:text-xs">
                           {getModificationArticleRef(mod.modification_type)}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {mod.description}
                       </p>
                       {mod.old_value && mod.new_value && (
-                        <div className="text-xs text-muted-foreground mt-1">
+                        <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 break-all">
                           <span className="line-through">{mod.old_value}</span>
                           {" → "}
                           <span className="font-medium">{mod.new_value}</span>
                         </div>
                       )}
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground">
                         Detected: {format(new Date(mod.detected_at), "PPp")}
                       </p>
                     </div>
@@ -134,6 +134,7 @@ export function SubstantialModificationAlert({
                         variant="outline"
                         onClick={() => openWaiverDialog(mod)}
                         disabled={updateStatus.isPending}
+                        className="h-9 flex-1 sm:flex-none text-xs"
                       >
                         <X className="h-3 w-3 mr-1" />
                         Waive
@@ -142,9 +143,10 @@ export function SubstantialModificationAlert({
                         size="sm"
                         onClick={() => handleStartConformity(mod)}
                         disabled={updateStatus.isPending}
+                        className="h-9 flex-1 sm:flex-none text-xs"
                       >
                         <CheckCircle className="h-3 w-3 mr-1" />
-                        Start Review
+                        Review
                       </Button>
                     </div>
                   </div>
@@ -154,14 +156,14 @@ export function SubstantialModificationAlert({
           )}
 
           {!showFullDetails && (
-            <div className="flex items-center gap-3 pt-2">
-              <Button size="sm" variant="outline" asChild>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 pt-2">
+              <Button size="sm" variant="outline" asChild className="h-10 w-full sm:w-auto">
                 <Link to={`/ai-systems/${aiSystemId}`}>
                   View Details
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="sm" asChild>
+              <Button size="sm" asChild className="h-10 w-full sm:w-auto">
                 <Link to="/provider-track/conformity">
                   Go to Conformity
                   <Scale className="ml-2 h-4 w-4" />
@@ -171,8 +173,8 @@ export function SubstantialModificationAlert({
           )}
 
           <div className="pt-2 border-t border-destructive/20">
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <Clock className="h-3 w-3" />
+            <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+              <Clock className="h-3 w-3 shrink-0" />
               Action required before continued market placement
             </p>
           </div>
@@ -181,52 +183,54 @@ export function SubstantialModificationAlert({
 
       {/* Waiver Dialog */}
       <Dialog open={showWaiverDialog} onOpenChange={setShowWaiverDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Waive Conformity Requirement</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-base sm:text-lg">Waive Conformity Requirement</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Provide a justification for why this modification does not require 
               a new conformity assessment. This will be recorded for audit purposes.
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
+          <div className="space-y-3 sm:space-y-4 py-3 sm:py-4 max-h-[60vh] overflow-y-auto">
             {selectedMod && (
-              <div className="p-3 rounded-lg bg-muted">
-                <p className="text-sm font-medium">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-muted">
+                <p className="text-xs sm:text-sm font-medium">
                   {getModificationTypeLabel(selectedMod.modification_type)}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {selectedMod.description}
                 </p>
               </div>
             )}
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Justification</label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="text-xs sm:text-sm font-medium">Justification</label>
               <Textarea
                 value={waiverReason}
                 onChange={(e) => setWaiverReason(e.target.value)}
-                placeholder="Explain why this modification does not constitute a substantial modification under Article 25..."
-                rows={4}
+                placeholder="Explain why this modification does not constitute a substantial modification..."
+                className="min-h-[100px]"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 Common valid reasons: pre-determined change within authorized scope, 
                 cosmetic change only, no impact on intended purpose or risk profile.
               </p>
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button 
               variant="outline" 
               onClick={() => setShowWaiverDialog(false)}
+              className="h-11 w-full sm:w-auto"
             >
               Cancel
             </Button>
             <Button 
               onClick={handleWaive}
               disabled={!waiverReason.trim() || updateStatus.isPending}
+              className="h-11 w-full sm:w-auto"
             >
               Confirm Waiver
             </Button>

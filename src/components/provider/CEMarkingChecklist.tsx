@@ -111,11 +111,11 @@ export function CEMarkingChecklist({ versionId, organizationId }: CEMarkingCheck
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="py-8">
+      <Card className="rounded-xl">
+        <CardContent className="py-6 sm:py-8 p-3 sm:p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3" />
-            <div className="h-32 bg-muted rounded" />
+            <div className="h-6 sm:h-8 bg-muted rounded w-1/3" />
+            <div className="h-24 sm:h-32 bg-muted rounded" />
           </div>
         </CardContent>
       </Card>
@@ -123,16 +123,16 @@ export function CEMarkingChecklist({ versionId, organizationId }: CEMarkingCheck
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Verification Status */}
       {marking?.verified_at && (
-        <Card className="border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+        <Card className="border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950 rounded-xl">
+          <CardContent className="py-3 sm:py-4 p-3 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <div>
-                <p className="font-medium text-emerald-700 dark:text-emerald-300">CE Marking Verified</p>
-                <p className="text-sm text-emerald-600 dark:text-emerald-400">
+                <p className="text-sm sm:text-base font-medium text-emerald-700 dark:text-emerald-300">CE Marking Verified</p>
+                <p className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">
                   Verified on {format(new Date(marking.verified_at), "MMMM d, yyyy")}
                 </p>
               </div>
@@ -142,21 +142,21 @@ export function CEMarkingChecklist({ versionId, organizationId }: CEMarkingCheck
       )}
 
       {/* Marking Type */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">CE Marking Method</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">CE Marking Method</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             How and where the CE marking is applied to the AI system
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>Marking Type</Label>
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label className="text-xs sm:text-sm">Marking Type</Label>
             <Select
               value={formData.marking_type}
               onValueChange={(value) => setFormData({ ...formData, marking_type: value })}
             >
-              <SelectTrigger>
+              <SelectTrigger className="h-10">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -168,45 +168,48 @@ export function CEMarkingChecklist({ versionId, organizationId }: CEMarkingCheck
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="location">Location Description</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="location" className="text-xs sm:text-sm">Location Description</Label>
             <Textarea
               id="location"
-              placeholder="Describe where the CE marking is displayed (e.g., on product label, in software UI, on packaging)..."
+              placeholder="Describe where the CE marking is displayed..."
               value={formData.location_description}
               onChange={(e) => setFormData({ ...formData, location_description: e.target.value })}
+              className="min-h-[80px]"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Notified Body */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Notified Body (if applicable)</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Notified Body (if applicable)</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             For systems assessed by a notified body under Annex VII
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="nb_number">Notified Body Number</Label>
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="nb_number" className="text-xs sm:text-sm">Notified Body Number</Label>
             <Input
               id="nb_number"
               placeholder="e.g., 1234"
               value={formData.notified_body_number}
               onChange={(e) => setFormData({ ...formData, notified_body_number: e.target.value })}
+              className="h-10"
             />
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-start space-x-3 min-h-[44px]">
             <Checkbox
               id="nb_displayed"
               checked={formData.notified_body_id_displayed}
               onCheckedChange={(checked) => 
                 setFormData({ ...formData, notified_body_id_displayed: checked as boolean })
               }
+              className="mt-0.5"
             />
-            <Label htmlFor="nb_displayed" className="text-sm">
+            <Label htmlFor="nb_displayed" className="text-xs sm:text-sm leading-relaxed cursor-pointer">
               Notified body identification number is displayed alongside CE marking
             </Label>
           </div>
@@ -214,22 +217,23 @@ export function CEMarkingChecklist({ versionId, organizationId }: CEMarkingCheck
       </Card>
 
       {/* Checklist */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Verification Checklist</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Verification Checklist</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Confirm all CE marking requirements are met
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-6 pt-0 sm:pt-0">
           {checklistItems.map((item) => (
-            <div key={item.id} className="flex items-start space-x-3">
+            <div key={item.id} className="flex items-start space-x-3 min-h-[44px] py-1">
               <Checkbox
                 id={item.id}
                 checked={formData.checklist[item.id] || false}
                 onCheckedChange={() => toggleChecklistItem(item.id)}
+                className="mt-0.5"
               />
-              <Label htmlFor={item.id} className="text-sm leading-relaxed cursor-pointer">
+              <Label htmlFor={item.id} className="text-xs sm:text-sm leading-relaxed cursor-pointer">
                 {item.label}
               </Label>
             </div>
@@ -238,44 +242,46 @@ export function CEMarkingChecklist({ versionId, organizationId }: CEMarkingCheck
       </Card>
 
       {/* Evidence Upload */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Evidence</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">Evidence</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Upload photos or screenshots of CE marking placement
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="border-2 border-dashed rounded-lg p-6 text-center">
-            <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="border-2 border-dashed rounded-xl p-4 sm:p-6 text-center">
+            <Upload className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground mx-auto mb-2" />
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Drag and drop or click to upload evidence
             </p>
-            <Button variant="outline" size="sm" className="mt-2">
+            <Button variant="outline" size="sm" className="mt-2 h-10">
               Select Files
             </Button>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="notes" className="text-xs sm:text-sm">Notes</Label>
             <Textarea
               id="notes"
               placeholder="Additional notes about the CE marking..."
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              className="min-h-[80px]"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3">
-        <Button variant="outline" onClick={handleSave}>
+      <div className="flex flex-col sm:flex-row sm:justify-end gap-2 sm:gap-3">
+        <Button variant="outline" onClick={handleSave} className="h-11 w-full sm:w-auto">
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>
         <Button 
           onClick={handleVerify}
           disabled={!marking || !!marking.verified_at || !allChecked}
+          className="h-11 w-full sm:w-auto"
         >
           <CheckCircle2 className="h-4 w-4 mr-2" />
           {marking?.verified_at ? "Verified" : "Mark as Verified"}
