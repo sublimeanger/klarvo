@@ -10,10 +10,12 @@ import {
   Package,
   Clock,
   User,
+  Link2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -35,6 +37,7 @@ import { useAISystems } from "@/hooks/useAISystems";
 import { useExports } from "@/hooks/useExports";
 import { useExportHistory } from "@/hooks/useExportHistory";
 import { useSubscription } from "@/hooks/useSubscription";
+import { AuditorLinksPanel } from "@/components/exports/AuditorLinksPanel";
 import { format } from "date-fns";
 
 const formatExportType = (type: string) => {
@@ -99,11 +102,25 @@ export default function Exports() {
     <div className="space-y-4 sm:space-y-6 animate-fade-up">
       {/* Header */}
       <div>
-        <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Export Packs</h1>
+        <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Export & Share</h1>
         <p className="text-sm sm:text-base text-muted-foreground">
-          Generate audit-ready PDF and ZIP evidence bundles
+          Generate audit-ready documentation and share with external auditors
         </p>
       </div>
+
+      <Tabs defaultValue="exports" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="exports" className="gap-2">
+            <Download className="h-4 w-4" />
+            Export Packs
+          </TabsTrigger>
+          <TabsTrigger value="auditor-links" className="gap-2">
+            <Link2 className="h-4 w-4" />
+            Auditor Links
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="exports" className="space-y-6">
 
       {/* Export Types Grid */}
       <div className="grid gap-6 md:grid-cols-2">
@@ -373,6 +390,12 @@ export default function Exports() {
           )}
         </CardContent>
       </Card>
+        </TabsContent>
+
+        <TabsContent value="auditor-links">
+          <AuditorLinksPanel />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

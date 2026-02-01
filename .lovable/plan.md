@@ -69,7 +69,11 @@ Based on the detailed feedback review, this plan addresses all critical items to
   - last_attestation_date
   - next_review_date
 - Created Disclosure Snippet Library (`src/components/disclosures/DisclosureSnippetLibrary.tsx`)
+- Created Disclosures page with sidebar navigation
 - Created auditor_links table for time-limited read-only access
+- Created `useAuditorLinks.ts` hook with CRUD operations
+- Built `AuditorLinksPanel.tsx` component
+- Integrated Auditor Links into Exports page with tabs
 
 ---
 
@@ -112,10 +116,30 @@ Not included in this plan - documented as roadmap:
 ## All Phases Complete! 🎉
 
 The remediation plan has been fully implemented. Key deliverables:
-- Production-grade PDF exports with proper pagination
-- Audit-compliant classification version history
-- Deployer-focused marketing positioning
-- Enhanced vendor/GPAI intake fields
-- Article 50 disclosure snippet library
-- Time-limited auditor portal links
-- Regulatory ruleset versioning system
+
+### Database Additions:
+- `classification_history` table (append-only versioning)
+- `auditor_links` table (time-limited external access)
+- `regulatory_rulesets` table (ruleset version tracking)
+- Enhanced `vendors` table with GPAI fields
+
+### New Components:
+- `ClassificationHistoryPanel.tsx` - version history UI
+- `DisclosureSnippetLibrary.tsx` - Article 50 disclosure templates
+- `AuditorLinksPanel.tsx` - manage external auditor access
+
+### New Hooks:
+- `useClassificationHistory.ts`
+- `useAuditorLinks.ts`
+
+### New Pages:
+- `/disclosures` - Article 50 disclosure snippet library
+
+### Updated Pages:
+- `/exports` - Now includes Auditor Links tab
+- AI System Detail - Classification History panel added
+- `/security` - Enumerated audit-logged operations
+
+### Marketing Updates:
+- All claims now deployer-focused
+- "Provider track coming soon" qualifiers added
