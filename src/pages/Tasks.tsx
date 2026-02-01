@@ -422,7 +422,7 @@ export default function Tasks() {
             return (
               <div
                 key={task.id}
-                className={`flex items-center gap-4 rounded-lg border bg-card p-4 transition-colors ${
+                className={`flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors ${
                   task.status === "done" ? "opacity-60" : ""
                 } ${selectedTasks.has(task.id) ? "ring-2 ring-primary" : ""}`}
               >
