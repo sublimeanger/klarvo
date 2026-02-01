@@ -3071,6 +3071,59 @@ export type Database = {
           },
         ]
       }
+      subscription_addons: {
+        Row: {
+          addon_id: string
+          billing_period: string
+          cancel_at_period_end: boolean
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          organization_id: string
+          status: string
+          stripe_price_id: string | null
+          stripe_subscription_item_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          addon_id: string
+          billing_period?: string
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          organization_id: string
+          status?: string
+          stripe_price_id?: string | null
+          stripe_subscription_item_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          addon_id?: string
+          billing_period?: string
+          cancel_at_period_end?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          organization_id?: string
+          status?: string
+          stripe_price_id?: string | null
+          stripe_subscription_item_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_addons_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           billing_period: Database["public"]["Enums"]["billing_period"]

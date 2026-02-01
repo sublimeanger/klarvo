@@ -3,6 +3,14 @@
 export type PlanId = 'free' | 'starter' | 'growth' | 'pro' | 'enterprise';
 export type BillingPeriod = 'monthly' | 'annual';
 export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled' | 'downgraded';
+export type AddonId = 
+  | 'shadow_ai_discovery' 
+  | 'vendor_portal' 
+  | 'export_pro_pack' 
+  | 'partner_mode'
+  | 'importer_distributor'
+  | 'provider_track'
+  | 'provider_assurance';
 
 export interface Plan {
   id: PlanId;
@@ -22,11 +30,17 @@ export interface Plan {
 }
 
 export interface Addon {
-  id: string;
+  id: AddonId;
   name: string;
   description: string;
   priceMonthly: number;
+  priceAnnual?: number;
   priceDetails?: string;
+  category: 'operator_track' | 'workflow' | 'partner';
+  stripePriceIdMonthly?: string;
+  stripePriceIdAnnual?: string;
+  requiredPlan?: PlanId;
+  features?: string[];
 }
 
 export interface Service {
@@ -52,6 +66,8 @@ export interface PlanEntitlements {
   apiEnabled: boolean;
   multiWorkspaceEnabled: boolean;
   ssoEnabled: boolean;
+  // Note: Provider/Importer/Distributor tracks are NOW controlled via add-ons
+  // These legacy flags are kept for backward compatibility but should check addons
   providerTrackEnabled: boolean;
   importerDistributorTrackEnabled: boolean;
 }
@@ -82,6 +98,7 @@ export const PLANS: Record<PlanId, Plan> = {
       'Approvals/sign-off workflow',
       'Auditor share links',
       'Unlimited exports',
+      'Market access tracks (Provider, Importer, Distributor)',
     ],
   },
   starter: {
@@ -111,6 +128,7 @@ export const PLANS: Record<PlanId, Plan> = {
       'Approvals/signatures',
       'Auditor portal',
       'API/integrations',
+      'Market access tracks (add-on available)',
     ],
   },
   growth: {
@@ -135,6 +153,7 @@ export const PLANS: Record<PlanId, Plan> = {
       'Vendor renewal reminders + evidence requests',
       'Auditor-friendly share links (read-only export access)',
       'Evidence vault (up to 250 GB)',
+      'Market access add-ons available (Importer/Distributor, Provider)',
     ],
     lockedFeatures: [
       'FRIA module',
@@ -163,6 +182,7 @@ export const PLANS: Record<PlanId, Plan> = {
       'Integrations pack (Jira/Asana sync and/or evidence email ingestion)',
       'API access (basic)',
       'Evidence vault (up to 1 TB)',
+      'All market access add-ons available',
     ],
     lockedFeatures: [],
   },
@@ -185,6 +205,7 @@ export const PLANS: Record<PlanId, Plan> = {
       'Data residency options',
       'Custom controls & templates',
       'Dedicated onboarding + SLA support',
+      'All market access tracks included',
     ],
     lockedFeatures: [],
   },
@@ -224,6 +245,7 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: false,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
+    // Starter can purchase add-ons but doesn't have them by default
     providerTrackEnabled: false,
     importerDistributorTrackEnabled: false,
   },
@@ -242,8 +264,9 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: false,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
+    // Growth can purchase add-ons but doesn't have them by default
     providerTrackEnabled: false,
-    importerDistributorTrackEnabled: true,
+    importerDistributorTrackEnabled: false,
   },
   pro: {
     aiSystemsIncluded: 100,
@@ -260,8 +283,9 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: true,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
-    providerTrackEnabled: true,
-    importerDistributorTrackEnabled: true,
+    // Pro can purchase add-ons but doesn't have them by default
+    providerTrackEnabled: false,
+    importerDistributorTrackEnabled: false,
   },
   enterprise: {
     aiSystemsIncluded: Infinity,
@@ -278,38 +302,190 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: true,
     multiWorkspaceEnabled: true,
     ssoEnabled: true,
+    // Enterprise includes all tracks by default
     providerTrackEnabled: true,
     importerDistributorTrackEnabled: true,
   },
 };
 
-export const ADDONS: Addon[] = [
+// ============================================================================
+// OPERATOR TRACK ADD-ONS (Market Access)
+// These are purchasable modules for Provider, Importer, and Distributor roles
+// ============================================================================
+
+export const OPERATOR_TRACK_ADDONS: Addon[] = [
+  {
+    id: 'importer_distributor',
+    name: 'Importer & Distributor Track',
+    description: 'Verification checklists, supplier due diligence workflows, and evidence packs for importers and distributors placing AI systems on the EU market.',
+    priceMonthly: 149,
+    priceAnnual: 1490,
+    category: 'operator_track',
+    requiredPlan: 'starter',
+    features: [
+      'Importer verification checklist (Article 23)',
+      'Distributor verification checklist (Article 24)',
+      'Supplier due diligence workflows',
+      'Market placement evidence packs',
+      'Authorized representative tracking',
+      'Conformity documentation verification',
+    ],
+  },
+  {
+    id: 'provider_track',
+    name: 'Provider Track',
+    description: 'Full conformity assessment workflows, technical documentation (Annex IV), EU database registration, and CE marking for AI system providers.',
+    priceMonthly: 499,
+    priceAnnual: 4990,
+    category: 'operator_track',
+    requiredPlan: 'growth',
+    features: [
+      'Everything in Importer & Distributor Track',
+      'Risk Management System (Article 9)',
+      'Technical Documentation Builder (Annex IV)',
+      'Data Governance workflows (Article 10)',
+      'Conformity Assessment Board',
+      'EU Declaration of Conformity generator',
+      'CE Marking checklist',
+      'EU Database registration wizard',
+      'QMS document library',
+      'Post-market monitoring plan builder',
+      'Serious incident reporting (Article 73)',
+      'Substantial modification detection (Article 25)',
+    ],
+  },
+  {
+    id: 'provider_assurance',
+    name: 'Provider Assurance Bundle',
+    description: 'Premium provider package with Notified Body coordination, advanced monitoring dashboards, and priority support for high-risk AI providers.',
+    priceMonthly: 899,
+    priceAnnual: 8990,
+    category: 'operator_track',
+    requiredPlan: 'pro',
+    features: [
+      'Everything in Provider Track',
+      'Notified Body coordination workspace',
+      'Advanced monitoring dashboards',
+      'Multi-version conformity tracking',
+      'Corrective action management',
+      'Certificate expiry tracking',
+      'Priority support channel',
+      'Quarterly compliance review calls',
+    ],
+  },
+];
+
+// ============================================================================
+// WORKFLOW & UTILITY ADD-ONS
+// ============================================================================
+
+export const WORKFLOW_ADDONS: Addon[] = [
   {
     id: 'shadow_ai_discovery',
     name: 'Shadow AI Discovery',
     description: 'Automatically draft inventory entries from your app list (SSO/M365/Workspace exports). Reduce manual discovery.',
     priceMonthly: 149,
+    priceAnnual: 1490,
+    category: 'workflow',
+    requiredPlan: 'starter',
+    features: [
+      'SSO/M365/Google Workspace integration',
+      'Auto-detect AI tools in your stack',
+      'Draft inventory entries automatically',
+      'Periodic re-scans',
+    ],
   },
   {
     id: 'vendor_portal',
     name: 'Vendor Portal',
     description: 'Let vendors upload AI docs, attestations, and incident contacts directly into your evidence vault.',
     priceMonthly: 199,
+    priceAnnual: 1990,
+    category: 'workflow',
+    requiredPlan: 'growth',
+    features: [
+      'Vendor self-service uploads',
+      'Attestation request workflows',
+      'Document expiry tracking',
+      'Vendor compliance scoring',
+    ],
   },
   {
     id: 'export_pro_pack',
     name: 'Export Pro Pack',
     description: 'Branded exports, enhanced evidence index formats, and auditor-ready "one-click" bundles.',
     priceMonthly: 99,
+    priceAnnual: 990,
+    category: 'workflow',
+    requiredPlan: 'starter',
+    features: [
+      'Custom branding on exports',
+      'Enhanced evidence index',
+      'One-click auditor bundles',
+      'White-label options',
+    ],
   },
+];
+
+// ============================================================================
+// PARTNER ADD-ONS
+// ============================================================================
+
+export const PARTNER_ADDONS: Addon[] = [
   {
     id: 'partner_mode',
     name: 'Partner Mode',
     description: 'For consultants/agencies managing multiple client workspaces with separate vaults and cross-client dashboards.',
     priceMonthly: 299,
+    priceAnnual: 2990,
     priceDetails: '+ €49/client workspace/mo',
+    category: 'partner',
+    requiredPlan: 'growth',
+    features: [
+      'Multi-client dashboard',
+      'Separate evidence vaults per client',
+      'Cross-client reporting',
+      'Client onboarding templates',
+      'White-label client portals',
+    ],
   },
 ];
+
+// Combined addons for backward compatibility
+export const ADDONS: Addon[] = [
+  ...OPERATOR_TRACK_ADDONS,
+  ...WORKFLOW_ADDONS,
+  ...PARTNER_ADDONS,
+];
+
+// Helper to get addon by ID
+export function getAddonById(id: AddonId): Addon | undefined {
+  return ADDONS.find(addon => addon.id === id);
+}
+
+// Helper to check if an addon requires a higher plan
+export function addonRequiresPlan(addonId: AddonId, currentPlan: PlanId): boolean {
+  const addon = getAddonById(addonId);
+  if (!addon || !addon.requiredPlan) return false;
+  
+  const planOrder: PlanId[] = ['free', 'starter', 'growth', 'pro', 'enterprise'];
+  const currentIndex = planOrder.indexOf(currentPlan);
+  const requiredIndex = planOrder.indexOf(addon.requiredPlan);
+  
+  return currentIndex < requiredIndex;
+}
+
+// Helper to get available addons for a plan
+export function getAvailableAddons(planId: PlanId): Addon[] {
+  const planOrder: PlanId[] = ['free', 'starter', 'growth', 'pro', 'enterprise'];
+  const currentIndex = planOrder.indexOf(planId);
+  
+  return ADDONS.filter(addon => {
+    if (!addon.requiredPlan) return true;
+    const requiredIndex = planOrder.indexOf(addon.requiredPlan);
+    return currentIndex >= requiredIndex;
+  });
+}
 
 export const SERVICES: Service[] = [
   {
@@ -419,6 +595,10 @@ export const FAQS = [
     question: 'What security measures do you have?',
     answer: 'We maintain audit logs and secure evidence storage. Enterprise customers can request additional security documentation during procurement.',
   },
+  {
+    question: 'What are the Provider, Importer, and Distributor tracks?',
+    answer: 'These are add-on modules for organisations with specific EU AI Act roles. Importer/Distributor Track covers verification checklists for market access. Provider Track includes full conformity assessment, technical documentation, and CE marking workflows.',
+  },
 ];
 
 export const OBJECTION_HANDLING = [
@@ -445,7 +625,7 @@ export const OBJECTION_HANDLING = [
 ];
 
 // Upgrade modal copy for each locked feature
-export const UPGRADE_MODAL_COPY: Record<string, { title: string; bullets: string[]; recommendedPlan: PlanId }> = {
+export const UPGRADE_MODAL_COPY: Record<string, { title: string; bullets: string[]; recommendedPlan: PlanId; addon?: AddonId }> = {
   approvals: {
     title: 'Unlock Approvals Workflow',
     bullets: [
@@ -526,6 +706,40 @@ export const UPGRADE_MODAL_COPY: Record<string, { title: string; bullets: string
       'Never run out of space for compliance artifacts',
     ],
     recommendedPlan: 'growth',
+  },
+  importer_distributor_track: {
+    title: 'Unlock Importer & Distributor Track',
+    bullets: [
+      'Article 23 & 24 verification checklists',
+      'Supplier due diligence workflows',
+      'Market placement evidence packs',
+      'Authorized representative tracking',
+    ],
+    recommendedPlan: 'starter',
+    addon: 'importer_distributor',
+  },
+  provider_track: {
+    title: 'Unlock Provider Track',
+    bullets: [
+      'Full conformity assessment workflows',
+      'Technical documentation builder (Annex IV)',
+      'EU Declaration of Conformity & CE Marking',
+      'EU Database registration wizard',
+      'Post-market monitoring & serious incident reporting',
+    ],
+    recommendedPlan: 'growth',
+    addon: 'provider_track',
+  },
+  provider_assurance: {
+    title: 'Unlock Provider Assurance Bundle',
+    bullets: [
+      'Everything in Provider Track, plus:',
+      'Notified Body coordination workspace',
+      'Advanced monitoring dashboards',
+      'Priority support & quarterly reviews',
+    ],
+    recommendedPlan: 'pro',
+    addon: 'provider_assurance',
   },
 };
 
