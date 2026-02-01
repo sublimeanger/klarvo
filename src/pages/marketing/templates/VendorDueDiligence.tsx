@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Download, 
   CheckCircle,
   ArrowRight,
   Building,
@@ -128,10 +127,13 @@ export default function VendorDueDiligence() {
               Comprehensive questionnaire to assess AI vendor compliance with EU AI Act requirements. Send to vendors before procurement or at renewal.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Download Questionnaire
-              </Button>
+              <TemplateDownloadGate
+                templateName="Vendor Due Diligence Questionnaire"
+                templateSlug="vendor-due-diligence"
+                fileName="vendor-due-diligence-questionnaire.pdf"
+                buttonText="Download Questionnaire"
+                buttonSize="lg"
+              />
               <Button size="lg" variant="outline" asChild>
                 <Link to="/auth/signup">
                   Track in Klarvo

@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Download, 
   CheckCircle,
   ArrowRight,
   FileText,
@@ -111,10 +110,13 @@ export default function AIAcceptableUsePolicy() {
               Editable policy template covering approved AI tools, prohibited uses, data handling, and governance. Aligned with EU AI Act requirements.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Download Policy Template
-              </Button>
+              <TemplateDownloadGate
+                templateName="AI Acceptable Use Policy"
+                templateSlug="ai-acceptable-use-policy"
+                fileName="ai-acceptable-use-policy.pdf"
+                buttonText="Download Policy Template"
+                buttonSize="lg"
+              />
               <Button size="lg" variant="outline" asChild>
                 <Link to="/auth/signup">
                   Track in Klarvo

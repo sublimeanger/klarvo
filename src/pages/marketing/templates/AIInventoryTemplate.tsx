@@ -1,17 +1,15 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection, RelatedContent, ContentBreadcrumb, HubNavigation } from "@/components/marketing";
+import { CTASection, RelatedContent, ContentBreadcrumb, HubNavigation, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Download, 
   FileText, 
   CheckCircle,
   ArrowRight,
   Table,
-  Users,
   Shield
 } from "lucide-react";
 
@@ -104,10 +102,13 @@ export default function AIInventoryTemplate() {
               Download now, or import directly into Klarvo for automated tracking.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Download Template (Excel)
-              </Button>
+              <TemplateDownloadGate
+                templateName="AI Inventory Template"
+                templateSlug="ai-inventory"
+                fileName="ai-inventory-template.xlsx"
+                buttonText="Download Template (Excel)"
+                buttonSize="lg"
+              />
               <Button size="lg" variant="outline" asChild>
                 <Link to="/auth/signup">
                   Import to Klarvo

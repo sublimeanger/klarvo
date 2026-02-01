@@ -1,18 +1,16 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Download, 
   CheckCircle,
   ArrowRight,
   AlertTriangle,
   FileText,
-  Bell,
-  Clock
+  Bell
 } from "lucide-react";
 
 const registerFields = [
@@ -104,10 +102,13 @@ export default function AIIncidentRegister() {
               Track and document AI incidents with structured fields for impact assessment, response actions, and notifications. Essential for high-risk deployers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Download Template
-              </Button>
+              <TemplateDownloadGate
+                templateName="AI Incident Register"
+                templateSlug="ai-incident-register"
+                fileName="ai-incident-register-template.xlsx"
+                buttonText="Download Template"
+                buttonSize="lg"
+              />
               <Button size="lg" variant="outline" asChild>
                 <Link to="/auth/signup">
                   Use Klarvo Incidents
