@@ -148,11 +148,11 @@ export function DeclarationForm({ versionId, organizationId }: DeclarationFormPr
 
   if (isLoading) {
     return (
-      <Card>
-        <CardContent className="py-8">
+      <Card className="rounded-xl">
+        <CardContent className="py-6 sm:py-8 p-3 sm:p-6">
           <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-1/3" />
-            <div className="h-32 bg-muted rounded" />
+            <div className="h-6 sm:h-8 bg-muted rounded w-1/3" />
+            <div className="h-24 sm:h-32 bg-muted rounded" />
           </div>
         </CardContent>
       </Card>
@@ -160,16 +160,16 @@ export function DeclarationForm({ versionId, organizationId }: DeclarationFormPr
   }
 
   return (
-    <form onSubmit={handleSubmit(onSave)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSave)} className="space-y-4 sm:space-y-6">
       {/* Status Card */}
       {declaration?.signed_at && (
-        <Card className="border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+        <Card className="border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-950 rounded-xl">
+          <CardContent className="py-3 sm:py-4 p-3 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <div>
-                <p className="font-medium text-emerald-700 dark:text-emerald-300">Declaration Signed</p>
-                <p className="text-sm text-emerald-600 dark:text-emerald-400">
+                <p className="text-sm sm:text-base font-medium text-emerald-700 dark:text-emerald-300">Declaration Signed</p>
+                <p className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">
                   Signed on {format(new Date(declaration.signed_at), "MMMM d, yyyy 'at' HH:mm")}
                 </p>
               </div>
@@ -179,38 +179,41 @@ export function DeclarationForm({ versionId, organizationId }: DeclarationFormPr
       )}
 
       {/* AI System Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">1. AI System Information</CardTitle>
-          <CardDescription>
+      <Card className="rounded-xl">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-sm sm:text-base">1. AI System Information</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Details of the AI system covered by this declaration
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="ai_system_name">AI System Name *</Label>
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="ai_system_name" className="text-xs sm:text-sm">AI System Name *</Label>
               <Input
                 id="ai_system_name"
                 placeholder="Name of the AI system"
                 {...register("ai_system_name")}
+                className="h-10"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="ai_system_type">Type / Model</Label>
+            <div className="space-y-1.5 sm:space-y-2">
+              <Label htmlFor="ai_system_type" className="text-xs sm:text-sm">Type / Model</Label>
               <Input
                 id="ai_system_type"
                 placeholder="Type or model designation"
                 {...register("ai_system_type")}
+                className="h-10"
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="traceable_reference">Unique Identifier</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="traceable_reference" className="text-xs sm:text-sm">Unique Identifier</Label>
             <Input
               id="traceable_reference"
               placeholder="Serial number, product code, or other identifier"
               {...register("traceable_reference")}
+              className="h-10"
             />
           </div>
         </CardContent>
@@ -378,13 +381,13 @@ export function DeclarationForm({ versionId, organizationId }: DeclarationFormPr
       </Card>
 
       {/* Actions */}
-      <div className="flex justify-between gap-3">
-        <Button type="button" variant="outline" disabled={!declaration}>
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-2 sm:gap-3">
+        <Button type="button" variant="outline" disabled={!declaration} className="h-11 w-full sm:w-auto">
           <Download className="h-4 w-4 mr-2" />
           Export PDF
         </Button>
-        <div className="flex gap-3">
-          <Button type="submit" variant="outline" disabled={!isDirty}>
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <Button type="submit" variant="outline" disabled={!isDirty} className="h-11 w-full sm:w-auto">
             <Save className="h-4 w-4 mr-2" />
             Save Draft
           </Button>
@@ -392,6 +395,7 @@ export function DeclarationForm({ versionId, organizationId }: DeclarationFormPr
             type="button" 
             onClick={handleSign}
             disabled={!declaration || !!declaration.signed_at || isSigning}
+            className="h-11 w-full sm:w-auto"
           >
             <FileCheck className="h-4 w-4 mr-2" />
             {declaration?.signed_at ? "Signed" : "Sign Declaration"}
