@@ -71,12 +71,12 @@ export function PolicyVersionHistory({ policy }: PolicyVersionHistoryProps) {
 
   if (versions.length === 0) {
     return (
-      <Card className="border-dashed">
-        <CardContent className="flex flex-col items-center justify-center py-8">
-          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-            <History className="h-5 w-5 text-muted-foreground" />
+      <Card className="border-dashed rounded-xl">
+        <CardContent className="flex flex-col items-center justify-center py-6 sm:py-8 px-4">
+          <div className="mx-auto mb-2 sm:mb-3 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-muted">
+            <History className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
           </div>
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-xs sm:text-sm text-muted-foreground text-center">
             No version history yet. Versions are saved when you edit the policy.
           </p>
         </CardContent>
@@ -85,11 +85,11 @@ export function PolicyVersionHistory({ policy }: PolicyVersionHistoryProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       <div className="flex items-center gap-2">
-        <History className="h-4 w-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Version History</span>
-        <Badge variant="secondary" className="ml-auto">
+        <History className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+        <span className="text-xs sm:text-sm font-medium">Version History</span>
+        <Badge variant="secondary" className="ml-auto text-xs">
           {versions.length} version{versions.length !== 1 ? "s" : ""}
         </Badge>
       </div>
@@ -102,29 +102,32 @@ export function PolicyVersionHistory({ policy }: PolicyVersionHistoryProps) {
             onOpenChange={(open) => setExpandedVersion(open ? version.id : null)}
           >
             <Card className={cn(
-              "transition-colors",
+              "transition-colors rounded-xl",
               expandedVersion === version.id && "ring-1 ring-primary/20"
             )}>
               <CollapsibleTrigger asChild>
-                <CardHeader className="cursor-pointer py-3 px-4">
+                <CardHeader className="cursor-pointer py-2 sm:py-3 px-3 sm:px-4">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-primary/10 text-xs sm:text-sm font-medium text-primary shrink-0">
                         v{version.version_number}
                       </div>
-                      <div>
-                        <CardTitle className="text-sm font-medium">
+                      <div className="min-w-0">
+                        <CardTitle className="text-xs sm:text-sm font-medium truncate">
                           {version.change_summary || "Version saved"}
                         </CardTitle>
-                        <CardDescription className="text-xs flex items-center gap-2">
-                          <User className="h-3 w-3" />
-                          {version.creator?.full_name || "Unknown"}
-                          <span className="text-muted-foreground">·</span>
-                          {format(new Date(version.created_at), "MMM d, yyyy 'at' h:mm a")}
+                        <CardDescription className="text-[10px] sm:text-xs flex flex-wrap items-center gap-1 sm:gap-2">
+                          <span className="flex items-center gap-1">
+                            <User className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                            {version.creator?.full_name || "Unknown"}
+                          </span>
+                          <span className="text-muted-foreground hidden sm:inline">·</span>
+                          <span className="hidden sm:inline">{format(new Date(version.created_at), "MMM d, yyyy 'at' h:mm a")}</span>
+                          <span className="sm:hidden">{format(new Date(version.created_at), "MMM d, h:mm a")}</span>
                         </CardDescription>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       {expandedVersion === version.id ? (
                         <ChevronUp className="h-4 w-4 text-muted-foreground" />
                       ) : (
@@ -136,50 +139,52 @@ export function PolicyVersionHistory({ policy }: PolicyVersionHistoryProps) {
               </CollapsibleTrigger>
               
               <CollapsibleContent>
-                <CardContent className="pt-0 px-4 pb-4">
-                  <div className="space-y-3">
-                    <div className="rounded-lg bg-muted/50 p-3 text-sm">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{version.name}</span>
-                        <Badge variant="outline" className="text-xs">
+                <CardContent className="pt-0 px-3 sm:px-4 pb-3 sm:pb-4">
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="rounded-lg bg-muted/50 p-2 sm:p-3 text-xs sm:text-sm">
+                      <div className="flex items-center gap-2 mb-1 sm:mb-2">
+                        <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+                        <span className="font-medium truncate">{version.name}</span>
+                        <Badge variant="outline" className="text-[10px] sm:text-xs shrink-0">
                           {version.status}
                         </Badge>
                       </div>
                       {version.description && (
-                        <p className="text-muted-foreground text-xs mb-2">
+                        <p className="text-muted-foreground text-[10px] sm:text-xs mb-2">
                           {version.description}
                         </p>
                       )}
                       {version.content && (
-                        <div className="max-h-32 overflow-y-auto text-xs text-muted-foreground font-mono whitespace-pre-wrap border-t pt-2 mt-2">
+                        <div className="max-h-24 sm:max-h-32 overflow-y-auto text-[10px] sm:text-xs text-muted-foreground font-mono whitespace-pre-wrap border-t pt-2 mt-2">
                           {version.content.slice(0, 500)}
                           {version.content.length > 500 && "..."}
                         </div>
                       )}
                     </div>
                     
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                       <Button
                         size="sm"
                         variant="outline"
+                        className="h-9 text-xs sm:text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           setDiffVersion(version);
                         }}
                       >
-                        <GitCompare className="h-4 w-4 mr-1" />
+                        <GitCompare className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
                         Compare
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
+                        className="h-9 text-xs sm:text-sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           setRollbackTarget(version);
                         }}
                       >
-                        <RotateCcw className="h-4 w-4 mr-1" />
+                        <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
                         Rollback
                       </Button>
                     </div>
