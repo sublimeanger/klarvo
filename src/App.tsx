@@ -60,6 +60,7 @@ import BlogArticle from "@/pages/marketing/BlogArticle";
 import APIReference from "@/pages/marketing/APIReference";
 import Templates from "@/pages/marketing/Templates";
 import EUAIActGuide from "@/pages/marketing/EUAIActGuide";
+import Samples from "@/pages/marketing/Samples";
 
 // SEO-optimized pages
 import TemplatesHub from "@/pages/marketing/TemplatesHub";
@@ -162,6 +163,7 @@ const App = () => (
             <Route path="/blog/:slug" element={<BlogArticle />} />
             <Route path="/api" element={<APIReference />} />
             <Route path="/templates" element={<TemplatesHub />} />
+            <Route path="/samples" element={<Samples />} />
             <Route path="/eu-ai-act" element={<EUAIActGuide />} />
             
             {/* SEO Hub Pages */}

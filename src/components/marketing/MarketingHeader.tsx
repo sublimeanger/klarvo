@@ -59,6 +59,7 @@ const resourcesLearn = [
 const resourcesGetStarted = [
   { title: "Templates", href: "/templates", icon: FileText },
   { title: "Free Tools", href: "/tools", icon: Wrench },
+  { title: "Sample Reports", href: "/samples", icon: BarChart3 },
 ];
 
 // Company dropdown
