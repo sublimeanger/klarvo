@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, X, Sparkles, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,21 +21,45 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
   
   const isEnterprise = plan.id === 'enterprise';
   const isFree = plan.id === 'free';
+  const isGrowth = plan.id === 'growth';
+  
+  // Calculate annual savings
+  const annualSavings = billingPeriod === 'annual' && plan.priceMonthly > 0
+    ? (plan.priceMonthly * 12) - plan.priceAnnual
+    : 0;
 
   return (
     <Card className={cn(
       "relative flex flex-col transition-all hover:shadow-lg rounded-xl",
-      plan.popular && "border-primary shadow-md ring-2 ring-primary/20"
+      plan.popular && "border-primary shadow-md ring-2 ring-primary/20",
+      plan.popular && "bg-gradient-to-b from-primary/5 to-transparent"
     )}>
-      {plan.popular && (
-        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs">
-          Most Popular
-        </Badge>
-      )}
+      {/* Badges */}
+      <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+        {plan.popular && (
+          <Badge className="bg-primary text-primary-foreground text-xs whitespace-nowrap">
+            <Sparkles className="h-3 w-3 mr-1" />
+            Most Popular
+          </Badge>
+        )}
+        {isGrowth && billingPeriod === 'annual' && (
+          <Badge variant="secondary" className="bg-success/10 text-success border-success/20 text-xs whitespace-nowrap">
+            <TrendingUp className="h-3 w-3 mr-1" />
+            Best Value
+          </Badge>
+        )}
+      </div>
       
       <CardHeader className="pb-3 sm:pb-4 p-3 sm:p-6">
         <CardTitle className="text-lg sm:text-xl">{plan.name}</CardTitle>
         <CardDescription className="min-h-[36px] sm:min-h-[40px] text-xs sm:text-sm">{plan.tagline}</CardDescription>
+        
+        {/* Best For tag */}
+        {plan.bestFor && (
+          <p className="text-xs text-primary font-medium mt-1">
+            Best for: {plan.bestFor}
+          </p>
+        )}
         
         <div className="pt-3 sm:pt-4">
           {isEnterprise ? (
@@ -54,9 +78,16 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
                 <span className="text-sm text-muted-foreground">/month</span>
               </div>
               {billingPeriod === 'annual' && (
-                <span className="text-xs sm:text-sm text-muted-foreground">
-                  €{price.toLocaleString()} billed annually
-                </span>
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
+                    €{price.toLocaleString()} billed annually
+                  </span>
+                  {annualSavings > 0 && (
+                    <span className="text-xs text-success font-medium">
+                      Save €{annualSavings.toLocaleString()}/year
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -98,7 +129,7 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
           <Button 
             className={cn(
               "w-full h-11",
-              plan.popular ? "" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              plan.popular ? "btn-premium" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
             )}
             variant={plan.popular ? "default" : "secondary"}
             onClick={() => onSelect(plan.id)}
