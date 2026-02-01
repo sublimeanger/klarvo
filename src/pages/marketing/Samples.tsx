@@ -120,7 +120,7 @@ export default function Samples() {
 
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         {/* Hero Section */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 sm:py-16 md:py-24">
           <div className="container max-w-6xl mx-auto px-4">
             <ContentBreadcrumb 
               currentHref="/samples" 
@@ -131,28 +131,28 @@ export default function Samples() {
               ]}
             />
             
-            <div className="text-center max-w-3xl mx-auto mt-8">
-              <Badge variant="outline" className="mb-4 gap-1.5">
-                <Eye className="h-3.5 w-3.5" />
+            <div className="text-center max-w-3xl mx-auto mt-6 sm:mt-8">
+              <Badge variant="outline" className="mb-3 sm:mb-4 gap-1.5 text-xs sm:text-sm">
+                <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                 See Before You Build
               </Badge>
               
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6">
                 Sample Compliance Reports
               </h1>
               
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
                 See exactly what audit-ready EU AI Act documentation looks like. 
                 Download real examples of Classification Memos, FRIA Reports, and 
                 complete Evidence Packs.
               </p>
 
-              {/* Trust indicators */}
-              <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+              {/* Trust indicators - Horizontal scroll on mobile */}
+              <div className="flex flex-nowrap sm:flex-wrap justify-start sm:justify-center gap-4 sm:gap-6 text-xs sm:text-sm text-muted-foreground overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 mobile-scroll-x">
                 {trustIndicators.map((indicator) => (
-                  <div key={indicator.label} className="flex items-center gap-2">
-                    <indicator.icon className="h-4 w-4 text-primary" />
-                    <span>{indicator.label}</span>
+                  <div key={indicator.label} className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                    <indicator.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
+                    <span className="whitespace-nowrap">{indicator.label}</span>
                   </div>
                 ))}
               </div>
@@ -161,86 +161,91 @@ export default function Samples() {
         </section>
 
         {/* Sample Reports Grid */}
-        <section className="pb-16 md:pb-24">
+        <section className="pb-12 sm:pb-16 md:pb-24">
           <div className="container max-w-6xl mx-auto px-4">
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {sampleReports.map((report) => (
                 <Card 
                   key={report.id} 
                   className="overflow-hidden border-2 hover:border-primary/20 transition-colors"
                 >
                   <CardContent className="p-0">
-                    <div className="grid md:grid-cols-5 gap-0">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
                       {/* Preview Section - Left */}
-                      <div className="md:col-span-2 bg-muted/30 p-6 md:p-8 border-b md:border-b-0 md:border-r">
-                        <div className="flex items-start gap-4 mb-6">
-                          <div className="p-3 rounded-xl bg-primary/10">
-                            <report.icon className="h-6 w-6 text-primary" />
+                      <div className="md:col-span-2 bg-muted/30 p-4 sm:p-6 md:p-8 border-b md:border-b-0 md:border-r">
+                        <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+                          <div className="p-2.5 sm:p-3 rounded-xl bg-primary/10 shrink-0">
+                            <report.icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                           </div>
-                          <div>
-                            <div className="flex items-center gap-2 mb-1">
-                              <h2 className="text-xl font-semibold">{report.title}</h2>
-                              <Badge variant={report.badgeVariant} className="text-xs">
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <h2 className="text-lg sm:text-xl font-semibold">{report.title}</h2>
+                              <Badge variant={report.badgeVariant} className="text-[10px] sm:text-xs shrink-0">
                                 {report.badge}
                               </Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                               {report.pages} • {report.format}
                             </p>
                           </div>
                         </div>
 
                         {/* Document Preview Mock */}
-                        <div className="bg-background rounded-lg border shadow-sm p-4 space-y-2">
-                          <div className="flex items-center gap-2 pb-2 border-b mb-3">
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        <div className="bg-background rounded-lg border shadow-sm p-3 sm:p-4 space-y-1.5 sm:space-y-2">
+                          <div className="flex items-center gap-2 pb-2 border-b mb-2 sm:mb-3">
+                            <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
+                            <span className="text-[10px] sm:text-xs font-medium text-muted-foreground uppercase tracking-wide">
                               Contents Preview
                             </span>
                           </div>
-                          {report.preview.map((item, index) => (
+                          {report.preview.slice(0, 4).map((item, index) => (
                             <div 
                               key={index}
-                              className="flex items-start gap-2 text-sm"
+                              className="flex items-start gap-2 text-xs sm:text-sm"
                             >
-                              <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                              <span className="text-muted-foreground">{item}</span>
+                              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary mt-0.5 shrink-0" />
+                              <span className="text-muted-foreground line-clamp-1">{item}</span>
                             </div>
                           ))}
+                          {report.preview.length > 4 && (
+                            <p className="text-[10px] sm:text-xs text-muted-foreground pl-5 sm:pl-6">
+                              +{report.preview.length - 4} more sections...
+                            </p>
+                          )}
                         </div>
                       </div>
 
                       {/* Details Section - Right */}
-                      <div className="md:col-span-3 p-6 md:p-8 flex flex-col justify-between">
+                      <div className="md:col-span-3 p-4 sm:p-6 md:p-8 flex flex-col justify-between">
                         <div>
-                          <p className="text-muted-foreground mb-6 leading-relaxed">
+                          <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 leading-relaxed">
                             {report.description}
                           </p>
 
-                          <div className="bg-muted/30 rounded-lg p-4 mb-6">
-                            <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
-                              <Sparkles className="h-4 w-4 text-primary" />
+                          <div className="bg-muted/30 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+                            <h3 className="text-xs sm:text-sm font-medium mb-1.5 sm:mb-2 flex items-center gap-2">
+                              <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                               When to use this
                             </h3>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                               {report.useCase}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex flex-col gap-2.5 sm:gap-3">
                           <SampleDownloadButton
                             sampleType={report.id as "classification-memo" | "fria-report" | "evidence-pack"}
                             templateName={report.title}
                             buttonText={`Download ${report.format}`}
                             buttonSize="lg"
-                            className="flex-1"
+                            className="w-full h-11 sm:h-12"
                           />
                           <Button 
                             variant="outline" 
                             size="lg"
                             asChild
-                            className="gap-2"
+                            className="gap-2 w-full h-11 sm:h-12"
                           >
                             <Link to="/auth/signup">
                               <Lock className="h-4 w-4" />
@@ -258,23 +263,23 @@ export default function Samples() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 md:py-24 bg-primary/5 border-t">
+        <section className="py-12 sm:py-16 md:py-24 bg-primary/5 border-t">
           <div className="container max-w-4xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">
               Ready to generate your own compliance packs?
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto">
               Get your AI systems classified and documented in hours, not weeks. 
               Export audit-ready evidence packs with one click.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="btn-premium gap-2" asChild>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+              <Button size="lg" className="btn-premium gap-2 h-12 w-full sm:w-auto" asChild>
                 <Link to="/auth/signup">
                   Start Free Trial
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="outline" className="h-12 w-full sm:w-auto" asChild>
                 <Link to="/features">
                   See All Features
                 </Link>
@@ -284,16 +289,16 @@ export default function Samples() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 border-t">
+        <section className="py-12 sm:py-16 border-t">
           <div className="container max-w-3xl mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8 text-center">
+            <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center">
               Frequently Asked Questions
             </h2>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {faqItems.map((faq, index) => (
-                <div key={index} className="bg-card rounded-lg border p-6">
-                  <h3 className="font-semibold mb-2">{faq.question}</h3>
-                  <p className="text-muted-foreground">{faq.answer}</p>
+                <div key={index} className="bg-card rounded-xl border p-4 sm:p-6">
+                  <h3 className="font-semibold text-sm sm:text-base mb-1.5 sm:mb-2">{faq.question}</h3>
+                  <p className="text-sm text-muted-foreground">{faq.answer}</p>
                 </div>
               ))}
             </div>

@@ -30,7 +30,7 @@ export function RadioGroupField({
   layout = "vertical",
 }: RadioGroupFieldProps) {
   return (
-    <div className={cn("space-y-2 sm:space-y-3", className)}>
+    <div className={cn("space-y-3", className)}>
       <div>
         <Label className="text-sm font-medium leading-relaxed">{label}</Label>
         {description && (
@@ -46,26 +46,32 @@ export function RadioGroupField({
         )}
       >
         {options.map((option) => (
-          <div
+          <button
+            type="button"
             key={option.value}
             className={cn(
-              "flex items-start space-x-2 sm:space-x-3 rounded-lg border p-2 sm:p-3 cursor-pointer transition-colors",
+              "flex items-start gap-3 rounded-xl border p-3 sm:p-3.5 text-left transition-all tap-target w-full",
+              "hover:border-primary/50 active:scale-[0.99]",
               value === option.value
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50"
+                ? "border-primary bg-primary/5 ring-1 ring-primary/20"
+                : "border-border"
             )}
             onClick={() => onChange(option.value)}
           >
-            <RadioGroupItem value={option.value} id={option.value} className="mt-0.5" />
-            <div className="space-y-1">
-              <Label htmlFor={option.value} className="cursor-pointer font-normal">
+            <RadioGroupItem 
+              value={option.value} 
+              id={option.value} 
+              className="mt-0.5 h-5 w-5 shrink-0" 
+            />
+            <div className="space-y-0.5 min-w-0">
+              <Label htmlFor={option.value} className="cursor-pointer font-normal text-sm leading-tight block">
                 {option.label}
               </Label>
               {option.description && (
-                <p className="text-xs text-muted-foreground">{option.description}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{option.description}</p>
               )}
             </div>
-          </div>
+          </button>
         ))}
       </RadioGroup>
 

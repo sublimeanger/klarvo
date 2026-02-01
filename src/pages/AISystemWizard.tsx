@@ -251,25 +251,23 @@ export default function AISystemWizard() {
                 type="button" 
                 variant="outline" 
                 onClick={handleBack} 
-                disabled={currentStep === 0 || isSaving} 
-                size="sm" 
-                className="sm:size-default"
+                disabled={currentStep === 0 || isSaving}
+                className="h-11 sm:h-10 px-4 sm:px-6"
               >
-                <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Back</span>
+                <ArrowLeft className="mr-1.5 sm:mr-2 h-4 w-4" />
+                <span className="hidden xs:inline">Back</span>
               </Button>
 
               {isLastInputStep ? (
                 <Button 
                   onClick={handleSubmit} 
-                  disabled={isSubmitting || isSaving} 
-                  size="sm" 
-                  className="sm:size-default"
+                  disabled={isSubmitting || isSaving}
+                  className="h-11 sm:h-10 px-4 sm:px-6 flex-1 sm:flex-initial"
                 >
                   {isSubmitting ? (
-                    <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-1.5 sm:mr-2 h-4 w-4 animate-spin" />
                   ) : (
-                    <Check className="mr-1 sm:mr-2 h-4 w-4" />
+                    <Check className="mr-1.5 sm:mr-2 h-4 w-4" />
                   )}
                   <span className="hidden sm:inline">{isFullAssessment ? "Complete Assessment" : "Create AI System"}</span>
                   <span className="sm:hidden">{isFullAssessment ? "Complete" : "Create"}</span>
@@ -279,11 +277,11 @@ export default function AISystemWizard() {
                   type="button" 
                   onClick={handleNextClick} 
                   disabled={isSaving}
-                  size="sm" 
-                  className="sm:size-default"
+                  className="h-11 sm:h-10 px-4 sm:px-6 flex-1 sm:flex-initial"
                 >
-                  {isSaving && <Loader2 className="mr-1 h-4 w-4 animate-spin" />}
-                  Next <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
+                  {isSaving && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
+                  <span>Next</span>
+                  <ArrowRight className="ml-1.5 sm:ml-2 h-4 w-4" />
                 </Button>
               )}
             </div>

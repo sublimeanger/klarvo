@@ -70,7 +70,7 @@ export default function Dashboard() {
     .slice(0, 3);
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-up">
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 animate-fade-up">
       {/* Trial Banner */}
       {isTrialing && daysRemaining > 0 && (
         <TrialBanner 
@@ -80,14 +80,14 @@ export default function Dashboard() {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Your EU AI Act compliance overview
           </p>
         </div>
-        <Button asChild size="sm" className="w-full sm:w-auto">
+        <Button asChild size="sm" className="w-full sm:w-auto h-11 sm:h-9">
           <Link to="/ai-systems/new">
             <Plus className="mr-2 h-4 w-4" />
             Add AI System
@@ -101,51 +101,64 @@ export default function Dashboard() {
       {/* Welcome Card for new users */}
       {!metricsLoading && metrics.totalSystems === 0 && <WelcomeCard />}
 
-      {/* Metrics Grid */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
-        {metricsLoading ? (
-          <>
-            <Skeleton className="h-28 sm:h-32 rounded-xl" />
-            <Skeleton className="h-28 sm:h-32 rounded-xl" />
-            <Skeleton className="h-28 sm:h-32 rounded-xl" />
-            <Skeleton className="h-28 sm:h-32 rounded-xl" />
-            <Skeleton className="h-28 sm:h-32 rounded-xl col-span-2 lg:col-span-1" />
-          </>
-        ) : (
-          <>
-            <MetricCard
-              title="Total AI Systems"
-              value={metrics.totalSystems}
-              subtitle={`${metrics.activeSystems} active`}
-              icon={Cpu}
-            />
-            <MetricCard
-              title="High-Risk"
-              value={metrics.highRiskCount}
-              subtitle="Deployer duties"
-              icon={AlertTriangle}
-            />
-            <MetricCard
-              title="Pending"
-              value={metrics.notClassifiedCount}
-              subtitle="Need assessment"
-              icon={HelpCircle}
-            />
-            <MetricCard
-              title="Open Tasks"
-              value={metrics.tasksTodo}
-              subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "On track"}
-              icon={CheckSquare}
-            />
-            <MetricCard
-              title="Alerts"
-              value={alertsCount}
-              subtitle={criticalCount > 0 ? `${criticalCount} critical` : "Attention needed"}
-              icon={Bell}
-              className="col-span-2 lg:col-span-1"
-            />
-          </>
-        )}
+      {/* Metrics Grid - Horizontal scroll on mobile, grid on larger screens */}
+      <div className="relative -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex gap-3 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-2 lg:grid-cols-5 sm:gap-4 mobile-scroll-x sm:overflow-visible">
+          {metricsLoading ? (
+            <>
+              <Skeleton className="h-24 min-w-[140px] sm:min-w-0 sm:h-28 rounded-xl shrink-0 sm:shrink" />
+              <Skeleton className="h-24 min-w-[140px] sm:min-w-0 sm:h-28 rounded-xl shrink-0 sm:shrink" />
+              <Skeleton className="h-24 min-w-[140px] sm:min-w-0 sm:h-28 rounded-xl shrink-0 sm:shrink" />
+              <Skeleton className="h-24 min-w-[140px] sm:min-w-0 sm:h-28 rounded-xl shrink-0 sm:shrink" />
+              <Skeleton className="h-24 min-w-[140px] sm:min-w-0 sm:h-28 rounded-xl shrink-0 sm:shrink sm:col-span-2 lg:col-span-1" />
+            </>
+          ) : (
+            <>
+              <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
+                <MetricCard
+                  title="Total AI Systems"
+                  value={metrics.totalSystems}
+                  subtitle={`${metrics.activeSystems} active`}
+                  icon={Cpu}
+                />
+              </div>
+              <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
+                <MetricCard
+                  title="High-Risk"
+                  value={metrics.highRiskCount}
+                  subtitle="Deployer duties"
+                  icon={AlertTriangle}
+                />
+              </div>
+              <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
+                <MetricCard
+                  title="Pending"
+                  value={metrics.notClassifiedCount}
+                  subtitle="Need assessment"
+                  icon={HelpCircle}
+                />
+              </div>
+              <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
+                <MetricCard
+                  title="Open Tasks"
+                  value={metrics.tasksTodo}
+                  subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "On track"}
+                  icon={CheckSquare}
+                />
+              </div>
+              <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink sm:col-span-2 lg:col-span-1">
+                <MetricCard
+                  title="Alerts"
+                  value={alertsCount}
+                  subtitle={criticalCount > 0 ? `${criticalCount} critical` : "Attention needed"}
+                  icon={Bell}
+                />
+              </div>
+            </>
+          )}
+        </div>
+        {/* Scroll hint for mobile */}
+        <div className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none sm:hidden" />
       </div>
 
       {/* Audit Readiness Score */}
