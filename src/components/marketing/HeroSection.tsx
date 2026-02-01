@@ -58,10 +58,10 @@ export function HeroSection({
         <div className="absolute inset-0 bg-mesh-gradient opacity-80" />
         
         {/* Animated floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px] animate-float-slow" />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-purple-500/15 blur-[100px] animate-float-reverse" />
-        <div className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] rounded-full bg-pink-500/10 blur-[100px] animate-float" />
-        <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] rounded-full bg-blue-500/10 blur-[100px] animate-float-slow" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[100px] animate-float-slow" />
+        <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-primary/12 blur-[100px] animate-float-reverse" />
+        <div className="absolute bottom-1/4 left-1/3 w-[350px] h-[350px] rounded-full bg-primary/10 blur-[100px] animate-float" />
+        <div className="absolute top-1/2 right-1/3 w-[300px] h-[300px] rounded-full bg-primary/8 blur-[100px] animate-float-slow" />
         
         {/* Grid pattern */}
         <div className="absolute inset-0 pattern-grid opacity-30" />
