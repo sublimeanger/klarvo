@@ -33,7 +33,7 @@ const industries = [
     icon: Briefcase,
     title: "SaaS Companies",
     description: "Selling AI-powered products into the EU? Get your evidence packs ready for customer procurement questionnaires.",
-    href: "/industries/saas-selling-into-eu",
+    href: "/industries/saas-ai-act",
     badge: "Procurement",
     popular: true,
   },

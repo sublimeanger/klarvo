@@ -26,10 +26,10 @@ const resourceLinks = [
 // Industries column
 const industryLinks = [
   { title: "HR & Recruitment", href: "/industries/hr-recruitment-ai-act" },
-  { title: "Financial Services", href: "/industries/fintech-ai-act" },
-  { title: "Healthcare", href: "/industries/healthcare-ai-act" },
+  { title: "Financial Services", href: "/industries/fintech-credit-ai-act" },
+  { title: "Healthcare", href: "/use-cases/healthcare" },
   { title: "SaaS Companies", href: "/industries/saas-ai-act" },
-  { title: "Education", href: "/industries/education-ai-act" },
+  { title: "Education", href: "/industries/education-edtech-ai-act" },
 ];
 
 // Company column

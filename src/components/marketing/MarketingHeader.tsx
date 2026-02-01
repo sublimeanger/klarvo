@@ -41,10 +41,10 @@ const productFeatures = [
 // Product mega menu - Industries
 const productIndustries = [
   { title: "HR & Recruitment", href: "/industries/hr-recruitment-ai-act", icon: Briefcase },
-  { title: "Financial Services", href: "/industries/fintech-ai-act", icon: Building2 },
-  { title: "Healthcare", href: "/industries/healthcare-ai-act", icon: Heart },
+  { title: "Financial Services", href: "/industries/fintech-credit-ai-act", icon: Building2 },
+  { title: "Healthcare", href: "/use-cases/healthcare", icon: Heart },
   { title: "SaaS Companies", href: "/industries/saas-ai-act", icon: Laptop },
-  { title: "Education", href: "/industries/education-ai-act", icon: GraduationCap },
+  { title: "Education", href: "/industries/education-edtech-ai-act", icon: GraduationCap },
 ];
 
 // Resources dropdown - Learn
@@ -59,7 +59,6 @@ const resourcesLearn = [
 const resourcesGetStarted = [
   { title: "Templates", href: "/templates", icon: FileText },
   { title: "Free Tools", href: "/tools", icon: Wrench },
-  { title: "Sample Exports", href: "/samples", icon: BarChart3 },
 ];
 
 // Company dropdown
@@ -255,11 +254,11 @@ export function MarketingHeader() {
                       ))}
                     </div>
                     <Link
-                      to="/samples"
+                      to="/industries"
                       onClick={closeDropdown}
                       className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline mt-4 pl-2.5"
                     >
-                      See Sample Exports
+                      See All Industries
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                   </div>
