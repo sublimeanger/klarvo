@@ -1,180 +1,281 @@
 
+# Smart Compliance Recommendations Engine - Implementation Plan
 
-# Mobile UX Optimization Plan - Phase 2
+## Overview
+Build an AI-powered recommendation system that analyzes each AI system's compliance profile, identifies gaps, suggests prioritized next steps, and provides personalized remediation paths. The engine will use the existing gap analysis infrastructure combined with a new AI-powered suggestion layer.
 
-## Executive Summary
-
-This plan addresses two main areas:
-1. **Mobile Menu Bug Fix** - Marketing header mobile menu links not closing the menu on navigation
-2. **Remaining Mobile Optimizations** - Standardizing card styling, touch targets, and responsive layouts across remaining pages
-
----
-
-## Part 1: Mobile Menu Bug Fix
-
-### Problem Identified
-The marketing site's mobile navigation menu (in `MarketingHeader.tsx`) has links inside accordion sections that navigate correctly but **do not close the mobile menu** after clicking. This creates a broken UX where users must manually close the menu after navigation.
-
-### Root Cause
-Links inside the mobile accordion sections (lines 445-476, 499-557) do not have an `onClick={() => setIsMobileMenuOpen(false)}` handler.
-
-### Solution
-Add click handlers to close the mobile menu when any link is clicked within the accordion sections.
-
-**Files to modify:**
-- `src/components/marketing/MarketingHeader.tsx`
-
-**Changes required:**
-- Add `onClick={() => setIsMobileMenuOpen(false)}` to all Link components inside the mobile menu overlay (approximately 15-20 links)
-- Ensure the mobile menu closes on any navigation action
-
----
-
-## Part 2: Remaining Mobile Optimizations
-
-### Pages Already Optimized (no changes needed)
-Based on the audit, these pages are already mobile-optimized:
-- Dashboard, AISystems, AISystemDetail
-- Vendors, VendorDetail
-- Evidence, Policies, Training, Incidents
-- Tasks, Controls, Assessments
-- Settings (General + Billing)
-- Exports, AuditLog
-- Provider Track Dashboard
-- FAQ, Docs (marketing)
-
-### Pages Requiring Updates
-
-#### 2.1 Classification Wizard (`src/pages/ClassificationWizard.tsx`)
-
-**Current Issues:**
-- Alert boxes using `rounded-lg` instead of `rounded-xl`
-- RadioGroup items lack touch-friendly sizing
-
-**Changes:**
-- Update alert containers (lines 423, 449, 475) from `rounded-lg` to `rounded-xl`
-- Add `min-h-[44px]` to radio item containers for better touch targets
-
----
-
-#### 2.2 FRIA Wizard (`src/pages/FRIAWizard.tsx`)
-
-**Current Issues:**
-- Progress step icons could be larger on mobile
-- Card containers lack consistent `rounded-xl` styling
-
-**Changes:**
-- Verify Card components use `rounded-xl` consistently
-- Increase step icon container size on mobile
-
----
-
-#### 2.3 Onboarding (`src/pages/Onboarding.tsx`)
-
-**Current Issues:**
-- Role selection buttons using `rounded-lg` (line 260)
-- Card components not using `rounded-xl`
-- Input/Select elements could have larger touch targets
-
-**Changes:**
-- Update role buttons from `rounded-lg` to `rounded-xl`
-- Add `rounded-xl` to Card components
-- Ensure touch target heights are at least 44px
-
----
-
-#### 2.4 Docs Sidebar (`src/components/docs/DocsSidebar.tsx`)
-
-**Current Issues:**
-- Mobile sidebar is hidden (`hidden lg:flex`) with no alternative mobile navigation
-- Users on mobile cannot access the docs sidebar navigation
-
-**Changes:**
-- Add mobile-friendly docs navigation (hamburger or drawer pattern)
-- Ensure search and category navigation work on mobile
-
----
-
-#### 2.5 Disclosures Page (`src/pages/Disclosures.tsx`)
-
-**Current Issues:**
-- Page uses `DisclosureSnippetLibrary` component - need to verify mobile optimization
-
-**Changes:**
-- Audit `DisclosureSnippetLibrary` for mobile responsiveness
-- Apply `rounded-xl` and touch-friendly styling as needed
-
----
-
-## Part 3: Technical Implementation Details
-
-### MarketingHeader Mobile Menu Fix
+## Architecture
 
 ```text
-Location: src/components/marketing/MarketingHeader.tsx
-
-Lines 445-476 (Product accordion links):
-- Add onClick={() => setIsMobileMenuOpen(false)} to each Link
-
-Lines 460-462 ("See All Features" link):
-- Add onClick={() => setIsMobileMenuOpen(false)}
-
-Lines 466-475 (Industry links):
-- Add onClick={() => setIsMobileMenuOpen(false)} to each Link
-
-Lines 499-557 (Resources + Company accordion):
-- Add onClick={() => setIsMobileMenuOpen(false)} to all Link components
++---------------------------+     +----------------------------+
+|  AI System Profile        |     |  Organization Context      |
+|  - Classification         |     |  - Industry                |
+|  - Controls Status        |     |  - Team Size               |
+|  - Evidence Files         |     |  - Plan/Entitlements       |
+|  - Tasks                  |     |  - Active Systems          |
++---------------------------+     +----------------------------+
+            |                                   |
+            v                                   v
++-----------------------------------------------------------+
+|              Recommendation Engine (Edge Function)         |
+|  - Aggregates compliance data                             |
+|  - Analyzes gaps and patterns                             |
+|  - Calls Lovable AI for smart prioritization              |
+|  - Returns structured recommendations                     |
++-----------------------------------------------------------+
+            |
+            v
++-----------------------------------------------------------+
+|              Frontend Components                           |
+|  - RecommendationsPanel (AI System Detail page)           |
+|  - DashboardRecommendations (Dashboard overview)          |
+|  - Quick Action Cards (one-click task creation)           |
++-----------------------------------------------------------+
 ```
 
-### ClassificationWizard Updates
+## Implementation Components
 
-```text
-Location: src/pages/ClassificationWizard.tsx
+### 1. Database Schema Extension
+Create a table to cache AI-generated recommendations for performance and audit purposes.
 
-Lines 423, 449, 475:
-- Change: rounded-lg -> rounded-xl
+**New table: `compliance_recommendations`**
+| Column | Type | Description |
+|--------|------|-------------|
+| id | uuid | Primary key |
+| organization_id | uuid | FK to organizations |
+| ai_system_id | uuid | FK to ai_systems (nullable for org-wide) |
+| recommendation_type | text | gap_remediation, control_suggestion, next_step, risk_mitigation |
+| priority | integer | 1-5 priority ranking |
+| title | text | Short recommendation title |
+| description | text | Detailed explanation |
+| action_type | text | task, evidence, control, classification, fria |
+| action_path | text | Navigation path for quick action |
+| action_payload | jsonb | Structured data for auto-creating tasks |
+| confidence_score | decimal | AI confidence (0.0-1.0) |
+| is_dismissed | boolean | User dismissed this recommendation |
+| generated_at | timestamp | When generated |
+| expires_at | timestamp | Recommendation validity window |
+| created_at | timestamp | Record creation |
 
-Lines 398-411 (RadioGroup):
-- Add tap-target styling to radio containers
+### 2. Edge Function: `compliance-recommendations`
+A new edge function that aggregates system data and generates smart recommendations.
+
+**Inputs:**
+- `ai_system_id` (optional): Get recommendations for a specific system
+- `scope`: "system" | "organization" - scope of analysis
+- `regenerate`: boolean - force fresh generation vs. cached
+
+**Processing Logic:**
+1. Fetch AI system(s) with classifications, controls, evidence, tasks
+2. Build a structured profile including:
+   - Risk level and high-risk categories
+   - Control implementation percentages by category
+   - Evidence coverage and approval rates
+   - Overdue/pending tasks
+   - FRIA status (if applicable)
+   - Transparency obligations status
+3. Call Lovable AI Gateway with structured tool calling to generate:
+   - Prioritized list of 5-10 recommendations
+   - Each with: title, description, priority, action_type, confidence
+4. Store recommendations in database
+5. Return recommendations to client
+
+**AI Prompt Strategy:**
+Use tool calling to ensure structured output:
+```typescript
+{
+  tools: [{
+    type: "function",
+    function: {
+      name: "generate_recommendations",
+      description: "Generate prioritized compliance recommendations",
+      parameters: {
+        type: "object",
+        properties: {
+          recommendations: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                description: { type: "string" },
+                priority: { type: "integer", minimum: 1, maximum: 5 },
+                action_type: { type: "string", enum: [...] },
+                rationale: { type: "string" },
+                confidence: { type: "number" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }],
+  tool_choice: { type: "function", function: { name: "generate_recommendations" } }
+}
 ```
 
-### Onboarding Updates
+### 3. React Hook: `useComplianceRecommendations`
+Custom hook to fetch and manage recommendations.
 
-```text
-Location: src/pages/Onboarding.tsx
+**Features:**
+- Fetch recommendations for a system or organization
+- Trigger regeneration on demand
+- Handle dismissal (hide specific recommendations)
+- Track loading/error states
+- One-click task creation from recommendations
 
-Lines 173-174, 243-244, 293-294 (Card components):
-- Add className="rounded-xl" to Card components
+**Interface:**
+```typescript
+interface Recommendation {
+  id: string;
+  priority: number;
+  title: string;
+  description: string;
+  action_type: 'task' | 'evidence' | 'control' | 'classification' | 'fria';
+  action_path?: string;
+  action_payload?: object;
+  confidence_score: number;
+  is_dismissed: boolean;
+}
 
-Line 260 (role selection buttons):
-- Change: rounded-lg -> rounded-xl
+function useComplianceRecommendations(aiSystemId?: string): {
+  recommendations: Recommendation[];
+  isLoading: boolean;
+  isGenerating: boolean;
+  error: Error | null;
+  regenerate: () => void;
+  dismiss: (id: string) => void;
+  createTaskFromRecommendation: (id: string) => void;
+}
 ```
 
----
+### 4. UI Components
 
-## Priority Order
+#### a) `RecommendationsPanel` (for AI System Detail page)
+A collapsible card showing AI-powered recommendations for that system.
 
-1. **High Priority - Bug Fix**
-   - MarketingHeader mobile menu link closing
+**Features:**
+- Displays 3-5 prioritized recommendations
+- Priority badges (Critical, High, Medium, Low)
+- One-click actions: "Create Task", "Go to Control", "Upload Evidence"
+- "Regenerate" button to get fresh analysis
+- Dismiss individual recommendations
+- Loading skeleton during generation
+- Streaming indicator when AI is analyzing
 
-2. **Medium Priority - Core Wizards**
-   - ClassificationWizard styling
-   - FRIAWizard styling
-   - Onboarding styling
+**Placement:** AI System Detail page, below Gap Checklist
 
-3. **Lower Priority - Additional Polish**
-   - Docs mobile navigation
-   - DisclosureSnippetLibrary audit
+#### b) `DashboardRecommendationsCard` (for Dashboard)
+Organization-wide recommendations overview.
 
----
+**Features:**
+- Top 3-5 recommendations across all systems
+- "View All" link to dedicated recommendations page (future)
+- Quick stats: X recommendations across Y systems
+- Links to specific systems needing attention
 
-## Testing Checklist
+**Placement:** Dashboard, in the main content area
 
-After implementation, verify:
-- [ ] Marketing mobile menu closes after clicking any link
-- [ ] All accordion sections work correctly
-- [ ] Classification wizard cards have rounded-xl styling
-- [ ] Onboarding role buttons have rounded-xl styling
-- [ ] Touch targets meet 44px minimum on all interactive elements
-- [ ] No z-index conflicts between mobile overlays
+#### c) `RecommendationActionButton`
+Reusable component for executing recommendation actions.
 
+**Actions supported:**
+- Create task with pre-filled data
+- Navigate to classification wizard
+- Navigate to evidence upload
+- Navigate to control detail
+- Start FRIA wizard
+
+### 5. Integration Points
+
+#### AI System Detail Page (`AISystemDetail.tsx`)
+Add RecommendationsPanel after the Gap Checklist section:
+```tsx
+<GapChecklist systemId={id} />
+<RecommendationsPanel aiSystemId={id} />
+```
+
+#### Dashboard (`Dashboard.tsx`)
+Add DashboardRecommendationsCard in the alerts section:
+```tsx
+<div className="lg:col-span-2">
+  <ComplianceAlerts />
+</div>
+<DashboardRecommendationsCard />
+```
+
+### 6. Feature Gating
+Recommendations engine will be available based on plan:
+
+| Plan | Access |
+|------|--------|
+| Free | No access |
+| Starter | 3 recommendations per system, basic priority |
+| Growth | Full recommendations, regeneration |
+| Pro/Enterprise | Full + organization-wide insights |
+
+Add to `billing-constants.ts`:
+```typescript
+recommendationsEnabled: boolean;
+recommendationsLimit: number;
+```
+
+## Technical Details
+
+### Edge Function Implementation
+Location: `supabase/functions/compliance-recommendations/index.ts`
+
+The function will:
+1. Validate user authentication
+2. Fetch organization_id from the profile
+3. Query the AI system(s) with related data
+4. Check for cached valid recommendations (< 24 hours old)
+5. If regenerate=true or no cache, call Lovable AI
+6. Upsert recommendations to the database
+7. Return formatted recommendations
+
+### Caching Strategy
+- Recommendations cached for 24 hours by default
+- Auto-invalidate when: classification changes, controls updated, evidence uploaded
+- Manual regenerate button for on-demand refresh
+- Rate limit: 10 regenerations per system per day
+
+### AI Model Selection
+Use `google/gemini-3-flash-preview` for fast response times while maintaining quality recommendations.
+
+## File Changes Summary
+
+### New Files
+1. `supabase/functions/compliance-recommendations/index.ts` - Edge function
+2. `src/hooks/useComplianceRecommendations.ts` - React hook
+3. `src/components/recommendations/RecommendationsPanel.tsx` - System-level panel
+4. `src/components/recommendations/DashboardRecommendationsCard.tsx` - Dashboard card
+5. `src/components/recommendations/RecommendationCard.tsx` - Individual recommendation
+6. `src/components/recommendations/RecommendationActionButton.tsx` - Action buttons
+7. `src/components/recommendations/index.ts` - Barrel export
+
+### Modified Files
+1. `src/pages/AISystemDetail.tsx` - Add RecommendationsPanel
+2. `src/pages/Dashboard.tsx` - Add DashboardRecommendationsCard
+3. `src/lib/billing-constants.ts` - Add recommendation entitlements
+4. `supabase/config.toml` - Register new edge function
+
+### Database Migration
+1. Create `compliance_recommendations` table
+2. Add RLS policies for organization-scoped access
+3. Add indexes for ai_system_id and organization_id
+
+## Success Criteria
+1. Users see relevant, actionable recommendations on AI system pages
+2. Recommendations are properly prioritized based on risk and urgency
+3. One-click actions work to create tasks, navigate to relevant pages
+4. Dashboard shows organization-wide compliance insights
+5. Feature properly gated by subscription plan
+6. Recommendations refresh automatically on relevant changes
+
+## Future Enhancements (Not in Scope)
+- Dedicated recommendations page with filtering
+- Email digest of weekly recommendations
+- Cross-framework mapping suggestions
+- Trend analysis and prediction
+- Team performance insights
