@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 import { cn } from "@/lib/utils";
 import {
@@ -22,6 +22,7 @@ import {
   Package,
   Factory,
   Truck,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -35,6 +36,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { useOperatorTrackAccess } from "@/hooks/useAddons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -52,10 +60,17 @@ const navigation = [
   { name: "Audit Log", href: "/audit-log", icon: Activity },
 ];
 
-const providerNavigation = [
-  { name: "Provider Track", href: "/provider-track", icon: Package },
-  { name: "Importer Track", href: "/provider-track/importer-verification", icon: Factory },
-  { name: "Distributor Track", href: "/provider-track/distributor-verification", icon: Truck },
+type OperatorNavItem = {
+  name: string;
+  href: string;
+  icon: typeof Package;
+  addonKey: "provider" | "importer_distributor";
+};
+
+const providerNavigation: OperatorNavItem[] = [
+  { name: "Provider Track", href: "/provider-track", icon: Package, addonKey: "provider" },
+  { name: "Importer Track", href: "/provider-track/importer-verification", icon: Factory, addonKey: "importer_distributor" },
+  { name: "Distributor Track", href: "/provider-track/distributor-verification", icon: Truck, addonKey: "importer_distributor" },
 ];
 
 const bottomNavigation = [
@@ -64,7 +79,25 @@ const bottomNavigation = [
 
 export function AppSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const { 
+    canAccessProviderTrack, 
+    canAccessImporterDistributorTrack,
+    canPurchaseProviderTrack,
+    canPurchaseImporterDistributor,
+  } = useOperatorTrackAccess();
+
+  const getOperatorAccess = (addonKey: "provider" | "importer_distributor") => {
+    if (addonKey === "provider") {
+      return { hasAccess: canAccessProviderTrack, canPurchase: canPurchaseProviderTrack };
+    }
+    return { hasAccess: canAccessImporterDistributorTrack, canPurchase: canPurchaseImporterDistributor };
+  };
+
+  const handleLockedClick = () => {
+    navigate("/settings/billing");
+  };
 
   return (
     <aside
@@ -130,29 +163,66 @@ export function AppSidebar() {
         <div className="pt-4">
           {!collapsed && (
             <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50">
-              Supply Chain
+              Market Access
             </p>
           )}
           {collapsed && <Separator className="my-2" />}
-          {providerNavigation.map((item) => {
-            const isActive = location.pathname === item.href ||
-              location.pathname.startsWith(item.href + "/");
-            return (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                )}
-              >
-                <item.icon className="h-5 w-5 shrink-0" />
-                {!collapsed && <span>{item.name}</span>}
-              </Link>
-            );
-          })}
+          <TooltipProvider delayDuration={0}>
+            {providerNavigation.map((item) => {
+              const isActive = location.pathname === item.href ||
+                location.pathname.startsWith(item.href + "/");
+              const { hasAccess, canPurchase } = getOperatorAccess(item.addonKey);
+              const isLocked = !hasAccess;
+
+              if (isLocked) {
+                return (
+                  <Tooltip key={item.name}>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={handleLockedClick}
+                        className={cn(
+                          "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                          "text-sidebar-foreground/40 hover:bg-sidebar-accent/30 hover:text-sidebar-foreground/60"
+                        )}
+                      >
+                        <item.icon className="h-5 w-5 shrink-0" />
+                        {!collapsed && (
+                          <>
+                            <span className="flex-1 text-left">{item.name}</span>
+                            <Lock className="h-3.5 w-3.5" />
+                          </>
+                        )}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-[200px]">
+                      <p className="font-medium">Add-on Required</p>
+                      <p className="text-xs text-muted-foreground">
+                        {canPurchase 
+                          ? "Purchase this add-on to unlock." 
+                          : "Upgrade your plan to access add-ons."}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  )}
+                >
+                  <item.icon className="h-5 w-5 shrink-0" />
+                  {!collapsed && <span>{item.name}</span>}
+                </Link>
+              );
+            })}
+          </TooltipProvider>
         </div>
       </nav>
 
