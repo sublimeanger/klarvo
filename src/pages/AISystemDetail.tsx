@@ -58,6 +58,7 @@ import { AISystemControls } from "@/components/ai-systems/AISystemControls";
 import { ReassessmentAlert } from "@/components/ai-systems/ReassessmentAlert";
 import { GapChecklist } from "@/components/ai-systems/GapChecklist";
 import { ClassificationHistoryPanel } from "@/components/ai-systems/ClassificationHistoryPanel";
+import { ClassificationAssistantPanel } from "@/components/ai-systems/ClassificationAssistantPanel";
 import { SupplyChainTabs } from "@/components/ai-systems/SupplyChainTabs";
 import { SubstantialModificationAlert } from "@/components/provider/SubstantialModificationAlert";
 import { ModificationHistoryPanel } from "@/components/provider/ModificationHistoryPanel";
@@ -638,16 +639,38 @@ export default function AISystemDetail() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-between">
-                  <div>
-                    <StatusBadge variant="pending" dot>Not Classified</StatusBadge>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Run the classification wizard to determine risk level and applicable obligations
-                    </p>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <StatusBadge variant="pending" dot>Not Classified</StatusBadge>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Run the classification wizard to determine risk level and applicable obligations
+                      </p>
+                    </div>
+                    <Button asChild>
+                      <Link to={`/ai-systems/${id}/classify`}>Start Classification</Link>
+                    </Button>
                   </div>
-                  <Button asChild>
-                    <Link to={`/ai-systems/${id}/classify`}>Start Classification</Link>
-                  </Button>
+                  
+                  {/* AI Classification Assistant for unclassified systems */}
+                  <Separator />
+                  <div className="pt-2">
+                    <ClassificationAssistantPanel
+                      systemData={{
+                        name: system.name,
+                        description: system.description,
+                        department: system.department,
+                        affected_groups: system.affected_groups,
+                        value_chain_role: system.value_chain_role,
+                        purpose_category: system.purpose_category,
+                        workflow_description: system.workflow_description,
+                        human_involvement: system.human_involvement,
+                        has_workplace_impact: system.has_workplace_impact,
+                        is_customer_facing: system.is_customer_facing,
+                        processes_personal_data: system.processes_personal_data,
+                      }}
+                    />
+                  </div>
                 </div>
               )}
             </CardContent>

@@ -12,6 +12,7 @@ import { QUICK_CAPTURE_STEPS, FULL_ASSESSMENT_STEPS } from "@/components/ai-syst
 import { generateWizardTasks } from "@/lib/wizardTaskGenerator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import type { ExtractedSystemData } from "@/hooks/useAISystemIntake";
 
 // Step components
 import { Step0ModeSelection } from "@/components/ai-systems/wizard/steps/Step0ModeSelection";
@@ -136,9 +137,51 @@ export default function AISystemWizard() {
     setErrors({});
   };
 
+  // Handle AI-extracted data from NaturalLanguageIntake
+  const handleAIExtract = useCallback((extractedData: Partial<ExtractedSystemData>) => {
+    // Map extracted fields to wizard data structure
+    const mappedData: Record<string, unknown> = {
+      wizard_mode: "full_assessment", // Switch to full assessment for review
+    };
+
+    // Map all extracted fields
+    if (extractedData.name) mappedData.name = extractedData.name;
+    if (extractedData.description) mappedData.description = extractedData.description;
+    if (extractedData.department) mappedData.department = extractedData.department;
+    if (extractedData.deployment_regions) mappedData.deployment_regions = extractedData.deployment_regions;
+    if (extractedData.eu_countries) mappedData.eu_countries = extractedData.eu_countries;
+    if (extractedData.internal_user_groups) mappedData.internal_user_groups = extractedData.internal_user_groups;
+    if (extractedData.affected_groups) mappedData.affected_groups = extractedData.affected_groups;
+    if (extractedData.is_customer_facing !== undefined && extractedData.is_customer_facing !== null) mappedData.is_customer_facing = extractedData.is_customer_facing;
+    if (extractedData.has_workplace_impact !== undefined && extractedData.has_workplace_impact !== null) mappedData.has_workplace_impact = extractedData.has_workplace_impact;
+    if (extractedData.has_legal_effects !== undefined && extractedData.has_legal_effects !== null) mappedData.has_legal_effects = extractedData.has_legal_effects;
+    if (extractedData.summary) mappedData.summary = extractedData.summary;
+    if (extractedData.built_internally) mappedData.built_internally = extractedData.built_internally;
+    if (extractedData.acquisition_method) mappedData.acquisition_method = extractedData.acquisition_method;
+    if (extractedData.value_chain_role) mappedData.value_chain_role = extractedData.value_chain_role;
+    if (extractedData.purpose_category) mappedData.purpose_category = extractedData.purpose_category;
+    if (extractedData.human_involvement) mappedData.human_involvement = extractedData.human_involvement;
+    if (extractedData.processes_personal_data) mappedData.processes_personal_data = extractedData.processes_personal_data;
+    if (extractedData.data_sources) mappedData.data_sources = extractedData.data_sources;
+    if (extractedData.highrisk_employment) mappedData.highrisk_employment = extractedData.highrisk_employment;
+    if (extractedData.highrisk_essential_services) mappedData.highrisk_essential_services = extractedData.highrisk_essential_services;
+    if (extractedData.highrisk_biometric) mappedData.highrisk_biometric = extractedData.highrisk_biometric;
+    if (extractedData.highrisk_education) mappedData.highrisk_education = extractedData.highrisk_education;
+    if (extractedData.transparency_direct_interaction) mappedData.transparency_direct_interaction = extractedData.transparency_direct_interaction;
+    if (extractedData.transparency_synthetic_content) mappedData.transparency_synthetic_content = extractedData.transparency_synthetic_content;
+    if (extractedData.output_types) mappedData.output_types = extractedData.output_types;
+    if (extractedData.technical_approach) mappedData.technical_approach = extractedData.technical_approach;
+
+    updateData(mappedData);
+    toast.success(`${Object.keys(mappedData).length - 1} fields pre-filled from AI analysis`);
+    
+    // Move to step 1 (basics) to review the extracted data
+    handleNext();
+  }, [updateData, handleNext]);
+
   const renderStep = () => {
     switch (currentStepDef?.key) {
-      case "mode": return <Step0ModeSelection value={data.wizard_mode} onChange={(mode) => updateData({ wizard_mode: mode })} />;
+      case "mode": return <Step0ModeSelection value={data.wizard_mode} onChange={(mode) => updateData({ wizard_mode: mode })} onAIExtract={handleAIExtract} />;
       case "basics": return <Step1Basics data={data} onChange={updateData} errors={errors} />;
       case "vendor": return <Step2Vendor data={data} onChange={updateData} vendors={vendors} />;
       case "ownership": return <Step3Ownership data={data} onChange={updateData} members={members} isFullAssessment={isFullAssessment} />;
