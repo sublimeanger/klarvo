@@ -52,6 +52,8 @@ export interface PlanEntitlements {
   apiEnabled: boolean;
   multiWorkspaceEnabled: boolean;
   ssoEnabled: boolean;
+  providerTrackEnabled: boolean;
+  importerDistributorTrackEnabled: boolean;
 }
 
 export const PLANS: Record<PlanId, Plan> = {
@@ -204,6 +206,8 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: false,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
+    providerTrackEnabled: false,
+    importerDistributorTrackEnabled: false,
   },
   starter: {
     aiSystemsIncluded: 10,
@@ -220,6 +224,8 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: false,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
+    providerTrackEnabled: false,
+    importerDistributorTrackEnabled: false,
   },
   growth: {
     aiSystemsIncluded: 25,
@@ -236,6 +242,8 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: false,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
+    providerTrackEnabled: false,
+    importerDistributorTrackEnabled: true,
   },
   pro: {
     aiSystemsIncluded: 100,
@@ -252,6 +260,8 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: true,
     multiWorkspaceEnabled: false,
     ssoEnabled: false,
+    providerTrackEnabled: true,
+    importerDistributorTrackEnabled: true,
   },
   enterprise: {
     aiSystemsIncluded: Infinity,
@@ -268,6 +278,8 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     apiEnabled: true,
     multiWorkspaceEnabled: true,
     ssoEnabled: true,
+    providerTrackEnabled: true,
+    importerDistributorTrackEnabled: true,
   },
 };
 

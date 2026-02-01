@@ -19,6 +19,9 @@ import {
   LogOut,
   User,
   Activity,
+  Package,
+  Factory,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -31,9 +34,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "AI Systems", href: "/ai-systems", icon: Cpu },
   { name: "Vendors", href: "/vendors", icon: Building2 },
   { name: "Assessments", href: "/assessments", icon: ClipboardCheck },
@@ -46,6 +50,12 @@ const navigation = [
   { name: "Incidents", href: "/incidents", icon: AlertTriangle },
   { name: "Exports", href: "/exports", icon: Download },
   { name: "Audit Log", href: "/audit-log", icon: Activity },
+];
+
+const providerNavigation = [
+  { name: "Provider Track", href: "/provider-track", icon: Package },
+  { name: "Importer Track", href: "/provider-track/importer-verification", icon: Factory },
+  { name: "Distributor Track", href: "/provider-track/distributor-verification", icon: Truck },
 ];
 
 const bottomNavigation = [
@@ -97,7 +107,8 @@ export function AppSidebar() {
       {/* Main Navigation */}
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {navigation.map((item) => {
-          const isActive = location.pathname === item.href;
+          const isActive = location.pathname === item.href || 
+            (item.href === "/dashboard" && location.pathname === "/");
           return (
             <Link
               key={item.name}
@@ -114,6 +125,35 @@ export function AppSidebar() {
             </Link>
           );
         })}
+
+        {/* Provider Track Section */}
+        <div className="pt-4">
+          {!collapsed && (
+            <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50">
+              Supply Chain
+            </p>
+          )}
+          {collapsed && <Separator className="my-2" />}
+          {providerNavigation.map((item) => {
+            const isActive = location.pathname === item.href ||
+              location.pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                )}
+              >
+                <item.icon className="h-5 w-5 shrink-0" />
+                {!collapsed && <span>{item.name}</span>}
+              </Link>
+            );
+          })}
+        </div>
       </nav>
 
       {/* Bottom Navigation */}
