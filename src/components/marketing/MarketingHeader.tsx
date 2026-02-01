@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ChevronDown, ChevronRight, Boxes, Shield, FileCheck, Download, Settings, Briefcase, Building2, Heart, Laptop, GraduationCap, BookOpen, FileText, Wrench, BarChart3, HelpCircle, Users, Newspaper, MapPin, Phone, Activity } from "lucide-react";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
 // Product mega menu - What We Do
 const productFeatures = [
@@ -182,13 +183,12 @@ export function MarketingHeader() {
       <div className="container mx-auto px-4 lg:px-8">
         <nav className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+          <Link to="/" className="flex items-center group shrink-0">
             <img
-              src="/favicon.png"
+              src={klarvoLogo}
               alt="Klarvo"
-              className="h-9 w-9 rounded-lg transition-transform duration-200 group-hover:scale-105"
+              className="h-8 transition-transform duration-200 group-hover:scale-105"
             />
-            <span className="text-xl font-bold tracking-tight">Klarvo</span>
           </Link>
 
           {/* Desktop Navigation - 4 items only */}

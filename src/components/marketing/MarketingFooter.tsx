@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Twitter, Linkedin, Github, Shield, CheckCircle2 } from "lucide-react";
 import { NewsletterForm } from "./NewsletterForm";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
 // Product column - what we do
 const productLinks = [
@@ -72,15 +73,12 @@ export function MarketingFooter() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-10">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-3 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-3 mb-6 group">
-              <div className="relative">
-                <img
-                  src="/favicon.png"
-                  alt="Klarvo"
-                  className="h-10 w-10 rounded-xl"
-                />
-              </div>
-              <span className="text-xl font-bold tracking-tight">Klarvo</span>
+            <Link to="/" className="flex items-center mb-6 group">
+              <img
+                src={klarvoLogo}
+                alt="Klarvo"
+                className="h-8"
+              />
             </Link>
             <p className="text-muted-foreground mb-8 max-w-sm leading-relaxed">
               The complete EU AI Act compliance platform for modern businesses. 
