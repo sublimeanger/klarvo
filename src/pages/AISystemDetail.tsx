@@ -62,6 +62,7 @@ import { SupplyChainTabs } from "@/components/ai-systems/SupplyChainTabs";
 import { SubstantialModificationAlert } from "@/components/provider/SubstantialModificationAlert";
 import { ModificationHistoryPanel } from "@/components/provider/ModificationHistoryPanel";
 import { ActivityFeed } from "@/components/audit/ActivityFeed";
+import { RecommendationsPanel } from "@/components/recommendations";
 import { useVendors } from "@/hooks/useVendors";
 import { useOrgMembers } from "@/hooks/useOrgMembers";
 import { detectMaterialChanges, useTriggerReassessment } from "@/hooks/useReassessment";
@@ -732,6 +733,9 @@ export default function AISystemDetail() {
 
           {/* Gap Checklist */}
           <GapChecklist aiSystemId={id!} />
+
+          {/* AI-Powered Recommendations */}
+          <RecommendationsPanel aiSystemId={id!} />
 
           {/* Supply Chain Tabs - conditional based on value chain role */}
           <SupplyChainTabs 
