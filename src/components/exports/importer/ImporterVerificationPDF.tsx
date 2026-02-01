@@ -8,7 +8,7 @@ import {
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { baseStyles, colors } from "@/lib/pdfStyles";
-import { KLARVO_LOGO_BASE64 } from "@/lib/pdfAssets";
+import { KLARVO_LOGO_URL } from "@/lib/pdfAssets";
 
 const styles = StyleSheet.create({
   page: {
@@ -180,7 +180,7 @@ export function ImporterVerificationPDF({
       {/* Cover Page */}
       <Page size="A4" style={baseStyles.coverPage}>
         <View>
-          <Image src={KLARVO_LOGO_BASE64} style={{ width: 80, marginBottom: 25 }} />
+          <Image src={KLARVO_LOGO_URL} style={{ width: 80, marginBottom: 25 }} />
           <Text style={baseStyles.coverBadge}>EU AI ACT — ARTICLE 23</Text>
           <Text style={baseStyles.coverTitle}>Importer Verification</Text>
           <Text style={baseStyles.coverSubtitle}>Market Access Compliance Record</Text>

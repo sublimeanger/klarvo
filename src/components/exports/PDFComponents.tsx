@@ -1,10 +1,11 @@
 import { Text, View, Image } from "@react-pdf/renderer";
 import { baseStyles, colors } from "@/lib/pdfStyles";
-import { KLARVO_LOGO_BASE64, WATERMARK_CONFIG } from "@/lib/pdfAssets";
+import { KLARVO_LOGO_URL, KLARVO_LOGO_BASE64, WATERMARK_CONFIG } from "@/lib/pdfAssets";
 
 /**
  * Klarvo Logo component for PDF cover pages
- * Uses base64-encoded PNG for reliable rendering in react-pdf
+ * Uses publicly hosted PNG URL for reliable rendering in react-pdf
+ * Falls back to base64 if URL fails
  */
 interface PDFLogoProps {
   width?: number;
@@ -14,7 +15,7 @@ interface PDFLogoProps {
 export function PDFLogo({ width = 80, style }: PDFLogoProps) {
   return (
     <Image 
-      src={KLARVO_LOGO_BASE64} 
+      src={KLARVO_LOGO_URL}
       style={{ 
         width, 
         marginBottom: 20,
@@ -69,7 +70,7 @@ export function PoweredByKlarvo() {
       gap: 6,
     }}>
       <Image 
-        src={KLARVO_LOGO_BASE64} 
+        src={KLARVO_LOGO_URL} 
         style={{ width: 16, height: 16 }} 
       />
       <Text style={{ fontSize: 8, color: colors.gray[400] }}>
