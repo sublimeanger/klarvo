@@ -24,6 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useBilling } from "@/hooks/useBilling";
 import { TrialBanner } from "@/components/billing/TrialBanner";
 import { useTasks } from "@/hooks/useTasks";
 import { ComplianceAlerts } from "@/components/dashboard/ComplianceAlerts";
@@ -43,6 +44,7 @@ const upcomingDeadlines = [
 export default function Dashboard() {
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
   const { isTrialing, daysRemaining } = useSubscription();
+  const { createCheckoutSession } = useBilling();
   const { data: recentTasks = [] } = useTasks({ status: "all" });
   const { totalCount: alertsCount, criticalCount } = useComplianceAlerts();
 
@@ -69,7 +71,10 @@ export default function Dashboard() {
     <div className="space-y-6 sm:space-y-8 animate-fade-up">
       {/* Trial Banner */}
       {isTrialing && daysRemaining > 0 && (
-        <TrialBanner daysRemaining={daysRemaining} />
+        <TrialBanner 
+          daysRemaining={daysRemaining} 
+          onUpgrade={() => createCheckoutSession("growth", "annual")}
+        />
       )}
 
       {/* Header */}
