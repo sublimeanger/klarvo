@@ -5,3 +5,18 @@ verify_jwt = false
 
 [functions.compliance-recommendations]
 verify_jwt = false
+
+[functions.ai-assistant]
+verify_jwt = false
+
+[functions.ai-system-intake]
+verify_jwt = false
+
+[functions.document-intelligence]
+verify_jwt = false
+
+[functions.compliance-copilot]
+verify_jwt = false
+
+[functions.classification-assistant]
+verify_jwt = false

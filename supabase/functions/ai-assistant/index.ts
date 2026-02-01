@@ -1,11 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const SYSTEM_PROMPT = `You are Klarvo AI, an expert assistant for the Klarvo EU AI Act Compliance Platform. Your role is to help users understand EU AI Act requirements, navigate the platform, and answer compliance questions.
+const BASE_SYSTEM_PROMPT = `You are Klarvo AI, an expert assistant for the Klarvo EU AI Act Compliance Platform. Your role is to help users understand EU AI Act requirements, navigate the platform, and answer compliance questions.
 
 ## Your Knowledge Base
 
@@ -99,17 +100,130 @@ All providers and deployers must ensure sufficient AI literacy of staff operatin
 7. **Use markdown**: Format responses with headers, lists, tables when helpful
 8. **Stay current**: Note that guidance may evolve as implementation progresses
 
-## Example Questions You Can Answer
-- "What are my obligations as a deployer?"
-- "Is my AI system high-risk?"
-- "When do I need a FRIA?"
-- "What is the February 2025 deadline about?"
-- "How do I add an AI system in Klarvo?"
-- "What evidence do I need for compliance?"
-- "What training do my staff need?"
-- "How do I export an evidence pack?"
-
 Remember: You provide guidance, not legal advice. For complex interpretations, recommend consulting qualified counsel.`;
+
+interface UserContext {
+  systems: Array<{
+    id: string;
+    name: string;
+    department: string | null;
+    final_classification: string | null;
+    lifecycle_status: string;
+    fria_status: string | null;
+    value_chain_role: string[] | null;
+  }>;
+  classifications: Array<{
+    ai_system_id: string;
+    risk_level: string;
+    is_high_risk_candidate: boolean | null;
+    has_transparency_obligations: boolean | null;
+  }>;
+  openTasks: number;
+  pendingEvidence: number;
+  incidentCount: number;
+}
+
+function buildContextualPrompt(userContext: UserContext | null): string {
+  if (!userContext || userContext.systems.length === 0) {
+    return BASE_SYSTEM_PROMPT;
+  }
+
+  const systemsSummary = userContext.systems.map(s => {
+    const classification = userContext.classifications.find(c => c.ai_system_id === s.id);
+    return `- **${s.name}**: ${classification?.risk_level || 'Not classified'} | ${s.lifecycle_status} | ${s.department || 'No department'} | FRIA: ${s.fria_status || 'Not started'}`;
+  }).join('\n');
+
+  const highRiskCount = userContext.classifications.filter(c => c.is_high_risk_candidate).length;
+  const transparencyCount = userContext.classifications.filter(c => c.has_transparency_obligations).length;
+  const unclassifiedCount = userContext.systems.filter(s => 
+    !userContext.classifications.find(c => c.ai_system_id === s.id)
+  ).length;
+
+  const contextSection = `
+
+## Your User's Current Compliance State
+
+You have access to this user's actual AI system inventory and compliance status. Use this information to provide personalized, actionable guidance.
+
+### Organization Summary
+- **Total AI Systems**: ${userContext.systems.length}
+- **High-Risk Candidates**: ${highRiskCount}
+- **Transparency Obligations**: ${transparencyCount}
+- **Unclassified Systems**: ${unclassifiedCount}
+- **Open Tasks**: ${userContext.openTasks}
+- **Pending Evidence**: ${userContext.pendingEvidence}
+- **Open Incidents**: ${userContext.incidentCount}
+
+### AI Systems Inventory
+${systemsSummary}
+
+### Personalization Guidelines
+When the user asks questions like:
+- "Which of my systems need FRIA?" → Check their high-risk systems and FRIA status
+- "What should I prioritize?" → Consider their open tasks, unclassified systems, and approaching deadlines
+- "Am I compliant?" → Analyze their classification status, controls, and evidence gaps
+- "What's the status of [system name]?" → Reference the specific system from their inventory
+
+Always provide specific, personalized answers based on their actual data when relevant.`;
+
+  return BASE_SYSTEM_PROMPT + contextSection;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function fetchUserContext(supabase: any, organizationId: string): Promise<UserContext | null> {
+  try {
+    // Fetch AI systems
+    const { data: systems } = await supabase
+      .from("ai_systems")
+      .select("id, name, department, final_classification, lifecycle_status, fria_status, value_chain_role")
+      .eq("organization_id", organizationId)
+      .limit(50);
+
+    if (!systems || systems.length === 0) {
+      return null;
+    }
+
+    const systemIds = (systems as Array<{ id: string }>).map((s: { id: string }) => s.id);
+
+    // Fetch classifications
+    const { data: classifications } = await supabase
+      .from("ai_system_classifications")
+      .select("ai_system_id, risk_level, is_high_risk_candidate, has_transparency_obligations")
+      .in("ai_system_id", systemIds);
+
+    // Fetch open tasks count
+    const { count: openTasks } = await supabase
+      .from("tasks")
+      .select("*", { count: "exact", head: true })
+      .eq("organization_id", organizationId)
+      .neq("status", "done");
+
+    // Fetch pending evidence count
+    const { count: pendingEvidence } = await supabase
+      .from("evidence_files")
+      .select("*", { count: "exact", head: true })
+      .eq("organization_id", organizationId)
+      .eq("status", "pending_review");
+
+    // Fetch open incidents count
+    const { count: incidentCount } = await supabase
+      .from("incidents")
+      .select("*", { count: "exact", head: true })
+      .eq("organization_id", organizationId)
+      .in("status", ["open", "investigating"]);
+
+    return {
+      systems: systems as UserContext["systems"],
+      classifications: (classifications || []) as UserContext["classifications"],
+      openTasks: openTasks || 0,
+      pendingEvidence: pendingEvidence || 0,
+      incidentCount: incidentCount || 0,
+    };
+  } catch (error) {
+    console.error("Failed to fetch user context:", error);
+    return null;
+  }
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -117,11 +231,38 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, stream = true } = await req.json();
+    const { messages, stream = true, includeContext = true } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    let systemPrompt = BASE_SYSTEM_PROMPT;
+    
+    // If context is requested, try to fetch user's data
+    if (includeContext) {
+      const authHeader = req.headers.get("authorization");
+      if (authHeader) {
+        const supabase = createClient(supabaseUrl, supabaseServiceKey);
+        const token = authHeader.replace("Bearer ", "");
+        const { data: { user } } = await supabase.auth.getUser(token);
+        
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("organization_id")
+            .eq("id", user.id)
+            .single();
+          
+          if (profile?.organization_id) {
+            const userContext = await fetchUserContext(supabase, profile.organization_id);
+            systemPrompt = buildContextualPrompt(userContext);
+          }
+        }
+      }
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -133,7 +274,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: systemPrompt },
           ...messages,
         ],
         stream: stream,

@@ -37,6 +37,7 @@ import { WelcomeCard } from "@/components/dashboard/WelcomeCard";
 import { EscalationDashboardWidget } from "@/components/provider/EscalationDashboardWidget";
 import { ModificationSummaryWidget } from "@/components/provider/SubstantialModificationAlert";
 import { DashboardRecommendationsCard } from "@/components/recommendations";
+import { ComplianceCopilotCard } from "@/components/dashboard/ComplianceCopilotCard";
 
 const upcomingDeadlines = [
   { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
@@ -315,6 +316,7 @@ export default function Dashboard() {
           <ComplianceAlerts />
         </div>
         <div className="space-y-4 sm:space-y-6">
+          <ComplianceCopilotCard />
           <DashboardRecommendationsCard />
           <EscalationDashboardWidget />
         </div>
