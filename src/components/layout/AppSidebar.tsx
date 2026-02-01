@@ -37,6 +37,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useOperatorTrackAccess } from "@/hooks/useAddons";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Tooltip,
   TooltipContent,
@@ -77,16 +78,35 @@ const bottomNavigation = [
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
+const ROLE_LABELS: Record<string, string> = {
+  admin: "Admin",
+  compliance_owner: "Compliance Owner",
+  system_owner: "System Owner",
+  reviewer: "Reviewer",
+  viewer: "Viewer",
+};
+
 export function AppSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const { profile, userRole, signOut } = useAuth();
   const { 
     canAccessProviderTrack, 
     canAccessImporterDistributorTrack,
     canPurchaseProviderTrack,
     canPurchaseImporterDistributor,
   } = useOperatorTrackAccess();
+
+  // Compute user display info
+  const initials = profile?.full_name
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2) || "U";
+  const displayName = profile?.full_name || "User";
+  const displayRole = ROLE_LABELS[userRole?.role || ""] || "Member";
 
   const getOperatorAccess = (addonKey: "provider" | "importer_distributor") => {
     if (addonKey === "provider") {
@@ -97,6 +117,11 @@ export function AppSidebar() {
 
   const handleLockedClick = () => {
     navigate("/settings/billing");
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth/login", { replace: true });
   };
 
   return (
@@ -257,13 +282,13 @@ export function AppSidebar() {
             >
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                  JD
+                  {initials}
                 </AvatarFallback>
               </Avatar>
               {!collapsed && (
                 <div className="flex-1 text-left">
-                  <p className="text-sm font-medium">John Doe</p>
-                  <p className="text-xs text-muted-foreground">Admin</p>
+                  <p className="text-sm font-medium">{displayName}</p>
+                  <p className="text-xs text-muted-foreground">{displayRole}</p>
                 </div>
               )}
             </button>
@@ -271,16 +296,16 @@ export function AppSidebar() {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/settings")}>
               <User className="mr-2 h-4 w-4" />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/settings")}>
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>

@@ -38,6 +38,7 @@ import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
 import Callback from "@/pages/auth/Callback";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
+import ResetPassword from "@/pages/auth/ResetPassword";
 import Onboarding from "@/pages/Onboarding";
 
 // Marketing pages
@@ -259,6 +260,7 @@ const App = () => (
             <Route path="/auth/signup" element={<Signup />} />
             <Route path="/auth/callback" element={<Callback />} />
             <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
             
             {/* Onboarding */}
             <Route

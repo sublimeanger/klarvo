@@ -317,7 +317,9 @@ export default function AISystems() {
                         <DropdownMenuItem asChild>
                           <Link to={`/ai-systems/${system.id}`}>View Details</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>Start Classification</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to={`/ai-systems/${system.id}/classify`}>Start Classification</Link>
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
                           className="text-destructive"
