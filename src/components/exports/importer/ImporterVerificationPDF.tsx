@@ -6,157 +6,106 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
-import { colors } from "@/lib/pdfStyles";
-
-const pdfColors = {
-  primary: colors.emerald,
-  foreground: colors.gray[800],
-  mutedForeground: colors.gray[500],
-  muted: colors.gray[100],
-  border: colors.gray[200],
-};
+import { baseStyles, colors } from "@/lib/pdfStyles";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 50,
-    fontSize: 10,
-    fontFamily: "Helvetica",
-    backgroundColor: "#FFFFFF",
-  },
-  header: {
-    marginBottom: 30,
-  },
-  title: {
-    fontSize: 22,
-    fontFamily: "Helvetica-Bold",
-    color: pdfColors.primary,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 12,
-    color: pdfColors.mutedForeground,
-    marginBottom: 20,
-  },
-  section: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontFamily: "Helvetica-Bold",
-    color: pdfColors.foreground,
-    marginBottom: 10,
-    paddingBottom: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: pdfColors.border,
-  },
-  row: {
-    flexDirection: "row",
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: pdfColors.border,
-  },
-  label: {
-    width: "40%",
-    fontSize: 10,
-    color: pdfColors.mutedForeground,
-  },
-  value: {
-    width: "60%",
-    fontSize: 10,
-    color: pdfColors.foreground,
+    ...baseStyles.page,
+    paddingTop: 60,
   },
   checklistTable: {
     marginTop: 10,
   },
   checklistHeader: {
     flexDirection: "row",
-    backgroundColor: pdfColors.muted,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    backgroundColor: colors.emerald,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
   },
   checklistHeaderText: {
-    fontSize: 10,
-    fontFamily: "Helvetica-Bold",
-    color: pdfColors.foreground,
+    fontSize: 9,
+    fontWeight: 700,
+    color: "#fff",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
   checklistRow: {
     flexDirection: "row",
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: pdfColors.border,
+    borderBottomColor: colors.gray[200],
+    backgroundColor: "#fff",
+  },
+  checklistRowAlt: {
+    flexDirection: "row",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.gray[200],
+    backgroundColor: colors.gray[50],
   },
   checklistItem: {
     width: "70%",
-    fontSize: 10,
-    color: pdfColors.foreground,
+    fontSize: 9,
+    color: colors.gray[800],
   },
   checklistStatus: {
     width: "30%",
-    fontSize: 10,
+    fontSize: 9,
     textAlign: "center",
+    fontWeight: 600,
   },
   statusCompliant: {
-    color: "#10B981",
-    fontFamily: "Helvetica-Bold",
+    color: colors.success,
   },
   statusNonCompliant: {
-    color: "#EF4444",
-    fontFamily: "Helvetica-Bold",
+    color: colors.danger,
   },
   statusPending: {
-    color: "#F59E0B",
+    color: colors.warning,
   },
-  infoBox: {
-    backgroundColor: pdfColors.muted,
-    padding: 12,
-    borderRadius: 4,
+  providerCard: {
+    backgroundColor: colors.gray[50],
+    borderWidth: 1,
+    borderColor: colors.gray[200],
+    borderRadius: 6,
+    padding: 16,
     marginTop: 10,
   },
-  infoText: {
-    fontSize: 9,
-    color: pdfColors.mutedForeground,
-    lineHeight: 1.4,
-  },
-  footer: {
-    position: "absolute",
-    bottom: 30,
-    left: 50,
-    right: 50,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderTopWidth: 1,
-    borderTopColor: pdfColors.border,
-    paddingTop: 10,
-  },
-  footerText: {
-    fontSize: 8,
-    color: pdfColors.mutedForeground,
-  },
-  signatureSection: {
-    marginTop: 30,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: pdfColors.border,
-  },
-  signatureRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 40,
-  },
-  signatureBlock: {
-    width: "45%",
-  },
-  signatureLine: {
+  providerCardTitle: {
+    fontSize: 10,
+    fontWeight: 700,
+    color: colors.gray[800],
+    marginBottom: 10,
+    paddingBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: pdfColors.foreground,
-    marginBottom: 4,
-  },
-  signatureLabel: {
-    fontSize: 9,
-    color: pdfColors.mutedForeground,
+    borderBottomColor: colors.gray[200],
   },
 });
+
+// Running Header
+function RunningHeader({ systemName, orgName }: { systemName: string; orgName: string }) {
+  return (
+    <View style={baseStyles.runningHeader} fixed>
+      <Text style={baseStyles.runningHeaderTitle}>Importer Verification — {systemName}</Text>
+      <Text style={baseStyles.runningHeaderOrg}>{orgName}</Text>
+    </View>
+  );
+}
+
+// Running Footer
+function RunningFooter() {
+  return (
+    <View style={baseStyles.runningFooter} fixed>
+      <Text style={baseStyles.footerText}>Generated by Klarvo EU AI Act Compliance Hub</Text>
+      <Text style={baseStyles.footerConfidential}>Confidential</Text>
+      <Text style={baseStyles.footerPage} render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+    </View>
+  );
+}
 
 export interface ImporterVerificationData {
   id: string;
@@ -200,7 +149,7 @@ const CHECKLIST_LABELS: Record<string, string> = {
 function getStatusText(value: boolean | null): string {
   if (value === true) return "✓ Verified";
   if (value === false) return "✗ Not Verified";
-  return "— Pending";
+  return "○ Pending";
 }
 
 function getStatusStyle(value: boolean | null) {
@@ -216,78 +165,128 @@ export function ImporterVerificationPDF({
   verifierName,
   generatedBy,
 }: ImporterVerificationPDFProps) {
-  const generatedAt = format(new Date(), "dd MMMM yyyy, HH:mm");
+  const generatedDate = format(new Date(), "PPP");
   const checklistItems = Object.entries(verification.verification_data || {});
   const completedCount = checklistItems.filter(([_, v]) => v === true).length;
-  const totalCount = checklistItems.length;
+  const totalCount = checklistItems.length || Object.keys(CHECKLIST_LABELS).length;
+  const completionPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  const statusDisplay = verification.status?.replace(/_/g, " ").toUpperCase() || "PENDING";
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Importer Verification Record</Text>
-          <Text style={styles.subtitle}>
-            Article 23 EU AI Act Compliance — {systemName}
+      {/* Cover Page */}
+      <Page size="A4" style={baseStyles.coverPage}>
+        <View>
+          <Text style={baseStyles.coverBadge}>EU AI ACT — ARTICLE 23</Text>
+          <Text style={baseStyles.coverTitle}>Importer Verification</Text>
+          <Text style={baseStyles.coverSubtitle}>Market Access Compliance Record</Text>
+          <Text style={baseStyles.coverSystemName}>{systemName}</Text>
+          <Text style={baseStyles.coverMeta}>
+            <Text style={baseStyles.coverMetaLabel}>Organization: </Text>{organizationName}
+          </Text>
+          <Text style={baseStyles.coverMeta}>
+            <Text style={baseStyles.coverMetaLabel}>Provider: </Text>{verification.provider_name || "Not specified"}
+          </Text>
+          <Text style={baseStyles.coverMeta}>
+            <Text style={baseStyles.coverMetaLabel}>Status: </Text>{statusDisplay}
+          </Text>
+          <Text style={baseStyles.coverMeta}>
+            <Text style={baseStyles.coverMetaLabel}>Completion: </Text>{completionPercent}% ({completedCount} of {totalCount} verified)
           </Text>
         </View>
 
-        {/* System & Organization Info */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>1. General Information</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Organization:</Text>
-            <Text style={styles.value}>{organizationName}</Text>
+        <View style={baseStyles.coverFooter}>
+          <Text style={{ fontSize: 10, color: colors.gray[500], marginBottom: 4 }}>
+            Generated: {generatedDate}{generatedBy ? ` by ${generatedBy}` : ""}
+          </Text>
+          <Text style={{ fontSize: 8, color: colors.gray[400] }}>
+            Importers must verify provider compliance before placing AI systems on the EU market.
+          </Text>
+        </View>
+      </Page>
+
+      {/* Verification Record */}
+      <Page size="A4" style={styles.page}>
+        <RunningHeader systemName={systemName} orgName={organizationName} />
+        <RunningFooter />
+
+        {/* Overview Section */}
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>1. Verification Overview</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>AI System:</Text>
+            <Text style={baseStyles.rowValue}>{systemName}</Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>AI System:</Text>
-            <Text style={styles.value}>{systemName}</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Importer Organization:</Text>
+            <Text style={baseStyles.rowValue}>{organizationName}</Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Verification Status:</Text>
-            <Text style={styles.value}>{verification.status?.replace(/_/g, " ").toUpperCase()}</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Verification Status:</Text>
+            <Text style={baseStyles.rowValue}>{statusDisplay}</Text>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Completion:</Text>
-            <Text style={styles.value}>{completedCount} of {totalCount} items verified</Text>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Verified By:</Text>
+            <Text style={baseStyles.rowValue}>{verifierName || "Pending verification"}</Text>
+          </View>
+          <View style={baseStyles.row}>
+            <Text style={baseStyles.rowLabel}>Verified Date:</Text>
+            <Text style={baseStyles.rowValue}>
+              {verification.verified_at ? format(new Date(verification.verified_at), "PPP") : "Not yet verified"}
+            </Text>
           </View>
         </View>
 
-        {/* Provider Details */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>2. Provider Information</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Provider Name:</Text>
-            <Text style={styles.value}>{verification.provider_name || "Not specified"}</Text>
+        {/* Provider Information */}
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>2. Provider Information</Text>
+          <View style={styles.providerCard}>
+            <Text style={styles.providerCardTitle}>Provider Details</Text>
+            <View style={baseStyles.row}>
+              <Text style={baseStyles.rowLabel}>Provider Name:</Text>
+              <Text style={baseStyles.rowValue}>{verification.provider_name || "Not specified"}</Text>
+            </View>
+            <View style={baseStyles.row}>
+              <Text style={baseStyles.rowLabel}>Address:</Text>
+              <Text style={baseStyles.rowValue}>{verification.provider_address || "Not specified"}</Text>
+            </View>
+            <View style={baseStyles.row}>
+              <Text style={baseStyles.rowLabel}>Contact:</Text>
+              <Text style={baseStyles.rowValue}>{verification.provider_contact || "Not specified"}</Text>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Provider Address:</Text>
-            <Text style={styles.value}>{verification.provider_address || "Not specified"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Provider Contact:</Text>
-            <Text style={styles.value}>{verification.provider_contact || "Not specified"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Authorised Rep. Name:</Text>
-            <Text style={styles.value}>{verification.authorised_rep_name || "Not applicable"}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Authorised Rep. Address:</Text>
-            <Text style={styles.value}>{verification.authorised_rep_address || "Not applicable"}</Text>
-          </View>
+
+          {(verification.authorised_rep_name || verification.authorised_rep_address) && (
+            <View style={[styles.providerCard, { marginTop: 12 }]}>
+              <Text style={styles.providerCardTitle}>Authorised Representative (Non-EU Provider)</Text>
+              <View style={baseStyles.row}>
+                <Text style={baseStyles.rowLabel}>Representative Name:</Text>
+                <Text style={baseStyles.rowValue}>{verification.authorised_rep_name || "Not applicable"}</Text>
+              </View>
+              <View style={baseStyles.row}>
+                <Text style={baseStyles.rowLabel}>Address:</Text>
+                <Text style={baseStyles.rowValue}>{verification.authorised_rep_address || "Not applicable"}</Text>
+              </View>
+            </View>
+          )}
         </View>
 
-        {/* Verification Checklist */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>3. Article 23 Verification Checklist</Text>
+        {/* Article 23 Checklist */}
+        <View style={baseStyles.sectionKeepTogether}>
+          <Text style={baseStyles.sectionTitle}>3. Article 23 Verification Checklist</Text>
+          <Text style={baseStyles.paragraph}>
+            Before placing a high-risk AI system on the market, importers must verify the following 
+            obligations have been met by the provider in accordance with Article 23 of the EU AI Act.
+          </Text>
+
           <View style={styles.checklistTable}>
             <View style={styles.checklistHeader}>
               <Text style={[styles.checklistHeaderText, { width: "70%" }]}>Requirement</Text>
               <Text style={[styles.checklistHeaderText, { width: "30%", textAlign: "center" }]}>Status</Text>
             </View>
-            {checklistItems.map(([key, value]) => (
-              <View key={key} style={styles.checklistRow}>
+            {(checklistItems.length > 0 ? checklistItems : Object.entries(CHECKLIST_LABELS).map(([k]) => [k, null] as [string, boolean | null])).map(([key, value], idx) => (
+              <View key={key} style={idx % 2 === 0 ? styles.checklistRow : styles.checklistRowAlt} wrap={false}>
                 <Text style={styles.checklistItem}>
                   {CHECKLIST_LABELS[key] || key.replace(/_/g, " ")}
                 </Text>
@@ -298,25 +297,31 @@ export function ImporterVerificationPDF({
             ))}
           </View>
         </View>
+      </Page>
+
+      {/* Page 2: Non-compliance, Notes, Signature */}
+      <Page size="A4" style={styles.page}>
+        <RunningHeader systemName={systemName} orgName={organizationName} />
+        <RunningFooter />
 
         {/* Non-compliance & Corrective Actions */}
         {(verification.non_compliance_details || verification.corrective_actions_taken) && (
-          <View style={styles.section} break>
-            <Text style={styles.sectionTitle}>4. Non-Compliance & Corrective Actions</Text>
+          <View style={baseStyles.sectionKeepTogether}>
+            <Text style={baseStyles.sectionTitle}>4. Non-Compliance & Corrective Actions</Text>
             {verification.non_compliance_details && (
-              <View style={styles.infoBox}>
-                <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", marginBottom: 4 }}>
-                  Non-Compliance Details:
+              <View style={baseStyles.dangerBox} wrap={false}>
+                <Text style={{ fontSize: 10, fontWeight: 700, color: colors.danger, marginBottom: 6 }}>
+                  Non-Compliance Identified
                 </Text>
-                <Text style={styles.infoText}>{verification.non_compliance_details}</Text>
+                <Text style={baseStyles.dangerBoxText}>{verification.non_compliance_details}</Text>
               </View>
             )}
             {verification.corrective_actions_taken && (
-              <View style={[styles.infoBox, { marginTop: 10 }]}>
-                <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", marginBottom: 4 }}>
-                  Corrective Actions Taken:
+              <View style={baseStyles.infoBox} wrap={false}>
+                <Text style={{ fontSize: 10, fontWeight: 700, color: colors.emerald, marginBottom: 6 }}>
+                  Corrective Actions Taken
                 </Text>
-                <Text style={styles.infoText}>{verification.corrective_actions_taken}</Text>
+                <Text style={baseStyles.infoBoxText}>{verification.corrective_actions_taken}</Text>
               </View>
             )}
           </View>
@@ -324,42 +329,46 @@ export function ImporterVerificationPDF({
 
         {/* Notes */}
         {verification.notes && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>5. Additional Notes</Text>
-            <View style={styles.infoBox}>
-              <Text style={styles.infoText}>{verification.notes}</Text>
+          <View style={baseStyles.sectionKeepTogether}>
+            <Text style={baseStyles.sectionTitle}>5. Additional Notes</Text>
+            <View style={baseStyles.infoBox}>
+              <Text style={baseStyles.infoBoxText}>{verification.notes}</Text>
             </View>
           </View>
         )}
 
         {/* Signature Section */}
-        <View style={styles.signatureSection}>
-          <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", marginBottom: 10 }}>
-            Verification Sign-off
+        <View style={baseStyles.signatureSection} wrap={false}>
+          <Text style={[baseStyles.h2, { marginTop: 0, marginBottom: 15 }]}>Verification Sign-off</Text>
+          <Text style={baseStyles.paragraph}>
+            This verification record confirms that the importer has performed due diligence checks
+            on the provider's compliance with EU AI Act requirements before placing the AI system on the market.
           </Text>
-          <View style={styles.signatureRow}>
-            <View style={styles.signatureBlock}>
-              <View style={styles.signatureLine} />
-              <Text style={styles.signatureLabel}>Verified By: {verifierName || "—"}</Text>
-              <Text style={styles.signatureLabel}>
-                Date: {verification.verified_at ? format(new Date(verification.verified_at), "dd MMM yyyy") : "—"}
+          <View style={baseStyles.signatureRow}>
+            <View style={baseStyles.signatureBlock}>
+              <View style={baseStyles.signatureLine} />
+              <Text style={baseStyles.signatureLabel}>Verified By</Text>
+              {verifierName && (
+                <Text style={{ fontSize: 9, color: colors.gray[800], marginTop: 2 }}>{verifierName}</Text>
+              )}
+              <Text style={{ fontSize: 8, color: colors.gray[500], marginTop: 2 }}>
+                {verification.verified_at ? format(new Date(verification.verified_at), "PPP") : "Date: _______________"}
               </Text>
             </View>
-            <View style={styles.signatureBlock}>
-              <View style={styles.signatureLine} />
-              <Text style={styles.signatureLabel}>Compliance Officer Approval</Text>
-              <Text style={styles.signatureLabel}>Date:</Text>
+            <View style={baseStyles.signatureBlock}>
+              <View style={baseStyles.signatureLine} />
+              <Text style={baseStyles.signatureLabel}>Compliance Officer Approval</Text>
+              <Text style={{ fontSize: 8, color: colors.gray[500], marginTop: 2 }}>Date: _______________</Text>
             </View>
           </View>
         </View>
 
-        {/* Footer */}
-        <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>
-            Generated: {generatedAt} by {generatedBy}
-          </Text>
-          <Text style={styles.footerText}>
-            Importer Verification — {organizationName}
+        {/* Legal Notice */}
+        <View style={[baseStyles.warningBox, { marginTop: 20 }]} wrap={false}>
+          <Text style={baseStyles.warningBoxText}>
+            Article 23 Obligations: Importers must ensure the provider has carried out a conformity assessment,
+            technical documentation is available, the AI system bears CE marking and is accompanied by an EU 
+            declaration of conformity and instructions for use. Non-compliant systems must not be placed on the market.
           </Text>
         </View>
       </Page>
