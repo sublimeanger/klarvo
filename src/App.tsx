@@ -139,6 +139,10 @@ import AUP from "@/pages/legal/AUP";
 import ProviderDashboard from "@/pages/provider-track/Dashboard";
 import ProviderTechnicalDocs from "@/pages/provider-track/TechnicalDocs";
 import ProviderRiskManagement from "@/pages/provider-track/RiskManagement";
+import ProviderQMS from "@/pages/provider-track/QMS";
+import ProviderConformity from "@/pages/provider-track/Conformity";
+import ProviderDeclaration from "@/pages/provider-track/Declaration";
+import ProviderCEMarking from "@/pages/provider-track/CEMarking";
 
 const queryClient = new QueryClient();
 
@@ -293,6 +297,10 @@ const App = () => (
               <Route path="/provider-track" element={<ProviderDashboard />} />
               <Route path="/provider-track/technical-docs" element={<ProviderTechnicalDocs />} />
               <Route path="/provider-track/risk-management" element={<ProviderRiskManagement />} />
+              <Route path="/provider-track/qms" element={<ProviderQMS />} />
+              <Route path="/provider-track/conformity" element={<ProviderConformity />} />
+              <Route path="/provider-track/declaration" element={<ProviderDeclaration />} />
+              <Route path="/provider-track/ce-marking" element={<ProviderCEMarking />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
