@@ -65,18 +65,18 @@ export function InviteMemberDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md w-[95vw]">
         <DialogHeader>
-          <DialogTitle>Invite Team Member</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-base sm:text-lg">Invite Team Member</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Send an invitation to join your organization. They'll receive an email
             with a link to accept.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="email" className="text-xs sm:text-sm">Email address</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -85,21 +85,21 @@ export function InviteMemberDialog({
                 placeholder="colleague@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10"
+                className="pl-10 h-10 sm:h-9"
                 required
                 disabled={isPending}
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="role" className="text-xs sm:text-sm">Role</Label>
             <Select
               value={role}
               onValueChange={(v) => setRole(v as Enums<"app_role">)}
               disabled={isPending}
             >
-              <SelectTrigger id="role">
+              <SelectTrigger id="role" className="h-10 sm:h-9">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -108,8 +108,8 @@ export function InviteMemberDialog({
                     <div className="flex items-center gap-2">
                       <Shield className="h-3.5 w-3.5 text-muted-foreground" />
                       <div>
-                        <span className="font-medium">{r.label}</span>
-                        <span className="text-xs text-muted-foreground ml-2">
+                        <span className="font-medium text-sm">{r.label}</span>
+                        <span className="text-xs text-muted-foreground ml-2 hidden sm:inline">
                           — {r.description}
                         </span>
                       </div>
@@ -120,16 +120,17 @@ export function InviteMemberDialog({
             </Select>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
+              className="h-10 sm:h-9 w-full sm:w-auto"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending || !email.trim()}>
+            <Button type="submit" disabled={isPending || !email.trim()} className="h-10 sm:h-9 w-full sm:w-auto">
               {isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

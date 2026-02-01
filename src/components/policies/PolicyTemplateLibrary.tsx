@@ -83,15 +83,15 @@ export function PolicyTemplateLibrary({ open, onOpenChange, onAdopt }: PolicyTem
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-4xl max-h-[85vh] p-0">
-          <DialogHeader className="px-6 pt-6 pb-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                <Sparkles className="h-5 w-5 text-primary" />
+        <DialogContent className="max-w-4xl max-h-[85vh] p-0 w-[95vw] sm:w-auto">
+          <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               <div>
-                <DialogTitle>Policy Template Library</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-base sm:text-lg">Policy Template Library</DialogTitle>
+                <DialogDescription className="text-xs sm:text-sm">
                   Pre-built EU AI Act compliant templates ready to customize
                 </DialogDescription>
               </div>
@@ -99,70 +99,70 @@ export function PolicyTemplateLibrary({ open, onOpenChange, onAdopt }: PolicyTem
           </DialogHeader>
 
           <Tabs value={activeCategory} onValueChange={setActiveCategory} className="flex-1">
-            <div className="px-6 border-b">
-              <TabsList className="h-10 w-full justify-start bg-transparent p-0">
+            <div className="px-4 sm:px-6 border-b overflow-x-auto">
+              <TabsList className="h-9 sm:h-10 w-max sm:w-full justify-start bg-transparent p-0">
                 <TabsTrigger
                   value="all"
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-xs sm:text-sm px-2 sm:px-3"
                 >
-                  All Templates
+                  All
                 </TabsTrigger>
                 {TEMPLATE_CATEGORIES.map((cat) => (
                   <TabsTrigger
                     key={cat.id}
                     value={cat.id}
-                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent text-xs sm:text-sm px-2 sm:px-3"
                   >
-                    <span className="mr-1.5">{getCategoryIcon(cat.id)}</span>
-                    {cat.label}
+                    <span className="mr-1">{getCategoryIcon(cat.id)}</span>
+                    <span className="hidden sm:inline">{cat.label}</span>
                   </TabsTrigger>
                 ))}
               </TabsList>
             </div>
 
-            <ScrollArea className="h-[500px]">
-              <div className="p-6">
+            <ScrollArea className="h-[400px] sm:h-[500px]">
+              <div className="p-4 sm:p-6">
                 <TabsContent value={activeCategory} className="mt-0">
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                     {filteredTemplates.map((template) => (
                       <Card
                         key={template.id}
                         className={cn(
-                          "cursor-pointer transition-all hover:shadow-md hover:border-primary/50",
+                          "cursor-pointer transition-all hover:shadow-md hover:border-primary/50 rounded-xl",
                           selectedTemplate?.id === template.id && "ring-2 ring-primary"
                         )}
                         onClick={() => setSelectedTemplate(template)}
                       >
-                        <CardHeader className="pb-3">
+                        <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-4">
                           <div className="flex items-start justify-between">
-                            <div className="flex items-start gap-3">
-                              <div className="rounded-lg bg-primary/10 p-2 shrink-0">
-                                <FileText className="h-4 w-4 text-primary" />
+                            <div className="flex items-start gap-2 sm:gap-3">
+                              <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2 shrink-0">
+                                <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                               </div>
-                              <div className="space-y-1">
-                                <CardTitle className="text-base">{template.name}</CardTitle>
-                                <CardDescription className="text-xs line-clamp-2">
+                              <div className="space-y-0.5 sm:space-y-1 min-w-0">
+                                <CardTitle className="text-sm sm:text-base truncate">{template.name}</CardTitle>
+                                <CardDescription className="text-[10px] sm:text-xs line-clamp-2">
                                   {template.description}
                                 </CardDescription>
                               </div>
                             </div>
                           </div>
                         </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <Badge variant="secondary" className="text-xs">
-                                {getCategoryIcon(template.category)} {TEMPLATE_CATEGORIES.find(c => c.id === template.category)?.label}
+                        <CardContent className="pt-0 p-3 sm:p-4">
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                              <Badge variant="secondary" className="text-[10px] sm:text-xs">
+                                {getCategoryIcon(template.category)} <span className="hidden sm:inline">{TEMPLATE_CATEGORIES.find(c => c.id === template.category)?.label}</span>
                               </Badge>
                               {template.articleReference && (
-                                <Badge variant="outline" className="text-xs">
-                                  <BookOpen className="mr-1 h-3 w-3" />
+                                <Badge variant="outline" className="text-[10px] sm:text-xs hidden sm:flex">
+                                  <BookOpen className="mr-1 h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                   {template.articleReference}
                                 </Badge>
                               )}
                             </div>
-                            <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
-                              <Clock className="h-3 w-3" />
+                            <div className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground shrink-0">
+                              <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                               {template.estimatedTime}
                             </div>
                           </div>
@@ -176,20 +176,21 @@ export function PolicyTemplateLibrary({ open, onOpenChange, onAdopt }: PolicyTem
           </Tabs>
 
           {selectedTemplate && (
-            <div className="border-t bg-muted/30 px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Check className="h-5 w-5 text-primary" />
+            <div className="border-t bg-muted/30 px-4 sm:px-6 py-3 sm:py-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Check className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />
                   <div>
-                    <p className="font-medium">{selectedTemplate.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Will be added as a draft policy for you to customize
+                    <p className="font-medium text-sm sm:text-base truncate">{selectedTemplate.name}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
+                      Will be added as a draft policy
                     </p>
                   </div>
                 </div>
                 <Button
                   onClick={() => handleAdopt(selectedTemplate)}
                   disabled={createPolicy.isPending}
+                  className="h-10 sm:h-9 w-full sm:w-auto"
                 >
                   {createPolicy.isPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
