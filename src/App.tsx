@@ -135,6 +135,11 @@ import DPA from "@/pages/legal/DPA";
 import GDPR from "@/pages/legal/GDPR";
 import AUP from "@/pages/legal/AUP";
 
+// Provider Track pages (hidden, non-indexable)
+import ProviderDashboard from "@/pages/provider-track/Dashboard";
+import ProviderTechnicalDocs from "@/pages/provider-track/TechnicalDocs";
+import ProviderRiskManagement from "@/pages/provider-track/RiskManagement";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -283,6 +288,11 @@ const App = () => (
               <Route path="/audit-log" element={<AuditLog />} />
               <Route path="/settings" element={<GeneralSettings />} />
               <Route path="/settings/billing" element={<BillingSettings />} />
+              
+              {/* Provider Track Routes (hidden, non-indexable) */}
+              <Route path="/provider-track" element={<ProviderDashboard />} />
+              <Route path="/provider-track/technical-docs" element={<ProviderTechnicalDocs />} />
+              <Route path="/provider-track/risk-management" element={<ProviderRiskManagement />} />
             </Route>
 
             <Route path="*" element={<NotFound />} />
