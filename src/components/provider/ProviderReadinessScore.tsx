@@ -49,46 +49,46 @@ export function ProviderReadinessScore({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Overall Score Card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Provider Readiness Score</CardTitle>
+      <Card className="rounded-xl">
+        <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Provider Readiness Score</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-6">
-            <div className="relative">
-              <svg className="h-24 w-24 -rotate-90 transform">
+        <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+            <div className="relative shrink-0">
+              <svg className="h-20 w-20 sm:h-24 sm:w-24 -rotate-90 transform">
                 <circle
                   className="text-muted stroke-current"
                   strokeWidth="8"
                   fill="transparent"
-                  r="42"
-                  cx="48"
-                  cy="48"
+                  r="36"
+                  cx="40"
+                  cy="40"
                 />
                 <circle
                   className={cn("stroke-current transition-all duration-500", getScoreColor(overallScore))}
                   strokeWidth="8"
                   strokeLinecap="round"
                   fill="transparent"
-                  r="42"
-                  cx="48"
-                  cy="48"
-                  strokeDasharray={`${overallScore * 2.64} 264`}
+                  r="36"
+                  cx="40"
+                  cy="40"
+                  strokeDasharray={`${overallScore * 2.26} 226`}
                 />
               </svg>
-              <span className={cn("absolute inset-0 flex items-center justify-center text-2xl font-bold", getScoreColor(overallScore))}>
+              <span className={cn("absolute inset-0 flex items-center justify-center text-xl sm:text-2xl font-bold", getScoreColor(overallScore))}>
                 {overallScore}%
               </span>
             </div>
-            <div className="flex-1 space-y-2">
-              <p className="text-sm text-muted-foreground">
+            <div className="flex-1 space-y-2 text-center sm:text-left">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Your provider compliance readiness across all EU AI Act requirements
               </p>
               {blockingIssues.length > 0 && (
-                <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-2 text-sm text-destructive">
-                  <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+                <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-2 text-xs sm:text-sm text-destructive text-left">
+                  <AlertTriangle className="h-3.5 w-3.5 sm:h-4 sm:w-4 mt-0.5 shrink-0" />
                   <div>
                     <p className="font-medium">Blocking Issues:</p>
                     <ul className="list-disc list-inside">
@@ -105,29 +105,29 @@ export function ProviderReadinessScore({
       </Card>
 
       {/* Category Breakdown */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Compliance Categories</CardTitle>
+      <Card className="rounded-xl">
+        <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">Compliance Categories</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
           {categories.map((category) => (
-            <div key={category.name} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+            <div key={category.name} className="space-y-1.5 sm:space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                   {getStatusIcon(category.status)}
-                  <span className="text-sm font-medium">{category.name}</span>
+                  <span className="text-xs sm:text-sm font-medium truncate">{category.name}</span>
                   {category.article && (
-                    <span className="text-xs text-muted-foreground">({category.article})</span>
+                    <span className="text-[10px] sm:text-xs text-muted-foreground hidden sm:inline">({category.article})</span>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
-                  {getStatusBadge(category.status)}
-                  <span className="text-sm text-muted-foreground w-10 text-right">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                  <span className="hidden sm:block">{getStatusBadge(category.status)}</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground w-8 sm:w-10 text-right">
                     {category.score}%
                   </span>
                 </div>
               </div>
-              <Progress value={category.score} className="h-2" />
+              <Progress value={category.score} className="h-1.5 sm:h-2" />
             </div>
           ))}
         </CardContent>

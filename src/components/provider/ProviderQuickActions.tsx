@@ -89,28 +89,28 @@ const quickActions = [
 
 export function ProviderQuickActions() {
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg">Provider Obligations</CardTitle>
+    <Card className="rounded-xl">
+      <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-6">
+        <CardTitle className="text-base sm:text-lg">Provider Obligations</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-3 sm:grid-cols-2">
+      <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+        <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
           {quickActions.map((action) => (
             <Link
               key={action.href}
               to={action.href}
-              className="group flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-accent"
+              className="group flex items-start gap-2.5 sm:gap-3 rounded-xl border p-2.5 sm:p-3 transition-colors hover:bg-accent active:bg-accent/80 min-h-[56px]"
             >
-              <div className="rounded-lg bg-primary/10 p-2">
-                <action.icon className="h-4 w-4 text-primary" />
+              <div className="rounded-lg bg-primary/10 p-1.5 sm:p-2 shrink-0">
+                <action.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
               </div>
-              <div className="flex-1 space-y-0.5">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-sm">{action.title}</p>
-                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="flex-1 space-y-0.5 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <p className="font-medium text-xs sm:text-sm truncate">{action.title}</p>
+                  <ArrowRight className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 shrink-0" />
                 </div>
-                <p className="text-xs text-muted-foreground">{action.description}</p>
-                <p className="text-xs text-primary">{action.article}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{action.description}</p>
+                <p className="text-[10px] sm:text-xs text-primary">{action.article}</p>
               </div>
             </Link>
           ))}
