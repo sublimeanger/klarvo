@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Font, Image, pdf } from "@react-pdf/renderer";
-import { KLARVO_LOGO_URL } from "@/lib/pdfAssets";
+import { KLARVO_LOGO } from "@/lib/pdfAssets";
 
 // Register fonts
 Font.register({
@@ -349,7 +349,7 @@ export function SampleFRIAReportPDF() {
       <Page size="A4" style={styles.coverPage}>
         <Text style={styles.watermark} fixed>SAMPLE REPORT</Text>
         
-        <Image src={KLARVO_LOGO_URL} style={{ width: 80, marginBottom: 25 }} />
+        <Image src={KLARVO_LOGO} style={{ width: 120, marginBottom: 25 }} />
         
         <Text style={styles.coverBadge}>Fundamental Rights Impact Assessment</Text>
         
