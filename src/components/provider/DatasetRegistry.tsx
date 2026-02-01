@@ -188,47 +188,48 @@ export function DatasetRegistry({ versionId, organizationId }: DatasetRegistryPr
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
+    <Card className="rounded-xl">
+      <CardHeader className="p-3 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <CardTitle className="text-lg">Dataset Registry</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-base sm:text-lg">Dataset Registry</CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
               Article 10 data governance documentation
             </CardDescription>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => handleOpenDialog()}>
+              <Button onClick={() => handleOpenDialog()} className="h-10 w-full sm:w-auto">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Dataset
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>{editingDataset ? "Edit Dataset" : "Register Dataset"}</DialogTitle>
-                <DialogDescription>
+                <DialogTitle className="text-base sm:text-lg">{editingDataset ? "Edit Dataset" : "Register Dataset"}</DialogTitle>
+                <DialogDescription className="text-xs sm:text-sm">
                   Document datasets used for training, validation, or testing
                 </DialogDescription>
               </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Dataset Name *</Label>
+              <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
+                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="name" className="text-xs sm:text-sm">Dataset Name *</Label>
                     <Input
                       id="name"
                       placeholder="e.g., Training Dataset v2.3"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="h-10"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Purpose</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label className="text-xs sm:text-sm">Purpose</Label>
                     <Select
                       value={formData.purpose}
                       onValueChange={(value) => setFormData({ ...formData, purpose: value })}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -242,33 +243,35 @@ export function DatasetRegistry({ versionId, organizationId }: DatasetRegistryPr
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="description" className="text-xs sm:text-sm">Description</Label>
                   <Textarea
                     id="description"
                     placeholder="Brief description of the dataset..."
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="min-h-[80px]"
                   />
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="data_source">Data Source</Label>
+                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="data_source" className="text-xs sm:text-sm">Data Source</Label>
                     <Input
                       id="data_source"
                       placeholder="e.g., Internal CRM, Public API"
                       value={formData.data_source}
                       onChange={(e) => setFormData({ ...formData, data_source: e.target.value })}
+                      className="h-10"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Collection Method</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label className="text-xs sm:text-sm">Collection Method</Label>
                     <Select
                       value={formData.collection_method}
                       onValueChange={(value) => setFormData({ ...formData, collection_method: value })}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-10">
                         <SelectValue placeholder="Select method" />
                       </SelectTrigger>
                       <SelectContent>
@@ -282,59 +285,64 @@ export function DatasetRegistry({ versionId, organizationId }: DatasetRegistryPr
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="space-y-2">
-                    <Label htmlFor="geographic_scope">Geographic Scope</Label>
+                <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="geographic_scope" className="text-xs sm:text-sm">Geographic Scope</Label>
                     <Input
                       id="geographic_scope"
                       placeholder="e.g., EU, Global"
                       value={formData.geographic_scope}
                       onChange={(e) => setFormData({ ...formData, geographic_scope: e.target.value })}
+                      className="h-10"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="record_count">Record Count</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="record_count" className="text-xs sm:text-sm">Record Count</Label>
                     <Input
                       id="record_count"
                       type="number"
                       placeholder="e.g., 100000"
                       value={formData.record_count}
                       onChange={(e) => setFormData({ ...formData, record_count: e.target.value })}
+                      className="h-10"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="feature_count">Feature Count</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label htmlFor="feature_count" className="text-xs sm:text-sm">Feature Count</Label>
                     <Input
                       id="feature_count"
                       type="number"
                       placeholder="e.g., 50"
                       value={formData.feature_count}
                       onChange={(e) => setFormData({ ...formData, feature_count: e.target.value })}
+                      className="h-10"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="known_limitations">Known Limitations</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="known_limitations" className="text-xs sm:text-sm">Known Limitations</Label>
                   <Textarea
                     id="known_limitations"
                     placeholder="Document any known limitations, gaps, or biases..."
                     value={formData.known_limitations}
                     onChange={(e) => setFormData({ ...formData, known_limitations: e.target.value })}
+                    className="min-h-[80px]"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label>Bias Checks Performed</Label>
-                  <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label className="text-xs sm:text-sm">Bias Checks Performed</Label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
                     {BIAS_CHECK_OPTIONS.map((option) => (
-                      <div key={option.value} className="flex items-center space-x-2">
+                      <div key={option.value} className="flex items-center space-x-2 min-h-[44px]">
                         <Checkbox
                           id={option.value}
                           checked={selectedBiasChecks.includes(option.value)}
                           onCheckedChange={() => toggleBiasCheck(option.value)}
+                          className="h-5 w-5"
                         />
-                        <Label htmlFor={option.value} className="text-sm cursor-pointer">
+                        <Label htmlFor={option.value} className="text-xs sm:text-sm cursor-pointer">
                           {option.label}
                         </Label>
                       </div>
@@ -342,19 +350,20 @@ export function DatasetRegistry({ versionId, organizationId }: DatasetRegistryPr
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="bias_mitigation">Bias Mitigation Measures</Label>
+                <div className="space-y-1.5 sm:space-y-2">
+                  <Label htmlFor="bias_mitigation" className="text-xs sm:text-sm">Bias Mitigation Measures</Label>
                   <Textarea
                     id="bias_mitigation"
                     placeholder="Describe measures taken to mitigate identified biases..."
                     value={formData.bias_mitigation_measures}
                     onChange={(e) => setFormData({ ...formData, bias_mitigation_measures: e.target.value })}
+                    className="min-h-[80px]"
                   />
                 </div>
               </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                <Button onClick={handleSubmit}>
+              <DialogFooter className="flex-col sm:flex-row gap-2">
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="h-11 w-full sm:w-auto">Cancel</Button>
+                <Button onClick={handleSubmit} className="h-11 w-full sm:w-auto">
                   {editingDataset ? "Update" : "Register Dataset"}
                 </Button>
               </DialogFooter>
@@ -362,80 +371,129 @@ export function DatasetRegistry({ versionId, organizationId }: DatasetRegistryPr
           </Dialog>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
         {isLoading ? (
           <div className="animate-pulse space-y-2">
             <div className="h-10 bg-muted rounded" />
             <div className="h-10 bg-muted rounded" />
           </div>
         ) : datasets && datasets.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Dataset</TableHead>
-                <TableHead>Purpose</TableHead>
-                <TableHead>Records</TableHead>
-                <TableHead>Bias Checks</TableHead>
-                <TableHead>Added</TableHead>
-                <TableHead className="w-[100px]">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            {/* Mobile Card View */}
+            <div className="sm:hidden space-y-3">
               {datasets.map((dataset: any) => (
-                <TableRow key={dataset.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      <Database className="h-4 w-4 text-muted-foreground" />
-                      {dataset.name}
+                <div key={dataset.id} className="border rounded-xl p-3 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Database className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <p className="text-sm font-medium truncate">{dataset.name}</p>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">
-                      {getPurposeLabel(dataset.purpose)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {dataset.record_count ? dataset.record_count.toLocaleString() : "—"}
-                  </TableCell>
-                  <TableCell>
-                    {Array.isArray(dataset.bias_checks_performed) && dataset.bias_checks_performed.length > 0 ? (
-                      <Badge variant="outline">
-                        {dataset.bias_checks_performed.length} checks
-                      </Badge>
-                    ) : (
-                      <span className="text-muted-foreground text-sm">None</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
-                    {format(new Date(dataset.created_at), "MMM d, yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
+                    <div className="flex gap-1 shrink-0">
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleOpenDialog(dataset)}
+                        className="h-8 w-8"
                       >
-                        <Edit2 className="h-4 w-4" />
+                        <Edit2 className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDelete(dataset.id)}
+                        className="h-8 w-8"
                       >
-                        <Trash2 className="h-4 w-4 text-destructive" />
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <Badge variant="secondary" className="text-xs">
+                      {getPurposeLabel(dataset.purpose)}
+                    </Badge>
+                    {dataset.record_count && (
+                      <Badge variant="outline" className="text-xs">
+                        {dataset.record_count.toLocaleString()} records
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    Added {format(new Date(dataset.created_at), "MMM d, yyyy")}
+                  </p>
+                </div>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+            {/* Desktop Table View */}
+            <div className="hidden sm:block overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Dataset</TableHead>
+                    <TableHead>Purpose</TableHead>
+                    <TableHead>Records</TableHead>
+                    <TableHead>Bias Checks</TableHead>
+                    <TableHead>Added</TableHead>
+                    <TableHead className="w-[100px]">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {datasets.map((dataset: any) => (
+                    <TableRow key={dataset.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <Database className="h-4 w-4 text-muted-foreground" />
+                          {dataset.name}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {getPurposeLabel(dataset.purpose)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {dataset.record_count ? dataset.record_count.toLocaleString() : "—"}
+                      </TableCell>
+                      <TableCell>
+                        {Array.isArray(dataset.bias_checks_performed) && dataset.bias_checks_performed.length > 0 ? (
+                          <Badge variant="outline">
+                            {dataset.bias_checks_performed.length} checks
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">None</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-sm">
+                        {format(new Date(dataset.created_at), "MMM d, yyyy")}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenDialog(dataset)}
+                          >
+                            <Edit2 className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(dataset.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </>
         ) : (
-          <div className="text-center py-8">
-            <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No datasets registered.</p>
-            <p className="text-sm text-muted-foreground">
+          <div className="text-center py-6 sm:py-8">
+            <Database className="h-10 w-10 sm:h-12 sm:w-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+            <p className="text-sm text-muted-foreground">No datasets registered.</p>
+            <p className="text-xs text-muted-foreground">
               Document your training, validation, and testing datasets.
             </p>
           </div>
