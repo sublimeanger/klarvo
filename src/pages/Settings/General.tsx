@@ -61,9 +61,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization, useUpdateOrganization } from "@/hooks/useOrganization";
 import { useTeamMembers, useUpdateMemberRole, useRemoveMember } from "@/hooks/useTeamMembers";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { InviteMemberDialog, PendingInvitesList } from "@/components/team";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Enums } from "@/integrations/supabase/types";
+import { UserPlus } from "lucide-react";
 
 const INDUSTRY_SECTORS = [
   { value: "technology", label: "Technology" },
@@ -107,6 +109,7 @@ export default function GeneralSettings() {
   const [industrySector, setIndustrySector] = useState("");
   const [companySize, setCompanySize] = useState("");
   const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   
   // Account settings state
   const [fullName, setFullName] = useState("");
@@ -484,11 +487,19 @@ export default function GeneralSettings() {
         {/* Team Tab */}
         <TabsContent value="team" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Team Members</CardTitle>
-              <CardDescription>
-                Manage your team and their access levels
-              </CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <div>
+                <CardTitle>Team Members</CardTitle>
+                <CardDescription>
+                  Manage your team and their access levels
+                </CardDescription>
+              </div>
+              {(isAdmin || userRole?.role === "compliance_owner") && (
+                <Button onClick={() => setInviteDialogOpen(true)}>
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Invite Member
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
               {membersLoading ? (
@@ -666,6 +677,20 @@ export default function GeneralSettings() {
               )}
             </CardContent>
           </Card>
+          {/* Pending Invitations */}
+          {(isAdmin || userRole?.role === "compliance_owner") && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Pending Invitations</CardTitle>
+                <CardDescription>
+                  Invitations waiting to be accepted
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PendingInvitesList />
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardHeader>
@@ -694,6 +719,13 @@ export default function GeneralSettings() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Invite Member Dialog */}
+          <InviteMemberDialog
+            open={inviteDialogOpen}
+            onOpenChange={setInviteDialogOpen}
+            canInviteAdmin={isAdmin}
+          />
         </TabsContent>
 
         {/* Notifications Tab */}
