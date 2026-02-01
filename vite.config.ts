@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    // Prevent duplicate React instances causing "Component is not a function" errors
+    dedupe: ["react", "react-dom", "react/jsx-runtime"],
   },
   build: {
     // Ensure clean output for react-snap prerendering
