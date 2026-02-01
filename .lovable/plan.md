@@ -72,6 +72,16 @@ Restructure Provider, Importer, and Distributor tracks as purchasable add-ons ra
 
 ## Next Steps (Optional Future Work)
 
-- [ ] Create actual Stripe price IDs for add-ons in Stripe Dashboard
+- [x] Create actual Stripe price IDs for add-ons in Stripe Dashboard
 - [ ] Test end-to-end addon purchase flow with real Stripe test mode
 - [ ] Add addon management in customer portal
+
+---
+
+## Stripe Add-on Products Created
+
+| Add-on | Monthly Price ID | Annual Price ID |
+|--------|------------------|-----------------|
+| Importer & Distributor Track (€149/mo) | `price_1Sw3CdE8C88su4Jmn8qJuNqR` | `price_1Sw3CoE8C88su4JmJeTSb5iB` |
+| Provider Track (€499/mo) | `price_1Sw3CeE8C88su4JmntWff0cV` | `price_1Sw3CpE8C88su4Jmp50WMdGu` |
+| Provider Assurance Bundle (€899/mo) | `price_1Sw3CgE8C88su4Jme5Sevrzo` | `price_1Sw3CrE8C88su4Jm4RNZAGm9` |
