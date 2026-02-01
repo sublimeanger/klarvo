@@ -1,6 +1,6 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,8 @@ const templates = [
         description: "Comprehensive internal policy defining acceptable use of AI systems within your organization. Covers authorized uses, prohibited activities, and employee responsibilities.",
         pages: "8 pages",
         format: "DOCX / PDF",
+        slug: "ai-acceptable-use-policy",
+        fileName: "ai-acceptable-use-policy.pdf",
         popular: true
       },
       {
@@ -40,14 +42,18 @@ const templates = [
         title: "AI Governance Charter",
         description: "Establish your AI governance structure with defined roles, responsibilities, and decision-making processes for AI oversight.",
         pages: "5 pages",
-        format: "DOCX / PDF"
+        format: "DOCX / PDF",
+        slug: "ai-governance-charter",
+        fileName: "ai-governance-charter.pdf"
       },
       {
         icon: AlertTriangle,
         title: "AI Incident Response Playbook",
         description: "Step-by-step procedures for identifying, containing, and responding to AI-related incidents. Includes escalation paths and communication templates.",
         pages: "12 pages",
-        format: "DOCX / PDF"
+        format: "DOCX / PDF",
+        slug: "ai-incident-playbook",
+        fileName: "ai-incident-response-playbook.pdf"
       }
     ]
   },
@@ -60,6 +66,8 @@ const templates = [
         description: "Fundamental Rights Impact Assessment template aligned with Article 27 requirements. Includes all required sections with guidance notes and worked examples.",
         pages: "15 pages",
         format: "DOCX / PDF",
+        slug: "fria",
+        fileName: "fria-template.pdf",
         popular: true
       },
       {
@@ -67,14 +75,18 @@ const templates = [
         title: "AI System Risk Assessment",
         description: "Structured template for assessing AI system risks, including prohibited practices screening, high-risk indicators, and mitigation planning.",
         pages: "10 pages",
-        format: "DOCX / PDF"
+        format: "DOCX / PDF",
+        slug: "ai-risk-assessment",
+        fileName: "ai-risk-assessment.pdf"
       },
       {
         icon: FileCheck,
         title: "Vendor Due Diligence Questionnaire",
         description: "Comprehensive questionnaire for evaluating AI vendors. Covers EU AI Act compliance, security practices, data handling, and support capabilities.",
         pages: "6 pages",
-        format: "DOCX / PDF"
+        format: "DOCX / PDF",
+        slug: "vendor-due-diligence",
+        fileName: "vendor-due-diligence-questionnaire.pdf"
       }
     ]
   },
@@ -87,6 +99,8 @@ const templates = [
         description: "Document your human oversight arrangements for AI systems. Covers oversight model, competency requirements, intervention procedures, and authority allocation.",
         pages: "8 pages",
         format: "DOCX / PDF",
+        slug: "human-oversight-plan",
+        fileName: "human-oversight-plan-template.pdf",
         popular: true
       },
       {
@@ -94,14 +108,18 @@ const templates = [
         title: "Worker Notification Template",
         description: "Template for notifying employees about workplace AI use, as required for high-risk AI systems under the EU AI Act.",
         pages: "3 pages",
-        format: "DOCX / PDF"
+        format: "DOCX / PDF",
+        slug: "worker-notification",
+        fileName: "worker-notification-template.pdf"
       },
       {
         icon: Eye,
         title: "Transparency Notice Pack",
         description: "Collection of transparency notice templates for customer-facing AI: chatbot disclosures, synthetic content notices, emotion recognition disclosures.",
         pages: "5 pages",
-        format: "DOCX / PDF"
+        format: "DOCX / PDF",
+        slug: "article-50-disclosure",
+        fileName: "article-50-disclosure-templates.pdf"
       }
     ]
   },
@@ -114,6 +132,8 @@ const templates = [
         description: "Comprehensive checklist covering all deployer obligations under the EU AI Act. Perfect for self-assessment or audit preparation.",
         pages: "4 pages",
         format: "XLSX / PDF",
+        slug: "eu-ai-act-compliance-checklist",
+        fileName: "eu-ai-act-compliance-checklist.pdf",
         popular: true
       },
       {
@@ -121,14 +141,18 @@ const templates = [
         title: "AI System Intake Checklist",
         description: "Pre-deployment checklist for new AI systems. Ensures all classification, documentation, and control requirements are met before go-live.",
         pages: "3 pages",
-        format: "XLSX / PDF"
+        format: "XLSX / PDF",
+        slug: "ai-system-intake-checklist",
+        fileName: "ai-system-intake-checklist.pdf"
       },
       {
         icon: Shield,
         title: "High-Risk AI Controls Checklist",
         description: "Detailed control checklist specifically for high-risk AI systems, covering all Article 26 deployer obligations.",
         pages: "5 pages",
-        format: "XLSX / PDF"
+        format: "XLSX / PDF",
+        slug: "article-26-checklist",
+        fileName: "article-26-checklist.pdf"
       }
     ]
   }
@@ -235,10 +259,13 @@ export default function Templates() {
                         </span>
                         <span>{template.format}</span>
                       </div>
-                      <Button size="sm" className="btn-premium">
-                        <Download className="mr-1 h-4 w-4" />
-                        Download
-                      </Button>
+                      <TemplateDownloadGate
+                        templateName={template.title}
+                        templateSlug={template.slug}
+                        fileName={template.fileName}
+                        buttonText="Download"
+                        buttonSize="sm"
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -329,10 +356,13 @@ export default function Templates() {
                       </div>
                     ))}
                   </div>
-                  <Button size="lg" className="btn-premium">
-                    <Download className="mr-2 h-5 w-5" />
-                    Download Complete Pack (Free)
-                  </Button>
+                  <TemplateDownloadGate
+                    templateName="Complete Compliance Pack"
+                    templateSlug="complete-pack"
+                    fileName="eu-ai-act-compliance-pack.zip"
+                    buttonText="Download Complete Pack (Free)"
+                    buttonSize="lg"
+                  />
                 </div>
                 <div className="hidden md:block">
                   <div className="bg-background/80 rounded-xl p-6 border border-border/50">

@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Download, 
   CheckCircle,
   ArrowRight,
   Users,
@@ -128,10 +127,13 @@ export default function HumanOversightPlan() {
               Document your human oversight arrangements for high-risk AI systems. Covers roles, competence, procedures, and intervention authority.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Download Template
-              </Button>
+              <TemplateDownloadGate
+                templateName="Human Oversight Plan"
+                templateSlug="human-oversight-plan"
+                fileName="human-oversight-plan-template.pdf"
+                buttonText="Download Template"
+                buttonSize="lg"
+              />
               <Button size="lg" variant="outline" asChild>
                 <Link to="/guides/article-26-deployer-obligations">
                   Read Article 26 Guide

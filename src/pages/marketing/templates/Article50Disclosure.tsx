@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { CTASection } from "@/components/marketing/CTASection";
+import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Download, 
   CheckCircle,
   ArrowRight,
   MessageSquare,
@@ -115,10 +114,13 @@ export default function Article50Disclosure() {
               Ready-to-use transparency disclosure templates for AI interactions, synthetic content, deepfakes, and AI-generated text. Copy, customize, and deploy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="gap-2">
-                <Download className="h-5 w-5" />
-                Download All Templates
-              </Button>
+              <TemplateDownloadGate
+                templateName="Article 50 Disclosure Templates"
+                templateSlug="article-50-disclosure"
+                fileName="article-50-disclosure-templates.pdf"
+                buttonText="Download All Templates"
+                buttonSize="lg"
+              />
               <Button size="lg" variant="outline" asChild>
                 <Link to="/tools/transparency-obligation-checker">
                   Check Your Requirements

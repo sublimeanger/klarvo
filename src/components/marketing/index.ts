@@ -16,3 +16,4 @@ export { NewsletterForm } from './NewsletterForm';
 export { RelatedContent } from './RelatedContent';
 export { ContentBreadcrumb } from './ContentBreadcrumb';
 export { HubNavigation } from './HubNavigation';
+export { TemplateDownloadGate } from './TemplateDownloadGate';
