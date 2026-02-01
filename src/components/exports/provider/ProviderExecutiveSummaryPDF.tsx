@@ -4,9 +4,11 @@ import {
   Text,
   View,
   StyleSheet,
+  Image,
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { baseStyles, colors, getRiskBadgeStyle, formatRiskLevel } from "@/lib/pdfStyles";
+import { KLARVO_LOGO_BASE64 } from "@/lib/pdfAssets";
 
 const styles = StyleSheet.create({
   page: {
@@ -202,6 +204,7 @@ export function ProviderExecutiveSummaryPDF({
       {/* Cover Page */}
       <Page size="A4" style={baseStyles.coverPage}>
         <View>
+          <Image src={KLARVO_LOGO_BASE64} style={{ width: 80, marginBottom: 25 }} />
           <Text style={baseStyles.coverBadge}>PROVIDER COMPLIANCE PACK</Text>
           <Text style={baseStyles.coverTitle}>Executive Summary</Text>
           <Text style={baseStyles.coverSubtitle}>EU AI Act Provider Obligations</Text>

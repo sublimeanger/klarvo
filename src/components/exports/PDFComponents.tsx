@@ -1,5 +1,83 @@
-import { Text, View } from "@react-pdf/renderer";
+import { Text, View, Image } from "@react-pdf/renderer";
 import { baseStyles, colors } from "@/lib/pdfStyles";
+import { KLARVO_LOGO_BASE64, WATERMARK_CONFIG } from "@/lib/pdfAssets";
+
+/**
+ * Klarvo Logo component for PDF cover pages
+ * Uses base64-encoded PNG for reliable rendering in react-pdf
+ */
+interface PDFLogoProps {
+  width?: number;
+  style?: object;
+}
+
+export function PDFLogo({ width = 80, style }: PDFLogoProps) {
+  return (
+    <Image 
+      src={KLARVO_LOGO_BASE64} 
+      style={{ 
+        width, 
+        marginBottom: 20,
+        ...style 
+      }} 
+    />
+  );
+}
+
+/**
+ * Watermark component for sample/demo/free-tier PDFs
+ * Displays diagonal text across the page
+ */
+interface WatermarkProps {
+  text?: string;
+  variant?: "sample" | "freeTier" | "demo";
+}
+
+export function Watermark({ text, variant = "sample" }: WatermarkProps) {
+  const watermarkText = text || 
+    (variant === "freeTier" ? WATERMARK_CONFIG.freeTierText : 
+     variant === "demo" ? WATERMARK_CONFIG.demoText : 
+     WATERMARK_CONFIG.sampleText);
+  
+  return (
+    <Text 
+      style={{
+        position: "absolute",
+        top: "45%",
+        left: "15%",
+        fontSize: WATERMARK_CONFIG.fontSize,
+        color: colors.gray[300],
+        transform: `rotate(${WATERMARK_CONFIG.rotation}deg)`,
+        opacity: WATERMARK_CONFIG.opacity,
+      }} 
+      fixed
+    >
+      {watermarkText}
+    </Text>
+  );
+}
+
+/**
+ * "Powered by Klarvo" footer for paid tier PDFs
+ */
+export function PoweredByKlarvo() {
+  return (
+    <View style={{ 
+      flexDirection: "row", 
+      alignItems: "center", 
+      marginTop: 10,
+      gap: 6,
+    }}>
+      <Image 
+        src={KLARVO_LOGO_BASE64} 
+        style={{ width: 16, height: 16 }} 
+      />
+      <Text style={{ fontSize: 8, color: colors.gray[400] }}>
+        Powered by Klarvo
+      </Text>
+    </View>
+  );
+}
 
 interface RunningHeaderProps {
   documentTitle: string;
