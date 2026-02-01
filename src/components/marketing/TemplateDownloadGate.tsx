@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const emailSchema = z.string().email("Please enter a valid email address");
+const STORAGE_KEY = "klarvo_download_email";
 
 interface TemplateDownloadGateProps {
   templateName: string;
@@ -33,6 +34,15 @@ export function TemplateDownloadGate({
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  // Check for previously captured email on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem(STORAGE_KEY);
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setIsUnlocked(true);
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -56,6 +66,9 @@ export function TemplateDownloadGate({
         throw error;
       }
 
+      // Save email to localStorage for future downloads
+      localStorage.setItem(STORAGE_KEY, email.trim().toLowerCase());
+      
       setIsUnlocked(true);
       toast.success("Access granted! Your download will start shortly.");
       
@@ -85,6 +98,16 @@ export function TemplateDownloadGate({
     }, 500);
   };
 
+  // If already unlocked (returning visitor), trigger download directly
+  const handleButtonClick = () => {
+    if (isUnlocked) {
+      triggerDownload();
+      toast.success("Download started!");
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -92,6 +115,7 @@ export function TemplateDownloadGate({
           size={buttonSize} 
           variant={buttonVariant} 
           className={buttonVariant === "default" ? `btn-premium ${className}` : className}
+          onClick={handleButtonClick}
         >
           <Download className="mr-1.5 h-4 w-4" />
           {buttonText}
