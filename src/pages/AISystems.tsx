@@ -21,6 +21,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -247,6 +248,9 @@ export default function AISystems() {
           {/* Desktop Table */}
           <div className="hidden sm:block rounded-xl border bg-card overflow-hidden">
             <Table>
+              <TableCaption className="sr-only">
+                List of AI systems in your organization with their vendors, departments, status, and owners.
+              </TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead>System Name</TableHead>
@@ -254,7 +258,7 @@ export default function AISystems() {
                   <TableHead>Department</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Owner</TableHead>
-                  <TableHead className="w-12"></TableHead>
+                  <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -307,7 +311,12 @@ export default function AISystems() {
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8"
+                          aria-label={`Actions for ${system.name}`}
+                        >
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>

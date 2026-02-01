@@ -22,6 +22,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -433,6 +434,9 @@ export default function Vendors() {
           {/* Desktop Table */}
           <div className="hidden md:block rounded-lg border bg-card">
             <Table>
+              <TableCaption className="sr-only">
+                List of vendors supplying AI systems with contact details, due diligence status, and contract information.
+              </TableCaption>
               <TableHeader>
                 <TableRow>
                   <TableHead>Vendor</TableHead>
@@ -440,7 +444,7 @@ export default function Vendors() {
                   <TableHead>Contact</TableHead>
                   <TableHead>Due Diligence</TableHead>
                   <TableHead>Contract Renewal</TableHead>
-                  <TableHead className="w-12"></TableHead>
+                  <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -526,7 +530,12 @@ export default function Vendors() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            aria-label={`Actions for ${vendor.name}`}
+                          >
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
