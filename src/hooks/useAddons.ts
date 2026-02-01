@@ -110,8 +110,7 @@ export function useAddons() {
 export function useOperatorTrackAccess() {
   const { addons, hasProviderTrack, hasImporterDistributorTrack, hasProviderAssurance, isLoading: addonsLoading } = useAddons();
   
-  // Import useSubscription dynamically to avoid circular deps
-  const { profile } = useAuth();
+  const { profile, isLoading: authLoading } = useAuth();
   
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription", profile?.organization_id],
@@ -135,6 +134,10 @@ export function useOperatorTrackAccess() {
 
   const planId = subscription?.plan_id || "free";
   const isEnterprise = planId === "enterprise";
+  
+  // If user is not authenticated, we're not loading - just return default state
+  const isAuthenticated = !!profile?.organization_id;
+  const isLoading = authLoading || (isAuthenticated && (addonsLoading || subLoading));
 
   return {
     // Enterprise gets everything included
@@ -149,6 +152,7 @@ export function useOperatorTrackAccess() {
     
     planId,
     addons,
-    isLoading: addonsLoading || subLoading,
+    isLoading,
+    isAuthenticated,
   };
 }
