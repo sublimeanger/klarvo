@@ -34,6 +34,7 @@ const navigation = [
   { name: "Controls", href: "/controls", icon: Shield },
   { name: "Evidence", href: "/evidence", icon: FileCheck },
   { name: "Policies", href: "/policies", icon: FileText },
+  { name: "Disclosures", href: "/disclosures", icon: FileText },
   { name: "Training", href: "/training", icon: GraduationCap },
   { name: "Tasks", href: "/tasks", icon: CheckSquare },
   { name: "Incidents", href: "/incidents", icon: AlertTriangle },
