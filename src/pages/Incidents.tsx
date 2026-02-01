@@ -348,7 +348,7 @@ export default function Incidents() {
           {/* Mobile cards */}
           <div className="md:hidden space-y-3">
             {filteredIncidents.map((incident) => (
-              <Card key={incident.id} className="p-3">
+              <Card key={incident.id} className="rounded-xl p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-1">
