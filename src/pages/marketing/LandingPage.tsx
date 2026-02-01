@@ -1,5 +1,5 @@
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
-import { HeroSection } from "@/components/marketing/HeroSection";
+import { HomepageHero } from "@/components/marketing/hero";
 import { LogoCloud } from "@/components/marketing/LogoCloud";
 import { FeatureGrid } from "@/components/marketing/FeatureGrid";
 import { FeatureShowcase } from "@/components/marketing/FeatureShowcase";
@@ -14,8 +14,6 @@ import {
   Shield,
   FileCheck,
   Download,
-  GraduationCap,
-  AlertTriangle,
   Zap,
   Lock,
   BarChart3,
@@ -130,18 +128,7 @@ export default function LandingPage() {
       <SchemaMarkup schema={[organizationSchema, websiteSchema, softwareSchema, faqSchema]} />
 
       {/* Hero */}
-      <HeroSection
-        badge="EU AI Act Compliance Made Simple"
-        title={
-          <>
-            <span className="text-foreground">EU AI Act Compliance</span>
-            <br />
-            <span className="text-gradient-hero">Simple. Evidence-Based. Audit-Ready.</span>
-          </>
-        }
-        subtitle="Know every AI system you use, its risk level, what you need to do next, and generate audit-ready evidence packs in one click. Built for SMEs who need compliance without the complexity."
-        variant="centered"
-      />
+      <HomepageHero />
 
       {/* Logo Cloud */}
       <LogoCloud />
