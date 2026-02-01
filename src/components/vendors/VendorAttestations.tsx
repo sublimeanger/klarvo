@@ -148,8 +148,8 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="rounded-xl">
+      <CardHeader className="p-3 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
@@ -271,22 +271,22 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
           </Dialog>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-6">
-          <div className="text-center p-2 sm:p-3 rounded-lg bg-muted/50">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+          <div className="text-center p-2 sm:p-3 rounded-xl bg-muted/50">
             <p className="text-lg sm:text-2xl font-bold">{stats.total}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Total</p>
           </div>
-          <div className="text-center p-2 sm:p-3 rounded-lg bg-success/10">
+          <div className="text-center p-2 sm:p-3 rounded-xl bg-success/10">
             <p className="text-lg sm:text-2xl font-bold text-success">{stats.verified}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Verified</p>
           </div>
-          <div className="text-center p-2 sm:p-3 rounded-lg bg-warning/10">
+          <div className="text-center p-2 sm:p-3 rounded-xl bg-warning/10">
             <p className="text-lg sm:text-2xl font-bold text-warning">{stats.pending}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Pending</p>
           </div>
-          <div className="text-center p-2 sm:p-3 rounded-lg bg-destructive/10">
+          <div className="text-center p-2 sm:p-3 rounded-xl bg-destructive/10">
             <p className="text-lg sm:text-2xl font-bold text-destructive">{stats.expired}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Expired</p>
           </div>
@@ -294,7 +294,7 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
 
         {/* Attestation List */}
         {attestations && attestations.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {attestations.map((attestation) => {
               const statusInfo = getStatusBadge(attestation.status, attestation.valid_until);
               const StatusIcon = statusInfo.icon;
@@ -302,10 +302,10 @@ export function VendorAttestations({ vendorId, vendorName }: VendorAttestationsP
               return (
                 <div
                   key={attestation.id}
-                  className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 p-3 sm:p-4 rounded-lg border bg-card"
+                  className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 p-2.5 sm:p-4 rounded-xl border bg-card"
                 >
                   <div className="flex items-start gap-2.5 sm:gap-3">
-                    <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary shrink-0">
+                    <div className="p-1.5 sm:p-2 rounded-xl bg-primary/10 text-primary shrink-0">
                       <FileCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </div>
                     <div className="min-w-0">
