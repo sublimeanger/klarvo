@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Check, ArrowRight, Sparkles, Zap } from "lucide-react";
+import { Check, ArrowRight, Sparkles, Zap, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
@@ -9,7 +9,12 @@ import { BillingToggle } from "@/components/billing/BillingToggle";
 import { AddonCard } from "@/components/billing/AddonCard";
 import { ServiceCard } from "@/components/billing/ServiceCard";
 import { FAQSection } from "@/components/billing/FAQSection";
+import { TrustBadges } from "@/components/billing/TrustBadges";
+import { PlanComparisonTable } from "@/components/billing/PlanComparisonTable";
+import { ObjectionCards } from "@/components/billing/ObjectionCards";
+import { ROICalculator } from "@/components/billing/ROICalculator";
 import { CTASection } from "@/components/marketing/CTASection";
+import { OperatorTrackAddons } from "@/components/billing/OperatorTrackAddons";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBilling } from "@/hooks/useBilling";
 import { SEOHead, SchemaMarkup, createProductSchema, createBreadcrumbSchema } from "@/components/seo";
@@ -22,10 +27,15 @@ import {
   type BillingPeriod,
   type PlanId 
 } from "@/lib/billing-constants";
-import { OperatorTrackAddons } from "@/components/billing/OperatorTrackAddons";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export default function Pricing() {
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('annual');
+  const [showComparison, setShowComparison] = useState(false);
   const { user, profile } = useAuth();
   const { createCheckoutSession, isLoading } = useBilling();
   const navigate = useNavigate();
@@ -83,11 +93,13 @@ export default function Pricing() {
     <MarketingLayout>
       <SEOHead
         title="Pricing - EU AI Act Compliance for SMEs"
-        description="Simple, transparent pricing for EU AI Act compliance. Free tier available. Plans from €99/month. No enterprise complexity."
+        description="Simple, transparent pricing for EU AI Act compliance. Free tier available. Plans from €149/month. No enterprise complexity."
         keywords={["AI compliance pricing", "EU AI Act software pricing", "compliance platform cost", "SME compliance pricing"]}
         canonical="https://klarvo.io/pricing"
       />
       <SchemaMarkup schema={[productSchema, breadcrumbSchema]} />
+      
+      {/* Hero */}
       <section className="relative py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
         {/* Animated background */}
         <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
@@ -133,6 +145,13 @@ export default function Pricing() {
         </div>
       </section>
 
+      {/* Trust Badges */}
+      <section className="py-8 sm:py-10 border-y border-border/50 bg-surface-1/50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <TrustBadges />
+        </div>
+      </section>
+
       {/* How Pricing Works */}
       <section className="py-16 bg-surface-1">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -156,6 +175,13 @@ export default function Pricing() {
         </div>
       </section>
 
+      {/* ROI Calculator */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <ROICalculator />
+        </div>
+      </section>
+
       {/* Billing Toggle */}
       <section className="py-8 px-4">
         <BillingToggle billingPeriod={billingPeriod} onChange={setBillingPeriod} />
@@ -175,6 +201,27 @@ export default function Pricing() {
               />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Compare All Features - Collapsible */}
+      <section className="py-8 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <Collapsible open={showComparison} onOpenChange={setShowComparison}>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="mx-auto flex items-center gap-2 border-border/60 hover:border-primary/50"
+              >
+                Compare all features
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${showComparison ? 'rotate-180' : ''}`} />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-8 animate-in slide-in-from-top-2 duration-300">
+              <PlanComparisonTable />
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </section>
 
@@ -264,8 +311,15 @@ export default function Pricing() {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* Objection Handling */}
       <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <ObjectionCards />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <FAQSection />
         </div>
