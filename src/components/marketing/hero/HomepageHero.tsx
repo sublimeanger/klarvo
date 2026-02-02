@@ -105,10 +105,10 @@ export function HomepageHero() {
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
-                to="/features"
+                to="/samples"
                 className="group inline-flex items-center justify-center h-12 sm:h-13 px-6 sm:px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 active:scale-[0.98]"
               >
-                See How It Works
+                See Samples
               </Link>
             </div>
 

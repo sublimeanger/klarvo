@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
 import { SEOHead, SchemaMarkup, createArticleSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowRight,
   Landmark,
   CreditCard,
-  Shield,
-  AlertTriangle,
   CheckCircle
 } from "lucide-react";
 
@@ -89,36 +86,21 @@ export default function FintechPage() {
       />
       <SchemaMarkup schema={[articleSchema, faqSchema, breadcrumbSchema]} />
 
-      {/* Hero */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge variant="destructive">High-Risk</Badge>
-              <Badge variant="outline">Annex III</Badge>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              EU AI Act for Fintech & Financial Services
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Credit scoring and insurance AI are high-risk under Annex III. Financial services deploying AI for lending, underwriting, or customer decisions face significant compliance obligations.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" asChild>
-                <Link to="/tools/high-risk-checker-annex-iii">
-                  Check Your AI Systems
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/templates/article-26-checklist">
-                  Get Deployer Checklist
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="High-Risk • Annex III"
+        title={
+          <>
+            <span className="text-foreground">EU AI Act for Fintech &</span>
+            <br />
+            <span className="text-gradient-hero">Financial Services</span>
+          </>
+        }
+        subtitle="Credit scoring and insurance AI are high-risk under Annex III. Financial services deploying AI for lending, underwriting, or customer decisions face significant compliance obligations."
+        primaryCta={{ label: "Check Your AI Systems", href: "/tools/high-risk-checker-annex-iii" }}
+        secondaryCta={{ label: "See Samples", href: "/samples" }}
+        heroVariant="gradient-cool"
+        variant="centered"
+      />
 
       {/* Warning */}
       <section className="py-8">

@@ -9,25 +9,25 @@ const productFeatures = [
   {
     title: "AI System Inventory",
     description: "Track and manage all AI systems",
-    href: "/features#inventory",
+    href: "/ai-inventory-software",
     icon: Boxes,
   },
   {
     title: "Risk Classification",
-    description: "Automated EU AI Act risk levels",
-    href: "/features#classification",
+    description: "Automated risk classification",
+    href: "/compliance-software",
     icon: Shield,
   },
   {
     title: "Evidence Vault",
     description: "Store compliance documentation",
-    href: "/features#evidence",
+    href: "/evidence-vault",
     icon: FileCheck,
   },
   {
     title: "Export Packs",
     description: "Audit-ready PDF reports",
-    href: "/features#exports",
+    href: "/samples",
     icon: Download,
   },
   {
@@ -50,7 +50,7 @@ const productIndustries = [
 // Resources dropdown - Learn
 const resourcesLearn = [
   { title: "Documentation", href: "/docs", icon: BookOpen },
-  { title: "EU AI Act Guide", href: "/eu-ai-act", icon: FileText },
+  { title: "Regulation Guide", href: "/eu-ai-act", icon: FileText },
   { title: "Blog", href: "/blog", icon: Newspaper },
   { title: "FAQ", href: "/faq", icon: HelpCircle },
 ];

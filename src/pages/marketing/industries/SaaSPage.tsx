@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
+import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
 import { SEOHead, SchemaMarkup, createArticleSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowRight,
   Globe,
   Code,
   CheckCircle,
@@ -89,36 +88,21 @@ export default function SaaSPage() {
       />
       <SchemaMarkup schema={[articleSchema, faqSchema, breadcrumbSchema]} />
 
-      {/* Hero */}
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center gap-2 mb-4">
-              <Badge>SaaS</Badge>
-              <Badge variant="outline">Provider & Deployer</Badge>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              EU AI Act for SaaS Companies
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              SaaS companies building or using AI need to understand their obligations. Whether you're a provider, deployer, or both—and how to evidence compliance to customers.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" asChild>
-                <Link to="/auth/signup">
-                  Start Your Inventory
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/templates/vendor-due-diligence-questionnaire">
-                  See Customer Questions
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection
+        badge="SaaS • Provider & Deployer"
+        title={
+          <>
+            <span className="text-foreground">EU AI Act for</span>
+            <br />
+            <span className="text-gradient-hero">SaaS Companies</span>
+          </>
+        }
+        subtitle="SaaS companies building or using AI need to understand their obligations. Whether you're a provider, deployer, or both—and how to evidence compliance to customers."
+        primaryCta={{ label: "Start Your Inventory", href: "/auth/signup" }}
+        secondaryCta={{ label: "See Samples", href: "/samples" }}
+        heroVariant="gradient-cool"
+        variant="centered"
+      />
 
       {/* Scenarios */}
       <section className="py-16 bg-muted/30">
