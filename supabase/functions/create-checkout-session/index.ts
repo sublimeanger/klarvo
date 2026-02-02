@@ -8,35 +8,35 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs mapping for plans
+// Price IDs mapping for plans (Production)
 const PLAN_PRICE_IDS: Record<string, Record<string, string>> = {
   starter: {
-    monthly: "price_1SvFtsE8C88su4JmiYxaajQ3",
-    annual: "price_1SvFttE8C88su4JmrPjV2zFt",
+    monthly: "price_1SwRgRE5Z0P87vcieb31CciX",
+    annual: "price_1SwRgSE5Z0P87vciaateHbEt",
   },
   growth: {
-    monthly: "price_1SvFtuE8C88su4JmD6lZSKM2",
-    annual: "price_1SvFtvE8C88su4JmzSFfVNQZ",
+    monthly: "price_1SwRgUE5Z0P87vciYIcVI7ju",
+    annual: "price_1SwRgVE5Z0P87vciJyDiTPSk",
   },
   pro: {
-    monthly: "price_1SvFtxE8C88su4JmBryivOwL",
-    annual: "price_1SvFtxE8C88su4JmWPzqgBcw",
+    monthly: "price_1SwRgWE5Z0P87vcinPPbuZYm",
+    annual: "price_1SwRgXE5Z0P87vci5F3a3Sg1",
   },
 };
 
-// Price IDs mapping for add-ons (operator tracks)
+// Price IDs mapping for add-ons (operator tracks) (Production)
 const ADDON_PRICE_IDS: Record<string, Record<string, string>> = {
   importer_distributor: {
-    monthly: "price_1Sw3CdE8C88su4Jmn8qJuNqR",
-    annual: "price_1Sw3CoE8C88su4JmJeTSb5iB",
+    monthly: "price_1SwRgbE5Z0P87vcifd1UzDA5",
+    annual: "price_1SwRgcE5Z0P87vciiPYza6Bu",
   },
   provider_track: {
-    monthly: "price_1Sw3CeE8C88su4JmntWff0cV",
-    annual: "price_1Sw3CpE8C88su4Jmp50WMdGu",
+    monthly: "price_1SwRgdE5Z0P87vci2LGR6eA7",
+    annual: "price_1SwRgeE5Z0P87vciJQVObrH5",
   },
   provider_assurance: {
-    monthly: "price_1Sw3CgE8C88su4Jme5Sevrzo",
-    annual: "price_1Sw3CrE8C88su4Jm4RNZAGm9",
+    monthly: "price_1SwRggE5Z0P87vci9sk1b7su",
+    annual: "price_1SwRghE5Z0P87vcixctHWEcR",
   },
 };
 
