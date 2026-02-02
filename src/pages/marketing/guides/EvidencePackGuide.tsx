@@ -369,7 +369,7 @@ export default function EvidencePackGuide() {
                     Organize and manage all your compliance evidence.
                   </p>
                   <Button asChild variant="link" className="p-0 h-auto">
-                    <Link to="/product/evidence-vault">
+                    <Link to="/evidence-vault-software">
                       Learn More <ArrowRight className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>

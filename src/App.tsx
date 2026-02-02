@@ -264,8 +264,7 @@ const App = () => (
             {/* Additional BOFU Product Pages */}
             <Route path="/ai-governance-evidence-packs" element={<EvidencePacksPage />} />
             <Route path="/ai-literacy-training-tracker" element={<TrainingTrackerPage />} />
-            <Route path="/product/evidence-vault" element={<EvidenceVaultPage />} />
-            <Route path="/evidence-vault" element={<EvidenceVaultPage />} />
+            <Route path="/evidence-vault-software" element={<EvidenceVaultPage />} />
             
             {/* Industry Pages */}
             <Route path="/industries/hr-recruitment-ai-act" element={<HRRecruitmentPage />} />

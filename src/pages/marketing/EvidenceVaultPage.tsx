@@ -83,7 +83,7 @@ export default function EvidenceVaultPage() {
     items: [
       { name: "Home", url: "https://klarvo.io" },
       { name: "Product", url: "https://klarvo.io/features" },
-      { name: "Evidence Vault", url: "https://klarvo.io/product/evidence-vault" }
+      { name: "Evidence Vault", url: "https://klarvo.io/evidence-vault-software" }
     ]
   });
 
@@ -93,7 +93,7 @@ export default function EvidenceVaultPage() {
         title="Compliance Evidence Vault | Klarvo"
         description="Centralized evidence storage for EU AI Act compliance. Upload, organize, approve evidence with expiry tracking and audit-ready exports."
         keywords={["compliance evidence vault", "evidence management", "AI compliance evidence", "audit evidence storage", "EU AI Act evidence"]}
-        canonical="https://klarvo.io/product/evidence-vault"
+        canonical="https://klarvo.io/evidence-vault-software"
         ogType="website"
       />
       <SchemaMarkup schema={[softwareSchema, breadcrumbSchema]} />
