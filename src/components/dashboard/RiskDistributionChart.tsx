@@ -1,11 +1,27 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { useNavigate } from "react-router-dom";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PieChart as PieChartIcon } from "lucide-react";
 import { useRiskDistribution } from "@/hooks/useComplianceTrends";
 
+const riskLevelToParam: Record<string, string> = {
+  "High Risk": "high_risk",
+  "Limited Risk": "limited",
+  "Minimal Risk": "minimal",
+  "Not Classified": "pending",
+};
+
 export function RiskDistributionChart() {
   const { data: distribution, isLoading } = useRiskDistribution();
+  const navigate = useNavigate();
+
+  const handlePieClick = (data: { name: string }) => {
+    const param = riskLevelToParam[data.name];
+    if (param) {
+      navigate(`/ai-systems?classification=${param}`);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -51,7 +67,7 @@ export function RiskDistributionChart() {
           <PieChartIcon className="h-5 w-5" />
           Risk Distribution
         </CardTitle>
-        <CardDescription>Classification breakdown of {total} AI systems</CardDescription>
+        <CardDescription>Classification breakdown of {total} AI systems • Click to filter</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[250px]">
@@ -70,9 +86,15 @@ export function RiskDistributionChart() {
                   `${name} ${(percent * 100).toFixed(0)}%`
                 }
                 labelLine={false}
+                onClick={handlePieClick}
+                style={{ cursor: "pointer" }}
               >
                 {distribution.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.color}
+                    className="hover:opacity-80 transition-opacity"
+                  />
                 ))}
               </Pie>
               <Tooltip
@@ -91,6 +113,7 @@ export function RiskDistributionChart() {
                         <p className="text-sm text-muted-foreground">
                           {data.value} system{data.value !== 1 ? "s" : ""} ({((data.value / total) * 100).toFixed(1)}%)
                         </p>
+                        <p className="text-xs text-primary mt-1">Click to view</p>
                       </div>
                     );
                   }
