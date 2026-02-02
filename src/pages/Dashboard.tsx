@@ -122,6 +122,7 @@ export default function Dashboard() {
                   value={metrics.totalSystems}
                   subtitle={`${metrics.activeSystems} active`}
                   icon={Cpu}
+                  href="/ai-systems"
                 />
               </div>
               <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
@@ -130,6 +131,7 @@ export default function Dashboard() {
                   value={metrics.highRiskCount}
                   subtitle="Deployer duties"
                   icon={AlertTriangle}
+                  href="/ai-systems?classification=high_risk"
                 />
               </div>
               <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
@@ -138,6 +140,7 @@ export default function Dashboard() {
                   value={metrics.notClassifiedCount}
                   subtitle="Need assessment"
                   icon={HelpCircle}
+                  href="/ai-systems?classification=pending"
                 />
               </div>
               <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink">
@@ -146,6 +149,7 @@ export default function Dashboard() {
                   value={metrics.tasksTodo}
                   subtitle={metrics.tasksOverdue > 0 ? `${metrics.tasksOverdue} overdue` : "On track"}
                   icon={CheckSquare}
+                  href="/tasks"
                 />
               </div>
               <div className="min-w-[140px] sm:min-w-0 shrink-0 sm:shrink sm:col-span-2 lg:col-span-1">
@@ -154,6 +158,7 @@ export default function Dashboard() {
                   value={alertsCount}
                   subtitle={criticalCount > 0 ? `${criticalCount} critical` : "Attention needed"}
                   icon={Bell}
+                  href="/tasks?filter=overdue"
                 />
               </div>
             </>

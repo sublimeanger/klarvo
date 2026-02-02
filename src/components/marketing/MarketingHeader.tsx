@@ -15,7 +15,7 @@ const productFeatures = [
   {
     title: "Risk Classification",
     description: "Automated risk classification",
-    href: "/compliance-software",
+    href: "/eu-ai-act-compliance-software",
     icon: Shield,
   },
   {
