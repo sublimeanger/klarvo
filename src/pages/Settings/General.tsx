@@ -13,6 +13,7 @@ import {
   Bell,
   KeyRound,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,6 +62,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization, useUpdateOrganization } from "@/hooks/useOrganization";
 import { useTeamMembers, useUpdateMemberRole, useRemoveMember } from "@/hooks/useTeamMembers";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
+import { AIPrivacySettings } from "@/components/settings/AIPrivacySettings";
 import { InviteMemberDialog, PendingInvitesList } from "@/components/team";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -273,6 +275,11 @@ export default function GeneralSettings() {
             <Bell className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             <span className="hidden sm:inline">Notifications</span>
             <span className="sm:hidden">Alerts</span>
+          </TabsTrigger>
+          <TabsTrigger value="ai-privacy" className="flex items-center gap-1.5 text-xs sm:text-sm">
+            <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <span className="hidden sm:inline">AI & Privacy</span>
+            <span className="sm:hidden">AI</span>
           </TabsTrigger>
           <TabsTrigger value="billing" asChild>
             <Link to="/settings/billing" className="flex items-center gap-1.5 text-xs sm:text-sm">
@@ -489,6 +496,11 @@ export default function GeneralSettings() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* AI & Privacy Tab */}
+        <TabsContent value="ai-privacy">
+          <AIPrivacySettings />
         </TabsContent>
 
         {/* Team Tab */}
