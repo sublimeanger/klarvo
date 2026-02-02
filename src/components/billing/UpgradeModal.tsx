@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, X, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,7 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PLANS, UPGRADE_MODAL_COPY, type PlanId } from "@/lib/billing-constants";
+import { BillingToggle } from "./BillingToggle";
+import { useBilling } from "@/hooks/useBilling";
+import { PLANS, UPGRADE_MODAL_COPY, type PlanId, type BillingPeriod } from "@/lib/billing-constants";
 
 interface UpgradeModalProps {
   open: boolean;
@@ -22,7 +25,7 @@ interface UpgradeModalProps {
   /** Recommended plan override */
   recommendedPlan?: PlanId;
   /** Callback when upgrade is clicked */
-  onUpgrade?: (planId: PlanId) => void;
+  onUpgrade?: (planId: PlanId, billingPeriod: BillingPeriod) => void;
 }
 
 export function UpgradeModal({
@@ -34,6 +37,9 @@ export function UpgradeModal({
   recommendedPlan: customPlan,
   onUpgrade,
 }: UpgradeModalProps) {
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annual");
+  const { createCheckoutSession, isLoading } = useBilling();
+  
   const copy = featureKey ? UPGRADE_MODAL_COPY[featureKey] : undefined;
   
   const title = customTitle || copy?.title || 'Upgrade Your Plan';
@@ -41,9 +47,22 @@ export function UpgradeModal({
   const recommendedPlan = customPlan || copy?.recommendedPlan || 'growth';
   const plan = PLANS[recommendedPlan];
 
-  const handleUpgrade = () => {
-    onUpgrade?.(recommendedPlan);
-    onOpenChange(false);
+  const price = billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly;
+  const monthlyEquivalent = billingPeriod === "annual" && plan.priceAnnual > 0
+    ? Math.round(plan.priceAnnual / 12)
+    : plan.priceMonthly;
+  
+  const annualSavings = plan.priceMonthly > 0
+    ? (plan.priceMonthly * 12) - plan.priceAnnual
+    : 0;
+
+  const handleUpgrade = async () => {
+    if (onUpgrade) {
+      onUpgrade(recommendedPlan, billingPeriod);
+      onOpenChange(false);
+    } else {
+      await createCheckoutSession(recommendedPlan, billingPeriod);
+    }
   };
 
   return (
@@ -56,7 +75,13 @@ export function UpgradeModal({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-3 sm:space-y-4 py-3 sm:py-4">
+        <div className="space-y-4 py-4">
+          {/* Billing Toggle */}
+          <BillingToggle 
+            billingPeriod={billingPeriod} 
+            onChange={setBillingPeriod} 
+          />
+
           {bullets.length > 0 && (
             <ul className="space-y-1.5 sm:space-y-2">
               {bullets.map((bullet, i) => (
@@ -77,7 +102,19 @@ export function UpgradeModal({
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-sm sm:text-base font-semibold">€{plan.priceMonthly}/mo</p>
+                <p className="text-sm sm:text-base font-semibold">€{monthlyEquivalent}/mo</p>
+                {billingPeriod === "annual" && (
+                  <>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground">
+                      €{price.toLocaleString()}/year
+                    </p>
+                    {annualSavings > 0 && (
+                      <p className="text-[10px] sm:text-xs text-success">
+                        Save €{annualSavings.toLocaleString()}
+                      </p>
+                    )}
+                  </>
+                )}
                 {plan.trialDays > 0 && (
                   <p className="text-[10px] sm:text-xs text-success">{plan.trialDays}-day free trial</p>
                 )}
@@ -87,9 +124,18 @@ export function UpgradeModal({
         </div>
         
         <div className="flex flex-col gap-2">
-          <Button onClick={handleUpgrade} className="h-11">
-            Upgrade to {plan.name}
-            <ArrowRight className="ml-2 h-4 w-4" />
+          <Button onClick={handleUpgrade} disabled={isLoading} className="h-11">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Preparing checkout...
+              </>
+            ) : (
+              <>
+                Upgrade to {plan.name} · €{billingPeriod === "annual" ? price.toLocaleString() : monthlyEquivalent}/{billingPeriod === "annual" ? "yr" : "mo"}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+            )}
           </Button>
           <Button variant="ghost" asChild className="h-10">
             <Link to="/pricing">Compare all plans</Link>
@@ -115,7 +161,7 @@ interface LimitReachedModalProps {
   /** Recommended plan to upgrade to */
   recommendedPlan?: PlanId;
   /** Callback when upgrade is clicked */
-  onUpgrade?: (planId: PlanId) => void;
+  onUpgrade?: (planId: PlanId, billingPeriod: BillingPeriod) => void;
   /** Optional callback for archive action */
   onArchive?: () => void;
 }
@@ -130,7 +176,27 @@ export function LimitReachedModal({
   onUpgrade,
   onArchive,
 }: LimitReachedModalProps) {
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annual");
+  const { createCheckoutSession, isLoading } = useBilling();
   const plan = PLANS[recommendedPlan];
+
+  const price = billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly;
+  const monthlyEquivalent = billingPeriod === "annual" && plan.priceAnnual > 0
+    ? Math.round(plan.priceAnnual / 12)
+    : plan.priceMonthly;
+  
+  const annualSavings = plan.priceMonthly > 0
+    ? (plan.priceMonthly * 12) - plan.priceAnnual
+    : 0;
+
+  const handleUpgrade = async () => {
+    if (onUpgrade) {
+      onUpgrade(recommendedPlan, billingPeriod);
+      onOpenChange(false);
+    } else {
+      await createCheckoutSession(recommendedPlan, billingPeriod);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -142,7 +208,13 @@ export function LimitReachedModal({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="py-3 sm:py-4">
+        <div className="py-4 space-y-4">
+          {/* Billing Toggle */}
+          <BillingToggle 
+            billingPeriod={billingPeriod} 
+            onChange={setBillingPeriod} 
+          />
+
           <div className="flex items-center justify-between p-3 sm:p-4 rounded-xl border bg-muted/30 gap-2">
             <div>
               <p className="text-sm font-medium">{plan.name}</p>
@@ -151,15 +223,29 @@ export function LimitReachedModal({
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm sm:text-base font-semibold">€{plan.priceMonthly}/mo</p>
+              <p className="text-sm sm:text-base font-semibold">€{monthlyEquivalent}/mo</p>
+              {billingPeriod === "annual" && annualSavings > 0 && (
+                <p className="text-[10px] sm:text-xs text-success">
+                  Save €{annualSavings.toLocaleString()}/yr
+                </p>
+              )}
             </div>
           </div>
         </div>
         
         <div className="flex flex-col gap-2">
-          <Button onClick={() => onUpgrade?.(recommendedPlan)} className="h-11">
-            Upgrade to {plan.name}
-            <ArrowRight className="ml-2 h-4 w-4" />
+          <Button onClick={handleUpgrade} disabled={isLoading} className="h-11">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Preparing checkout...
+              </>
+            ) : (
+              <>
+                Upgrade to {plan.name} · €{billingPeriod === "annual" ? price.toLocaleString() : monthlyEquivalent}/{billingPeriod === "annual" ? "yr" : "mo"}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </>
+            )}
           </Button>
           {onArchive && (
             <Button variant="outline" onClick={onArchive} className="h-10">
