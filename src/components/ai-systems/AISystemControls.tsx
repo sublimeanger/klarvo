@@ -12,6 +12,8 @@ import {
   CheckSquare,
   Square,
   X,
+  BookOpen,
+  ClipboardCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -168,7 +170,51 @@ function ControlCard({
         </div>
       </div>
       {isExpanded && !isSelectionMode && (
-        <div className="px-3 pb-3 pt-1 border-t">
+        <div className="px-3 pb-3 pt-1 border-t space-y-3">
+          {/* Acceptance Criteria Section */}
+          {control.acceptance_criteria && (
+            <div className="rounded-lg bg-muted/30 p-2.5 sm:p-3">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <ClipboardCheck className="h-3.5 w-3.5 text-primary" />
+                <span className="text-[10px] sm:text-xs font-medium text-primary">Acceptance Criteria</span>
+                {control.article_reference && (
+                  <Badge variant="outline" className="ml-auto text-[9px] sm:text-[10px]">
+                    {control.article_reference}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                {control.acceptance_criteria}
+              </p>
+            </div>
+          )}
+          
+          {/* Evidence Requirements (if no acceptance criteria but has evidence requirements) */}
+          {!control.acceptance_criteria && control.evidence_requirements && (
+            <div className="rounded-lg bg-muted/30 p-2.5 sm:p-3">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <BookOpen className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-[10px] sm:text-xs font-medium">Evidence Required</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-muted-foreground">
+                {control.evidence_requirements}
+              </p>
+            </div>
+          )}
+
+          {/* N/A Justification Display (if marked as N/A) */}
+          {implementation.status === "not_applicable" && implementation.na_justification && (
+            <div className="rounded-lg bg-warning/10 border border-warning/20 p-2.5 sm:p-3">
+              <div className="flex items-center gap-1.5 mb-1.5">
+                <AlertTriangle className="h-3.5 w-3.5 text-warning" />
+                <span className="text-[10px] sm:text-xs font-medium text-warning">N/A Justification</span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-muted-foreground">
+                {implementation.na_justification}
+              </p>
+            </div>
+          )}
+          
           <ControlEvidenceSection
             controlImplementationId={implementation.id}
             aiSystemId={aiSystemId}
