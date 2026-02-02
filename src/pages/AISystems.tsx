@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { 
   Plus, 
   Search, 
@@ -14,10 +14,15 @@ import {
   Loader2,
   Trash2,
   GitCompare,
+  X,
+  ShieldAlert,
+  ShieldCheck,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -34,6 +39,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
@@ -56,18 +62,76 @@ const lifecycleStatusConfig: Record<string, { label: string; variant: "draft" | 
   archived: { label: "Archived", variant: "draft" },
 };
 
+const classificationFilterLabels: Record<string, string> = {
+  high_risk: "High Risk",
+  limited: "Limited Risk",
+  minimal: "Minimal Risk",
+  pending: "Not Classified",
+};
+
 export default function AISystems() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [compareOpen, setCompareOpen] = useState(false);
   const { systems, isLoading } = useAISystems();
   const deleteSystem = useDeleteAISystem();
-  
-  const filteredSystems = systems.filter(system =>
-    system.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (system.vendors?.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (system.department || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
+  // Get filter values from URL
+  const classificationFilter = searchParams.get("classification");
+  const departmentFilter = searchParams.get("department");
+  const statusFilter = searchParams.get("status");
+
+  // Clear a specific filter
+  const clearFilter = (key: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete(key);
+    setSearchParams(newParams);
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchParams({});
+    setSearchQuery("");
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = classificationFilter || departmentFilter || statusFilter || searchQuery;
+
+  // Filter systems based on all criteria
+  const filteredSystems = useMemo(() => {
+    return systems.filter(system => {
+      // Text search
+      const matchesSearch = !searchQuery || 
+        system.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (system.vendors?.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (system.department || "").toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Classification filter
+      let matchesClassification = true;
+      if (classificationFilter) {
+        const classification = system.ai_system_classifications?.[0];
+        if (classificationFilter === "pending") {
+          matchesClassification = !classification || !classification.risk_level || classification.risk_level === "not_classified";
+        } else if (classificationFilter === "high_risk") {
+          matchesClassification = classification?.risk_level === "high_risk" || classification?.is_high_risk_candidate === true;
+        } else if (classificationFilter === "limited") {
+          matchesClassification = classification?.risk_level === "limited_risk";
+        } else if (classificationFilter === "minimal") {
+          matchesClassification = classification?.risk_level === "minimal_risk";
+        }
+      }
+
+      // Department filter
+      const matchesDepartment = !departmentFilter || 
+        (system.department || "").toLowerCase() === departmentFilter.toLowerCase();
+
+      // Status filter
+      const matchesStatus = !statusFilter || system.lifecycle_status === statusFilter;
+
+      return matchesSearch && matchesClassification && matchesDepartment && matchesStatus;
+    });
+  }, [systems, searchQuery, classificationFilter, departmentFilter, statusFilter]);
 
   const handleDelete = async () => {
     if (deleteId) {
@@ -81,6 +145,15 @@ export default function AISystems() {
   const liveSystems = systems.filter(s => s.lifecycle_status === "live" || s.lifecycle_status === "pilot").length;
   const draftSystems = systems.filter(s => s.lifecycle_status === "draft").length;
   const retiredSystems = systems.filter(s => s.lifecycle_status === "retired" || s.lifecycle_status === "archived").length;
+
+  // Get unique departments for filter
+  const departments = useMemo(() => {
+    const depts = new Set<string>();
+    systems.forEach(s => {
+      if (s.department) depts.add(s.department);
+    });
+    return Array.from(depts).sort();
+  }, [systems]);
 
   if (isLoading) {
     return (
@@ -127,15 +200,167 @@ export default function AISystems() {
             className="pl-9 h-9"
           />
         </div>
-        <Button variant="outline" size="sm" className="shrink-0 h-9">
-          <Filter className="mr-2 h-4 w-4" />
-          <span className="hidden sm:inline">Filters</span>
-        </Button>
+        
+        {/* Classification Filter */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="shrink-0 h-9">
+              <Shield className="mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Risk Level</span>
+              {classificationFilter && (
+                <Badge variant="secondary" className="ml-2 px-1.5 py-0 text-xs">1</Badge>
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuLabel>Risk Classification</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuCheckboxItem
+              checked={classificationFilter === "high_risk"}
+              onCheckedChange={(checked) => {
+                const newParams = new URLSearchParams(searchParams);
+                if (checked) {
+                  newParams.set("classification", "high_risk");
+                } else {
+                  newParams.delete("classification");
+                }
+                setSearchParams(newParams);
+              }}
+            >
+              <ShieldAlert className="mr-2 h-4 w-4 text-destructive" />
+              High Risk
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={classificationFilter === "limited"}
+              onCheckedChange={(checked) => {
+                const newParams = new URLSearchParams(searchParams);
+                if (checked) {
+                  newParams.set("classification", "limited");
+                } else {
+                  newParams.delete("classification");
+                }
+                setSearchParams(newParams);
+              }}
+            >
+              <Shield className="mr-2 h-4 w-4 text-warning" />
+              Limited Risk
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={classificationFilter === "minimal"}
+              onCheckedChange={(checked) => {
+                const newParams = new URLSearchParams(searchParams);
+                if (checked) {
+                  newParams.set("classification", "minimal");
+                } else {
+                  newParams.delete("classification");
+                }
+                setSearchParams(newParams);
+              }}
+            >
+              <ShieldCheck className="mr-2 h-4 w-4 text-success" />
+              Minimal Risk
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={classificationFilter === "pending"}
+              onCheckedChange={(checked) => {
+                const newParams = new URLSearchParams(searchParams);
+                if (checked) {
+                  newParams.set("classification", "pending");
+                } else {
+                  newParams.delete("classification");
+                }
+                setSearchParams(newParams);
+              }}
+            >
+              <HelpCircle className="mr-2 h-4 w-4 text-muted-foreground" />
+              Not Classified
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Department Filter */}
+        {departments.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="shrink-0 h-9">
+                <Building2 className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Department</span>
+                {departmentFilter && (
+                  <Badge variant="secondary" className="ml-2 px-1.5 py-0 text-xs">1</Badge>
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuLabel>Department</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {departments.map((dept) => (
+                <DropdownMenuCheckboxItem
+                  key={dept}
+                  checked={departmentFilter === dept}
+                  onCheckedChange={(checked) => {
+                    const newParams = new URLSearchParams(searchParams);
+                    if (checked) {
+                      newParams.set("department", dept);
+                    } else {
+                      newParams.delete("department");
+                    }
+                    setSearchParams(newParams);
+                  }}
+                >
+                  {dept}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+
         <Button variant="outline" size="sm" className="shrink-0 h-9">
           <ArrowUpDown className="mr-2 h-4 w-4" />
           <span className="hidden sm:inline">Sort</span>
         </Button>
       </div>
+
+      {/* Active Filters Display */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-muted-foreground">Filters:</span>
+          {classificationFilter && (
+            <Badge variant="secondary" className="gap-1">
+              {classificationFilterLabels[classificationFilter] || classificationFilter}
+              <button onClick={() => clearFilter("classification")} className="ml-1 hover:text-destructive">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {departmentFilter && (
+            <Badge variant="secondary" className="gap-1">
+              {departmentFilter}
+              <button onClick={() => clearFilter("department")} className="ml-1 hover:text-destructive">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {statusFilter && (
+            <Badge variant="secondary" className="gap-1">
+              {lifecycleStatusConfig[statusFilter]?.label || statusFilter}
+              <button onClick={() => clearFilter("status")} className="ml-1 hover:text-destructive">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          {searchQuery && (
+            <Badge variant="secondary" className="gap-1">
+              Search: {searchQuery}
+              <button onClick={() => setSearchQuery("")} className="ml-1 hover:text-destructive">
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+          )}
+          <Button variant="ghost" size="sm" onClick={clearAllFilters} className="h-6 px-2 text-xs">
+            Clear all
+          </Button>
+        </div>
+      )}
 
       {/* Summary Cards - 2x2 grid on mobile */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
@@ -185,6 +410,13 @@ export default function AISystems() {
         </div>
       </div>
 
+      {/* Results count when filtered */}
+      {hasActiveFilters && (
+        <p className="text-sm text-muted-foreground">
+          Showing {filteredSystems.length} of {totalSystems} systems
+        </p>
+      )}
+
       {/* Mobile Card View / Desktop Table */}
       {filteredSystems.length === 0 ? (
         <div className="rounded-xl border border-dashed bg-card p-8 sm:p-12 text-center">
@@ -192,15 +424,20 @@ export default function AISystems() {
             <Cpu className="h-6 w-6 text-primary" />
           </div>
           <h3 className="text-base sm:text-lg font-semibold mb-2">
-            {searchQuery ? "No systems found" : "No AI systems yet"}
+            {hasActiveFilters ? "No systems match filters" : "No AI systems yet"}
           </h3>
           <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">
-            {searchQuery 
-              ? "Try adjusting your search terms" 
+            {hasActiveFilters 
+              ? "Try adjusting your filters or search terms" 
               : "Start by adding the AI systems your organization uses"
             }
           </p>
-          {!searchQuery && (
+          {hasActiveFilters ? (
+            <Button variant="outline" size="sm" onClick={clearAllFilters}>
+              <X className="mr-2 h-4 w-4" />
+              Clear Filters
+            </Button>
+          ) : (
             <Button asChild size="sm">
               <Link to="/ai-systems/new">
                 <Plus className="mr-2 h-4 w-4" />
