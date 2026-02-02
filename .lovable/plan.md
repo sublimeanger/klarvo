@@ -122,7 +122,7 @@ Google Workspace / M365 APIs
 ### Phase 3: Discovery Engine ✅
 - [x] discovery-scan edge function (pattern matching)
 - [x] discovery-match logic
-- [ ] Scheduled re-scans (cron) — future enhancement
+- [x] Scheduled re-scans (weekly cron job)
 
 ### Phase 4: Review UI ✅
 - [x] DiscoveryDashboard page
