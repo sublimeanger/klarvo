@@ -61,6 +61,7 @@ export interface PlanEntitlements {
   policyVersioningEnabled: boolean;
   orgDashboardsEnabled: boolean;
   friaEnabled: boolean;
+  friaAdvancedEnabled?: boolean; // Advanced FRIA features (templates, collaboration, board formatting)
   incidentsEnabled: boolean;
   integrationsEnabled: boolean;
   apiEnabled: boolean;
@@ -152,11 +153,12 @@ export const PLANS: Record<PlanId, Plan> = {
       'Org dashboards: readiness score, upcoming reviews, expiring evidence',
       'Vendor renewal reminders + evidence requests',
       'Auditor-friendly share links (read-only export access)',
+      'Basic FRIA module + report exports',
       'Evidence vault (up to 250 GB)',
       'Market access add-ons available (Importer/Distributor, Provider)',
     ],
     lockedFeatures: [
-      'FRIA module',
+      'Advanced FRIA (templates, collaboration, board formatting)',
       'Incidents/monitoring',
       'API/integrations',
     ],
@@ -258,7 +260,8 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     auditorLinksEnabled: true,
     policyVersioningEnabled: true,
     orgDashboardsEnabled: true,
-    friaEnabled: false,
+    friaEnabled: true, // Basic FRIA now available in Growth tier
+    friaAdvancedEnabled: false, // Advanced FRIA features (templates, board formatting) require Pro
     incidentsEnabled: false,
     integrationsEnabled: false,
     apiEnabled: false,
@@ -278,6 +281,7 @@ export const PLAN_ENTITLEMENTS: Record<PlanId, PlanEntitlements> = {
     policyVersioningEnabled: true,
     orgDashboardsEnabled: true,
     friaEnabled: true,
+    friaAdvancedEnabled: true, // Advanced FRIA features (templates, collaboration, board formatting)
     incidentsEnabled: true,
     integrationsEnabled: true,
     apiEnabled: true,

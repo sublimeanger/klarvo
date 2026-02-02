@@ -2,8 +2,9 @@ import { CheckCircle, Circle, FileText, Package, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface ExportEligibilityProps {
-  formData: Record<string, unknown>;
+  formData: any;
   className?: string;
 }
 

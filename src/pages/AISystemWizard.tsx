@@ -8,6 +8,7 @@ import { useOrgMembers } from "@/hooks/useOrgMembers";
 import { useCreateBulkTasks } from "@/hooks/useTasks";
 import { useWizardDraft } from "@/hooks/useWizardDraft";
 import { WizardProgress } from "@/components/ai-systems/wizard/WizardProgress";
+import { ExportEligibility } from "@/components/ai-systems/wizard/ExportEligibility";
 import { QUICK_CAPTURE_STEPS, FULL_ASSESSMENT_STEPS } from "@/components/ai-systems/wizard/constants";
 import { generateWizardTasks } from "@/lib/wizardTaskGenerator";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -278,7 +279,19 @@ export default function AISystemWizard() {
         )}
       </div>
 
-      {!isDoneStep && <WizardProgress steps={steps} currentStep={currentStep} />}
+      {!isDoneStep && (
+        <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+          <div className="space-y-4">
+            <WizardProgress steps={steps} currentStep={currentStep} />
+          </div>
+          <ExportEligibility formData={data} className="hidden lg:block" />
+        </div>
+      )}
+      
+      {/* Mobile Export Eligibility - collapsible */}
+      {!isDoneStep && (
+        <ExportEligibility formData={data} className="lg:hidden" />
+      )}
 
       <Card>
         <CardHeader className="pb-4 sm:pb-6">
