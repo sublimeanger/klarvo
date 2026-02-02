@@ -13,6 +13,9 @@ export interface Control {
   evidence_requirements: string | null;
   review_frequency: string | null;
   article_reference: string | null;
+  acceptance_criteria: string | null;
+  na_requires_justification: boolean;
+  na_approver_role: string | null;
 }
 
 export interface ControlImplementation {
