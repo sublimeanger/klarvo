@@ -21,7 +21,7 @@ const productFeatures = [
   {
     title: "Evidence Vault",
     description: "Store compliance documentation",
-    href: "/evidence-vault",
+    href: "/product/evidence-vault",
     icon: FileCheck,
   },
   {
