@@ -5,7 +5,7 @@ import {
   AlertCircle,
   RefreshCw,
   Trash2,
-  ExternalLink,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,7 +27,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { type WorkspaceConnection, useDisconnectWorkspace } from "@/hooks/useDiscovery";
+import { 
+  type WorkspaceConnection, 
+  useDisconnectWorkspace,
+  useInitiateOAuth,
+  useTriggerScan,
+} from "@/hooks/useDiscovery";
 import { formatDistanceToNow } from "date-fns";
 
 interface WorkspaceConnectionCardProps {
@@ -68,6 +73,11 @@ function getStatusBadge(status: WorkspaceConnection["status"]) {
 export function WorkspaceConnectionCard({ connection, onTriggerScan }: WorkspaceConnectionCardProps) {
   const providerInfo = getProviderInfo(connection.provider);
   const disconnect = useDisconnectWorkspace();
+  const triggerScan = useTriggerScan();
+
+  const handleScan = () => {
+    triggerScan.mutate(connection.id);
+  };
 
   return (
     <Card>
@@ -111,10 +121,15 @@ export function WorkspaceConnectionCard({ connection, onTriggerScan }: Workspace
             <Button
               variant="outline"
               size="sm"
-              onClick={onTriggerScan}
+              onClick={handleScan}
+              disabled={triggerScan.isPending}
               className="flex-1"
             >
-              <RefreshCw className="h-4 w-4 mr-2" />
+              {triggerScan.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4 mr-2" />
+              )}
               Scan Now
             </Button>
           )}
@@ -156,6 +171,11 @@ interface ConnectWorkspaceCardProps {
 
 export function ConnectWorkspaceCard({ provider, onConnect }: ConnectWorkspaceCardProps) {
   const providerInfo = getProviderInfo(provider);
+  const initiateOAuth = useInitiateOAuth();
+
+  const handleConnect = () => {
+    initiateOAuth.mutate(provider);
+  };
 
   return (
     <Card className="border-dashed">
@@ -167,8 +187,12 @@ export function ConnectWorkspaceCard({ provider, onConnect }: ConnectWorkspaceCa
         <p className="text-sm text-muted-foreground mb-4">
           Automatically discover AI tools in your organization
         </p>
-        <Button onClick={onConnect}>
-          <Cloud className="h-4 w-4 mr-2" />
+        <Button onClick={handleConnect} disabled={initiateOAuth.isPending}>
+          {initiateOAuth.isPending ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <Cloud className="h-4 w-4 mr-2" />
+          )}
           Connect
         </Button>
       </CardContent>

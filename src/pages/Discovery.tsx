@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { 
   Bot, 
   Cloud, 
@@ -46,16 +47,33 @@ import { AddonLockedPage } from "@/components/billing/AddonLockedPage";
 import { toast } from "sonner";
 
 export default function Discovery() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("pending");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const { data: connections, isLoading: connectionsLoading } = useWorkspaceConnections();
+  const { data: connections, isLoading: connectionsLoading, refetch: refetchConnections } = useWorkspaceConnections();
   const { data: tools, isLoading: toolsLoading } = useDiscoveredTools(
     statusFilter === "all" ? undefined : (statusFilter as DiscoveredTool["status"])
   );
   const bulkUpdate = useBulkUpdateDiscoveredTools();
   const { hasAddon, isLoading: addonsLoading } = useAddons();
+
+  // Handle OAuth callback
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const error = searchParams.get("error");
+
+    if (success === "true") {
+      toast.success("Workspace connected successfully!");
+      refetchConnections();
+      // Clear URL params
+      setSearchParams({});
+    } else if (error) {
+      toast.error(`Connection failed: ${error}`);
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams, refetchConnections]);
 
   // Check if addon is enabled
   const hasDiscoveryAddon = hasAddon("shadow_ai_discovery");
@@ -108,9 +126,9 @@ export default function Discovery() {
     setSelectedIds(new Set());
   };
 
+  // Legacy handler - OAuth is now handled by edge function
   const handleConnectWorkspace = (provider: "google_workspace" | "microsoft_365") => {
-    // In a full implementation, this would initiate OAuth flow
-    toast.info(`${provider === "google_workspace" ? "Google Workspace" : "Microsoft 365"} OAuth integration coming soon`);
+    // This is now handled by ConnectWorkspaceCard using useInitiateOAuth
   };
 
   // Show locked page if addon not enabled
