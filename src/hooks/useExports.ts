@@ -5,7 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { AISystemPDF } from "@/components/exports/AISystemPDF";
+import { BoardPackPDF, type BoardPackData } from "@/components/exports/audience/BoardPackPDF";
+import { CustomerTrustPackPDF, type CustomerTrustPackData } from "@/components/exports/audience/CustomerTrustPackPDF";
+import { AuditorPackPDF, type AuditorPackData } from "@/components/exports/audience/AuditorPackPDF";
+import { ProcurementPackPDF, type ProcurementPackData } from "@/components/exports/audience/ProcurementPackPDF";
 import { useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
 
 interface AISystemExportData {
   id: string;
@@ -42,11 +47,7 @@ interface AISystemExportData {
   created_at: string;
 }
 
-interface ExportOptions {
-  includeEvidence?: boolean;
-  includeClassification?: boolean;
-  format: "pdf" | "zip";
-}
+export type AudiencePackType = "board" | "customer_trust" | "auditor" | "procurement";
 
 export function useExports() {
   const { profile, user } = useAuth();
@@ -70,7 +71,6 @@ export function useExports() {
         file_name: fileName,
         file_size_bytes: fileSizeBytes || null,
       });
-      // Invalidate export history queries
       queryClient.invalidateQueries({ queryKey: ["export-history"] });
       queryClient.invalidateQueries({ queryKey: ["export-stats"] });
     } catch (error) {
@@ -143,11 +143,21 @@ export function useExports() {
 
     const { data } = await supabase
       .from("organizations")
-      .select("name")
+      .select("name, regulatory_timeline_mode")
       .eq("id", profile.organization_id)
       .single();
 
-    return data || { name: "Unknown Organization" };
+    return data || { name: "Unknown Organization", regulatory_timeline_mode: "current_law" };
+  };
+
+  const getRulesetVersion = async () => {
+    const { data } = await supabase
+      .from("regulatory_rulesets")
+      .select("version")
+      .eq("is_current", true)
+      .single();
+
+    return data?.version || "2025.02.01";
   };
 
   const exportAISystemPDF = async (systemId: string, showWatermark = false) => {
@@ -169,7 +179,6 @@ export function useExports() {
       const blob = await pdf(doc).toBlob();
       const fileName = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.pdf`;
 
-      // Download the file
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -179,7 +188,6 @@ export function useExports() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      // Log the export
       await logExport("ai_system_pdf", fileName, blob.size, systemId);
 
       toast.success("PDF exported successfully");
@@ -202,7 +210,6 @@ export function useExports() {
 
       const zip = new JSZip();
 
-      // Add PDF to ZIP
       const doc = AISystemPDF({
         system,
         organization,
@@ -212,7 +219,6 @@ export function useExports() {
       const pdfBlob = await pdf(doc).toBlob();
       zip.file("AI_System_Evidence_Pack.pdf", pdfBlob);
 
-      // Add evidence files if requested
       if (options?.includeEvidence) {
         const evidenceFiles = await fetchEvidenceFiles(systemId);
         const evidenceFolder = zip.folder("Evidence");
@@ -225,7 +231,6 @@ export function useExports() {
         }
       }
 
-      // Generate ZIP and download
       const zipBlob = await zip.generateAsync({ type: "blob" });
       const fileName = `${system.name.replace(/[^a-z0-9]/gi, "_")}_Evidence_Pack.zip`;
       const url = URL.createObjectURL(zipBlob);
@@ -237,7 +242,6 @@ export function useExports() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      // Log the export
       await logExport("ai_system_zip", fileName, zipBlob.size, systemId);
 
       toast.success("ZIP exported successfully");
@@ -279,7 +283,6 @@ export function useExports() {
         const systemFolder = zip.folder(system.name.replace(/[^a-z0-9]/gi, "_"));
         if (!systemFolder) continue;
 
-        // Add PDF for each system
         const doc = AISystemPDF({
           system: system as AISystemExportData,
           organization,
@@ -290,7 +293,6 @@ export function useExports() {
         systemFolder.file("Evidence_Pack.pdf", pdfBlob);
       }
 
-      // Generate ZIP and download
       const zipBlob = await zip.generateAsync({ type: "blob" });
       const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_AI_Systems_Export.zip`;
       const url = URL.createObjectURL(zipBlob);
@@ -302,7 +304,6 @@ export function useExports() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
-      // Log the export
       await logExport("org_pack", fileName, zipBlob.size);
 
       toast.success(`Exported ${systems.length} AI systems`);
@@ -314,10 +315,303 @@ export function useExports() {
     }
   };
 
+  // New audience-specific export functions
+  const exportBoardPack = async () => {
+    setIsExporting(true);
+    try {
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const [organization, rulesetVersion] = await Promise.all([
+        getOrganization(),
+        getRulesetVersion(),
+      ]);
+
+      // Fetch metrics
+      const { data: systems } = await supabase
+        .from("ai_systems")
+        .select("id, classification:ai_system_classifications(risk_level)")
+        .eq("organization_id", profile.organization_id);
+
+      const riskDistribution = {
+        minimal: 0,
+        limited: 0,
+        highRisk: 0,
+        prohibited: 0,
+        unclassified: 0,
+      };
+
+      systems?.forEach((s) => {
+        const level = (s.classification as any)?.risk_level;
+        if (level === "minimal_risk") riskDistribution.minimal++;
+        else if (level === "limited_risk") riskDistribution.limited++;
+        else if (level === "high_risk") riskDistribution.highRisk++;
+        else if (level === "prohibited") riskDistribution.prohibited++;
+        else riskDistribution.unclassified++;
+      });
+
+      const data: BoardPackData = {
+        organization,
+        generatedBy: profile?.full_name || user?.email || "Unknown",
+        rulesetVersion,
+        timelineMode: (organization as any).regulatory_timeline_mode || "current_law",
+        metrics: {
+          totalSystems: systems?.length || 0,
+          highRiskCount: riskDistribution.highRisk + riskDistribution.prohibited,
+          pendingClassification: riskDistribution.unclassified,
+          readinessScore: 75, // TODO: Calculate from actual readiness
+        },
+        riskDistribution,
+        topBlockers: [
+          { title: "3 systems missing classification", description: "Complete risk classification to unlock compliance pack", severity: "high" },
+          { title: "FRIA required for 2 high-risk systems", description: "Fundamental Rights Impact Assessments pending", severity: "high" },
+        ],
+        keyDeadlines: [
+          { date: "2 Feb 2025", description: "Prohibited practices + AI literacy obligations apply" },
+          { date: "2 Aug 2025", description: "GPAI model provider obligations apply" },
+          { date: "2 Aug 2026", description: "Full applicability of most provisions" },
+        ],
+      };
+
+      const doc = BoardPackPDF(data);
+      const blob = await pdf(doc).toBlob();
+      const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Board_Pack.pdf`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      await logExport("board_pack", fileName, blob.size);
+      toast.success("Board Pack exported successfully");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export Board Pack");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const exportCustomerTrustPack = async () => {
+    setIsExporting(true);
+    try {
+      const [organization, rulesetVersion] = await Promise.all([
+        getOrganization(),
+        getRulesetVersion(),
+      ]);
+
+      const data: CustomerTrustPackData = {
+        organization,
+        generatedBy: profile?.full_name || user?.email || "Unknown",
+        rulesetVersion,
+        timelineMode: (organization as any).regulatory_timeline_mode || "current_law",
+        aiGovernanceStatement: "We are committed to the responsible development and deployment of AI systems. Our governance framework ensures transparency, accountability, and compliance with the EU AI Act.",
+        transparencyPractices: [
+          "All AI-powered features are clearly disclosed to users",
+          "AI-generated content is labeled appropriately",
+          "Users are informed when interacting with AI systems",
+          "We provide explanations of how AI decisions are made",
+        ],
+        dataHandlingPractices: [
+          "Personal data is processed in accordance with GDPR",
+          "AI model inputs are minimized to what's necessary",
+          "Data retention periods are defined and enforced",
+          "Users can request human review of AI decisions",
+        ],
+        vendorAttestations: [],
+        complianceHighlights: [
+          "Complete AI system inventory maintained",
+          "Risk classification performed for all AI systems",
+          "Human oversight procedures in place",
+          "Staff AI literacy training program active",
+        ],
+      };
+
+      const doc = CustomerTrustPackPDF(data);
+      const blob = await pdf(doc).toBlob();
+      const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Trust_Pack.pdf`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      await logExport("customer_trust_pack", fileName, blob.size);
+      toast.success("Customer Trust Pack exported successfully");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export Customer Trust Pack");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const exportAuditorPack = async () => {
+    setIsExporting(true);
+    try {
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const [organization, rulesetVersion] = await Promise.all([
+        getOrganization(),
+        getRulesetVersion(),
+      ]);
+
+      // Fetch systems with history
+      const { data: systems } = await supabase
+        .from("ai_systems")
+        .select(`
+          id, name,
+          classification:ai_system_classifications(risk_level)
+        `)
+        .eq("organization_id", profile.organization_id);
+
+      const auditSystems = (systems || []).map((s) => ({
+        id: s.id,
+        name: s.name,
+        riskLevel: (s.classification as any)?.risk_level || "not_classified",
+        classificationHistory: [
+          {
+            versionNumber: 1,
+            riskLevel: (s.classification as any)?.risk_level || "not_classified",
+            classifiedAt: format(new Date(), "PPP"),
+            classifiedBy: "System",
+            aiAssisted: false,
+          },
+        ],
+        controls: [],
+        evidence: [],
+      }));
+
+      const data: AuditorPackData = {
+        organization,
+        generatedBy: profile?.full_name || user?.email || "Unknown",
+        rulesetVersion,
+        timelineMode: (organization as any).regulatory_timeline_mode || "current_law",
+        systems: auditSystems,
+        auditPeriod: {
+          start: format(new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), "PPP"),
+          end: format(new Date(), "PPP"),
+        },
+      };
+
+      const doc = AuditorPackPDF(data);
+      const blob = await pdf(doc).toBlob();
+      const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Auditor_Pack.pdf`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      await logExport("auditor_pack", fileName, blob.size);
+      toast.success("Auditor Pack exported successfully");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export Auditor Pack");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const exportProcurementPack = async () => {
+    setIsExporting(true);
+    try {
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const [organization, rulesetVersion] = await Promise.all([
+        getOrganization(),
+        getRulesetVersion(),
+      ]);
+
+      // Fetch vendors
+      const { data: vendors } = await supabase
+        .from("vendors")
+        .select("id, name")
+        .eq("organization_id", profile.organization_id);
+
+      const vendorData = (vendors || []).map((v) => ({
+        id: v.id,
+        name: v.name,
+        status: "pending" as const,
+        attestations: [],
+        aiSystemsCount: 0,
+        riskLevel: "Unknown",
+      }));
+
+      const data: ProcurementPackData = {
+        organization,
+        generatedBy: profile?.full_name || user?.email || "Unknown",
+        rulesetVersion,
+        timelineMode: (organization as any).regulatory_timeline_mode || "current_law",
+        vendors: vendorData,
+        controlCategories: [
+          {
+            name: "Vendor Governance (VEN)",
+            controls: [
+              { id: "VEN-01", name: "Vendor Identified & Contract Stored", status: "implemented" },
+              { id: "VEN-02", name: "Vendor AI Use Description Captured", status: "in_progress" },
+              { id: "VEN-03", name: "Vendor Security Evidence Stored", status: "not_started" },
+            ],
+          },
+        ],
+        securityPosture: {
+          encryptionAtRest: "AES-256",
+          encryptionInTransit: "TLS 1.3",
+          accessControl: "Role-based (RBAC)",
+          auditLogging: "Enabled",
+          dataResidency: "EU (Ireland)",
+          certifications: [],
+        },
+        dpaDetails: {
+          subprocessors: [],
+          dataCategories: ["Usage data", "Account data"],
+          retentionPeriod: "Duration of contract + 2 years",
+        },
+      };
+
+      const doc = ProcurementPackPDF(data);
+      const blob = await pdf(doc).toBlob();
+      const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Procurement_Pack.pdf`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      await logExport("procurement_pack", fileName, blob.size);
+      toast.success("Procurement Pack exported successfully");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export Procurement Pack");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return {
     isExporting,
     exportAISystemPDF,
     exportAISystemZIP,
     exportAllSystems,
+    // Audience packs
+    exportBoardPack,
+    exportCustomerTrustPack,
+    exportAuditorPack,
+    exportProcurementPack,
   };
 }
