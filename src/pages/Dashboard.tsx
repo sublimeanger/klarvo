@@ -183,9 +183,9 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
-              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
+              <Link to="/ai-systems?classification=high_risk" className="space-y-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm font-medium">High Risk</span>
+                  <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">High Risk</span>
                   <StatusBadge variant="high">{metrics.highRiskCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -194,10 +194,10 @@ export default function Dashboard() {
                     style={{ width: `${metrics.totalSystems > 0 ? (metrics.highRiskCount / metrics.totalSystems) * 100 : 0}%` }}
                   />
                 </div>
-              </div>
-              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
+              </Link>
+              <Link to="/ai-systems?classification=limited" className="space-y-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm font-medium">Limited</span>
+                  <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Limited</span>
                   <StatusBadge variant="limited">{metrics.limitedRiskCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -206,10 +206,10 @@ export default function Dashboard() {
                     style={{ width: `${metrics.totalSystems > 0 ? (metrics.limitedRiskCount / metrics.totalSystems) * 100 : 0}%` }}
                   />
                 </div>
-              </div>
-              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
+              </Link>
+              <Link to="/ai-systems?classification=minimal" className="space-y-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm font-medium">Minimal</span>
+                  <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Minimal</span>
                   <StatusBadge variant="minimal">{metrics.minimalRiskCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -218,10 +218,10 @@ export default function Dashboard() {
                     style={{ width: `${metrics.totalSystems > 0 ? (metrics.minimalRiskCount / metrics.totalSystems) * 100 : 0}%` }}
                   />
                 </div>
-              </div>
-              <div className="space-y-2 p-3 rounded-lg bg-muted/50">
+              </Link>
+              <Link to="/ai-systems?classification=pending" className="space-y-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer group">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm font-medium">Unclassified</span>
+                  <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Unclassified</span>
                   <StatusBadge variant="draft">{metrics.notClassifiedCount}</StatusBadge>
                 </div>
                 <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -230,7 +230,7 @@ export default function Dashboard() {
                     style={{ width: `${metrics.totalSystems > 0 ? (metrics.notClassifiedCount / metrics.totalSystems) * 100 : 0}%` }}
                   />
                 </div>
-              </div>
+              </Link>
             </div>
           </CardContent>
         </Card>
@@ -238,72 +238,80 @@ export default function Dashboard() {
 
       {/* Progress Section - Mobile 2-col grid */}
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
-        <Card className="p-4 sm:p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs sm:text-sm font-medium">Classification</span>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xl sm:text-2xl font-bold">{classificationProgress}%</span>
+        <Link to="/ai-systems">
+          <Card className="p-4 sm:p-6 hover:bg-muted/50 transition-colors cursor-pointer group h-full">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Classification</span>
             </div>
-            <Progress value={classificationProgress} className="h-1.5 sm:h-2" />
-            <p className="text-[10px] sm:text-xs text-muted-foreground">
-              {classifiedCount}/{metrics.totalSystems} done
-            </p>
-          </div>
-        </Card>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xl sm:text-2xl font-bold">{classificationProgress}%</span>
+              </div>
+              <Progress value={classificationProgress} className="h-1.5 sm:h-2" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                {classifiedCount}/{metrics.totalSystems} done
+              </p>
+            </div>
+          </Card>
+        </Link>
 
-        <Card className="p-4 sm:p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs sm:text-sm font-medium">Controls</span>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xl sm:text-2xl font-bold">{controlsProgress}%</span>
+        <Link to="/controls">
+          <Card className="p-4 sm:p-6 hover:bg-muted/50 transition-colors cursor-pointer group h-full">
+            <div className="flex items-center gap-2 mb-3">
+              <ClipboardCheck className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Controls</span>
             </div>
-            <Progress value={controlsProgress} className="h-1.5 sm:h-2" />
-            <p className="text-[10px] sm:text-xs text-muted-foreground">
-              {metrics.controlsImplemented}/{metrics.controlsTotal} impl
-            </p>
-          </div>
-        </Card>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xl sm:text-2xl font-bold">{controlsProgress}%</span>
+              </div>
+              <Progress value={controlsProgress} className="h-1.5 sm:h-2" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                {metrics.controlsImplemented}/{metrics.controlsTotal} impl
+              </p>
+            </div>
+          </Card>
+        </Link>
 
-        <Card className="p-4 sm:p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Building2 className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs sm:text-sm font-medium">Attestations</span>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xl sm:text-2xl font-bold">{metrics.attestationsTotal}</span>
+        <Link to="/vendors">
+          <Card className="p-4 sm:p-6 hover:bg-muted/50 transition-colors cursor-pointer group h-full">
+            <div className="flex items-center gap-2 mb-3">
+              <Building2 className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Attestations</span>
             </div>
-            <Progress 
-              value={metrics.attestationsTotal > 0 ? (metrics.attestationsVerified / metrics.attestationsTotal) * 100 : 0} 
-              className="h-1.5 sm:h-2" 
-            />
-            <p className="text-[10px] sm:text-xs text-muted-foreground">
-              {metrics.attestationsVerified} verified
-            </p>
-          </div>
-        </Card>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xl sm:text-2xl font-bold">{metrics.attestationsTotal}</span>
+              </div>
+              <Progress 
+                value={metrics.attestationsTotal > 0 ? (metrics.attestationsVerified / metrics.attestationsTotal) * 100 : 0} 
+                className="h-1.5 sm:h-2" 
+              />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                {metrics.attestationsVerified} verified
+              </p>
+            </div>
+          </Card>
+        </Link>
 
-        <Card className="p-4 sm:p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <FileText className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs sm:text-sm font-medium">Evidence</span>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xl sm:text-2xl font-bold">{metrics.evidenceCount}</span>
+        <Link to="/evidence">
+          <Card className="p-4 sm:p-6 hover:bg-muted/50 transition-colors cursor-pointer group h-full">
+            <div className="flex items-center gap-2 mb-3">
+              <FileText className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <span className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">Evidence</span>
             </div>
-            <Progress value={evidenceProgress} className="h-1.5 sm:h-2" />
-            <p className="text-[10px] sm:text-xs text-muted-foreground">
-              {metrics.approvedEvidenceCount} approved
-            </p>
-          </div>
-        </Card>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xl sm:text-2xl font-bold">{metrics.evidenceCount}</span>
+              </div>
+              <Progress value={evidenceProgress} className="h-1.5 sm:h-2" />
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
+                {metrics.approvedEvidenceCount} approved
+              </p>
+            </div>
+          </Card>
+        </Link>
       </div>
 
       {/* Analytics Charts */}
