@@ -11,6 +11,10 @@ import {
   Clock,
   User,
   Link2,
+  Users,
+  Shield,
+  Briefcase,
+  FileSearch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,6 +56,14 @@ const formatExportType = (type: string) => {
       return "Classification";
     case "fria_report":
       return "FRIA Report";
+    case "board_pack":
+      return "Board Pack";
+    case "customer_trust_pack":
+      return "Trust Pack";
+    case "auditor_pack":
+      return "Auditor Pack";
+    case "procurement_pack":
+      return "Procurement";
     default:
       return type;
   }
@@ -69,7 +81,16 @@ export default function Exports() {
   const [includeEvidence, setIncludeEvidence] = useState(true);
   
   const { systems, isLoading: systemsLoading } = useAISystems();
-  const { isExporting, exportAISystemPDF, exportAISystemZIP, exportAllSystems } = useExports();
+  const { 
+    isExporting, 
+    exportAISystemPDF, 
+    exportAISystemZIP, 
+    exportAllSystems,
+    exportBoardPack,
+    exportCustomerTrustPack,
+    exportAuditorPack,
+    exportProcurementPack,
+  } = useExports();
   const { exports, isLoading: historyLoading } = useExportHistory();
   const { subscription } = useSubscription();
 
@@ -260,6 +281,117 @@ export default function Exports() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Audience Packs */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-primary/10 p-2">
+              <Users className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-lg">Audience-Specific Packs</CardTitle>
+              <CardDescription>
+                Tailored exports for different stakeholders
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Board Pack */}
+            <div className="rounded-lg border p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-md bg-primary/10 p-1.5">
+                  <Building2 className="h-4 w-4 text-primary" />
+                </div>
+                <span className="font-medium">Board Pack</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                1-2 page executive summary with risk heat map, top blockers, and key deadlines
+              </p>
+              <Button
+                size="sm"
+                className="w-full"
+                onClick={exportBoardPack}
+                disabled={isExporting}
+              >
+                {isExporting ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <Download className="mr-2 h-3 w-3" />}
+                Export
+              </Button>
+            </div>
+
+            {/* Customer Trust Pack */}
+            <div className="rounded-lg border p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-md bg-success/10 p-1.5">
+                  <Shield className="h-4 w-4 text-success" />
+                </div>
+                <span className="font-medium">Customer Trust</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Redacted, shareable report with AI governance statement and transparency practices
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={exportCustomerTrustPack}
+                disabled={isExporting}
+              >
+                {isExporting ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <Download className="mr-2 h-3 w-3" />}
+                Export
+              </Button>
+            </div>
+
+            {/* Auditor Pack */}
+            <div className="rounded-lg border p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-md bg-warning/10 p-1.5">
+                  <FileSearch className="h-4 w-4 text-warning" />
+                </div>
+                <span className="font-medium">Auditor Pack</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Full traceability with classification history, evidence, and AI decision records
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={exportAuditorPack}
+                disabled={isExporting}
+              >
+                {isExporting ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <Download className="mr-2 h-3 w-3" />}
+                Export
+              </Button>
+            </div>
+
+            {/* Procurement Pack */}
+            <div className="rounded-lg border p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="rounded-md bg-muted p-1.5">
+                  <Briefcase className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <span className="font-medium">Procurement</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Vendor attestations, control status, security posture, and DPA details
+              </p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full"
+                onClick={exportProcurementPack}
+                disabled={isExporting}
+              >
+                {isExporting ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : <Download className="mr-2 h-3 w-3" />}
+                Export
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Export Contents Preview */}
       <Card>
