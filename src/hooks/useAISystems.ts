@@ -5,8 +5,9 @@ import { toast } from "sonner";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 
 export type AISystem = Tables<"ai_systems"> & {
-  vendors?: Tables<"vendors"> | null;
-  primary_owner?: Tables<"profiles"> | null;
+  vendors?: Pick<Tables<"vendors">, "id" | "name"> | null;
+  primary_owner?: Pick<Tables<"profiles">, "id" | "full_name"> | null;
+  ai_system_classifications?: Pick<Tables<"ai_system_classifications">, "id" | "risk_level" | "is_high_risk_candidate" | "has_transparency_obligations">[] | null;
 };
 
 export type AISystemInsert = TablesInsert<"ai_systems">;
@@ -24,13 +25,14 @@ export function useAISystems() {
         .select(`
           *,
           vendors (id, name),
-          primary_owner:profiles!ai_systems_primary_owner_id_fkey (id, full_name)
+          primary_owner:profiles!ai_systems_primary_owner_id_fkey (id, full_name),
+          ai_system_classifications (id, risk_level, is_high_risk_candidate, has_transparency_obligations)
         `)
         .eq("organization_id", profile.organization_id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return data as AISystem[];
+      return data as unknown as AISystem[];
     },
     enabled: !!profile?.organization_id,
     staleTime: 1000 * 30,
