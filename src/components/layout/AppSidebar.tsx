@@ -23,6 +23,7 @@ import {
   Factory,
   Truck,
   Lock,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -48,6 +49,7 @@ import {
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "AI Systems", href: "/ai-systems", icon: Cpu },
+  { name: "Discovery", href: "/discovery", icon: Sparkles },
   { name: "Vendors", href: "/vendors", icon: Building2 },
   { name: "Assessments", href: "/assessments", icon: ClipboardCheck },
   { name: "Controls", href: "/controls", icon: Shield },

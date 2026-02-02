@@ -1,98 +1,208 @@
-# Klarvo v2.1 Enhancement Plan — COMPLETED ✓
+# Klarvo v2.2 Enhancement Plan — Shadow AI Discovery
 
-## Status: All items implemented
+## Status: Phase 1 Complete ✓
 
-**Completion Date**: 2 Feb 2026  
-**Final Production Readiness Score**: 94%
-
----
-
-## ✅ Priority 1: MUST FIX (Pre-Launch) — COMPLETE
-
-| Item | Status | Implementation |
-|------|--------|----------------|
-| **1.1 RLS Security Gaps** | ✅ Done | All 47 tables have RLS enabled with org-scoped policies. Leaked password protection enabled. Cross-tenant isolation verified. |
-| **1.2 Data / AI Routing Clarity** | ✅ Done | AI Privacy Settings UI in Settings/General. Per-module toggles. Edge functions check `ai_features_enabled` before processing. |
-| **1.3 Regulatory Versioning** | ✅ Done | `regulatory_timeline_mode` column added. `RegulatoryBasisBanner` component integrated into all PDF exports. Omnibus proposal ruleset seeded. |
-| **1.4 AI Classification Defensibility** | ✅ Done | `ai_assisted`, `ai_model_version`, `ai_suggestion`, `human_override`, `override_reason` columns added. Override dialog enforces mandatory justification. |
+**Started**: 2 Feb 2026  
+**Phase 1 Completed**: 2 Feb 2026
 
 ---
 
-## ✅ Priority 2: SHOULD FIX (First 30-60 Days) — COMPLETE
+## Overview
 
-| Item | Status | Implementation |
-|------|--------|----------------|
-| **2.1 Audience-Specific Export Packs** | ✅ Done | 4 new PDFs: `BoardPackPDF`, `CustomerTrustPackPDF`, `AuditorPackPDF`, `ProcurementPackPDF`. Integrated into Exports page with dedicated buttons. |
-| **2.2 Export Eligibility Progress** | ✅ Done | `ExportEligibility` component shows tier progress (Classification Memo / Evidence Pack / Full Compliance) in wizard sidebar. |
-| **2.3 AI Kill Switches** | ✅ Done | Master toggle + per-module toggles in Settings. Edge functions respect settings. |
+Shadow AI Discovery enables organizations to automatically detect AI tools being used across their tech stack by connecting to Google Workspace and Microsoft 365. Detected tools are matched against a known AI services database and presented as draft inventory entries for review.
 
 ---
 
-## ✅ Additional Enhancements — COMPLETE
+## Architecture
 
-| Item | Status | Implementation |
-|------|--------|----------------|
-| **Control Library Traceability** | ✅ Done | `acceptance_criteria` seeded for 40+ controls. `na_requires_justification` enabled on 25+ critical controls. UI displays criteria + article refs. |
-| **N/A Justification Workflow** | ✅ Done | `NAJustificationDialog` component. Required when marking critical controls as N/A. Stored in `control_implementations`. |
-| **FRIA Tier Adjustment** | ✅ Done | Basic FRIA enabled for Growth tier. `friaAdvancedEnabled` gates premium features to Pro tier. |
+### Data Flow
+```
+Google Workspace / M365 APIs
+         ↓
+   Edge Function (oauth-callback, discovery-scan)
+         ↓
+   AI Tool Pattern Matching Engine
+         ↓
+   discovered_ai_tools table (draft entries)
+         ↓
+   Review Queue UI → One-click add to ai_systems
+```
 
----
+### Key Components
 
-## Files Modified/Created
-
-### Database Migrations
-- AI settings columns on `organizations`
-- AI tracking columns on `classification_history` + `ai_system_classifications`
-- Control library seeding (acceptance criteria, N/A fields)
-- RLS policy hardening
-
-### Edge Functions (All 5 AI functions updated)
-- `ai-assistant/index.ts`
-- `ai-system-intake/index.ts`
-- `classification-assistant/index.ts`
-- `document-intelligence/index.ts`
-- `compliance-copilot/index.ts`
-
-### Frontend Components
-- `src/components/settings/AIPrivacySettings.tsx` — New
-- `src/components/controls/NAJustificationDialog.tsx` — New
-- `src/components/exports/RegulatoryBasisBanner.tsx` — New
-- `src/components/ai-systems/wizard/ExportEligibility.tsx` — New
-- `src/components/exports/audience/*` — 4 new PDF components
-- `src/pages/Settings/General.tsx` — AI settings section
-- `src/pages/ClassificationWizard.tsx` — Override tracking
-- `src/pages/AISystemWizard.tsx` — Export eligibility integration
-- `src/pages/Exports.tsx` — Audience pack buttons
-- `src/components/ai-systems/AISystemControls.tsx` — Criteria + N/A display
-
-### Hooks
-- `src/hooks/useOrganization.ts` — AI settings fetch
-- `src/hooks/useClassification.ts` — AI tracking fields
-- `src/hooks/useControls.ts` — N/A justification fields
-- `src/hooks/useExports.ts` — Audience pack exports
-
-### Config
-- `src/lib/billing-constants.ts` — FRIA tier adjustments
+| Component | Purpose |
+|-----------|---------|
+| `workspace_connections` table | Store OAuth tokens + connection status |
+| `discovered_ai_tools` table | Detected tools pending review |
+| `ai_tool_patterns` table | Known AI services + detection patterns |
+| `discovery-scan` edge function | Fetch app data from connected workspaces |
+| `DiscoveryDashboard` page | Review queue + bulk actions |
 
 ---
 
-## Production Readiness Summary
+## Priority 1: Database Schema
 
-| Category | Before v2.1 | After v2.1 |
-|----------|-------------|------------|
-| Security (RLS/Auth) | 78% | 95% |
-| AI Governance | N/A | 90% |
-| Regulatory Accuracy | 85% | 95% |
-| Audit Defensibility | 80% | 95% |
-| **Overall Score** | **89%** | **94%** |
+### Tables to Create
+
+**workspace_connections**
+- `id` UUID PK
+- `organization_id` UUID FK
+- `provider` ENUM (google_workspace, microsoft_365)
+- `access_token` TEXT (encrypted)
+- `refresh_token` TEXT (encrypted)
+- `token_expires_at` TIMESTAMP
+- `scopes` TEXT[]
+- `connected_by` UUID FK profiles
+- `connected_at` TIMESTAMP
+- `last_scan_at` TIMESTAMP
+- `status` ENUM (active, disconnected, error)
+
+**discovered_ai_tools**
+- `id` UUID PK
+- `organization_id` UUID FK
+- `workspace_connection_id` UUID FK
+- `tool_name` TEXT
+- `vendor_name` TEXT
+- `detected_source` TEXT (sso_app, oauth_grant, api_token, etc.)
+- `detection_confidence` DECIMAL
+- `user_count` INTEGER
+- `first_seen_at` TIMESTAMP
+- `last_seen_at` TIMESTAMP
+- `status` ENUM (pending, reviewed, added_to_inventory, dismissed)
+- `ai_system_id` UUID FK (nullable, set when added)
+- `metadata` JSONB (raw API data)
+
+**ai_tool_patterns** (seeded reference data)
+- `id` UUID PK
+- `tool_name` TEXT
+- `vendor_name` TEXT
+- `detection_patterns` TEXT[] (app names, oauth scopes, domains)
+- `category` TEXT (llm, image_gen, code_assist, etc.)
+- `is_ai_confirmed` BOOLEAN
+- `typical_risk_level` TEXT
+- `notes` TEXT
 
 ---
 
-## Next Steps (Post-v2.1)
+## Priority 2: Edge Functions
 
-Consider for future iterations:
-1. **Shadow AI Discovery** — Connect Google Workspace/M365 to auto-detect AI tools
-2. **Multi-framework Mapping** — Map controls to ISO 42001, NIST AI RMF
-3. **Vendor Portal** — Let vendors upload attestations directly
-4. **Customer Trust Page Generator** — Public "How we use AI" page
-5. **Continuous Monitoring Connectors** — Pull metrics from external systems
+| Function | Purpose |
+|----------|---------|
+| `workspace-oauth-init` | Generate OAuth URL for Google/M365 |
+| `workspace-oauth-callback` | Handle OAuth callback, store tokens |
+| `discovery-scan` | Fetch installed apps from workspace APIs |
+| `discovery-match` | Match apps against ai_tool_patterns |
+
+---
+
+## Priority 3: Frontend Components
+
+| Component | Location |
+|-----------|----------|
+| `WorkspaceConnectionCard` | Settings or dedicated page |
+| `DiscoveryDashboard` | New page under AI Systems |
+| `DiscoveredToolCard` | Individual tool review card |
+| `BulkReviewActions` | Select multiple + add/dismiss |
+
+---
+
+## Implementation Phases
+
+### Phase 1: Database + Patterns (Current)
+- [ ] Create migration for tables
+- [ ] Seed ai_tool_patterns with 50+ known AI tools
+- [ ] Add RLS policies
+
+### Phase 2: OAuth Integration
+- [ ] workspace-oauth-init edge function
+- [ ] workspace-oauth-callback edge function  
+- [ ] WorkspaceConnectionCard UI
+
+### Phase 3: Discovery Engine
+- [ ] discovery-scan edge function (Google Admin SDK)
+- [ ] discovery-match logic
+- [ ] Scheduled re-scans (cron)
+
+### Phase 4: Review UI
+- [ ] DiscoveryDashboard page
+- [ ] DiscoveredToolCard component
+- [ ] One-click "Add to Inventory" flow
+- [ ] Bulk dismiss/review actions
+
+---
+
+## Known AI Tools to Seed (Initial List)
+
+| Tool | Vendor | Category |
+|------|--------|----------|
+| ChatGPT | OpenAI | LLM |
+| Claude | Anthropic | LLM |
+| Gemini | Google | LLM |
+| Copilot | Microsoft | Code Assist |
+| GitHub Copilot | GitHub | Code Assist |
+| Midjourney | Midjourney | Image Gen |
+| DALL-E | OpenAI | Image Gen |
+| Jasper | Jasper AI | Content |
+| Grammarly | Grammarly | Writing |
+| Notion AI | Notion | Productivity |
+| Fireflies | Fireflies.ai | Meeting |
+| Otter.ai | Otter | Meeting |
+| HubSpot AI | HubSpot | Sales |
+| Salesforce Einstein | Salesforce | Sales |
+| Intercom Fin | Intercom | Support |
+| Zendesk AI | Zendesk | Support |
+| Canva AI | Canva | Design |
+| Adobe Firefly | Adobe | Design |
+| Loom AI | Loom | Video |
+| Descript | Descript | Video |
+| Perplexity | Perplexity AI | Search |
+| Cursor | Cursor | Code |
+| Tabnine | Tabnine | Code |
+| Codeium | Codeium | Code |
+| Replit AI | Replit | Code |
+| v0 | Vercel | Code |
+| Lovable | Lovable | Code |
+| Zapier AI | Zapier | Automation |
+| Make (Integromat) | Make | Automation |
+| Typeform AI | Typeform | Forms |
+| SurveyMonkey AI | SurveyMonkey | Forms |
+| Calendly AI | Calendly | Scheduling |
+| Reclaim.ai | Reclaim | Scheduling |
+| Motion | Motion | Scheduling |
+| Linear AI | Linear | PM |
+| Asana AI | Asana | PM |
+| Monday AI | Monday | PM |
+| ClickUp AI | ClickUp | PM |
+| Figma AI | Figma | Design |
+| Miro AI | Miro | Whiteboard |
+| Slack AI | Slack | Communication |
+| Teams Copilot | Microsoft | Communication |
+| Zoom AI | Zoom | Video |
+| Gong | Gong | Sales Intel |
+| Chorus | ZoomInfo | Sales Intel |
+| Drift | Salesloft | Chat |
+| Qualified | Qualified | Chat |
+
+---
+
+## Addon Gating
+
+This feature is gated by the `shadow_ai_discovery` addon:
+- Required plan: Starter or above
+- Price: €149/month or €1,490/year
+
+---
+
+## Previous Plan Summary (v2.1)
+
+**Completed**: 2 Feb 2026  
+**Final Score**: 94%
+
+All Priority 1 (Security) and Priority 2 (UX) items were implemented:
+- RLS hardening on 47 tables
+- AI Privacy Settings + kill switches
+- Regulatory versioning + banners
+- AI classification override tracking
+- Control N/A justification workflow
+- Audience-specific export packs
+- Export eligibility progress indicator
