@@ -7,6 +7,7 @@ import {
 } from "@react-pdf/renderer";
 import { format } from "date-fns";
 import { baseStyles, colors, formatYesNoUnsure, formatList, formatRiskLevel, getRiskBadgeStyle } from "@/lib/pdfStyles";
+import { RegulatoryBasisBanner } from "./RegulatoryBasisBanner";
 
 // Extend base styles with memo-specific styles
 const styles = StyleSheet.create({
@@ -128,6 +129,8 @@ interface Props {
   organization: { name: string };
   generatedBy: string;
   reviewerName?: string;
+  rulesetVersion?: string;
+  timelineMode?: "current_law" | "proposed_amendments" | "early_compliance";
 }
 
 // Running Header Component
@@ -156,7 +159,9 @@ export function ClassificationMemoPDF({
   classification, 
   organization, 
   generatedBy,
-  reviewerName 
+  reviewerName,
+  rulesetVersion = "2025.02.01",
+  timelineMode = "current_law",
 }: Props) {
   const generatedDate = format(new Date(), "PPP");
   
@@ -199,7 +204,7 @@ export function ClassificationMemoPDF({
         <RunningFooter generatedDate={generatedDate} />
         
         {/* Header */}
-        <View style={{ marginBottom: 20, marginTop: 10 }}>
+        <View style={{ marginBottom: 10, marginTop: 10 }}>
           <Text style={{ fontSize: 22, fontWeight: 700, color: colors.emerald, marginBottom: 4 }}>
             Classification Memo
           </Text>
@@ -218,6 +223,13 @@ export function ClassificationMemoPDF({
             </Text>
           </View>
         </View>
+
+        {/* Regulatory Basis Banner */}
+        <RegulatoryBasisBanner
+          rulesetVersion={rulesetVersion}
+          timelineMode={timelineMode}
+          generatedDate={generatedDate}
+        />
 
         {/* Executive Summary - keep together */}
         <View style={baseStyles.sectionKeepTogether} wrap={false}>

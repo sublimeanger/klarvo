@@ -8,6 +8,7 @@ import {
 import { format } from "date-fns";
 import { baseStyles, colors } from "@/lib/pdfStyles";
 import type { FRIAAssessment, FRIARisk } from "@/hooks/useFRIA";
+import { RegulatoryBasisBanner } from "./RegulatoryBasisBanner";
 
 // Extend styles for FRIA report
 const styles = StyleSheet.create({
@@ -156,6 +157,8 @@ interface FRIAReportPDFProps {
   organizationName?: string;
   ownerName?: string;
   approverName?: string;
+  rulesetVersion?: string;
+  timelineMode?: "current_law" | "proposed_amendments" | "early_compliance";
 }
 
 // Running Header
@@ -185,7 +188,11 @@ export function FRIAReportPDF({
   organizationName = "Organization",
   ownerName,
   approverName,
+  rulesetVersion = "2025.02.01",
+  timelineMode = "current_law",
 }: FRIAReportPDFProps) {
+  const generatedDate = format(new Date(), "PPP");
+
   const getConclusionStyle = () => {
     switch (fria.final_conclusion) {
       case "approve":
@@ -250,7 +257,7 @@ export function FRIAReportPDF({
         <RunningFooter orgName={organizationName} />
 
         {/* Header */}
-        <View style={{ marginBottom: 20, marginTop: 10 }}>
+        <View style={{ marginBottom: 10, marginTop: 10 }}>
           <Text style={{ fontSize: 20, fontWeight: 700, color: colors.emerald, marginBottom: 4 }}>
             Fundamental Rights Impact Assessment
           </Text>
@@ -265,13 +272,20 @@ export function FRIAReportPDF({
               AI System: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{systemName}</Text>
             </Text>
             <Text style={{ fontSize: 9, color: colors.gray[500] }}>
-              Generated: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{format(new Date(), "PPP")}</Text>
+              Generated: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{generatedDate}</Text>
             </Text>
             <Text style={{ fontSize: 9, color: colors.gray[500] }}>
               Status: <Text style={{ fontWeight: 600, color: colors.gray[700] }}>{fria.status.replace("_", " ").toUpperCase()}</Text>
             </Text>
           </View>
         </View>
+
+        {/* Regulatory Basis Banner */}
+        <RegulatoryBasisBanner
+          rulesetVersion={rulesetVersion}
+          timelineMode={timelineMode}
+          generatedDate={generatedDate}
+        />
 
         {/* Conclusion Summary */}
         <View style={[styles.conclusionBox, getConclusionStyle()]} wrap={false}>
