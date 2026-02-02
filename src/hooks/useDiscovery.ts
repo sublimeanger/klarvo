@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+
 export interface WorkspaceConnection {
   id: string;
   organization_id: string;
@@ -273,6 +275,92 @@ export function useDisconnectWorkspace() {
     },
     onError: (error) => {
       toast.error("Failed to disconnect workspace");
+      console.error(error);
+    },
+  });
+}
+
+// Initiate OAuth flow
+export function useInitiateOAuth() {
+  return useMutation({
+    mutationFn: async (provider: "google_workspace" | "microsoft_365") => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
+      const redirect_uri = `${window.location.origin}/discovery`;
+
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/workspace-oauth-init`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ provider, redirect_uri }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to initiate OAuth");
+      }
+
+      return data.auth_url as string;
+    },
+    onSuccess: (authUrl) => {
+      // Redirect to OAuth provider
+      window.location.href = authUrl;
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to connect workspace");
+      console.error(error);
+    },
+  });
+}
+
+// Trigger a manual scan
+export function useTriggerScan() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (connectionId: string) => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error("Not authenticated");
+      }
+
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/discovery-scan`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ connection_id: connectionId }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to trigger scan");
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["workspace-connections"] });
+      queryClient.invalidateQueries({ queryKey: ["discovered-tools"] });
+      queryClient.invalidateQueries({ queryKey: ["discovery-stats"] });
+      toast.success("Scan started");
+    },
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Failed to trigger scan");
       console.error(error);
     },
   });
