@@ -2,7 +2,23 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
+
+// Helper to detect if we're on a custom domain (not lovable.app or lovableproject.com)
+const isCustomDomain = () => {
+  const hostname = window.location.hostname;
+  return (
+    !hostname.includes("lovable.app") &&
+    !hostname.includes("lovableproject.com") &&
+    hostname !== "localhost"
+  );
+};
+
+// Allowed OAuth provider hostnames for security validation
+const ALLOWED_OAUTH_HOSTS = [
+  "accounts.google.com",
+  "appleid.apple.com",
+];
 
 export function SocialAuthButtons() {
   const [isLoading, setIsLoading] = useState<"google" | null>(null);
@@ -11,12 +27,42 @@ export function SocialAuthButtons() {
   const handleGoogleSignIn = async () => {
     setIsLoading("google");
     try {
-      const { error } = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
-      });
+      // For custom domains (like klarvo.io), we need to bypass the auth-bridge
+      // by using skipBrowserRedirect and handling the redirect manually
+      if (isCustomDomain()) {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/dashboard`,
+            skipBrowserRedirect: true,
+          },
+        });
 
-      if (error) {
-        throw error;
+        if (error) {
+          throw error;
+        }
+
+        // Validate the OAuth URL before redirecting (prevent open redirect attacks)
+        if (data?.url) {
+          const oauthUrl = new URL(data.url);
+          if (!ALLOWED_OAUTH_HOSTS.some((host) => oauthUrl.hostname === host)) {
+            throw new Error("Invalid OAuth redirect URL");
+          }
+          // Manually redirect to the OAuth provider
+          window.location.href = data.url;
+        }
+      } else {
+        // For Lovable domains, use the standard flow with supabase directly
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/dashboard`,
+          },
+        });
+
+        if (error) {
+          throw error;
+        }
       }
     } catch (error: any) {
       toast({
