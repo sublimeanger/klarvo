@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { 
   BarChart, 
   Bar, 
@@ -15,6 +16,13 @@ import { useDepartmentDistribution } from "@/hooks/useComplianceTrends";
 
 export function DepartmentRiskChart() {
   const { data: distribution, isLoading } = useDepartmentDistribution();
+  const navigate = useNavigate();
+
+  const handleBarClick = (data: { department: string }) => {
+    if (data.department) {
+      navigate(`/ai-systems?department=${encodeURIComponent(data.department)}`);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -61,12 +69,18 @@ export function DepartmentRiskChart() {
           <Building2 className="h-5 w-5" />
           Risk by Department
         </CardTitle>
-        <CardDescription>AI system risk levels across departments</CardDescription>
+        <CardDescription>AI system risk levels across departments • Click to filter</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[250px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 80, bottom: 5 }}>
+            <BarChart 
+              data={chartData} 
+              layout="vertical" 
+              margin={{ top: 5, right: 20, left: 80, bottom: 5 }}
+              onClick={(data) => data?.activePayload?.[0]?.payload && handleBarClick(data.activePayload[0].payload)}
+              style={{ cursor: "pointer" }}
+            >
               <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={true} vertical={false} />
               <XAxis 
                 type="number" 
@@ -116,6 +130,7 @@ export function DepartmentRiskChart() {
                             <span>Not Classified: {data.notClassified}</span>
                           </div>
                         )}
+                        <p className="text-xs text-primary mt-2">Click to view department</p>
                       </div>
                     );
                   }

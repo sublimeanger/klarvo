@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,10 +19,22 @@ import {
   Sparkles,
   CheckCircle2,
   XCircle,
+  ArrowRight,
 } from "lucide-react";
 import { useComplianceCopilot, ComplianceDigest } from "@/hooks/useComplianceCopilot";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+
+const categoryToPath: Record<string, string> = {
+  classification: "/ai-systems",
+  controls: "/controls",
+  evidence: "/evidence",
+  training: "/training",
+  fria: "/assessments",
+  tasks: "/tasks",
+  vendors: "/vendors",
+  policies: "/policies",
+};
 
 export function ComplianceCopilotCard() {
   const { digest, generatedAt, isLoading, isRefreshing, refresh } = useComplianceCopilot();
@@ -102,6 +115,10 @@ export function ComplianceCopilotCard() {
     }
   };
 
+  const getCategoryPath = (category: string) => {
+    return categoryToPath[category.toLowerCase()] || "/tasks";
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -141,24 +158,24 @@ export function ComplianceCopilotCard() {
           </div>
         </div>
 
-        {/* Metrics row */}
+        {/* Metrics row - clickable */}
         <div className="grid grid-cols-4 gap-2">
-          <div className="text-center p-2 rounded bg-muted/30">
-            <p className="text-lg font-semibold">{digest.compliance_metrics.systems_classified}/{digest.compliance_metrics.systems_total}</p>
+          <Link to="/ai-systems" className="text-center p-2 rounded bg-muted/30 hover:bg-muted transition-colors cursor-pointer group">
+            <p className="text-lg font-semibold group-hover:text-primary transition-colors">{digest.compliance_metrics.systems_classified}/{digest.compliance_metrics.systems_total}</p>
             <p className="text-xs text-muted-foreground">Classified</p>
-          </div>
-          <div className="text-center p-2 rounded bg-muted/30">
-            <p className="text-lg font-semibold">{digest.compliance_metrics.high_risk_count}</p>
+          </Link>
+          <Link to="/ai-systems?classification=high_risk" className="text-center p-2 rounded bg-muted/30 hover:bg-muted transition-colors cursor-pointer group">
+            <p className="text-lg font-semibold group-hover:text-primary transition-colors">{digest.compliance_metrics.high_risk_count}</p>
             <p className="text-xs text-muted-foreground">High-Risk</p>
-          </div>
-          <div className="text-center p-2 rounded bg-muted/30">
-            <p className="text-lg font-semibold">{Math.round(digest.compliance_metrics.controls_implemented_pct)}%</p>
+          </Link>
+          <Link to="/controls" className="text-center p-2 rounded bg-muted/30 hover:bg-muted transition-colors cursor-pointer group">
+            <p className="text-lg font-semibold group-hover:text-primary transition-colors">{Math.round(digest.compliance_metrics.controls_implemented_pct)}%</p>
             <p className="text-xs text-muted-foreground">Controls</p>
-          </div>
-          <div className="text-center p-2 rounded bg-muted/30">
-            <p className="text-lg font-semibold">{digest.compliance_metrics.fria_completed}/{digest.compliance_metrics.fria_required}</p>
+          </Link>
+          <Link to="/assessments" className="text-center p-2 rounded bg-muted/30 hover:bg-muted transition-colors cursor-pointer group">
+            <p className="text-lg font-semibold group-hover:text-primary transition-colors">{digest.compliance_metrics.fria_completed}/{digest.compliance_metrics.fria_required}</p>
             <p className="text-xs text-muted-foreground">FRIA</p>
-          </div>
+          </Link>
         </div>
 
         <Tabs defaultValue="actions" className="w-full">
@@ -172,21 +189,28 @@ export function ComplianceCopilotCard() {
             <ScrollArea className="h-[200px]">
               <div className="space-y-2">
                 {digest.priority_actions.map((action, i) => (
-                  <div key={i} className="p-3 rounded-lg border bg-background">
+                  <Link 
+                    key={i} 
+                    to={getCategoryPath(action.category)}
+                    className="block p-3 rounded-lg border bg-background hover:bg-muted/50 transition-colors group"
+                  >
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="text-sm font-medium">{action.title}</p>
+                      <p className="text-sm font-medium group-hover:text-primary transition-colors">{action.title}</p>
                       <Badge variant={getUrgencyColor(action.urgency) as "destructive" | "secondary" | "default" | "outline"} className="text-xs shrink-0 capitalize">
                         {action.urgency.replace("_", " ")}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mb-2">{action.description}</p>
-                    <div className="flex items-center gap-2 text-xs">
-                      <Badge variant="outline" className="text-xs capitalize">{action.category}</Badge>
-                      <span className="text-muted-foreground">•</span>
-                      <Clock className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-muted-foreground">{action.estimated_effort}</span>
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs capitalize">{action.category}</Badge>
+                        <span className="text-muted-foreground">•</span>
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-muted-foreground">{action.estimated_effort}</span>
+                      </div>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </ScrollArea>
@@ -196,21 +220,28 @@ export function ComplianceCopilotCard() {
             <ScrollArea className="h-[200px]">
               <div className="space-y-2">
                 {digest.deadline_alerts.map((alert, i) => (
-                  <div key={i} className="p-3 rounded-lg border bg-background">
+                  <Link
+                    key={i}
+                    to="/tasks"
+                    className="block p-3 rounded-lg border bg-background hover:bg-muted/50 transition-colors group"
+                  >
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-medium">{alert.deadline}</p>
+                      <p className="text-sm font-medium group-hover:text-primary transition-colors">{alert.deadline}</p>
                       <Badge variant={alert.priority === "critical" || alert.priority === "high" ? "destructive" : "secondary"} className="text-xs">
                         {alert.days_remaining} days
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mb-2">{alert.action_required}</p>
-                    <div className="flex items-center gap-2 text-xs">
-                      <Calendar className="h-3 w-3 text-muted-foreground" />
-                      <span className="text-muted-foreground">{new Date(alert.deadline_date).toLocaleDateString()}</span>
-                      <span className="text-muted-foreground">•</span>
-                      <span className="text-muted-foreground">{alert.affected_systems} systems affected</span>
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-muted-foreground">{new Date(alert.deadline_date).toLocaleDateString()}</span>
+                        <span className="text-muted-foreground">•</span>
+                        <span className="text-muted-foreground">{alert.affected_systems} systems affected</span>
+                      </div>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </ScrollArea>
@@ -220,10 +251,15 @@ export function ComplianceCopilotCard() {
             <ScrollArea className="h-[200px]">
               <div className="space-y-2">
                 {digest.risk_highlights.map((risk, i) => (
-                  <div key={i} className="flex items-start gap-2 p-2 rounded bg-destructive/5 border border-destructive/10">
+                  <Link
+                    key={i}
+                    to="/ai-systems?classification=high_risk"
+                    className="flex items-start gap-2 p-2 rounded bg-destructive/5 border border-destructive/10 hover:bg-destructive/10 transition-colors group"
+                  >
                     <AlertTriangle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
-                    <p className="text-sm">{risk}</p>
-                  </div>
+                    <p className="text-sm flex-1 group-hover:text-destructive transition-colors">{risk}</p>
+                    <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-0.5" />
+                  </Link>
                 ))}
               </div>
             </ScrollArea>
