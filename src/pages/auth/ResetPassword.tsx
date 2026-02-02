@@ -152,6 +152,7 @@ export default function ResetPassword() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter new password"
+                autoComplete="new-password"
                 required
                 minLength={6}
               />
@@ -164,6 +165,7 @@ export default function ResetPassword() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password"
+                autoComplete="new-password"
                 required
               />
             </div>
