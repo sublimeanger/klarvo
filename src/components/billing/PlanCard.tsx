@@ -35,20 +35,22 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
       plan.popular && "bg-gradient-to-b from-primary/5 to-transparent"
     )}>
       {/* Badges */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-        {plan.popular && (
-          <Badge className="bg-primary text-primary-foreground text-xs whitespace-nowrap">
-            <Sparkles className="h-3 w-3 mr-1" />
-            Most Popular
-          </Badge>
-        )}
-        {isGrowth && billingPeriod === 'annual' && (
-          <Badge variant="secondary" className="bg-success/10 text-success border-success/20 text-xs whitespace-nowrap">
-            <TrendingUp className="h-3 w-3 mr-1" />
-            Best Value
-          </Badge>
-        )}
-      </div>
+      {(plan.popular || (isGrowth && billingPeriod === 'annual')) && (
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+          {plan.popular && (
+            <Badge className="bg-primary text-primary-foreground text-xs whitespace-nowrap shadow-sm">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Most Popular
+            </Badge>
+          )}
+          {isGrowth && billingPeriod === 'annual' && (
+            <Badge variant="secondary" className="bg-success/10 text-success border border-success/20 text-xs whitespace-nowrap shadow-sm">
+              <TrendingUp className="h-3 w-3 mr-1" />
+              Best Value
+            </Badge>
+          )}
+        </div>
+      )}
       
       <CardHeader className="pb-3 sm:pb-4 p-3 sm:p-6">
         <CardTitle className="text-lg sm:text-xl">{plan.name}</CardTitle>
