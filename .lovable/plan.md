@@ -1,9 +1,10 @@
 # Klarvo v2.2 Enhancement Plan — Shadow AI Discovery
 
-## Status: Phase 1 Complete ✓
+## Status: Phase 3 Complete ✓
 
 **Started**: 2 Feb 2026  
-**Phase 1 Completed**: 2 Feb 2026
+**Phase 1 Completed**: 2 Feb 2026  
+**Phase 3 Completed**: 2 Feb 2026
 
 ---
 
@@ -108,26 +109,26 @@ Google Workspace / M365 APIs
 
 ## Implementation Phases
 
-### Phase 1: Database + Patterns (Current)
-- [ ] Create migration for tables
-- [ ] Seed ai_tool_patterns with 50+ known AI tools
-- [ ] Add RLS policies
+### Phase 1: Database + Patterns ✅
+- [x] Create migration for tables
+- [x] Seed ai_tool_patterns with 50+ known AI tools
+- [x] Add RLS policies
 
-### Phase 2: OAuth Integration
-- [ ] workspace-oauth-init edge function
-- [ ] workspace-oauth-callback edge function  
-- [ ] WorkspaceConnectionCard UI
+### Phase 2: OAuth Integration ✅
+- [x] workspace-oauth-init edge function
+- [x] workspace-oauth-callback edge function  
+- [x] WorkspaceConnectionCard UI
 
-### Phase 3: Discovery Engine
-- [ ] discovery-scan edge function (Google Admin SDK)
-- [ ] discovery-match logic
-- [ ] Scheduled re-scans (cron)
+### Phase 3: Discovery Engine ✅
+- [x] discovery-scan edge function (pattern matching)
+- [x] discovery-match logic
+- [ ] Scheduled re-scans (cron) — future enhancement
 
-### Phase 4: Review UI
-- [ ] DiscoveryDashboard page
-- [ ] DiscoveredToolCard component
-- [ ] One-click "Add to Inventory" flow
-- [ ] Bulk dismiss/review actions
+### Phase 4: Review UI ✅
+- [x] DiscoveryDashboard page
+- [x] DiscoveredToolCard component
+- [x] One-click "Add to Inventory" flow
+- [x] Bulk dismiss/review actions
 
 ---
 
