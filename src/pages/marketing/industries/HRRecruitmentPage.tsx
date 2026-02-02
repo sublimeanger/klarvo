@@ -103,6 +103,8 @@ export default function HRRecruitmentPage() {
         }
         subtitle="CV screening, interview analysis, and performance monitoring AI are high-risk under Annex III. Here's what HR teams need to know."
         variant="centered"
+        heroVariant="gradient-warm"
+        secondaryCta={{ label: "See Samples", href: "/samples" }}
       />
 
       {/* Risk Alert */}

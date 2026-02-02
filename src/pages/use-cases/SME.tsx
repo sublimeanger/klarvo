@@ -131,7 +131,7 @@ export default function SMEUseCase() {
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
-                  <Link to="/features">See How It Works</Link>
+                  <Link to="/samples">See Samples</Link>
                 </Button>
               </div>
             </div>
