@@ -1,4 +1,5 @@
-import { ShieldCheck, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ShieldCheck, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -61,11 +62,11 @@ export function AuditReadinessCard() {
   };
 
   const breakdownItems = [
-    { key: "classification", label: "Classification", detail: breakdown.classification.label, ...breakdown.classification },
-    { key: "controls", label: "Controls", detail: breakdown.controls.label, ...breakdown.controls },
-    { key: "evidence", label: "Evidence", detail: breakdown.evidence.label, ...breakdown.evidence },
-    { key: "tasks", label: "Tasks", detail: breakdown.tasks.label, ...breakdown.tasks },
-    { key: "training", label: "Training", detail: breakdown.training.label, ...breakdown.training },
+    { key: "classification", label: "Classification", detail: breakdown.classification.label, href: "/ai-systems", ...breakdown.classification },
+    { key: "controls", label: "Controls", detail: breakdown.controls.label, href: "/controls", ...breakdown.controls },
+    { key: "evidence", label: "Evidence", detail: breakdown.evidence.label, href: "/evidence", ...breakdown.evidence },
+    { key: "tasks", label: "Tasks", detail: breakdown.tasks.label, href: "/tasks", ...breakdown.tasks },
+    { key: "training", label: "Training", detail: breakdown.training.label, href: "/training", ...breakdown.training },
   ];
 
   return (
@@ -104,12 +105,19 @@ export function AuditReadinessCard() {
           {/* Breakdown */}
           <div className="space-y-2 sm:space-y-3">
             {breakdownItems.map((item) => (
-              <div key={item.key} className="space-y-1">
+              <Link 
+                key={item.key} 
+                to={item.href}
+                className="block space-y-1 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
+              >
                 <div className="flex items-center justify-between text-xs sm:text-sm">
-                  <span className="font-medium">{item.label}</span>
-                  <span className="text-muted-foreground">
-                    {item.score}/{item.max}
-                  </span>
+                  <span className="font-medium group-hover:text-primary transition-colors">{item.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">
+                      {item.score}/{item.max}
+                    </span>
+                    <ChevronRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Progress 
@@ -120,7 +128,7 @@ export function AuditReadinessCard() {
                     {item.detail}
                   </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

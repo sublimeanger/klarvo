@@ -40,9 +40,9 @@ import { DashboardRecommendationsCard } from "@/components/recommendations";
 import { ComplianceCopilotCard } from "@/components/dashboard/ComplianceCopilotCard";
 
 const upcomingDeadlines = [
-  { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const },
-  { date: "Aug 2, 2025", event: "GPAI model requirements", type: "warning" as const },
-  { date: "Aug 2, 2026", event: "High-risk AI system rules", type: "info" as const },
+  { date: "Feb 2, 2025", event: "Prohibited AI practices ban", type: "critical" as const, href: "/guides/prohibited-practices" },
+  { date: "Aug 2, 2025", event: "GPAI model requirements", type: "warning" as const, href: "/eu-ai-act" },
+  { date: "Aug 2, 2026", event: "High-risk AI system rules", type: "info" as const, href: "/guides/high-risk-ai-systems" },
 ];
 
 export default function Dashboard() {
@@ -349,12 +349,16 @@ export default function Dashboard() {
           <CardContent>
             <div className="space-y-3 sm:space-y-4">
               {upcomingDeadlines.map((deadline, index) => (
-                <div key={index} className="flex items-start gap-3 sm:gap-4">
-                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
-                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                <Link 
+                  key={index} 
+                  to={deadline.href}
+                  className="flex items-start gap-3 sm:gap-4 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
+                >
+                  <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-primary/10 transition-colors">
+                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium">{deadline.event}</p>
+                    <p className="text-xs sm:text-sm font-medium group-hover:text-primary transition-colors">{deadline.event}</p>
                     <p className="text-[10px] sm:text-sm text-muted-foreground">{deadline.date}</p>
                   </div>
                   <StatusBadge 
@@ -363,7 +367,7 @@ export default function Dashboard() {
                   >
                     {deadline.type === "critical" ? "Critical" : deadline.type === "warning" ? "Soon" : "Later"}
                   </StatusBadge>
-                </div>
+                </Link>
               ))}
             </div>
           </CardContent>
@@ -390,9 +394,13 @@ export default function Dashboard() {
                 <p className="text-xs sm:text-sm">No pending tasks</p>
               </div>
             ) : (
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-1">
                 {pendingTasks.map((task) => (
-                  <div key={task.id} className="flex items-start gap-3 sm:gap-4">
+                  <Link 
+                    key={task.id} 
+                    to={`/tasks?highlight=${task.id}`}
+                    className="flex items-start gap-3 sm:gap-4 p-2 -mx-2 rounded-lg hover:bg-muted/50 transition-colors group cursor-pointer"
+                  >
                     <div 
                       className={`h-2 w-2 mt-1.5 sm:mt-2 rounded-full shrink-0 ${
                         task.priority === "urgent" || task.priority === "high" 
@@ -401,7 +409,7 @@ export default function Dashboard() {
                       }`} 
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs sm:text-sm font-medium line-clamp-1">{task.title}</p>
+                      <p className="text-xs sm:text-sm font-medium line-clamp-1 group-hover:text-primary transition-colors">{task.title}</p>
                       <p className="text-[10px] sm:text-sm text-muted-foreground">
                         {task.due_date 
                           ? `Due ${new Date(task.due_date).toLocaleDateString()}`
@@ -409,7 +417,7 @@ export default function Dashboard() {
                         }
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
