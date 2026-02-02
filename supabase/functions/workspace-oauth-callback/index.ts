@@ -11,6 +11,127 @@ const MICROSOFT_TENANT_ID = Deno.env.get("MICROSOFT_365_TENANT_ID") || "common";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+interface TokenData {
+  access_token: string;
+  refresh_token?: string;
+  expires_in: number;
+  token_type: string;
+}
+
+interface StatePayload {
+  state: string;
+  connection_id: string;
+  redirect_uri: string;
+}
+
+/**
+ * Exchange authorization code for tokens with Google
+ */
+async function exchangeGoogleCode(
+  code: string,
+  callbackUrl: string
+): Promise<{ tokenData: TokenData; userDomain: string | null }> {
+  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      code,
+      client_id: GOOGLE_CLIENT_ID!,
+      client_secret: GOOGLE_CLIENT_SECRET!,
+      redirect_uri: callbackUrl,
+      grant_type: "authorization_code",
+    }),
+  });
+
+  const tokenData = await tokenResponse.json();
+
+  if (!tokenData.access_token) {
+    console.error("Google token exchange failed:", tokenData);
+    throw new Error("Failed to exchange code for tokens with Google");
+  }
+
+  // Get user info to extract domain
+  const userInfoResponse = await fetch(
+    "https://www.googleapis.com/oauth2/v2/userinfo",
+    {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    }
+  );
+  const userInfo = await userInfoResponse.json();
+  
+  let userDomain: string | null = null;
+  if (userInfo.hd) {
+    userDomain = userInfo.hd; // Google Workspace domain
+  } else if (userInfo.email) {
+    userDomain = userInfo.email.split("@")[1];
+  }
+
+  return { tokenData, userDomain };
+}
+
+/**
+ * Exchange authorization code for tokens with Microsoft
+ */
+async function exchangeMicrosoftCode(
+  code: string,
+  callbackUrl: string
+): Promise<{ tokenData: TokenData; userDomain: string | null }> {
+  const tokenResponse = await fetch(
+    `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/token`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: MICROSOFT_CLIENT_ID!,
+        client_secret: MICROSOFT_CLIENT_SECRET!,
+        redirect_uri: callbackUrl,
+        grant_type: "authorization_code",
+      }),
+    }
+  );
+
+  const tokenData = await tokenResponse.json();
+
+  if (!tokenData.access_token) {
+    console.error("Microsoft token exchange failed:", tokenData);
+    throw new Error("Failed to exchange code for tokens with Microsoft");
+  }
+
+  // Get user info to extract domain
+  const userInfoResponse = await fetch(
+    "https://graph.microsoft.com/v1.0/me",
+    {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    }
+  );
+  const userInfo = await userInfoResponse.json();
+  
+  let userDomain: string | null = null;
+  if (userInfo.mail) {
+    userDomain = userInfo.mail.split("@")[1];
+  } else if (userInfo.userPrincipalName) {
+    userDomain = userInfo.userPrincipalName.split("@")[1];
+  }
+
+  return { tokenData, userDomain };
+}
+
+/**
+ * Parse and validate the state parameter
+ */
+function parseState(encodedState: string | null): StatePayload {
+  if (!encodedState) {
+    throw new Error("Missing state parameter");
+  }
+  
+  try {
+    return JSON.parse(atob(encodedState));
+  } catch {
+    throw new Error("Invalid state parameter");
+  }
+}
+
 serve(async (req) => {
   try {
     const url = new URL(req.url);
@@ -20,14 +141,7 @@ serve(async (req) => {
     const errorDescription = url.searchParams.get("error_description");
 
     // Parse state
-    let statePayload: { state: string; connection_id: string; redirect_uri: string };
-    try {
-      statePayload = JSON.parse(atob(encodedState || ""));
-    } catch {
-      throw new Error("Invalid state parameter");
-    }
-
-    const { connection_id, redirect_uri } = statePayload;
+    const { connection_id, redirect_uri } = parseState(encodedState);
 
     // Use service role to update connection status
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -65,98 +179,33 @@ serve(async (req) => {
     }
 
     const callbackUrl = `${SUPABASE_URL}/functions/v1/workspace-oauth-callback`;
-    let tokenData: {
-      access_token: string;
-      refresh_token?: string;
-      expires_in: number;
-      token_type: string;
-    };
+    let tokenData: TokenData;
     let userDomain: string | null = null;
 
     if (connection.provider === "google_workspace") {
-      // Exchange code for tokens with Google
-      const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          code,
-          client_id: GOOGLE_CLIENT_ID!,
-          client_secret: GOOGLE_CLIENT_SECRET!,
-          redirect_uri: callbackUrl,
-          grant_type: "authorization_code",
-        }),
-      });
-
-      tokenData = await tokenResponse.json();
-
-      if (!tokenData.access_token) {
-        throw new Error("Failed to exchange code for tokens");
-      }
-
-      // Get user info to extract domain
-      const userInfoResponse = await fetch(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-          headers: { Authorization: `Bearer ${tokenData.access_token}` },
-        }
-      );
-      const userInfo = await userInfoResponse.json();
-      
-      if (userInfo.hd) {
-        userDomain = userInfo.hd; // Google Workspace domain
-      } else if (userInfo.email) {
-        userDomain = userInfo.email.split("@")[1];
-      }
+      const result = await exchangeGoogleCode(code, callbackUrl);
+      tokenData = result.tokenData;
+      userDomain = result.userDomain;
     } else {
-      // Exchange code for tokens with Microsoft
-      const tokenResponse = await fetch(
-        `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/token`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            code,
-            client_id: MICROSOFT_CLIENT_ID!,
-            client_secret: MICROSOFT_CLIENT_SECRET!,
-            redirect_uri: callbackUrl,
-            grant_type: "authorization_code",
-          }),
-        }
-      );
-
-      tokenData = await tokenResponse.json();
-
-      if (!tokenData.access_token) {
-        throw new Error("Failed to exchange code for tokens");
-      }
-
-      // Get user info to extract domain
-      const userInfoResponse = await fetch(
-        "https://graph.microsoft.com/v1.0/me",
-        {
-          headers: { Authorization: `Bearer ${tokenData.access_token}` },
-        }
-      );
-      const userInfo = await userInfoResponse.json();
-      
-      if (userInfo.mail) {
-        userDomain = userInfo.mail.split("@")[1];
-      } else if (userInfo.userPrincipalName) {
-        userDomain = userInfo.userPrincipalName.split("@")[1];
-      }
+      const result = await exchangeMicrosoftCode(code, callbackUrl);
+      tokenData = result.tokenData;
+      userDomain = result.userDomain;
     }
 
+    // Calculate token expiration time
+    const tokenExpiresAt = new Date(Date.now() + tokenData.expires_in * 1000).toISOString();
+
     // Update connection with tokens (encrypted at rest by Supabase)
-    // Note: In production, consider using Supabase Vault for additional encryption
+    // Store tokens for real API access during discovery scans
     const { error: updateError } = await supabase
       .from("workspace_connections")
       .update({
         status: "active",
         domain: userDomain,
         error_message: null,
-        // Store tokens in a separate secure table or vault in production
-        // For now, we're storing the refresh token concept - actual implementation
-        // would use Supabase Vault or encrypted columns
+        access_token_encrypted: tokenData.access_token,
+        refresh_token_encrypted: tokenData.refresh_token || null,
+        token_expires_at: tokenExpiresAt,
       })
       .eq("id", connection_id);
 

@@ -4137,6 +4137,7 @@ export type Database = {
       workspace_connections: {
         Row: {
           access_token: string | null
+          access_token_encrypted: string | null
           connected_at: string | null
           connected_by: string | null
           created_at: string | null
@@ -4148,6 +4149,7 @@ export type Database = {
           organization_id: string
           provider: Database["public"]["Enums"]["workspace_provider"]
           refresh_token: string | null
+          refresh_token_encrypted: string | null
           scopes: string[] | null
           status: Database["public"]["Enums"]["connection_status"] | null
           token_expires_at: string | null
@@ -4155,6 +4157,7 @@ export type Database = {
         }
         Insert: {
           access_token?: string | null
+          access_token_encrypted?: string | null
           connected_at?: string | null
           connected_by?: string | null
           created_at?: string | null
@@ -4166,6 +4169,7 @@ export type Database = {
           organization_id: string
           provider: Database["public"]["Enums"]["workspace_provider"]
           refresh_token?: string | null
+          refresh_token_encrypted?: string | null
           scopes?: string[] | null
           status?: Database["public"]["Enums"]["connection_status"] | null
           token_expires_at?: string | null
@@ -4173,6 +4177,7 @@ export type Database = {
         }
         Update: {
           access_token?: string | null
+          access_token_encrypted?: string | null
           connected_at?: string | null
           connected_by?: string | null
           created_at?: string | null
@@ -4184,6 +4189,7 @@ export type Database = {
           organization_id?: string
           provider?: Database["public"]["Enums"]["workspace_provider"]
           refresh_token?: string | null
+          refresh_token_encrypted?: string | null
           scopes?: string[] | null
           status?: Database["public"]["Enums"]["connection_status"] | null
           token_expires_at?: string | null
