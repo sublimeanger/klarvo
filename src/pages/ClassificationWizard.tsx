@@ -24,6 +24,14 @@ import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAISystem } from "@/hooks/useAISystems";
 import { useClassification, useCreateOrUpdateClassification } from "@/hooks/useClassification";
 import { useControlLibrary, useInitializeControls } from "@/hooks/useControls";
@@ -156,6 +164,13 @@ export default function ClassificationWizard() {
   const [currentStep, setCurrentStep] = useState(1);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   
+  // AI tracking state
+  const [aiWasConsulted, setAiWasConsulted] = useState(false);
+  const [aiSuggestion, setAiSuggestion] = useState<Record<string, unknown> | null>(null);
+  const [aiSuggestedRiskLevel, setAiSuggestedRiskLevel] = useState<string | null>(null);
+  const [showOverrideDialog, setShowOverrideDialog] = useState(false);
+  const [overrideReason, setOverrideReason] = useState("");
+  
   // Answers state
   const [prohibitedAnswers, setProhibitedAnswers] = useState<Record<string, AnswerValue>>({});
   const [highRiskAnswers, setHighRiskAnswers] = useState<Record<string, AnswerValue>>({});
@@ -230,11 +245,20 @@ export default function ClassificationWizard() {
     }
   };
 
-  const handleComplete = async () => {
+  const handleComplete = async (confirmedOverrideReason?: string) => {
     if (!id) return;
 
     const riskLevel = calculateRiskLevel();
     const hasVendor = !!system?.vendor_id;
+    
+    // Check if human overrode AI suggestion
+    const humanOverride = aiWasConsulted && aiSuggestedRiskLevel && aiSuggestedRiskLevel !== riskLevel;
+    
+    // If override detected and no reason provided, show dialog
+    if (humanOverride && !confirmedOverrideReason && !overrideReason) {
+      setShowOverrideDialog(true);
+      return;
+    }
     
     await saveClassification.mutateAsync({
       ai_system_id: id,
@@ -249,9 +273,15 @@ export default function ClassificationWizard() {
       transparency_screening_completed: true,
       has_transparency_obligations: hasTransparencyObligations,
       transparency_categories: transparencyCategories.length > 0 ? transparencyCategories : null,
-      risk_level: riskLevel as any,
+      risk_level: riskLevel as "prohibited" | "high_risk" | "limited_risk" | "minimal_risk",
       confidence_level: hasProhibitedUnsure ? "medium" : "high",
-      classification_rationale: `Automated classification based on ${Object.keys(prohibitedAnswers).length + Object.keys(highRiskAnswers).length + Object.keys(transparencyAnswers).length} screening questions.`,
+      classification_rationale: `${aiWasConsulted ? "AI-assisted c" : "C"}lassification based on ${Object.keys(prohibitedAnswers).length + Object.keys(highRiskAnswers).length + Object.keys(transparencyAnswers).length} screening questions.`,
+      // AI tracking fields
+      ai_assisted: aiWasConsulted,
+      ai_model_version: aiWasConsulted ? "google/gemini-2.5-flash" : null,
+      ai_suggestion: aiSuggestion,
+      human_override: humanOverride,
+      override_reason: confirmedOverrideReason || overrideReason || null,
     });
 
     // Auto-initialize applicable controls based on risk level
@@ -742,7 +772,7 @@ export default function ClassificationWizard() {
                 <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <Button onClick={handleComplete} disabled={saveClassification.isPending} size="sm" className="sm:size-default">
+              <Button onClick={() => handleComplete()} disabled={saveClassification.isPending} size="sm" className="sm:size-default">
                 {saveClassification.isPending && <Loader2 className="mr-1 sm:mr-2 h-4 w-4 animate-spin" />}
                 <span className="hidden sm:inline">Complete Classification</span>
                 <span className="sm:hidden">Complete</span>
@@ -760,6 +790,16 @@ export default function ClassificationWizard() {
               <ClassificationAssistantPanel
                 systemData={systemDataForAI}
                 onApplyClassification={(result) => {
+                  // Track AI was consulted
+                  setAiWasConsulted(true);
+                  setAiSuggestion(result as unknown as Record<string, unknown>);
+                  
+                  // Calculate what the AI suggested as risk level
+                  const hasProhibited = result.prohibited_indicators?.some(ind => ind.present);
+                  const hasHighRisk = result.high_risk_categories?.some(cat => cat.applicable);
+                  const suggestedLevel = hasProhibited ? "prohibited" : hasHighRisk ? "high_risk" : "minimal_risk";
+                  setAiSuggestedRiskLevel(suggestedLevel);
+                  
                   // Map AI classification to answers
                   if (result.prohibited_indicators) {
                     const newProhibitedAnswers: Record<string, AnswerValue> = {};
@@ -801,6 +841,61 @@ export default function ClassificationWizard() {
           </div>
         )}
       </div>
+      
+      {/* AI Override Reason Dialog */}
+      <Dialog open={showOverrideDialog} onOpenChange={setShowOverrideDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-warning" />
+              Classification Differs from AI Suggestion
+            </DialogTitle>
+            <DialogDescription>
+              You've selected a different classification than the AI suggested. 
+              For audit defensibility, please explain your reasoning.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">AI suggested:</span>
+              <StatusBadge variant={aiSuggestedRiskLevel === "prohibited" ? "prohibited" : aiSuggestedRiskLevel === "high_risk" ? "high" : aiSuggestedRiskLevel === "limited_risk" ? "limited" : "minimal"}>
+                {aiSuggestedRiskLevel?.replace("_", " ")}
+              </StatusBadge>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">Your classification:</span>
+              <StatusBadge variant={calculateRiskLevel() === "prohibited" ? "prohibited" : calculateRiskLevel() === "high_risk" ? "high" : calculateRiskLevel() === "limited_risk" ? "limited" : "minimal"}>
+                {calculateRiskLevel().replace("_", " ")}
+              </StatusBadge>
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <Label htmlFor="override-reason">Override Reason (required)</Label>
+              <Textarea
+                id="override-reason"
+                placeholder="Explain why you disagree with the AI's classification..."
+                value={overrideReason}
+                onChange={(e) => setOverrideReason(e.target.value)}
+                rows={4}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowOverrideDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => {
+                setShowOverrideDialog(false);
+                handleComplete(overrideReason);
+              }}
+              disabled={!overrideReason.trim()}
+            >
+              Confirm & Complete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

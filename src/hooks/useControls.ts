@@ -28,7 +28,14 @@ export interface ControlImplementation {
   next_review_date: string | null;
   created_at: string;
   updated_at: string;
-  control?: Control;
+  // N/A justification fields
+  na_justification: string | null;
+  na_approved_by: string | null;
+  na_approved_at: string | null;
+  control?: Control & {
+    na_requires_justification?: boolean | null;
+    acceptance_criteria?: string | null;
+  };
   owner?: { full_name: string | null };
 }
 
@@ -155,13 +162,25 @@ export function useUpdateControlStatus() {
       id,
       status,
       notes,
+      na_justification,
     }: {
       id: string;
       status: string;
       notes?: string;
+      na_justification?: string | null;
     }) => {
       const updates: Record<string, unknown> = { status };
       if (notes !== undefined) updates.notes = notes;
+      
+      // Handle N/A justification
+      if (status === "not_applicable" && na_justification) {
+        updates.na_justification = na_justification;
+      } else if (status !== "not_applicable") {
+        // Clear N/A fields if status changes away from N/A
+        updates.na_justification = null;
+        updates.na_approved_by = null;
+        updates.na_approved_at = null;
+      }
 
       const { error } = await supabase
         .from("control_implementations")

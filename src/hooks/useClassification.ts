@@ -79,8 +79,23 @@ export function useCreateOrUpdateClassification() {
       risk_level?: Classification["risk_level"];
       classification_rationale?: string | null;
       confidence_level?: "high" | "medium" | "low" | null;
+      // AI tracking fields
+      ai_assisted?: boolean | null;
+      ai_model_version?: string | null;
+      ai_suggestion?: Record<string, unknown> | null;
+      human_override?: boolean | null;
+      override_reason?: string | null;
     }) => {
       if (!profile?.organization_id) throw new Error("No organization");
+
+      // Prepare data for Supabase, converting ai_suggestion to JSON-compatible format
+      const { ai_suggestion, ...restInput } = input;
+      const dbData = {
+        ...restInput,
+        ai_suggestion: ai_suggestion ? JSON.parse(JSON.stringify(ai_suggestion)) : null,
+        classified_by: user?.id,
+        classified_at: new Date().toISOString(),
+      };
 
       // Check if classification exists
       const { data: existing } = await supabase
@@ -93,11 +108,7 @@ export function useCreateOrUpdateClassification() {
         // Update existing
         const { data, error } = await supabase
           .from("ai_system_classifications")
-          .update({
-            ...input,
-            classified_by: user?.id,
-            classified_at: new Date().toISOString(),
-          })
+          .update(dbData)
           .eq("id", existing.id)
           .select()
           .single();
@@ -109,10 +120,8 @@ export function useCreateOrUpdateClassification() {
         const { data, error } = await supabase
           .from("ai_system_classifications")
           .insert({
-            ...input,
+            ...dbData,
             organization_id: profile.organization_id,
-            classified_by: user?.id,
-            classified_at: new Date().toISOString(),
           })
           .select()
           .single();
