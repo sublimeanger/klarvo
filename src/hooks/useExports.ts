@@ -11,6 +11,7 @@ import { AuditorPackPDF, type AuditorPackData } from "@/components/exports/audie
 import { ProcurementPackPDF, type ProcurementPackData } from "@/components/exports/audience/ProcurementPackPDF";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { calculateAuditReadinessScore, getTopBlockers } from "@/lib/calculateAuditReadiness";
 
 interface AISystemExportData {
   id: string;
@@ -349,6 +350,12 @@ export function useExports() {
         else riskDistribution.unclassified++;
       });
 
+      // Calculate real readiness score and blockers
+      const [readinessResult, topBlockers] = await Promise.all([
+        calculateAuditReadinessScore(profile.organization_id),
+        getTopBlockers(profile.organization_id),
+      ]);
+
       const data: BoardPackData = {
         organization,
         generatedBy: profile?.full_name || user?.email || "Unknown",
@@ -358,12 +365,11 @@ export function useExports() {
           totalSystems: systems?.length || 0,
           highRiskCount: riskDistribution.highRisk + riskDistribution.prohibited,
           pendingClassification: riskDistribution.unclassified,
-          readinessScore: 75, // TODO: Calculate from actual readiness
+          readinessScore: readinessResult.overallScore,
         },
         riskDistribution,
-        topBlockers: [
-          { title: "3 systems missing classification", description: "Complete risk classification to unlock compliance pack", severity: "high" },
-          { title: "FRIA required for 2 high-risk systems", description: "Fundamental Rights Impact Assessments pending", severity: "high" },
+        topBlockers: topBlockers.length > 0 ? topBlockers : [
+          { title: "No blockers detected", description: "Your organization is on track for compliance", severity: "medium" as const },
         ],
         keyDeadlines: [
           { date: "2 Feb 2025", description: "Prohibited practices + AI literacy obligations apply" },

@@ -1,9 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// OAuth configuration
+// OAuth configuration for token refresh
 const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_WORKSPACE_CLIENT_ID");
 const GOOGLE_CLIENT_SECRET = Deno.env.get("GOOGLE_WORKSPACE_CLIENT_SECRET");
+const MICROSOFT_CLIENT_ID = Deno.env.get("MICROSOFT_365_CLIENT_ID");
+const MICROSOFT_CLIENT_SECRET = Deno.env.get("MICROSOFT_365_CLIENT_SECRET");
+const MICROSOFT_TENANT_ID = Deno.env.get("MICROSOFT_365_TENANT_ID") || "common";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -25,12 +28,390 @@ interface AIToolPattern {
   typical_purpose: string | null;
 }
 
-interface GoogleApp {
-  name?: string;
+interface WorkspaceConnection {
+  id: string;
+  organization_id: string;
+  provider: string;
+  status: string;
+  access_token_encrypted: string | null;
+  refresh_token_encrypted: string | null;
+  token_expires_at: string | null;
+  connected_by: string;
+}
+
+interface DiscoveredApp {
+  name: string;
   displayText?: string;
   clientId?: string;
   scopes?: string[];
   userKey?: string;
+}
+
+interface DiscoveredTool {
+  tool_name: string;
+  vendor_name: string | null;
+  matched_pattern_id: string | null;
+  detected_source: string;
+  detection_confidence: number;
+  user_count: number | null;
+  raw_metadata: Record<string, unknown>;
+}
+
+/**
+ * Refresh an expired Google access token
+ */
+async function refreshGoogleToken(refreshToken: string): Promise<{ access_token: string; expires_in: number } | null> {
+  try {
+    const response = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: GOOGLE_CLIENT_ID!,
+        client_secret: GOOGLE_CLIENT_SECRET!,
+        refresh_token: refreshToken,
+        grant_type: "refresh_token",
+      }),
+    });
+
+    const data = await response.json();
+    if (data.access_token) {
+      return { access_token: data.access_token, expires_in: data.expires_in };
+    }
+    console.error("Google token refresh failed:", data);
+    return null;
+  } catch (error) {
+    console.error("Error refreshing Google token:", error);
+    return null;
+  }
+}
+
+/**
+ * Refresh an expired Microsoft access token
+ */
+async function refreshMicrosoftToken(refreshToken: string): Promise<{ access_token: string; expires_in: number } | null> {
+  try {
+    const response = await fetch(
+      `https://login.microsoftonline.com/${MICROSOFT_TENANT_ID}/oauth2/v2.0/token`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: MICROSOFT_CLIENT_ID!,
+          client_secret: MICROSOFT_CLIENT_SECRET!,
+          refresh_token: refreshToken,
+          grant_type: "refresh_token",
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (data.access_token) {
+      return { access_token: data.access_token, expires_in: data.expires_in };
+    }
+    console.error("Microsoft token refresh failed:", data);
+    return null;
+  } catch (error) {
+    console.error("Error refreshing Microsoft token:", error);
+    return null;
+  }
+}
+
+/**
+ * Get a valid access token, refreshing if necessary
+ */
+async function getValidAccessToken(
+  connection: WorkspaceConnection,
+  supabase: SupabaseClient
+): Promise<string | null> {
+  // Check if token is expired
+  const tokenExpiresAt = connection.token_expires_at ? new Date(connection.token_expires_at) : null;
+  const now = new Date();
+  const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
+
+  if (tokenExpiresAt && tokenExpiresAt.getTime() - bufferTime > now.getTime()) {
+    // Token is still valid
+    return connection.access_token_encrypted;
+  }
+
+  // Token is expired or expiring soon, try to refresh
+  if (!connection.refresh_token_encrypted) {
+    console.error("No refresh token available for connection:", connection.id);
+    return null;
+  }
+
+  console.log("Refreshing expired token for connection:", connection.id);
+
+  let refreshResult: { access_token: string; expires_in: number } | null = null;
+
+  if (connection.provider === "google_workspace") {
+    refreshResult = await refreshGoogleToken(connection.refresh_token_encrypted);
+  } else if (connection.provider === "microsoft_365") {
+    refreshResult = await refreshMicrosoftToken(connection.refresh_token_encrypted);
+  }
+
+  if (!refreshResult) {
+    // Mark connection as needing re-authentication
+    await supabase
+      .from("workspace_connections")
+      .update({
+        status: "token_expired",
+        error_message: "Token expired and refresh failed. Please reconnect.",
+      })
+      .eq("id", connection.id);
+    return null;
+  }
+
+  // Update token in database
+  const newExpiresAt = new Date(Date.now() + refreshResult.expires_in * 1000).toISOString();
+  await supabase
+    .from("workspace_connections")
+    .update({
+      access_token_encrypted: refreshResult.access_token,
+      token_expires_at: newExpiresAt,
+    })
+    .eq("id", connection.id);
+
+  return refreshResult.access_token;
+}
+
+/**
+ * Scan Google Workspace for installed OAuth apps using Admin SDK
+ */
+async function scanGoogleWorkspace(
+  accessToken: string,
+  patterns: AIToolPattern[]
+): Promise<DiscoveredTool[]> {
+  console.log("Scanning Google Workspace with real API...");
+
+  const discoveredApps: DiscoveredApp[] = [];
+
+  try {
+    // Try to fetch OAuth tokens granted to apps
+    // Note: This requires the Reports API scope
+    const response = await fetch(
+      "https://admin.googleapis.com/admin/reports/v1/activity/users/all/applications/token?maxResults=500",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    if (response.status === 200) {
+      const data = await response.json();
+      
+      // Extract unique app names from token activity
+      const seenApps = new Set<string>();
+      for (const item of data.items || []) {
+        for (const event of item.events || []) {
+          for (const param of event.parameters || []) {
+            if (param.name === "app_name" && param.value && !seenApps.has(param.value)) {
+              seenApps.add(param.value);
+              discoveredApps.push({
+                name: param.value,
+                displayText: param.value,
+              });
+            }
+          }
+        }
+      }
+      console.log(`Found ${discoveredApps.length} apps from Google Admin Reports API`);
+    } else if (response.status === 403) {
+      console.log("Admin Reports API access denied - trying alternative endpoint");
+      
+      // Fallback: Try Directory API for marketplace apps
+      const directoryResponse = await fetch(
+        "https://www.googleapis.com/admin/directory/v1/users?maxResults=10&customer=my_customer",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      
+      if (directoryResponse.status === 200) {
+        // We have directory access - could enumerate users and their tokens
+        // For now, log that we have partial access
+        console.log("Directory API access available but app enumeration not implemented");
+      }
+    } else {
+      console.error("Google API error:", response.status, await response.text());
+    }
+  } catch (error) {
+    console.error("Error scanning Google Workspace:", error);
+  }
+
+  // If no apps found via API, return empty - don't use fake data
+  if (discoveredApps.length === 0) {
+    console.log("No apps discovered from Google Workspace APIs");
+    return [];
+  }
+
+  return matchAppsToPatterns(discoveredApps, patterns, "google_oauth");
+}
+
+/**
+ * Scan Microsoft 365 for installed apps using Graph API
+ */
+async function scanMicrosoft365(
+  accessToken: string,
+  patterns: AIToolPattern[]
+): Promise<DiscoveredTool[]> {
+  console.log("Scanning Microsoft 365 with real API...");
+
+  const discoveredApps: DiscoveredApp[] = [];
+
+  try {
+    // Fetch service principals (apps installed in the tenant)
+    const response = await fetch(
+      "https://graph.microsoft.com/v1.0/servicePrincipals?$top=500&$select=displayName,appId,tags",
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    if (response.status === 200) {
+      const data = await response.json();
+      
+      for (const app of data.value || []) {
+        if (app.displayName) {
+          discoveredApps.push({
+            name: app.displayName,
+            displayText: app.displayName,
+            clientId: app.appId,
+          });
+        }
+      }
+      console.log(`Found ${discoveredApps.length} apps from Microsoft Graph API`);
+    } else if (response.status === 403) {
+      console.log("Service Principals API access denied - trying user consented apps");
+      
+      // Fallback: Try to get OAuth2 permission grants
+      const grantsResponse = await fetch(
+        "https://graph.microsoft.com/v1.0/oauth2PermissionGrants?$top=500",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      
+      if (grantsResponse.status === 200) {
+        const grantsData = await grantsResponse.json();
+        const seenClientIds = new Set<string>();
+        
+        for (const grant of grantsData.value || []) {
+          if (grant.clientId && !seenClientIds.has(grant.clientId)) {
+            seenClientIds.add(grant.clientId);
+            // We'd need to look up the app name from the clientId
+            discoveredApps.push({
+              name: `App ${grant.clientId.substring(0, 8)}`,
+              clientId: grant.clientId,
+            });
+          }
+        }
+        console.log(`Found ${discoveredApps.length} apps from OAuth2 permission grants`);
+      }
+    } else {
+      console.error("Microsoft API error:", response.status, await response.text());
+    }
+  } catch (error) {
+    console.error("Error scanning Microsoft 365:", error);
+  }
+
+  // If no apps found via API, return empty - don't use fake data
+  if (discoveredApps.length === 0) {
+    console.log("No apps discovered from Microsoft 365 APIs");
+    return [];
+  }
+
+  return matchAppsToPatterns(discoveredApps, patterns, "microsoft_oauth");
+}
+
+/**
+ * Match discovered apps against known AI tool patterns
+ */
+function matchAppsToPatterns(
+  apps: DiscoveredApp[],
+  patterns: AIToolPattern[],
+  source: string
+): DiscoveredTool[] {
+  const results: DiscoveredTool[] = [];
+
+  for (const app of apps) {
+    const appName = (app.name || app.displayText || "").toLowerCase();
+    
+    // Try to match against patterns
+    let bestMatch: AIToolPattern | null = null;
+    let bestConfidence = 0;
+
+    for (const pattern of patterns) {
+      const matchScore = calculateMatchScore(appName, pattern);
+      
+      if (matchScore > bestConfidence) {
+        bestConfidence = matchScore;
+        bestMatch = pattern;
+      }
+    }
+
+    // Only include if we have some confidence it's an AI tool
+    if (bestMatch && bestConfidence >= 0.5) {
+      results.push({
+        tool_name: bestMatch.tool_name,
+        vendor_name: bestMatch.vendor_name,
+        matched_pattern_id: bestMatch.id,
+        detected_source: source,
+        detection_confidence: bestConfidence,
+        user_count: null,
+        raw_metadata: {
+          original_name: app.name,
+          display_text: app.displayText,
+          client_id: app.clientId,
+        },
+      });
+    } else if (appName.includes("ai") || appName.includes("gpt") || appName.includes("copilot") || 
+               appName.includes("claude") || appName.includes("gemini") || appName.includes("llm")) {
+      // Unmatched but likely AI tool
+      results.push({
+        tool_name: app.name || app.displayText || "Unknown AI Tool",
+        vendor_name: null,
+        matched_pattern_id: null,
+        detected_source: source,
+        detection_confidence: 0.3,
+        user_count: null,
+        raw_metadata: {
+          original_name: app.name,
+          display_text: app.displayText,
+          client_id: app.clientId,
+        },
+      });
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Calculate match score between app name and pattern
+ */
+function calculateMatchScore(appName: string, pattern: AIToolPattern): number {
+  const patternName = pattern.tool_name.toLowerCase();
+  const vendorName = pattern.vendor_name.toLowerCase();
+
+  // Exact match
+  if (appName === patternName) return 1.0;
+  
+  // Contains full tool name
+  if (appName.includes(patternName)) return 0.9;
+  
+  // Tool name contains app name
+  if (patternName.includes(appName) && appName.length > 3) return 0.8;
+
+  // Check detection patterns
+  for (const dp of pattern.detection_patterns) {
+    const detectionPattern = dp.toLowerCase();
+    if (appName.includes(detectionPattern)) return 0.85;
+    if (detectionPattern.includes(appName) && appName.length > 3) return 0.75;
+  }
+
+  // Vendor name match
+  if (appName.includes(vendorName) || vendorName.includes(appName)) return 0.6;
+
+  return 0;
 }
 
 serve(async (req) => {
@@ -88,8 +469,22 @@ serve(async (req) => {
       throw new Error("Connection not found or unauthorized");
     }
 
-    if (connection.status !== "active") {
-      throw new Error("Connection is not active");
+    if (connection.status !== "active" && connection.status !== "token_expired") {
+      throw new Error(`Connection is not active (status: ${connection.status})`);
+    }
+
+    // Get valid access token (refresh if needed)
+    const accessToken = await getValidAccessToken(connection as WorkspaceConnection, supabaseClient);
+    
+    if (!accessToken) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Token expired and could not be refreshed. Please reconnect.",
+          needs_reconnect: true,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
     }
 
     // Load AI tool patterns
@@ -102,20 +497,13 @@ serve(async (req) => {
     }
 
     const aiPatterns = patterns as AIToolPattern[];
-    let discoveredTools: Array<{
-      tool_name: string;
-      vendor_name: string | null;
-      matched_pattern_id: string | null;
-      detected_source: string;
-      detection_confidence: number;
-      user_count: number | null;
-      raw_metadata: Record<string, unknown>;
-    }> = [];
+    let discoveredTools: DiscoveredTool[] = [];
 
+    // Perform real API scans
     if (connection.provider === "google_workspace") {
-      discoveredTools = await scanGoogleWorkspace(connection, aiPatterns);
+      discoveredTools = await scanGoogleWorkspace(accessToken, aiPatterns);
     } else if (connection.provider === "microsoft_365") {
-      discoveredTools = await scanMicrosoft365(connection, aiPatterns);
+      discoveredTools = await scanMicrosoft365(accessToken, aiPatterns);
     }
 
     // Upsert discovered tools
@@ -165,6 +553,8 @@ serve(async (req) => {
       .update({
         last_scan_at: new Date().toISOString(),
         next_scan_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+        status: "active", // Ensure status is active after successful scan
+        error_message: null,
       })
       .eq("id", connection_id);
 
@@ -202,173 +592,3 @@ serve(async (req) => {
     );
   }
 });
-
-// Scan Google Workspace for AI tools
-async function scanGoogleWorkspace(
-  connection: Record<string, unknown>,
-  patterns: AIToolPattern[]
-): Promise<Array<{
-  tool_name: string;
-  vendor_name: string | null;
-  matched_pattern_id: string | null;
-  detected_source: string;
-  detection_confidence: number;
-  user_count: number | null;
-  raw_metadata: Record<string, unknown>;
-}>> {
-  // Note: In production, you would need to:
-  // 1. Store and retrieve the access_token from a secure vault
-  // 2. Implement token refresh logic
-  // 3. Use Google Admin SDK to list installed apps
-  
-  // For demo purposes, we'll simulate discovering some common AI tools
-  // In production, this would call:
-  // - Google Admin SDK: https://admin.googleapis.com/admin/directory/v1/users/{userKey}/tokens
-  // - Or: https://admin.googleapis.com/admin/reports/v1/activity/users/all/applications/token
-
-  console.log("Scanning Google Workspace for connection:", connection.id);
-
-  // Simulated discovered apps (in production, this comes from Google APIs)
-  const simulatedApps: GoogleApp[] = [
-    { name: "ChatGPT", displayText: "ChatGPT", clientId: "chatgpt-client" },
-    { name: "Grammarly", displayText: "Grammarly", clientId: "grammarly-client" },
-    { name: "Notion", displayText: "Notion", clientId: "notion-client" },
-    { name: "Slack", displayText: "Slack", clientId: "slack-client" },
-  ];
-
-  return matchAppsToPatterns(simulatedApps, patterns, "google_oauth");
-}
-
-// Scan Microsoft 365 for AI tools  
-async function scanMicrosoft365(
-  connection: Record<string, unknown>,
-  patterns: AIToolPattern[]
-): Promise<Array<{
-  tool_name: string;
-  vendor_name: string | null;
-  matched_pattern_id: string | null;
-  detected_source: string;
-  detection_confidence: number;
-  user_count: number | null;
-  raw_metadata: Record<string, unknown>;
-}>> {
-  // Note: In production, you would:
-  // 1. Use Microsoft Graph API to list service principals / app registrations
-  // 2. Call: https://graph.microsoft.com/v1.0/servicePrincipals
-  // 3. Or audit logs: https://graph.microsoft.com/v1.0/auditLogs/signIns
-
-  console.log("Scanning Microsoft 365 for connection:", connection.id);
-
-  // Simulated discovered apps
-  const simulatedApps: GoogleApp[] = [
-    { name: "Microsoft Copilot", displayText: "Copilot", clientId: "copilot-client" },
-    { name: "GitHub Copilot", displayText: "GitHub Copilot", clientId: "gh-copilot" },
-    { name: "Zoom", displayText: "Zoom", clientId: "zoom-client" },
-  ];
-
-  return matchAppsToPatterns(simulatedApps, patterns, "microsoft_oauth");
-}
-
-// Match discovered apps against known AI tool patterns
-function matchAppsToPatterns(
-  apps: GoogleApp[],
-  patterns: AIToolPattern[],
-  source: string
-): Array<{
-  tool_name: string;
-  vendor_name: string | null;
-  matched_pattern_id: string | null;
-  detected_source: string;
-  detection_confidence: number;
-  user_count: number | null;
-  raw_metadata: Record<string, unknown>;
-}> {
-  const results: Array<{
-    tool_name: string;
-    vendor_name: string | null;
-    matched_pattern_id: string | null;
-    detected_source: string;
-    detection_confidence: number;
-    user_count: number | null;
-    raw_metadata: Record<string, unknown>;
-  }> = [];
-
-  for (const app of apps) {
-    const appName = (app.name || app.displayText || "").toLowerCase();
-    
-    // Try to match against patterns
-    let bestMatch: AIToolPattern | null = null;
-    let bestConfidence = 0;
-
-    for (const pattern of patterns) {
-      // Check if app name matches any detection pattern
-      const matchScore = calculateMatchScore(appName, pattern);
-      
-      if (matchScore > bestConfidence) {
-        bestConfidence = matchScore;
-        bestMatch = pattern;
-      }
-    }
-
-    // Only include if we have some confidence it's an AI tool
-    if (bestMatch && bestConfidence >= 0.5) {
-      results.push({
-        tool_name: bestMatch.tool_name,
-        vendor_name: bestMatch.vendor_name,
-        matched_pattern_id: bestMatch.id,
-        detected_source: source,
-        detection_confidence: bestConfidence,
-        user_count: null,
-        raw_metadata: {
-          original_name: app.name,
-          display_text: app.displayText,
-          client_id: app.clientId,
-        },
-      });
-    } else if (appName.includes("ai") || appName.includes("gpt") || appName.includes("copilot")) {
-      // Unmatched but likely AI tool
-      results.push({
-        tool_name: app.name || app.displayText || "Unknown AI Tool",
-        vendor_name: null,
-        matched_pattern_id: null,
-        detected_source: source,
-        detection_confidence: 0.3, // Low confidence for unmatched
-        user_count: null,
-        raw_metadata: {
-          original_name: app.name,
-          display_text: app.displayText,
-          client_id: app.clientId,
-        },
-      });
-    }
-  }
-
-  return results;
-}
-
-// Calculate match score between app name and pattern
-function calculateMatchScore(appName: string, pattern: AIToolPattern): number {
-  const patternName = pattern.tool_name.toLowerCase();
-  const vendorName = pattern.vendor_name.toLowerCase();
-
-  // Exact match
-  if (appName === patternName) return 1.0;
-  
-  // Contains full tool name
-  if (appName.includes(patternName)) return 0.9;
-  
-  // Tool name contains app name
-  if (patternName.includes(appName) && appName.length > 3) return 0.8;
-
-  // Check detection patterns
-  for (const dp of pattern.detection_patterns) {
-    const detectionPattern = dp.toLowerCase();
-    if (appName.includes(detectionPattern)) return 0.85;
-    if (detectionPattern.includes(appName) && appName.length > 3) return 0.75;
-  }
-
-  // Vendor name match
-  if (appName.includes(vendorName) || vendorName.includes(appName)) return 0.6;
-
-  return 0;
-}
