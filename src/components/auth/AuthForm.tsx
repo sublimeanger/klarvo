@@ -189,6 +189,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
                   <Input
                     type="email"
                     placeholder="you@company.com"
+                    autoComplete="email"
                     {...field}
                   />
                 </FormControl>
@@ -207,6 +208,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
                   <Input
                     type="password"
                     placeholder="••••••••"
+                    autoComplete={mode === "signup" ? "new-password" : "current-password"}
                     {...field}
                   />
                 </FormControl>

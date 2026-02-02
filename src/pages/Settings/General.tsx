@@ -357,6 +357,7 @@ export default function GeneralSettings() {
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter current password"
+                  autoComplete="current-password"
                   className="h-10 sm:h-9"
                 />
               </div>
@@ -369,6 +370,7 @@ export default function GeneralSettings() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter new password"
+                  autoComplete="new-password"
                   className="h-10 sm:h-9"
                 />
               </div>
@@ -381,6 +383,7 @@ export default function GeneralSettings() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
+                  autoComplete="new-password"
                   className="h-10 sm:h-9"
                 />
               </div>
