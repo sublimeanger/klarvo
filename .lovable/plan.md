@@ -1,121 +1,99 @@
 
 # Backend UX Audit: Clickable Elements & Navigation Fixes
 
-## Issues Identified
+## Status: ✅ COMPLETE
 
-### Issue 1: Broken Navigation Link
-The header links to `/compliance-software` but the actual route is `/eu-ai-act-compliance-software`.
+All identified issues have been resolved. The dashboard and related pages now have comprehensive clickable navigation.
 
+---
+
+## Completed Items
+
+### ✅ Issue 1: Broken Navigation Link
 **File**: `src/components/marketing/MarketingHeader.tsx`
-- Line 18: `href: "/compliance-software"` → should be `href: "/eu-ai-act-compliance-software"`
+- Fixed: `"/compliance-software"` → `"/eu-ai-act-compliance-software"`
 
-### Issue 2: Dashboard Metric Cards Not Clickable
-Looking at the screenshot, users expect to click on:
-- **Total AI Systems** → Navigate to `/ai-systems`
-- **High-Risk** → Navigate to `/ai-systems?risk=high`
-- **Pending** → Navigate to `/assessments` or `/ai-systems?status=pending`
-- **Open Tasks** → Navigate to `/tasks`
-- **Alerts** → Navigate to compliance alerts section or open alerts panel
+### ✅ Issue 2: Dashboard Metric Cards Clickable
+**File**: `src/components/ui/metric-card.tsx`
+- Added optional `href` prop
+- Wrapped in `<Link>` when href provided
+- Added hover states and cursor pointer
 
-Currently, `MetricCard` is just a `<div>` with no navigation capability.
+**File**: `src/pages/Dashboard.tsx`
+- Total AI Systems → `/ai-systems`
+- High-Risk → `/ai-systems?classification=high_risk`
+- Pending → `/ai-systems?classification=pending`
+- Open Tasks → `/tasks`
 
----
+### ✅ Issue 3: Classification Breakdown Clickable
+**File**: `src/pages/Dashboard.tsx`
+- High-risk, Limited, Minimal, Not Classified blocks → filtered AI Systems views
 
-## Solution Design
+### ✅ Issue 4: Progress Cards Clickable
+**File**: `src/pages/Dashboard.tsx`
+- Classification → `/ai-systems`
+- Controls → `/controls`
+- Attestations → `/vendors`
+- Evidence → `/evidence`
 
-### Part A: Fix Broken Nav Link
-Simple one-line fix in `MarketingHeader.tsx`.
+### ✅ Issue 5: Audit Readiness Breakdown Clickable
+**File**: `src/components/dashboard/AuditReadinessCard.tsx`
+- Each category (Classification, Controls, Evidence, Tasks, Training) → respective pages
 
-### Part B: Make MetricCard Clickable
-Enhance the `MetricCard` component to accept an optional `href` prop:
+### ✅ Issue 6: Timeline Deadlines Clickable
+**File**: `src/pages/Dashboard.tsx`
+- Each deadline → relevant guide page
 
-```typescript
-interface MetricCardProps {
-  // ...existing props
-  href?: string;  // Optional navigation link
-}
+### ✅ Issue 7: Pending Tasks Deep-Linking
+**File**: `src/pages/Dashboard.tsx`
+- Individual tasks → `/tasks?highlight=${task.id}`
 
-export function MetricCard({ href, ...props }: MetricCardProps) {
-  const content = (
-    <div className="...existing classes...">
-      {/* existing content */}
-    </div>
-  );
+### ✅ Issue 8: Risk Distribution Chart Clickable
+**File**: `src/components/dashboard/RiskDistributionChart.tsx`
+- Pie segments → filtered AI Systems by risk level
+- Added tooltip hint "Click to view"
 
-  // If href provided, wrap in Link
-  if (href) {
-    return (
-      <Link to={href} className="block cursor-pointer">
-        {content}
-      </Link>
-    );
-  }
-  
-  return content;
-}
-```
+### ✅ Issue 9: Department Risk Chart Clickable
+**File**: `src/components/dashboard/DepartmentRiskChart.tsx`
+- Bar segments → filtered AI Systems by department
+- Added tooltip hint "Click to view department"
 
-### Part C: Update Dashboard to Pass Hrefs
-Add navigation targets to each metric card in `Dashboard.tsx`:
+### ✅ Issue 10: Compliance Copilot Clickable
+**File**: `src/components/dashboard/ComplianceCopilotCard.tsx`
+- Metrics row (Classified, High-Risk, Controls, FRIA) → respective pages
+- Priority actions → category-based navigation
+- Deadline alerts → `/tasks`
+- Risk highlights → `/ai-systems?classification=high_risk`
 
-| Metric Card | Navigation Target |
-|-------------|-------------------|
-| Total AI Systems | `/ai-systems` |
-| High-Risk | `/ai-systems?classification=high_risk` |
-| Pending | `/ai-systems?classification=pending` |
-| Open Tasks | `/tasks` |
-| Alerts | `/tasks?filter=overdue` (or scroll to alerts) |
+### ✅ Issue 11: AI Systems Page Filter Support
+**File**: `src/pages/AISystems.tsx`
+- Added URL query param support for `classification`, `department`, `status`
+- Added filter dropdowns for Risk Level and Department
+- Added active filter badges with clear buttons
+- Shows filtered results count
 
----
-
-## Files to Modify
-
-### 1. `src/components/marketing/MarketingHeader.tsx`
-- Line 18: Change `"/compliance-software"` → `"/eu-ai-act-compliance-software"`
-
-### 2. `src/components/ui/metric-card.tsx`
-- Add optional `href` prop
-- Import `Link` from react-router-dom
-- Conditionally wrap content in `<Link>` when href is provided
-- Add appropriate cursor and hover states for clickable cards
-
-### 3. `src/pages/Dashboard.tsx`
-- Add `href` prop to each MetricCard:
-  - Total AI Systems: `href="/ai-systems"`
-  - High-Risk: `href="/ai-systems?classification=high_risk"`
-  - Pending: `href="/ai-systems?classification=pending"`
-  - Open Tasks: `href="/tasks"`
-  - Alerts: `href="/tasks?filter=overdue"` or implement scroll-to behavior
+**File**: `src/hooks/useAISystems.ts`
+- Extended type to include `ai_system_classifications` relation
+- Updated query to fetch classification data
 
 ---
 
-## Additional UX Improvements (For Discussion)
+## Visual Affordances Added
 
-Beyond the immediate fixes, there are broader dashboard clickability opportunities:
-
-### Quick Win Improvements
-1. **Classification Breakdown bars** → Click to filter AI Systems by that risk level
-2. **Progress cards** (Classification, Controls, Attestations, Evidence) → Click to navigate to respective pages
-3. **Discovery Stats** (if visible on dashboard) → Already links to Discovery page? Add if not
-
-### Future Consideration
-- Add visual affordance (subtle arrow icon or "View all" text) to indicate clickability
-- Consider hover state that clearly shows "click to explore" intent
-- Audit all stat/metric displays across the app for consistency
+All clickable elements now have:
+- `cursor-pointer` class
+- `hover:bg-muted/50` or similar hover states
+- `group-hover:text-primary` for text highlighting
+- `ChevronRight` or `ArrowRight` icons on hover where appropriate
+- Tooltips with "Click to view/filter" hints on charts
 
 ---
 
-## Implementation Order
+## Testing Recommendations
 
-1. **Fix the nav link** (immediate, prevents 404)
-2. **Enhance MetricCard** with href support
-3. **Update Dashboard** metric cards with navigation
-4. **Test end-to-end** navigation from dashboard to filtered views
-
----
-
-## Technical Notes
-
-- Using `react-router-dom`'s `<Link>` component for client-side navigation
-- Query params (e.g., `?classification=high_risk`) require corresponding filter logic on the AISystems page
-- May need to verify that AISystems page respects URL query params for filtering
+1. Navigate to Dashboard → Click each metric card → Verify correct page/filter
+2. Click pie chart segments → Verify AI Systems filters correctly
+3. Click department chart bars → Verify department filter applied
+4. Click Audit Readiness items → Verify navigation to correct pages
+5. Click Copilot action items → Verify navigation works
+6. Verify filter badges appear and can be cleared on AI Systems page
