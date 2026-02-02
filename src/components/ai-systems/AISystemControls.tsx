@@ -46,6 +46,7 @@ import {
 } from "@/hooks/useControls";
 import { useControlsEvidenceCounts } from "@/hooks/useControlEvidence";
 import { ControlEvidenceSection } from "@/components/controls/ControlEvidenceSection";
+import { NAJustificationDialog } from "@/components/controls/NAJustificationDialog";
 
 interface AISystemControlsProps {
   aiSystemId: string;
@@ -321,6 +322,14 @@ export function AISystemControls({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   
+  // N/A justification dialog state
+  const [naDialogOpen, setNaDialogOpen] = useState(false);
+  const [pendingNaControl, setPendingNaControl] = useState<{
+    id: string;
+    name: string;
+    code: string;
+  } | null>(null);
+  
   const { data: implementations, isLoading } = useAISystemControls(aiSystemId);
   const applicableControls = useApplicableControls(riskLevel, hasVendor);
   const initializeControls = useInitializeControls();
@@ -337,7 +346,37 @@ export function AISystemControls({
   };
 
   const handleStatusChange = (id: string, status: string) => {
+    // Check if setting to N/A and control requires justification
+    if (status === "not_applicable") {
+      const impl = implementations?.find(i => i.id === id);
+      if (impl?.control?.na_requires_justification) {
+        setPendingNaControl({
+          id,
+          name: impl.control.name,
+          code: impl.control.code,
+        });
+        setNaDialogOpen(true);
+        return;
+      }
+    }
     updateStatus.mutate({ id, status });
+  };
+
+  const handleNaConfirm = (justification: string) => {
+    if (pendingNaControl) {
+      updateStatus.mutate({ 
+        id: pendingNaControl.id, 
+        status: "not_applicable",
+        na_justification: justification,
+      });
+    }
+    setNaDialogOpen(false);
+    setPendingNaControl(null);
+  };
+
+  const handleNaCancel = () => {
+    setNaDialogOpen(false);
+    setPendingNaControl(null);
   };
 
   const handleToggleSelect = (id: string) => {
@@ -536,6 +575,16 @@ export function AISystemControls({
           />
         ))}
       </CardContent>
+      
+      {/* N/A Justification Dialog */}
+      <NAJustificationDialog
+        open={naDialogOpen}
+        onOpenChange={setNaDialogOpen}
+        controlName={pendingNaControl?.name || ""}
+        controlCode={pendingNaControl?.code || ""}
+        onConfirm={handleNaConfirm}
+        onCancel={handleNaCancel}
+      />
     </Card>
   );
 }
