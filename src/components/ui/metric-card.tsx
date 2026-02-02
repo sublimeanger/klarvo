@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface MetricCardProps {
   title: string;
@@ -12,6 +13,7 @@ interface MetricCardProps {
   };
   className?: string;
   variant?: "default" | "gradient" | "accent";
+  href?: string;
 }
 
 export function MetricCard({
@@ -22,13 +24,15 @@ export function MetricCard({
   trend,
   className,
   variant = "default",
+  href,
 }: MetricCardProps) {
-  return (
+  const content = (
     <div
       className={cn(
         "group relative rounded-xl border bg-card p-4 sm:p-6 shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 overflow-hidden",
         variant === "gradient" && "bg-gradient-to-br from-primary/5 via-transparent to-accent/5 border-primary/20",
         variant === "accent" && "bg-accent/30 border-accent/30",
+        href && "cursor-pointer",
         className
       )}
     >
@@ -64,4 +68,14 @@ export function MetricCard({
       )}
     </div>
   );
+
+  if (href) {
+    return (
+      <Link to={href} className="block">
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 }
