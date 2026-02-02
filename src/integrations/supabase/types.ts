@@ -16,6 +16,9 @@ export type Database = {
     Tables: {
       ai_system_classifications: {
         Row: {
+          ai_assisted: boolean | null
+          ai_model_version: string | null
+          ai_suggestion: Json | null
           ai_system_id: string
           ai_system_rationale: string | null
           classification_rationale: string | null
@@ -28,11 +31,13 @@ export type Database = {
           high_risk_categories: string[] | null
           high_risk_notes: string | null
           high_risk_screening_completed: boolean | null
+          human_override: boolean | null
           id: string
           is_ai_system: boolean | null
           is_high_risk_candidate: boolean | null
           last_material_change_at: string | null
           organization_id: string
+          override_reason: string | null
           prohibited_notes: string | null
           prohibited_screening_completed: boolean | null
           reassessment_needed: boolean | null
@@ -46,6 +51,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          ai_assisted?: boolean | null
+          ai_model_version?: string | null
+          ai_suggestion?: Json | null
           ai_system_id: string
           ai_system_rationale?: string | null
           classification_rationale?: string | null
@@ -58,11 +66,13 @@ export type Database = {
           high_risk_categories?: string[] | null
           high_risk_notes?: string | null
           high_risk_screening_completed?: boolean | null
+          human_override?: boolean | null
           id?: string
           is_ai_system?: boolean | null
           is_high_risk_candidate?: boolean | null
           last_material_change_at?: string | null
           organization_id: string
+          override_reason?: string | null
           prohibited_notes?: string | null
           prohibited_screening_completed?: boolean | null
           reassessment_needed?: boolean | null
@@ -76,6 +86,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          ai_assisted?: boolean | null
+          ai_model_version?: string | null
+          ai_suggestion?: Json | null
           ai_system_id?: string
           ai_system_rationale?: string | null
           classification_rationale?: string | null
@@ -88,11 +101,13 @@ export type Database = {
           high_risk_categories?: string[] | null
           high_risk_notes?: string | null
           high_risk_screening_completed?: boolean | null
+          human_override?: boolean | null
           id?: string
           is_ai_system?: boolean | null
           is_high_risk_candidate?: boolean | null
           last_material_change_at?: string | null
           organization_id?: string
+          override_reason?: string | null
           prohibited_notes?: string | null
           prohibited_screening_completed?: boolean | null
           reassessment_needed?: boolean | null
@@ -948,6 +963,9 @@ export type Database = {
       }
       classification_history: {
         Row: {
+          ai_assisted: boolean | null
+          ai_model_version: string | null
+          ai_suggestion: Json | null
           ai_system_id: string
           change_reason: string | null
           classification_rationale: string | null
@@ -958,17 +976,22 @@ export type Database = {
           has_prohibited_indicators: boolean | null
           has_transparency_obligations: boolean | null
           high_risk_categories: string[] | null
+          human_override: boolean | null
           id: string
           is_ai_system: boolean | null
           is_current: boolean
           is_high_risk_candidate: boolean | null
           organization_id: string
+          override_reason: string | null
           risk_level: string
           ruleset_version: string | null
           transparency_categories: string[] | null
           version_number: number
         }
         Insert: {
+          ai_assisted?: boolean | null
+          ai_model_version?: string | null
+          ai_suggestion?: Json | null
           ai_system_id: string
           change_reason?: string | null
           classification_rationale?: string | null
@@ -979,17 +1002,22 @@ export type Database = {
           has_prohibited_indicators?: boolean | null
           has_transparency_obligations?: boolean | null
           high_risk_categories?: string[] | null
+          human_override?: boolean | null
           id?: string
           is_ai_system?: boolean | null
           is_current?: boolean
           is_high_risk_candidate?: boolean | null
           organization_id: string
+          override_reason?: string | null
           risk_level?: string
           ruleset_version?: string | null
           transparency_categories?: string[] | null
           version_number?: number
         }
         Update: {
+          ai_assisted?: boolean | null
+          ai_model_version?: string | null
+          ai_suggestion?: Json | null
           ai_system_id?: string
           change_reason?: string | null
           classification_rationale?: string | null
@@ -1000,11 +1028,13 @@ export type Database = {
           has_prohibited_indicators?: boolean | null
           has_transparency_obligations?: boolean | null
           high_risk_categories?: string[] | null
+          human_override?: boolean | null
           id?: string
           is_ai_system?: boolean | null
           is_current?: boolean
           is_high_risk_candidate?: boolean | null
           organization_id?: string
+          override_reason?: string | null
           risk_level?: string
           ruleset_version?: string | null
           transparency_categories?: string[] | null
@@ -1298,6 +1328,9 @@ export type Database = {
           created_at: string
           id: string
           last_reviewed_at: string | null
+          na_approved_at: string | null
+          na_approved_by: string | null
+          na_justification: string | null
           next_review_date: string | null
           notes: string | null
           organization_id: string
@@ -1312,6 +1345,9 @@ export type Database = {
           created_at?: string
           id?: string
           last_reviewed_at?: string | null
+          na_approved_at?: string | null
+          na_approved_by?: string | null
+          na_justification?: string | null
           next_review_date?: string | null
           notes?: string | null
           organization_id: string
@@ -1326,6 +1362,9 @@ export type Database = {
           created_at?: string
           id?: string
           last_reviewed_at?: string | null
+          na_approved_at?: string | null
+          na_approved_by?: string | null
+          na_justification?: string | null
           next_review_date?: string | null
           notes?: string | null
           organization_id?: string
@@ -1374,6 +1413,7 @@ export type Database = {
       }
       control_library: {
         Row: {
+          acceptance_criteria: string | null
           applies_to: string[]
           article_reference: string | null
           category: string
@@ -1382,11 +1422,14 @@ export type Database = {
           description: string | null
           evidence_requirements: string | null
           id: string
+          na_approver_role: string | null
+          na_requires_justification: boolean | null
           name: string
           review_frequency: string | null
           updated_at: string
         }
         Insert: {
+          acceptance_criteria?: string | null
           applies_to?: string[]
           article_reference?: string | null
           category: string
@@ -1395,11 +1438,14 @@ export type Database = {
           description?: string | null
           evidence_requirements?: string | null
           id?: string
+          na_approver_role?: string | null
+          na_requires_justification?: boolean | null
           name: string
           review_frequency?: string | null
           updated_at?: string
         }
         Update: {
+          acceptance_criteria?: string | null
           applies_to?: string[]
           article_reference?: string | null
           category?: string
@@ -1408,6 +1454,8 @@ export type Database = {
           description?: string | null
           evidence_requirements?: string | null
           id?: string
+          na_approver_role?: string | null
+          na_requires_justification?: boolean | null
           name?: string
           review_frequency?: string | null
           updated_at?: string
@@ -2533,27 +2581,54 @@ export type Database = {
       }
       organizations: {
         Row: {
+          ai_chat_enabled: boolean | null
+          ai_classification_enabled: boolean | null
+          ai_copilot_enabled: boolean | null
+          ai_data_sharing_mode: string | null
+          ai_document_enabled: boolean | null
+          ai_features_enabled: boolean | null
+          ai_intake_enabled: boolean | null
+          ai_never_send_evidence_text: boolean | null
           company_size: string | null
           created_at: string
           id: string
           industry_sector: string | null
           name: string
+          regulatory_timeline_mode: string | null
           updated_at: string
         }
         Insert: {
+          ai_chat_enabled?: boolean | null
+          ai_classification_enabled?: boolean | null
+          ai_copilot_enabled?: boolean | null
+          ai_data_sharing_mode?: string | null
+          ai_document_enabled?: boolean | null
+          ai_features_enabled?: boolean | null
+          ai_intake_enabled?: boolean | null
+          ai_never_send_evidence_text?: boolean | null
           company_size?: string | null
           created_at?: string
           id?: string
           industry_sector?: string | null
           name: string
+          regulatory_timeline_mode?: string | null
           updated_at?: string
         }
         Update: {
+          ai_chat_enabled?: boolean | null
+          ai_classification_enabled?: boolean | null
+          ai_copilot_enabled?: boolean | null
+          ai_data_sharing_mode?: string | null
+          ai_document_enabled?: boolean | null
+          ai_features_enabled?: boolean | null
+          ai_intake_enabled?: boolean | null
+          ai_never_send_evidence_text?: boolean | null
           company_size?: string | null
           created_at?: string
           id?: string
           industry_sector?: string | null
           name?: string
+          regulatory_timeline_mode?: string | null
           updated_at?: string
         }
         Relationships: []

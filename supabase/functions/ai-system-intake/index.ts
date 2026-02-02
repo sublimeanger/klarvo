@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { checkAIFeatureAllowed, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -66,12 +67,27 @@ serve(async (req) => {
   }
 
   try {
-    const { description } = await req.json();
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+
+    // Check AI privacy settings
+    const privacyCheck = await checkAIFeatureAllowed(
+      supabaseUrl,
+      supabaseServiceKey,
+      req.headers.get("authorization"),
+      'intake'
+    );
+    
+    if (!privacyCheck.allowed) {
+      return createPrivacyErrorResponse(privacyCheck, corsHeaders);
+    }
 
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
+
+    const { description } = await req.json();
 
     if (!description || typeof description !== "string" || description.trim().length < 20) {
       return new Response(
