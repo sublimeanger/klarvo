@@ -25,10 +25,15 @@ import { useBilling } from "@/hooks/useBilling";
 import { useStorageUsage } from "@/hooks/useStorageUsage";
 import { useExportHistory } from "@/hooks/useExportHistory";
 import { OperatorTrackAddons } from "@/components/billing/OperatorTrackAddons";
+import { BillingToggle } from "@/components/billing/BillingToggle";
+import { PlanUpgradeDialog, useUpgradeDialog } from "@/components/billing/PlanUpgradeDialog";
 import { PLANS, type PlanId, type BillingPeriod } from "@/lib/billing-constants";
 
 export default function BillingSettings() {
   const [searchParams] = useSearchParams();
+  const [upgradeBillingPeriod, setUpgradeBillingPeriod] = useState<BillingPeriod>("annual");
+  const { dialogState, openUpgradeDialog, setDialogOpen } = useUpgradeDialog();
+  
   const { 
     subscription, 
     plan, 
@@ -45,9 +50,32 @@ export default function BillingSettings() {
     refetch 
   } = useSubscription();
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
-  const { createCheckoutSession, openCustomerPortal, isLoading: billingLoading } = useBilling();
+  const { openCustomerPortal, isLoading: billingLoading } = useBilling();
   const { storageUsage, isLoading: storageLoading } = useStorageUsage();
   const { stats: exportStats, isLoading: exportsLoading } = useExportHistory();
+
+  // Determine next upgrade target
+  const getNextPlan = (): PlanId | null => {
+    switch (planId) {
+      case "free": return "starter";
+      case "starter": return "growth";
+      case "growth": return "pro";
+      default: return null;
+    }
+  };
+
+  const nextPlanId = getNextPlan();
+  const nextPlan = nextPlanId ? PLANS[nextPlanId] : null;
+  
+  // Calculate price display for upgrade button
+  const getUpgradeButtonText = () => {
+    if (!nextPlan) return "";
+    const price = upgradeBillingPeriod === "annual" 
+      ? nextPlan.priceAnnual 
+      : nextPlan.priceMonthly;
+    const suffix = upgradeBillingPeriod === "annual" ? "/yr" : "/mo";
+    return `Upgrade to ${nextPlan.name} · €${price.toLocaleString()}${suffix}`;
+  };
 
   // Handle success/cancel from Stripe checkout
   useEffect(() => {
@@ -153,6 +181,16 @@ export default function BillingSettings() {
                 </div>
               )}
 
+              {/* Billing Period Toggle for Upgrades */}
+              {nextPlanId && (
+                <div className="pt-2">
+                  <BillingToggle 
+                    billingPeriod={upgradeBillingPeriod} 
+                    onChange={setUpgradeBillingPeriod} 
+                  />
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-3 pt-2">
                 {hasStripeCustomer && (
                   <Button 
@@ -165,23 +203,12 @@ export default function BillingSettings() {
                   </Button>
                 )}
                 
-                {planId === "free" && (
-                  <Button onClick={() => createCheckoutSession("starter", "annual")} disabled={billingLoading}>
-                    Upgrade to Starter
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
-                
-                {planId === "starter" && (
-                  <Button onClick={() => createCheckoutSession("growth", "annual")} disabled={billingLoading}>
-                    Upgrade to Growth
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
-                
-                {planId === "growth" && (
-                  <Button onClick={() => createCheckoutSession("pro", "annual")} disabled={billingLoading}>
-                    Upgrade to Pro
+                {nextPlanId && (
+                  <Button 
+                    onClick={() => openUpgradeDialog(nextPlanId)} 
+                    disabled={billingLoading}
+                  >
+                    {getUpgradeButtonText()}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 )}
@@ -329,7 +356,7 @@ export default function BillingSettings() {
                   Upgrade to Starter for unlimited exports, up to 10 AI systems, and full control library.
                 </p>
               </div>
-              <Button onClick={() => createCheckoutSession("starter", "annual")} disabled={billingLoading}>
+              <Button onClick={() => openUpgradeDialog("starter")} disabled={billingLoading}>
                 Upgrade Now
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -337,6 +364,16 @@ export default function BillingSettings() {
           </CardContent>
         </Card>
       )}
+
+      {/* Plan Upgrade Dialog */}
+      <PlanUpgradeDialog
+        open={dialogState.open}
+        onOpenChange={setDialogOpen}
+        currentPlanId={planId}
+        targetPlanId={dialogState.targetPlanId}
+        initialBillingPeriod={upgradeBillingPeriod}
+        upgradeContext={dialogState.context}
+      />
     </div>
   );
 }
