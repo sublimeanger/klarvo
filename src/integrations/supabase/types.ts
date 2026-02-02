@@ -699,6 +699,51 @@ export type Database = {
           },
         ]
       }
+      ai_tool_patterns: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          detection_patterns: string[]
+          id: string
+          is_ai_confirmed: boolean | null
+          notes: string | null
+          tool_name: string
+          typical_purpose: string | null
+          typical_risk_level: string | null
+          updated_at: string | null
+          vendor_name: string
+          website_url: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          detection_patterns: string[]
+          id?: string
+          is_ai_confirmed?: boolean | null
+          notes?: string | null
+          tool_name: string
+          typical_purpose?: string | null
+          typical_risk_level?: string | null
+          updated_at?: string | null
+          vendor_name: string
+          website_url?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          detection_patterns?: string[]
+          id?: string
+          is_ai_confirmed?: boolean | null
+          notes?: string | null
+          tool_name?: string
+          typical_purpose?: string | null
+          typical_risk_level?: string | null
+          updated_at?: string | null
+          vendor_name?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       assessment_answers: {
         Row: {
           answer_notes: string | null
@@ -1568,6 +1613,108 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discovered_ai_tools: {
+        Row: {
+          ai_system_id: string | null
+          created_at: string | null
+          detected_source: string | null
+          detection_confidence: number | null
+          dismiss_reason: string | null
+          first_seen_at: string | null
+          id: string
+          last_seen_at: string | null
+          matched_pattern_id: string | null
+          organization_id: string
+          raw_metadata: Json | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["discovered_tool_status"] | null
+          tool_name: string
+          updated_at: string | null
+          user_count: number | null
+          vendor_name: string | null
+          workspace_connection_id: string | null
+        }
+        Insert: {
+          ai_system_id?: string | null
+          created_at?: string | null
+          detected_source?: string | null
+          detection_confidence?: number | null
+          dismiss_reason?: string | null
+          first_seen_at?: string | null
+          id?: string
+          last_seen_at?: string | null
+          matched_pattern_id?: string | null
+          organization_id: string
+          raw_metadata?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["discovered_tool_status"] | null
+          tool_name: string
+          updated_at?: string | null
+          user_count?: number | null
+          vendor_name?: string | null
+          workspace_connection_id?: string | null
+        }
+        Update: {
+          ai_system_id?: string | null
+          created_at?: string | null
+          detected_source?: string | null
+          detection_confidence?: number | null
+          dismiss_reason?: string | null
+          first_seen_at?: string | null
+          id?: string
+          last_seen_at?: string | null
+          matched_pattern_id?: string | null
+          organization_id?: string
+          raw_metadata?: Json | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["discovered_tool_status"] | null
+          tool_name?: string
+          updated_at?: string | null
+          user_count?: number | null
+          vendor_name?: string | null
+          workspace_connection_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discovered_ai_tools_ai_system_id_fkey"
+            columns: ["ai_system_id"]
+            isOneToOne: false
+            referencedRelation: "ai_systems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discovered_ai_tools_matched_pattern_id_fkey"
+            columns: ["matched_pattern_id"]
+            isOneToOne: false
+            referencedRelation: "ai_tool_patterns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discovered_ai_tools_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discovered_ai_tools_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discovered_ai_tools_workspace_connection_id_fkey"
+            columns: ["workspace_connection_id"]
+            isOneToOne: false
+            referencedRelation: "workspace_connections"
             referencedColumns: ["id"]
           },
         ]
@@ -2505,6 +2652,57 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "notification_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_addons: {
+        Row: {
+          addon_id: string
+          created_at: string | null
+          enabled_at: string | null
+          enabled_by: string | null
+          expires_at: string | null
+          id: string
+          organization_id: string
+          stripe_subscription_item_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          addon_id: string
+          created_at?: string | null
+          enabled_at?: string | null
+          enabled_by?: string | null
+          expires_at?: string | null
+          id?: string
+          organization_id: string
+          stripe_subscription_item_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          addon_id?: string
+          created_at?: string | null
+          enabled_at?: string | null
+          enabled_by?: string | null
+          expires_at?: string | null
+          id?: string
+          organization_id?: string
+          stripe_subscription_item_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_addons_enabled_by_fkey"
+            columns: ["enabled_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_addons_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -3936,6 +4134,78 @@ export type Database = {
           },
         ]
       }
+      workspace_connections: {
+        Row: {
+          access_token: string | null
+          connected_at: string | null
+          connected_by: string | null
+          created_at: string | null
+          domain: string | null
+          error_message: string | null
+          id: string
+          last_scan_at: string | null
+          next_scan_at: string | null
+          organization_id: string
+          provider: Database["public"]["Enums"]["workspace_provider"]
+          refresh_token: string | null
+          scopes: string[] | null
+          status: Database["public"]["Enums"]["connection_status"] | null
+          token_expires_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string | null
+          domain?: string | null
+          error_message?: string | null
+          id?: string
+          last_scan_at?: string | null
+          next_scan_at?: string | null
+          organization_id: string
+          provider: Database["public"]["Enums"]["workspace_provider"]
+          refresh_token?: string | null
+          scopes?: string[] | null
+          status?: Database["public"]["Enums"]["connection_status"] | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          connected_at?: string | null
+          connected_by?: string | null
+          created_at?: string | null
+          domain?: string | null
+          error_message?: string | null
+          id?: string
+          last_scan_at?: string | null
+          next_scan_at?: string | null
+          organization_id?: string
+          provider?: Database["public"]["Enums"]["workspace_provider"]
+          refresh_token?: string | null
+          scopes?: string[] | null
+          status?: Database["public"]["Enums"]["connection_status"] | null
+          token_expires_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workspace_connections_connected_by_fkey"
+            columns: ["connected_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workspace_connections_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -3991,6 +4261,12 @@ export type Database = {
         | "closed"
         | "certified"
         | "reassessment_triggered"
+      connection_status: "active" | "disconnected" | "error" | "pending"
+      discovered_tool_status:
+        | "pending"
+        | "reviewed"
+        | "added_to_inventory"
+        | "dismissed"
       doc_status: "draft" | "in_review" | "approved"
       due_diligence_status:
         | "not_started"
@@ -4017,6 +4293,7 @@ export type Database = {
         | "other"
       subscription_status: "trialing" | "active" | "past_due" | "canceled"
       version_status: "draft" | "released" | "withdrawn" | "recalled"
+      workspace_provider: "google_workspace" | "microsoft_365"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4170,6 +4447,13 @@ export const Constants = {
         "certified",
         "reassessment_triggered",
       ],
+      connection_status: ["active", "disconnected", "error", "pending"],
+      discovered_tool_status: [
+        "pending",
+        "reviewed",
+        "added_to_inventory",
+        "dismissed",
+      ],
       doc_status: ["draft", "in_review", "approved"],
       due_diligence_status: [
         "not_started",
@@ -4200,6 +4484,7 @@ export const Constants = {
       ],
       subscription_status: ["trialing", "active", "past_due", "canceled"],
       version_status: ["draft", "released", "withdrawn", "recalled"],
+      workspace_provider: ["google_workspace", "microsoft_365"],
     },
   },
 } as const

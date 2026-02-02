@@ -43,6 +43,7 @@ const Incidents = lazy(() => import("@/pages/Incidents"));
 const Exports = lazy(() => import("@/pages/Exports"));
 const Disclosures = lazy(() => import("@/pages/Disclosures"));
 const AuditLog = lazy(() => import("@/pages/AuditLog"));
+const Discovery = lazy(() => import("@/pages/Discovery"));
 const Pricing = lazy(() => import("@/pages/Pricing"));
 const BillingSettings = lazy(() => import("@/pages/Settings/Billing"));
 const GeneralSettings = lazy(() => import("@/pages/Settings/General"));
@@ -333,6 +334,7 @@ const App = () => (
               <Route path="/exports" element={<Exports />} />
               <Route path="/disclosures" element={<Disclosures />} />
               <Route path="/audit-log" element={<AuditLog />} />
+              <Route path="/discovery" element={<Discovery />} />
               <Route path="/settings" element={<GeneralSettings />} />
               <Route path="/settings/billing" element={<BillingSettings />} />
               
