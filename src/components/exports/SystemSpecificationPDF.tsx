@@ -1660,7 +1660,7 @@ export function SystemSpecificationPDF({ generatedDate, version }: SystemSpecifi
           "/eu-ai-act-compliance-software — Main BOFU product page",
           "/ai-inventory-software — AI System Inventory feature",
           "/fria-software — FRIA workflow feature",
-          "/product/evidence-vault — Evidence management feature",
+          "/evidence-vault-software — Evidence management feature",
           "/ai-literacy-training-tracker — Training module feature",
           "/ai-governance-evidence-packs — Export feature",
         ]} />
