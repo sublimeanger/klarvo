@@ -29,15 +29,28 @@ export function Step3Ownership({ data, onChange, members, isFullAssessment }: St
             <SelectValue placeholder="Select owner" />
           </SelectTrigger>
           <SelectContent>
-            {members.map((member) => (
-              <SelectItem key={member.id} value={member.id}>
-                {member.full_name || "Unnamed User"}
-              </SelectItem>
-            ))}
+            {members.length === 0 ? (
+              <div className="px-2 py-3 text-sm text-muted-foreground text-center">
+                No team members found.
+                <br />
+                <span className="text-xs">Invite members in Settings → Team</span>
+              </div>
+            ) : (
+              members.map((member) => (
+                <SelectItem key={member.id} value={member.id}>
+                  {member.full_name || "Unnamed User"}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
         <p className="text-xs sm:text-sm text-muted-foreground">
           Who is responsible for managing this AI system's compliance?
+          {members.length <= 1 && (
+            <span className="block mt-1 text-primary/80">
+              💡 Need to assign someone else? Invite team members in Settings → Team.
+            </span>
+          )}
         </p>
       </div>
 
