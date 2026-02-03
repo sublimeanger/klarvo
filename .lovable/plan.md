@@ -1,230 +1,165 @@
 
 
-# Google Analytics Events & Conversion Tracking Implementation
+# SEO Crawl Issues Fix Plan
 
-## Overview
+## Issues Summary from Crawl
 
-This plan implements comprehensive event tracking for your paid search landing pages, plus instructions for setting up conversions in Google Analytics 4 (GA4) and Google Ads.
+Based on the crawl data, there are several categories of issues to fix:
+
+### 1. SOFT_404 Issues (Routes that don't exist)
+These pages are returning content but the crawled URL doesn't match actual routes:
+
+| Crawled URL | Correct Route | Fix |
+|------------|---------------|-----|
+| `/templates/vendor-due-diligence` | `/templates/vendor-due-diligence-questionnaire` | Add redirect |
+| `/templates/human-oversight-plan` | `/templates/human-oversight-plan-template` | Add redirect |
+| `/tools/high-risk-checker` | `/tools/high-risk-checker-annex-iii` | Add redirect |
+| `/templates/ai-literacy-training-tracker` | `/ai-literacy-training-tracker` | Add redirect (wrong path) |
+| `/industries/saas-selling-into-eu` | `/industries/saas-ai-act` | Add redirect |
+
+### 2. MISSING_H1 Issues
+Pages where the HeroSection uses `<h1>` but it's styled as fragments, or pages that don't use HeroSection at all. Affected pages:
+- `/guides` (uses HeroSection - H1 exists)
+- `/templates/fria-template` (has H1)
+- `/ai-governance-evidence-packs` (has H1)
+- `/ai-inventory-software` (uses HeroSection - has H1)
+- `/features` (uses HeroSection - has H1)
+- `/tools` (uses HeroSection - has H1)
+- `/about` (uses HeroSection - has H1)
+- `/docs` (has H1)
+- `/terms`, `/dpa` (uses LegalLayout - has H1)
+- And others
+
+**Analysis**: The HeroSection component already renders an `<h1>` tag (line 166-175 of HeroSection.tsx). The crawler may not be detecting it because the content is split across multiple `<span>` elements with JSX fragments. Need to verify H1 exists in rendered HTML.
+
+### 3. DUPLICATE_TITLE / DUPLICATE_BODY Issues
+- `/blog/high-risk-classification-mistakes` - duplicate with another page
+- `/blog` - blog hub may have duplicate meta
+
+### 4. THIN_CONTENT Issues
+Many pages flagged for thin content. Will add more internal links and expand content sections where applicable.
+
+### 5. INTERNAL_LINK_COUNT_LOW
+Add more internal navigation links via `RelatedContent` and `HubNavigation` components.
+
+### 6. IMG_ALT_MISSING_OR_WEAK
+Add proper alt text to all images (mostly decorative icons, will need accessible descriptions).
+
+### 7. META_DESC_LENGTH
+Ensure meta descriptions are 120-160 characters for optimal display.
 
 ---
 
-## Events to Track (Code Implementation)
+## Implementation Plan
 
-### 1. Landing Page Events
-
-| Event Name | Trigger | Parameters |
-|------------|---------|------------|
-| `page_view` | Automatic via gtag config | `page_location`, `page_title` |
-| `landing_variant_view` | Page load | `variant` (demo/start), `utm_source`, `utm_campaign` |
-
-### 2. CTA Click Events
-
-| Event Name | Trigger | Parameters |
-|------------|---------|------------|
-| `cta_click` | Hero CTA button click | `cta_location` (hero/bottom), `variant`, `cta_text` |
-
-### 3. Form Funnel Events (Critical for Conversion Tracking)
-
-| Event Name | Trigger | Parameters |
-|------------|---------|------------|
-| `form_start` | User focuses on first form field | `variant` |
-| `lead_step1_complete` | Step 1 submission success | `variant`, `company` |
-| `lead_step2_complete` | Step 2 submission success | `variant`, `role`, `ai_system_count`, `operator_type` |
-| `generate_lead` | Final form completion | `variant`, `currency: EUR`, `value: 149` (for ROAS) |
-
-### 4. Engagement Events
-
-| Event Name | Trigger | Parameters |
-|------------|---------|------------|
-| `scroll_depth` | 25%, 50%, 75%, 100% scroll | `percent_scrolled` |
-| `faq_expand` | FAQ accordion opened | `question` |
-| `artifact_view` | Artifact showcase in viewport | `artifact_type` |
-
----
-
-## Technical Implementation
-
-### New File: Analytics Utility
-
-Create `src/lib/analytics.ts` - a typed wrapper for gtag that:
-- Provides type-safe event tracking functions
-- Handles cases where gtag isn't loaded (dev environment)
-- Includes UTM parameter extraction
+### Phase 1: Add Redirect Routes for SOFT_404 Issues
+Create redirect routes in `App.tsx` to handle old/broken URLs:
 
 ```typescript
-// Key functions:
-trackEvent(eventName, params)     // Generic event
-trackCTAClick(location, variant)  // CTA clicks
-trackLeadStep(step, variant, data) // Form funnel
-trackScrollDepth(percent)         // Scroll tracking
+// Redirect legacy/incorrect URLs to correct routes
+<Route path="/templates/vendor-due-diligence" element={<Navigate to="/templates/vendor-due-diligence-questionnaire" replace />} />
+<Route path="/templates/human-oversight-plan" element={<Navigate to="/templates/human-oversight-plan-template" replace />} />
+<Route path="/tools/high-risk-checker" element={<Navigate to="/tools/high-risk-checker-annex-iii" replace />} />
+<Route path="/templates/ai-literacy-training-tracker" element={<Navigate to="/ai-literacy-training-tracker" replace />} />
+<Route path="/industries/saas-selling-into-eu" element={<Navigate to="/industries/saas-ai-act" replace />} />
 ```
 
-### Files to Modify
+### Phase 2: Fix H1 Visibility for SEO
+The HeroSection H1 structure is correct but crawlers may struggle with complex JSX. Ensure H1 renders as cohesive text.
 
-1. **`LeadCaptureForm.tsx`** - Add form funnel events
-   - `form_start` on first field focus
-   - `lead_step1_complete` after step 1 success
-   - `lead_step2_complete` after step 2 success
-   - `generate_lead` on final completion
-
-2. **`LandingHero.tsx`** - Add CTA click tracking
-   - `cta_click` with `location: 'hero'`
-
-3. **`StickyCTA.tsx`** - Add CTA click tracking
-   - `cta_click` with `location: 'bottom'`
-
-4. **`PaidSearchLanding.tsx`** - Add page-level tracking
-   - `landing_variant_view` on mount
-   - Scroll depth observer
-
-5. **`LandingFAQ.tsx`** - Add engagement tracking
-   - `faq_expand` when accordion opens
-
----
-
-## What You Need to Set Up in Google Analytics 4
-
-### Step 1: Create Custom Definitions (Events)
-
-Go to **Admin → Data display → Events** and mark these as conversions:
-
-| Event to Mark as Conversion | Priority |
-|-----------------------------|----------|
-| `generate_lead` | **Primary** (main conversion) |
-| `lead_step1_complete` | Secondary (micro-conversion) |
-| `lead_step2_complete` | Secondary (micro-conversion) |
-
-### Step 2: Create Custom Dimensions
-
-Go to **Admin → Data display → Custom definitions → Create custom dimension**:
-
-| Dimension Name | Event Parameter | Scope |
-|----------------|-----------------|-------|
-| Landing Variant | `variant` | Event |
-| CTA Location | `cta_location` | Event |
-| Lead Role | `role` | Event |
-| AI System Count | `ai_system_count` | Event |
-| Operator Type | `operator_type` | Event |
-
-### Step 3: Create Audiences for Remarketing
-
-Go to **Admin → Data display → Audiences → New audience**:
-
-1. **Partial Leads (Step 1 only)**
-   - Include: `lead_step1_complete` 
-   - Exclude: `generate_lead`
-   - Use for: Remarketing to people who started but didn't finish
-
-2. **Demo Requesters**
-   - Include: `generate_lead` where `variant = demo`
-   - Use for: High-intent remarketing
-
-3. **Self-Serve Leads**
-   - Include: `generate_lead` where `variant = start`
-   - Use for: Onboarding sequence targeting
-
----
-
-## What You Need to Set Up in Google Ads
-
-### Step 1: Link Google Ads to GA4
-
-1. In GA4: **Admin → Product links → Google Ads links → Link**
-2. Select your Google Ads account
-3. Enable personalized advertising
-
-### Step 2: Import Conversions from GA4
-
-1. In Google Ads: **Goals → Conversions → Summary → + New conversion action**
-2. Select **Import → Google Analytics 4 properties**
-3. Import these events:
-
-| GA4 Event | Google Ads Conversion Name | Value | Count |
-|-----------|---------------------------|-------|-------|
-| `generate_lead` | Lead - Form Complete | €149 | One per click |
-| `lead_step1_complete` | Lead - Step 1 | €30 | One per click |
-
-### Step 3: Set Primary vs Secondary Conversions
-
-- **Primary**: `Lead - Form Complete` (used for bidding optimization)
-- **Secondary**: `Lead - Step 1` (used for reporting only, not bidding)
-
-### Step 4: Configure Conversion Window
-
-- Click-through window: **30 days** (standard for B2B)
-- View-through window: **7 days** (optional, for Display campaigns)
-
----
-
-## Campaign Settings Checklist (For Reference)
-
-When setting up your Google Ads campaigns, use these settings:
-
-### Search Campaign Settings
-
-| Setting | Recommended Value |
-|---------|-------------------|
-| Campaign type | Search |
-| Bidding | Maximize Conversions → Target CPA (after 30+ conversions) |
-| Target CPA | Start at €75-100, optimize after data |
-| Budget | €50-100/day minimum for learning |
-| Networks | Google Search only (disable Display) |
-| Locations | European Union (or specific countries) |
-| Languages | English |
-
-### Keyword Match Types
-
-| Intent Level | Match Type | Example Keywords |
-|--------------|------------|------------------|
-| High | Exact | [eu ai act compliance software] |
-| High | Phrase | "ai governance platform" |
-| Mid | Broad Match Modifier | +ai +act +inventory +template |
-
-### Ad Group Structure
-
-```text
-Campaign: Klarvo - EU AI Act (Search)
-├── Ad Group: High Intent - Software
-│   └── Route to: /lp/demo
-├── Ad Group: High Intent - Platform  
-│   └── Route to: /lp/demo
-├── Ad Group: Mid Intent - Templates
-│   └── Route to: /lp/start
-└── Ad Group: Mid Intent - Checkers
-    └── Route to: /lp/start
+For pages using HeroSection with fragments like:
+```jsx
+<>
+  <span>Text</span>
+  <br />
+  <span>More Text</span>
+</>
 ```
 
+This renders valid H1 HTML. No changes needed - the crawler issue may be a false positive.
+
+For pages with separate hero sections (like `/ai-governance-evidence-packs`), verify H1 exists and is the first heading.
+
+### Phase 3: Fix Duplicate Content Issues
+1. **Blog hub (`/blog`)** - Ensure unique title and description
+2. **Blog article duplicates** - Review `/blog/high-risk-classification-mistakes` for unique meta
+
+### Phase 4: Add Internal Links
+Add `RelatedContent` and `HubNavigation` components to pages with low internal link counts:
+
+**Pages to enhance:**
+- `/guides` - Add internal links to all guide pages
+- `/tools` - Add links to templates and guides
+- `/templates/*` - Add cross-links to related tools and guides
+- `/ai-inventory-software` - Add links to template and guide
+- `/features` - Add links to product pages
+- `/about` - Add links to careers, contact
+- `/docs` - Already has good internal linking
+- `/terms`, `/dpa` - Add links to other legal pages
+
+### Phase 5: Improve Meta Descriptions
+Review and optimize meta descriptions to be 120-160 characters with compelling CTAs.
+
+**Current issues:**
+- Some descriptions may be too short (<120 chars)
+- Some may exceed 160 chars
+
+### Phase 6: Add Alt Text to Images
+Review icons and decorative images to add meaningful alt text:
+- Icons: Use descriptive alt like "Check circle icon" or aria-hidden for decorative
+- Hero illustrations: Add context-specific alt text
+
 ---
 
-## File Summary
+## Files to Modify
 
-| File | Action | Purpose |
-|------|--------|---------|
-| `src/lib/analytics.ts` | Create | Type-safe analytics utility |
-| `src/components/marketing/landing/LeadCaptureForm.tsx` | Modify | Form funnel tracking |
-| `src/components/marketing/landing/LandingHero.tsx` | Modify | Hero CTA tracking |
-| `src/components/marketing/landing/StickyCTA.tsx` | Modify | Bottom CTA tracking |
-| `src/pages/marketing/landing/PaidSearchLanding.tsx` | Modify | Page view + scroll tracking |
-| `src/components/marketing/landing/LandingFAQ.tsx` | Modify | FAQ engagement tracking |
+| File | Changes |
+|------|---------|
+| `src/App.tsx` | Add redirect routes for SOFT_404 URLs |
+| `src/pages/marketing/GuidesHub.tsx` | Add more internal links, verify H1 |
+| `src/pages/marketing/ToolsHub.tsx` | Add more internal links |
+| `src/pages/marketing/AIInventorySoftwarePage.tsx` | Add internal links |
+| `src/pages/marketing/EvidencePacksPage.tsx` | Verify H1, add internal links |
+| `src/pages/marketing/Features.tsx` | Add internal links |
+| `src/pages/marketing/About.tsx` | Add internal links |
+| `src/pages/marketing/Docs.tsx` | Already good |
+| `src/pages/marketing/templates/FRIATemplate.tsx` | Add internal links |
+| `src/pages/marketing/templates/VendorDueDiligence.tsx` | Add internal links |
+| `src/pages/marketing/templates/AIInventoryTemplate.tsx` | Already has good structure |
+| `src/pages/marketing/guides/AILiteracyGuide.tsx` | Add internal links |
+| `src/pages/marketing/guides/Article26Guide.tsx` | Add internal links |
+| `src/pages/legal/Terms.tsx` | Add internal links to other legal pages |
+| `src/pages/legal/DPA.tsx` | Add internal links |
+| `src/ssgRoutes.ts` | Ensure all valid routes are listed |
+| `src/pages/marketing/Blog.tsx` | Fix potential duplicate issues |
 
 ---
 
-## Quick Reference: Your Setup Checklist
+## Technical Notes
 
-**In GA4 Admin:**
-- [ ] Mark `generate_lead` as a conversion
-- [ ] Mark `lead_step1_complete` as a conversion (optional)
-- [ ] Create custom dimensions for `variant`, `role`, `operator_type`, `ai_system_count`
-- [ ] Create "Partial Leads" audience for remarketing
+### Redirect Implementation
+Using React Router's `<Navigate>` component with `replace` prop for client-side redirects. For proper SEO, these should also be server-side 301 redirects in the hosting configuration.
 
-**In Google Ads:**
-- [ ] Link Google Ads account to GA4
-- [ ] Import `generate_lead` conversion (set €149 value)
-- [ ] Import `lead_step1_complete` as secondary conversion (set €30 value)
-- [ ] Set 30-day click-through conversion window
+### H1 Structure
+The current HeroSection implementation is semantically correct. The H1 tag wraps all content and is valid HTML. Crawlers should parse it correctly.
 
-**Testing:**
-- [ ] Use GA4 DebugView to verify events fire correctly
-- [ ] Use Google Tag Assistant browser extension
-- [ ] Test both `/lp/demo` and `/lp/start` variants
+### Internal Link Strategy
+- Template pages → Link to related guides, tools, and software pages
+- Guide pages → Link to related templates, tools, and software pages
+- Tool pages → Link to related templates and guides
+- Software pages → Link to templates, guides, and feature pages
+- Legal pages → Cross-link between all legal pages
+
+---
+
+## Estimated Impact
+
+| Issue Category | Pages Affected | Expected Fix |
+|---------------|----------------|--------------|
+| SOFT_404 | 5 | Add redirects |
+| MISSING_H1 | ~20 | Already have H1s (verify) |
+| INTERNAL_LINK_COUNT_LOW | ~15 | Add RelatedContent sections |
+| DUPLICATE_TITLE | 2-3 | Update meta tags |
+| THIN_CONTENT | ~10 | Add more content sections |
+| META_DESC_LENGTH | ~5 | Optimize descriptions |
 
