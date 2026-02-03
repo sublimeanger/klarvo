@@ -2831,6 +2831,69 @@ export type Database = {
         }
         Relationships: []
       }
+      paid_search_leads: {
+        Row: {
+          ai_system_count: string | null
+          company: string
+          created_at: string | null
+          email: string
+          id: string
+          landing_variant: string
+          operator_type: string | null
+          role: string | null
+          status: string | null
+          step_completed: number | null
+          submitted_at: string | null
+          updated_at: string | null
+          urgent_use_case: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+        }
+        Insert: {
+          ai_system_count?: string | null
+          company: string
+          created_at?: string | null
+          email: string
+          id?: string
+          landing_variant: string
+          operator_type?: string | null
+          role?: string | null
+          status?: string | null
+          step_completed?: number | null
+          submitted_at?: string | null
+          updated_at?: string | null
+          urgent_use_case?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Update: {
+          ai_system_count?: string | null
+          company?: string
+          created_at?: string | null
+          email?: string
+          id?: string
+          landing_variant?: string
+          operator_type?: string | null
+          role?: string | null
+          status?: string | null
+          step_completed?: number | null
+          submitted_at?: string | null
+          updated_at?: string | null
+          urgent_use_case?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+        }
+        Relationships: []
+      }
       policies: {
         Row: {
           approved_at: string | null
