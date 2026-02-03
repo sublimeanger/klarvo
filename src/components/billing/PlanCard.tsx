@@ -34,21 +34,23 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
       plan.popular && "border-primary shadow-md ring-2 ring-primary/20",
       plan.popular && "bg-gradient-to-b from-primary/5 to-transparent"
     )}>
-      {/* Badges */}
-      {(plan.popular || (isGrowth && billingPeriod === 'annual')) && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
-          {plan.popular && (
-            <Badge className="bg-primary text-primary-foreground text-xs whitespace-nowrap shadow-sm">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Most Popular
-            </Badge>
-          )}
-          {isGrowth && billingPeriod === 'annual' && (
-            <Badge variant="secondary" className="bg-success/10 text-success border border-success/20 text-xs whitespace-nowrap shadow-sm">
-              <TrendingUp className="h-3 w-3 mr-1" />
-              Best Value
-            </Badge>
-          )}
+      {/* Primary Badge - Most Popular */}
+      {plan.popular && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+          <Badge className="bg-primary text-primary-foreground text-xs whitespace-nowrap shadow-md px-3 py-1">
+            <Sparkles className="h-3 w-3 mr-1.5" />
+            Most Popular
+          </Badge>
+        </div>
+      )}
+      
+      {/* Secondary Badge - Best Value (only on Growth annual, shown below Most Popular) */}
+      {isGrowth && billingPeriod === 'annual' && (
+        <div className="absolute -top-3 right-3 z-10">
+          <Badge variant="secondary" className="bg-success/15 text-success border border-success/30 text-[10px] whitespace-nowrap shadow-sm px-2 py-0.5">
+            <TrendingUp className="h-2.5 w-2.5 mr-1" />
+            Best Value
+          </Badge>
         </div>
       )}
       
