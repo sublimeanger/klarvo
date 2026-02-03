@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { SEOHead } from "@/components/seo";
 import {
   MinimalHeader,
@@ -11,6 +11,7 @@ import {
   TrustBlock,
   StickyCTA,
 } from "@/components/marketing/landing";
+import { trackLandingView, trackScrollDepth } from "@/lib/analytics";
 
 interface PaidSearchLandingProps {
   variant: "demo" | "start";
@@ -18,10 +19,35 @@ interface PaidSearchLandingProps {
 
 const PaidSearchLanding = ({ variant }: PaidSearchLandingProps) => {
   const formRef = useRef<HTMLDivElement>(null);
+  const scrollMilestonesRef = useRef<Set<25 | 50 | 75 | 100>>(new Set());
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
+
+  // Track landing page view on mount
+  useEffect(() => {
+    trackLandingView(variant);
+  }, [variant]);
+
+  // Scroll depth tracking
+  const handleScroll = useCallback(() => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (window.scrollY / scrollHeight) * 100;
+
+    const milestones: (25 | 50 | 75 | 100)[] = [25, 50, 75, 100];
+    for (const milestone of milestones) {
+      if (scrollPercent >= milestone && !scrollMilestonesRef.current.has(milestone)) {
+        scrollMilestonesRef.current.add(milestone);
+        trackScrollDepth(milestone);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   // SEO metadata
   const seoTitle = variant === "demo"
