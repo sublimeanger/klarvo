@@ -134,7 +134,7 @@ const faqCategories = [
       },
       {
         question: "Do you have security certifications?",
-        answer: "We are currently pursuing SOC 2 Type II certification, with completion expected in 2025. We implement security best practices aligned with ISO 27001 and conduct regular penetration testing."
+        answer: "We implement security best practices aligned with ISO 27001 and conduct regular penetration testing. Our infrastructure is GDPR compliant with EU data residency."
       },
       {
         question: "Who can access my data?",
