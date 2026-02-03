@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient, SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { decryptToken, encryptToken, isEncrypted } from "../_shared/token-encryption.ts";
 
 // OAuth configuration for token refresh
 const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_WORKSPACE_CLIENT_ID");
@@ -118,6 +119,7 @@ async function refreshMicrosoftToken(refreshToken: string): Promise<{ access_tok
 
 /**
  * Get a valid access token, refreshing if necessary
+ * Handles both encrypted and legacy unencrypted tokens
  */
 async function getValidAccessToken(
   connection: WorkspaceConnection,
@@ -129,7 +131,13 @@ async function getValidAccessToken(
   const bufferTime = 5 * 60 * 1000; // 5 minutes buffer
 
   if (tokenExpiresAt && tokenExpiresAt.getTime() - bufferTime > now.getTime()) {
-    // Token is still valid
+    // Token is still valid - decrypt if encrypted
+    if (!connection.access_token_encrypted) return null;
+    
+    if (isEncrypted(connection.access_token_encrypted)) {
+      return await decryptToken(connection.access_token_encrypted);
+    }
+    // Legacy unencrypted token
     return connection.access_token_encrypted;
   }
 
@@ -141,12 +149,18 @@ async function getValidAccessToken(
 
   console.log("Refreshing expired token for connection:", connection.id);
 
+  // Decrypt refresh token if encrypted
+  let refreshToken = connection.refresh_token_encrypted;
+  if (isEncrypted(refreshToken)) {
+    refreshToken = await decryptToken(refreshToken);
+  }
+
   let refreshResult: { access_token: string; expires_in: number } | null = null;
 
   if (connection.provider === "google_workspace") {
-    refreshResult = await refreshGoogleToken(connection.refresh_token_encrypted);
+    refreshResult = await refreshGoogleToken(refreshToken);
   } else if (connection.provider === "microsoft_365") {
-    refreshResult = await refreshMicrosoftToken(connection.refresh_token_encrypted);
+    refreshResult = await refreshMicrosoftToken(refreshToken);
   }
 
   if (!refreshResult) {
@@ -161,12 +175,15 @@ async function getValidAccessToken(
     return null;
   }
 
-  // Update token in database
+  // Encrypt the new token before storing
+  const encryptedNewToken = await encryptToken(refreshResult.access_token);
+  
+  // Update token in database with encrypted value
   const newExpiresAt = new Date(Date.now() + refreshResult.expires_in * 1000).toISOString();
   await supabase
     .from("workspace_connections")
     .update({
-      access_token_encrypted: refreshResult.access_token,
+      access_token_encrypted: encryptedNewToken,
       token_expires_at: newExpiresAt,
     })
     .eq("id", connection.id);

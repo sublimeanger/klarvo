@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encryptToken } from "../_shared/token-encryption.ts";
 
 // OAuth configuration
 const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_WORKSPACE_CLIENT_ID");
@@ -195,16 +196,21 @@ serve(async (req) => {
     // Calculate token expiration time
     const tokenExpiresAt = new Date(Date.now() + tokenData.expires_in * 1000).toISOString();
 
-    // Update connection with tokens (encrypted at rest by Supabase)
-    // Store tokens for real API access during discovery scans
+    // Encrypt tokens before storage using AES-256-GCM
+    const encryptedAccessToken = await encryptToken(tokenData.access_token);
+    const encryptedRefreshToken = tokenData.refresh_token 
+      ? await encryptToken(tokenData.refresh_token) 
+      : null;
+
+    // Update connection with encrypted tokens
     const { error: updateError } = await supabase
       .from("workspace_connections")
       .update({
         status: "active",
         domain: userDomain,
         error_message: null,
-        access_token_encrypted: tokenData.access_token,
-        refresh_token_encrypted: tokenData.refresh_token || null,
+        access_token_encrypted: encryptedAccessToken,
+        refresh_token_encrypted: encryptedRefreshToken,
         token_expires_at: tokenExpiresAt,
       })
       .eq("id", connection_id);
