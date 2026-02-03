@@ -185,10 +185,6 @@ export function MarketingFooter() {
         <div className="mt-16 pt-8 border-t">
           <div className="flex flex-wrap items-center justify-center gap-8 mb-8">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Shield className="h-5 w-5 text-primary" />
-              <span className="font-medium">SOC 2 Type II</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="h-5 w-5 text-success" />
               <span className="font-medium">GDPR Compliant</span>
             </div>

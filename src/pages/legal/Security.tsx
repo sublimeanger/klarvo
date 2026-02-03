@@ -14,7 +14,6 @@ export default function Security() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
             { icon: Lock, label: "Encryption at Rest & Transit" },
-            { icon: Shield, label: "SOC 2 Type II (In Progress)" },
             { icon: Server, label: "EU Data Residency" },
             { icon: Eye, label: "Access Controls" },
             { icon: Users, label: "Employee Training" },
@@ -94,7 +93,6 @@ export default function Security() {
       <p>We are committed to meeting the highest compliance standards:</p>
       <ul>
         <li><strong>GDPR:</strong> Full compliance with EU data protection requirements</li>
-        <li><strong>SOC 2 Type II:</strong> Audit in progress</li>
         <li><strong>ISO 27001:</strong> Roadmap planned</li>
       </ul>
 

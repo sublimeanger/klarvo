@@ -25,7 +25,6 @@ interface HeroSectionProps {
 
 const trustBadges = [
   "GDPR Compliant",
-  "SOC 2 Type II",
   "ISO 27001",
 ];
 
