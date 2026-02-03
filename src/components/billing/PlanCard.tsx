@@ -44,15 +44,6 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
         </div>
       )}
       
-      {/* Secondary Badge - Best Value (only on Growth annual, shown below Most Popular) */}
-      {isGrowth && billingPeriod === 'annual' && (
-        <div className="absolute -top-3 right-3 z-10">
-          <Badge variant="secondary" className="bg-success/15 text-success border border-success/30 text-[10px] whitespace-nowrap shadow-sm px-2 py-0.5">
-            <TrendingUp className="h-2.5 w-2.5 mr-1" />
-            Best Value
-          </Badge>
-        </div>
-      )}
       
       <CardHeader className="pb-3 sm:pb-4 p-3 sm:p-6">
         <CardTitle className="text-lg sm:text-xl">{plan.name}</CardTitle>
