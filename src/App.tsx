@@ -154,6 +154,9 @@ const AUP = lazy(() => import("@/pages/legal/AUP"));
 
 // Provider Track pages (hidden, non-indexable)
 const ProviderDashboard = lazy(() => import("@/pages/provider-track/Dashboard"));
+
+// Internal/unlisted pages
+const AdsCreatives = lazy(() => import("@/pages/ads/Creatives"));
 const ProviderTechnicalDocs = lazy(() => import("@/pages/provider-track/TechnicalDocs"));
 const ProviderRiskManagement = lazy(() => import("@/pages/provider-track/RiskManagement"));
 const ProviderQMS = lazy(() => import("@/pages/provider-track/QMS"));
@@ -292,6 +295,9 @@ const App = () => (
             <Route path="/dpa" element={<DPA />} />
             <Route path="/gdpr" element={<GDPR />} />
             <Route path="/aup" element={<AUP />} />
+            
+            {/* Internal/unlisted pages */}
+            <Route path="/ads/creatives" element={<AdsCreatives />} />
             
             {/* SEO Redirects - Legacy/incorrect URLs to correct routes */}
             <Route path="/templates/vendor-due-diligence" element={<Navigate to="/templates/vendor-due-diligence-questionnaire" replace />} />
