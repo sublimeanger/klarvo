@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { CTASection } from "@/components/marketing/CTASection";
 import { SEOHead, SchemaMarkup, createSoftwareApplicationSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
+import { RelatedContent } from "@/components/marketing/RelatedContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -265,6 +266,8 @@ export default function EvidencePacksPage() {
           </div>
         </div>
       </section>
+
+      <RelatedContent currentHref="/ai-governance-evidence-packs" title="Related Resources" />
 
       <CTASection
         title="Generate Your First Evidence Pack"

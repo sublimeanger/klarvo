@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -292,6 +292,13 @@ const App = () => (
             <Route path="/dpa" element={<DPA />} />
             <Route path="/gdpr" element={<GDPR />} />
             <Route path="/aup" element={<AUP />} />
+            
+            {/* SEO Redirects - Legacy/incorrect URLs to correct routes */}
+            <Route path="/templates/vendor-due-diligence" element={<Navigate to="/templates/vendor-due-diligence-questionnaire" replace />} />
+            <Route path="/templates/human-oversight-plan" element={<Navigate to="/templates/human-oversight-plan-template" replace />} />
+            <Route path="/tools/high-risk-checker" element={<Navigate to="/tools/high-risk-checker-annex-iii" replace />} />
+            <Route path="/templates/ai-literacy-training-tracker" element={<Navigate to="/ai-literacy-training-tracker" replace />} />
+            <Route path="/industries/saas-selling-into-eu" element={<Navigate to="/industries/saas-ai-act" replace />} />
             
             {/* Auth pages */}
             <Route path="/auth/login" element={<Login />} />

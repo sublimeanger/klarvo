@@ -163,9 +163,9 @@ export default function Blog() {
   return (
     <MarketingLayout>
       <SEOHead
-        title="Blog - EU AI Act Insights & Compliance Guides"
-        description="Expert insights on EU AI Act compliance. Practical guides, regulatory updates, and best practices for AI governance in SMEs."
-        keywords={["EU AI Act blog", "AI compliance articles", "AI regulation news", "AI governance insights"]}
+        title="EU AI Act Blog | Compliance Insights & Regulatory Updates"
+        description="Stay ahead of EU AI Act deadlines. Expert insights on prohibited practices, high-risk AI, deployer obligations, and practical compliance strategies for SMEs."
+        keywords={["EU AI Act blog", "AI compliance articles", "AI regulation news", "AI governance insights", "February 2025 deadline"]}
         canonical="https://klarvo.io/blog"
       />
       <SchemaMarkup schema={[breadcrumbSchema]} />

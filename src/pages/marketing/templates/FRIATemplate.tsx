@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
+import { RelatedContent } from "@/components/marketing/RelatedContent";
+import { HubNavigation } from "@/components/marketing/HubNavigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -198,6 +200,14 @@ export default function FRIATemplate() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <RelatedContent currentHref="/templates/fria-template" title="Related Resources" />
+
+      <section className="py-8 container mx-auto px-4">
+        <div className="max-w-4xl mx-auto">
+          <HubNavigation />
         </div>
       </section>
 
