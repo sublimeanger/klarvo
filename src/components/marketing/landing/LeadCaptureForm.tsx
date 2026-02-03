@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
+import { trackFormStart, trackLeadStep } from "@/lib/analytics";
 // Step 1 Schema
 const stepOneSchema = z.object({
   email: z.string().email("Please enter a valid work email").max(255),
@@ -46,6 +46,7 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
   const [leadId, setLeadId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [formStartTracked, setFormStartTracked] = useState(false);
   const [utmParams, setUtmParams] = useState<UTMParams>({
     utm_source: null,
     utm_medium: null,
@@ -55,6 +56,13 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
   });
   const { toast } = useToast();
 
+  // Track form start on first field focus
+  const handleFormFocus = () => {
+    if (!formStartTracked) {
+      trackFormStart(variant);
+      setFormStartTracked(true);
+    }
+  };
   // Capture UTM parameters on mount
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -99,6 +107,9 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
 
       if (error) throw error;
 
+      // Track step 1 completion
+      trackLeadStep(1, variant, { company: data.company });
+
       setLeadId(lead.id);
       setStep(2);
     } catch (error) {
@@ -130,6 +141,13 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
         .eq("id", leadId);
 
       if (error) throw error;
+
+      // Track step 2 completion + generate_lead conversion
+      trackLeadStep(2, variant, {
+        role: data.role,
+        ai_system_count: data.aiSystemCount,
+        operator_type: data.operatorType,
+      });
 
       setIsComplete(true);
     } catch (error) {
@@ -186,6 +204,7 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
               placeholder="you@company.com"
               {...stepOneForm.register("email")}
               className="mt-1.5"
+              onFocus={handleFormFocus}
             />
             {stepOneForm.formState.errors.email && (
               <p className="text-sm text-destructive mt-1">

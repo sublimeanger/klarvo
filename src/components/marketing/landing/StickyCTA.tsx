@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { trackCTAClick } from "@/lib/analytics";
 
 interface StickyCTAProps {
   variant: "demo" | "start";
@@ -21,7 +22,10 @@ export const StickyCTA = ({ variant, onCtaClick }: StickyCTAProps) => {
         </p>
         <Button
           size="lg"
-          onClick={onCtaClick}
+          onClick={() => {
+            trackCTAClick('bottom', variant, ctaText);
+            onCtaClick();
+          }}
           className="h-14 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
           data-conversion="bottom-cta"
         >

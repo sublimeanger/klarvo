@@ -1,11 +1,25 @@
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { trackFAQExpand } from "@/lib/analytics";
 
 export const LandingFAQ = () => {
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+
+  const handleValueChange = (value: string) => {
+    if (value && !expandedItems.has(value)) {
+      const faqIndex = parseInt(value.replace('faq-', ''));
+      if (!isNaN(faqIndex) && faqs[faqIndex]) {
+        trackFAQExpand(faqs[faqIndex].question);
+        setExpandedItems((prev) => new Set(prev).add(value));
+      }
+    }
+  };
+
   const faqs = [
     {
       question: "Do we need a lawyer to use Klarvo?",
@@ -44,7 +58,7 @@ export const LandingFAQ = () => {
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-3" onValueChange={handleValueChange}>
             {faqs.map((faq, index) => (
               <AccordionItem
                 key={index}

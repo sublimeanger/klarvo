@@ -1,5 +1,6 @@
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackCTAClick } from "@/lib/analytics";
 
 interface LandingHeroProps {
   variant: "demo" | "start";
@@ -48,7 +49,10 @@ export const LandingHero = ({ variant, onCtaClick }: LandingHeroProps) => {
           <div className="mt-10">
             <Button
               size="lg"
-              onClick={onCtaClick}
+              onClick={() => {
+                trackCTAClick('hero', variant, ctaText);
+                onCtaClick();
+              }}
               className="h-14 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
               data-conversion="primary-cta"
             >
