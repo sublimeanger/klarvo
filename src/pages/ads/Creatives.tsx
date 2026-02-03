@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, Loader2, Package } from "lucide-react";
 import { AdCreative, AdSize, AdVariant } from "@/components/ads/AdCreative";
 import { downloadAdAsPng, downloadAllAdsAsZip } from "@/components/ads/AdDownloader";
+import { SEOHead } from "@/components/seo";
 import { toast } from "sonner";
 
 // 1.91:1 horizontal variants (5 different messages)
@@ -121,7 +122,13 @@ export default function Creatives() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <>
+      <SEOHead
+        title="Google Ads Creatives | Internal"
+        description="Internal page for downloading Google Ads creative assets."
+        noindex={true}
+      />
+      <div className="min-h-screen bg-gray-50 py-12">
       <div className="container max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-10">
@@ -210,5 +217,6 @@ export default function Creatives() {
         </div>
       </div>
     </div>
+    </>
   );
 }
