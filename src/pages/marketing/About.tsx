@@ -250,6 +250,32 @@ export default function About() {
         </div>
       </section>
 
+      {/* Related Links */}
+      <section className="py-12 bg-surface-1">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-xl font-bold mb-6">Learn More</h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link to="/careers" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Join Our Team
+              </Link>
+              <Link to="/contact" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Contact Us
+              </Link>
+              <Link to="/press" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Press & Media
+              </Link>
+              <Link to="/partners" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Partners
+              </Link>
+              <Link to="/security" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Security
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <CTASection
         title="Ready to Join Us?"

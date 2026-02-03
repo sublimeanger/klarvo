@@ -201,6 +201,18 @@ export default function DPA() {
         <li><strong>Email:</strong> dpa@klarvo.com</li>
         <li><strong>DPO:</strong> dpo@klarvo.com</li>
       </ul>
+
+      <h2>Related Documents</h2>
+      <p>
+        This DPA should be read alongside:
+      </p>
+      <ul>
+        <li><Link to="/terms">Terms of Service</Link> — Main service agreement</li>
+        <li><Link to="/privacy">Privacy Policy</Link> — How we handle personal data</li>
+        <li><Link to="/security">Security</Link> — Technical and organizational measures</li>
+        <li><Link to="/gdpr">GDPR Compliance</Link> — Our GDPR compliance approach</li>
+        <li><Link to="/cookies">Cookie Policy</Link> — Use of cookies and tracking technologies</li>
+      </ul>
     </LegalLayout>
   );
 }

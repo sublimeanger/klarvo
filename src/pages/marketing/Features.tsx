@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { FeatureGrid } from "@/components/marketing/FeatureGrid";
@@ -273,6 +274,32 @@ export default function Features() {
       {/* Controls & Exports anchors for navigation */}
       <div id="controls" className="scroll-mt-24" />
       <div id="exports" className="scroll-mt-24" />
+
+      {/* Related Resources */}
+      <section className="py-12 border-t bg-surface-1">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-xl font-bold mb-6">Explore Resources</h2>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link to="/guides" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Compliance Guides
+              </Link>
+              <Link to="/templates" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Free Templates
+              </Link>
+              <Link to="/tools" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Interactive Tools
+              </Link>
+              <Link to="/samples" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                Sample Outputs
+              </Link>
+              <Link to="/industries" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-background border hover:border-primary/30 hover:text-primary transition-colors text-sm font-medium">
+                By Industry
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA */}
       <CTASection

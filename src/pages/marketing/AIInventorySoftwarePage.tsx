@@ -3,6 +3,7 @@ import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
 import { SEOHead, SchemaMarkup, createSoftwareApplicationSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
+import { RelatedContent } from "@/components/marketing/RelatedContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -198,6 +199,8 @@ export default function AIInventorySoftwarePage() {
           </div>
         </div>
       </section>
+
+      <RelatedContent currentHref="/ai-inventory-software" title="Related Resources" />
 
       <CTASection
         title="Build Your AI Inventory Today"

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
+import { RelatedContent } from "@/components/marketing/RelatedContent";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -190,6 +191,52 @@ export default function GuidesHub() {
                 </Card>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Related Resources - Templates & Tools */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className="text-2xl font-bold mb-3">Related Resources</h2>
+              <p className="text-muted-foreground">Put these guides into action with our templates and tools</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Link to="/templates" className="group">
+                <Card className="h-full hover:shadow-lg transition-all hover:border-primary/30">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold group-hover:text-primary transition-colors mb-2">Free Templates</h3>
+                    <p className="text-sm text-muted-foreground">Ready-to-use compliance documents</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/tools" className="group">
+                <Card className="h-full hover:shadow-lg transition-all hover:border-primary/30">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold group-hover:text-primary transition-colors mb-2">Free Checkers</h3>
+                    <p className="text-sm text-muted-foreground">Interactive compliance tools</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/samples" className="group">
+                <Card className="h-full hover:shadow-lg transition-all hover:border-primary/30">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold group-hover:text-primary transition-colors mb-2">Sample Outputs</h3>
+                    <p className="text-sm text-muted-foreground">See what Klarvo generates</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/blog" className="group">
+                <Card className="h-full hover:shadow-lg transition-all hover:border-primary/30">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold group-hover:text-primary transition-colors mb-2">Blog</h3>
+                    <p className="text-sm text-muted-foreground">Latest insights & updates</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

@@ -146,6 +146,19 @@ export default function Terms() {
         <li>Email: legal@klarvo.com</li>
         <li>Address: [Company Address]</li>
       </ul>
+
+      <h2>Related Legal Documents</h2>
+      <p>
+        Please also review our other legal documents:
+      </p>
+      <ul>
+        <li><Link to="/privacy">Privacy Policy</Link> — How we handle your personal data</li>
+        <li><Link to="/dpa">Data Processing Agreement</Link> — GDPR-compliant data processing terms</li>
+        <li><Link to="/cookies">Cookie Policy</Link> — Our use of cookies and tracking</li>
+        <li><Link to="/security">Security</Link> — How we protect your data</li>
+        <li><Link to="/aup">Acceptable Use Policy</Link> — What you can and cannot do on the platform</li>
+        <li><Link to="/gdpr">GDPR Compliance</Link> — Our approach to data protection</li>
+      </ul>
     </LegalLayout>
   );
 }
