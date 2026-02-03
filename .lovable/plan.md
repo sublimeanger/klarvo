@@ -1,228 +1,230 @@
 
 
-# High-Converting Paid Search Landing Page Implementation
+# Google Analytics Events & Conversion Tracking Implementation
 
 ## Overview
 
-This plan creates a dedicated paid search landing page for Klarvo optimized for Google Ads traffic. The page will follow conversion-rate-optimization (CRO) best practices with a single primary CTA, minimal navigation, and outcome-focused messaging.
-
-## Strategy
-
-Based on the blueprint, I'll build **two landing page variants** from the same template:
-1. **Demo-first** (`/lp/demo`) - For high-intent keywords ("EU AI Act compliance software")
-2. **Self-serve** (`/lp/start`) - For mid-intent keywords ("AI inventory template", "classification checker")
-
-Both variants will share the same page structure but differ in the primary CTA.
+This plan implements comprehensive event tracking for your paid search landing pages, plus instructions for setting up conversions in Google Analytics 4 (GA4) and Google Ads.
 
 ---
 
-## Page Structure (Conversion-Optimized)
+## Events to Track (Code Implementation)
 
-### 1. Above the Fold (The Make-or-Break)
+### 1. Landing Page Events
 
-**Header**: Minimal - logo only, no navigation links (reduces exit paths)
+| Event Name | Trigger | Parameters |
+|------------|---------|------------|
+| `page_view` | Automatic via gtag config | `page_location`, `page_title` |
+| `landing_variant_view` | Page load | `variant` (demo/start), `utm_source`, `utm_campaign` |
 
-**Hero Section**:
-- **Headline**: "EU AI Act compliance for SMEs — inventory, classify, and export an audit-ready evidence pack."
-- **Subheadline**: "Klarvo turns your AI usage into a defensible compliance record: AI system inventory, risk classification, obligations, evidence tracking, and consultancy-grade exports."
-- **3 Bullet Benefits**:
-  - Know every AI system you use and who owns it
-  - Get a clear risk classification + next actions
-  - Export audit-ready packs for leadership, customers, auditors
-- **Primary CTA** (variant-specific):
-  - Demo: "Get a Compliance Walkthrough"
-  - Self-serve: "Create Your First AI Inventory"
-- **Anxiety Reducer**: "No legal jargon. Guided workflows. Not legal advice."
+### 2. CTA Click Events
 
-### 2. Lead Capture Form (2-Step)
+| Event Name | Trigger | Parameters |
+|------------|---------|------------|
+| `cta_click` | Hero CTA button click | `cta_location` (hero/bottom), `variant`, `cta_text` |
 
-**Step 1** (Low friction):
-- Work email
-- Company name
+### 3. Form Funnel Events (Critical for Conversion Tracking)
 
-**Step 2** (Qualification - shown after Step 1):
-- Role (Founder/CEO, COO/Ops, CTO/Product, DPO/Compliance, Other)
-- # of AI systems (1, 2-10, 11-25, 26-100, 100+)
-- Are you deployer, provider, or both?
-- Optional: Most urgent use case?
+| Event Name | Trigger | Parameters |
+|------------|---------|------------|
+| `form_start` | User focuses on first form field | `variant` |
+| `lead_step1_complete` | Step 1 submission success | `variant`, `company` |
+| `lead_step2_complete` | Step 2 submission success | `variant`, `role`, `ai_system_count`, `operator_type` |
+| `generate_lead` | Final form completion | `variant`, `currency: EUR`, `value: 149` (for ROAS) |
 
-### 3. "See the Output" Section
+### 4. Engagement Events
 
-**Visual preview of tangible deliverables** (Klarvo's differentiator):
-- Classification Memo PDF mockup with key sections highlighted
-- Evidence Pack ZIP structure diagram
-- FRIA Report snippet
-
-This beats generic dashboard screenshots because it shows the actual artifact they'll get.
-
-### 4. Why Klarvo (Trust Block)
-
-- Encryption at rest + in transit
-- Audit logs for all actions
-- AI-powered guidance, not legal advice
-- EU data residency option (Enterprise)
-
-### 5. Comparison Block
-
-Quick "Why not spreadsheets / generic GRC?" visual comparison:
-| Spreadsheet | Klarvo |
-|-------------|--------|
-| Manual classification | Automated risk determination |
-| Scattered evidence | Linked, versioned vault |
-| No exports | Audit-ready PDF/ZIP packs |
-| No reminders | Expiry tracking + alerts |
-
-### 6. FAQ Section (Handle Objections)
-
-- "Do we need a lawyer to use Klarvo?"
-- "Are we a provider or deployer?"
-- "How long does setup take?"
-- "What do I get after the first session?"
-- "Can I share exports with auditors/customers?"
-
-### 7. Final CTA (Sticky)
-
-Repeat the primary CTA with pricing anchor: "Starting at €149/month"
-
-### 8. Minimal Footer
-
-Legal links only (Terms, Privacy), no navigation.
+| Event Name | Trigger | Parameters |
+|------------|---------|------------|
+| `scroll_depth` | 25%, 50%, 75%, 100% scroll | `percent_scrolled` |
+| `faq_expand` | FAQ accordion opened | `question` |
+| `artifact_view` | Artifact showcase in viewport | `artifact_type` |
 
 ---
 
 ## Technical Implementation
 
-### New Files
+### New File: Analytics Utility
+
+Create `src/lib/analytics.ts` - a typed wrapper for gtag that:
+- Provides type-safe event tracking functions
+- Handles cases where gtag isn't loaded (dev environment)
+- Includes UTM parameter extraction
+
+```typescript
+// Key functions:
+trackEvent(eventName, params)     // Generic event
+trackCTAClick(location, variant)  // CTA clicks
+trackLeadStep(step, variant, data) // Form funnel
+trackScrollDepth(percent)         // Scroll tracking
+```
+
+### Files to Modify
+
+1. **`LeadCaptureForm.tsx`** - Add form funnel events
+   - `form_start` on first field focus
+   - `lead_step1_complete` after step 1 success
+   - `lead_step2_complete` after step 2 success
+   - `generate_lead` on final completion
+
+2. **`LandingHero.tsx`** - Add CTA click tracking
+   - `cta_click` with `location: 'hero'`
+
+3. **`StickyCTA.tsx`** - Add CTA click tracking
+   - `cta_click` with `location: 'bottom'`
+
+4. **`PaidSearchLanding.tsx`** - Add page-level tracking
+   - `landing_variant_view` on mount
+   - Scroll depth observer
+
+5. **`LandingFAQ.tsx`** - Add engagement tracking
+   - `faq_expand` when accordion opens
+
+---
+
+## What You Need to Set Up in Google Analytics 4
+
+### Step 1: Create Custom Definitions (Events)
+
+Go to **Admin → Data display → Events** and mark these as conversions:
+
+| Event to Mark as Conversion | Priority |
+|-----------------------------|----------|
+| `generate_lead` | **Primary** (main conversion) |
+| `lead_step1_complete` | Secondary (micro-conversion) |
+| `lead_step2_complete` | Secondary (micro-conversion) |
+
+### Step 2: Create Custom Dimensions
+
+Go to **Admin → Data display → Custom definitions → Create custom dimension**:
+
+| Dimension Name | Event Parameter | Scope |
+|----------------|-----------------|-------|
+| Landing Variant | `variant` | Event |
+| CTA Location | `cta_location` | Event |
+| Lead Role | `role` | Event |
+| AI System Count | `ai_system_count` | Event |
+| Operator Type | `operator_type` | Event |
+
+### Step 3: Create Audiences for Remarketing
+
+Go to **Admin → Data display → Audiences → New audience**:
+
+1. **Partial Leads (Step 1 only)**
+   - Include: `lead_step1_complete` 
+   - Exclude: `generate_lead`
+   - Use for: Remarketing to people who started but didn't finish
+
+2. **Demo Requesters**
+   - Include: `generate_lead` where `variant = demo`
+   - Use for: High-intent remarketing
+
+3. **Self-Serve Leads**
+   - Include: `generate_lead` where `variant = start`
+   - Use for: Onboarding sequence targeting
+
+---
+
+## What You Need to Set Up in Google Ads
+
+### Step 1: Link Google Ads to GA4
+
+1. In GA4: **Admin → Product links → Google Ads links → Link**
+2. Select your Google Ads account
+3. Enable personalized advertising
+
+### Step 2: Import Conversions from GA4
+
+1. In Google Ads: **Goals → Conversions → Summary → + New conversion action**
+2. Select **Import → Google Analytics 4 properties**
+3. Import these events:
+
+| GA4 Event | Google Ads Conversion Name | Value | Count |
+|-----------|---------------------------|-------|-------|
+| `generate_lead` | Lead - Form Complete | €149 | One per click |
+| `lead_step1_complete` | Lead - Step 1 | €30 | One per click |
+
+### Step 3: Set Primary vs Secondary Conversions
+
+- **Primary**: `Lead - Form Complete` (used for bidding optimization)
+- **Secondary**: `Lead - Step 1` (used for reporting only, not bidding)
+
+### Step 4: Configure Conversion Window
+
+- Click-through window: **30 days** (standard for B2B)
+- View-through window: **7 days** (optional, for Display campaigns)
+
+---
+
+## Campaign Settings Checklist (For Reference)
+
+When setting up your Google Ads campaigns, use these settings:
+
+### Search Campaign Settings
+
+| Setting | Recommended Value |
+|---------|-------------------|
+| Campaign type | Search |
+| Bidding | Maximize Conversions → Target CPA (after 30+ conversions) |
+| Target CPA | Start at €75-100, optimize after data |
+| Budget | €50-100/day minimum for learning |
+| Networks | Google Search only (disable Display) |
+| Locations | European Union (or specific countries) |
+| Languages | English |
+
+### Keyword Match Types
+
+| Intent Level | Match Type | Example Keywords |
+|--------------|------------|------------------|
+| High | Exact | [eu ai act compliance software] |
+| High | Phrase | "ai governance platform" |
+| Mid | Broad Match Modifier | +ai +act +inventory +template |
+
+### Ad Group Structure
 
 ```text
-src/pages/marketing/landing/PaidSearchLanding.tsx     - Main landing page component
-src/components/marketing/landing/LandingHero.tsx      - Above-the-fold hero
-src/components/marketing/landing/LeadCaptureForm.tsx  - 2-step form with validation
-src/components/marketing/landing/ArtifactShowcase.tsx - Output preview section
-src/components/marketing/landing/ComparisonTable.tsx  - Spreadsheet vs Klarvo
-src/components/marketing/landing/LandingFAQ.tsx       - Conversion-focused FAQs
-src/components/marketing/landing/MinimalHeader.tsx    - Logo-only header
-src/components/marketing/landing/MinimalFooter.tsx    - Legal links only
-src/components/marketing/landing/index.ts             - Exports
-```
-
-### Database Schema
-
-Create a `paid_search_leads` table to track qualified leads from the 2-step form:
-
-```sql
-CREATE TABLE paid_search_leads (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT NOT NULL,
-  company TEXT NOT NULL,
-  role TEXT,
-  ai_system_count TEXT,
-  operator_type TEXT,
-  urgent_use_case TEXT,
-  landing_variant TEXT NOT NULL,  -- 'demo' or 'start'
-  utm_source TEXT,
-  utm_medium TEXT,
-  utm_campaign TEXT,
-  utm_term TEXT,
-  submitted_at TIMESTAMPTZ DEFAULT now(),
-  step_completed INTEGER DEFAULT 1,  -- 1 or 2
-  status TEXT DEFAULT 'new'
-);
-```
-
-### Routes
-
-```typescript
-// App.tsx additions
-<Route path="/lp/demo" element={<PaidSearchLanding variant="demo" />} />
-<Route path="/lp/start" element={<PaidSearchLanding variant="start" />} />
-```
-
-### UTM Tracking
-
-The landing page will capture and store UTM parameters from the URL to enable proper attribution in Google Ads reporting.
-
----
-
-## Copy/Messaging Alignment
-
-### Demo Variant (`/lp/demo`)
-- Primary CTA: "Book a 20-min Demo"
-- Secondary CTA: "See Sample Reports"
-- Form Title: "Get a Personalized Compliance Walkthrough"
-- Success Message: "We'll be in touch within 24 hours to schedule your demo."
-
-### Self-Serve Variant (`/lp/start`)
-- Primary CTA: "Create Your First AI Inventory"
-- Secondary CTA: "Download Classification Memo Sample"
-- Form Title: "Start Your Compliance Journey"
-- Success Message: "Check your inbox — we've sent you access instructions."
-
----
-
-## Form Validation (Security-First)
-
-Using Zod schemas for all inputs:
-
-```typescript
-const stepOneSchema = z.object({
-  email: z.string().email().max(255),
-  company: z.string().trim().min(2).max(100),
-});
-
-const stepTwoSchema = z.object({
-  role: z.enum(['founder', 'ops', 'cto', 'dpo', 'other']),
-  aiSystemCount: z.enum(['1', '2-10', '11-25', '26-100', '100+']),
-  operatorType: z.enum(['deployer', 'provider', 'both', 'unsure']),
-  urgentUseCase: z.string().max(500).optional(),
-});
+Campaign: Klarvo - EU AI Act (Search)
+├── Ad Group: High Intent - Software
+│   └── Route to: /lp/demo
+├── Ad Group: High Intent - Platform  
+│   └── Route to: /lp/demo
+├── Ad Group: Mid Intent - Templates
+│   └── Route to: /lp/start
+└── Ad Group: Mid Intent - Checkers
+    └── Route to: /lp/start
 ```
 
 ---
 
-## "Landing Page Don'ts" Checklist
+## File Summary
 
-The implementation will explicitly avoid:
-- Full site navigation (minimal header only)
-- Multiple competing CTAs (one primary per variant)
-- Long legal explanations upfront
-- Hidden pricing (starting price shown)
-- Absolute compliance claims ("get compliant" → "generate documentation")
-
----
-
-## Mobile Optimization
-
-- Single-column layout on mobile
-- Thumb-friendly CTA buttons (min 48px height)
-- Form fields with proper input types
-- Horizontal scroll prevention
-- Fast load time (lazy load images below fold)
+| File | Action | Purpose |
+|------|--------|---------|
+| `src/lib/analytics.ts` | Create | Type-safe analytics utility |
+| `src/components/marketing/landing/LeadCaptureForm.tsx` | Modify | Form funnel tracking |
+| `src/components/marketing/landing/LandingHero.tsx` | Modify | Hero CTA tracking |
+| `src/components/marketing/landing/StickyCTA.tsx` | Modify | Bottom CTA tracking |
+| `src/pages/marketing/landing/PaidSearchLanding.tsx` | Modify | Page view + scroll tracking |
+| `src/components/marketing/landing/LandingFAQ.tsx` | Modify | FAQ engagement tracking |
 
 ---
 
-## Conversion Tracking Hooks
+## Quick Reference: Your Setup Checklist
 
-The page will include data attributes for:
-- Google Ads conversion tracking
-- Form submission events
-- Scroll depth tracking
-- CTA click tracking
+**In GA4 Admin:**
+- [ ] Mark `generate_lead` as a conversion
+- [ ] Mark `lead_step1_complete` as a conversion (optional)
+- [ ] Create custom dimensions for `variant`, `role`, `operator_type`, `ai_system_count`
+- [ ] Create "Partial Leads" audience for remarketing
 
----
+**In Google Ads:**
+- [ ] Link Google Ads account to GA4
+- [ ] Import `generate_lead` conversion (set €149 value)
+- [ ] Import `lead_step1_complete` as secondary conversion (set €30 value)
+- [ ] Set 30-day click-through conversion window
 
-## File-by-File Summary
-
-| File | Purpose |
-|------|---------|
-| `PaidSearchLanding.tsx` | Main page component with variant prop |
-| `LandingHero.tsx` | Above-the-fold content with dynamic CTA |
-| `LeadCaptureForm.tsx` | 2-step form with Supabase persistence |
-| `ArtifactShowcase.tsx` | Output preview (memo, pack, FRIA) |
-| `ComparisonTable.tsx` | Spreadsheet vs Klarvo comparison |
-| `LandingFAQ.tsx` | 5 conversion-focused FAQs |
-| `MinimalHeader.tsx` | Logo only, no navigation |
-| `MinimalFooter.tsx` | Legal links only |
-
-This implementation follows all the conversion best practices from the blueprint while leveraging existing Klarvo design patterns and component styles.
+**Testing:**
+- [ ] Use GA4 DebugView to verify events fire correctly
+- [ ] Use Google Tag Assistant browser extension
+- [ ] Test both `/lp/demo` and `/lp/start` variants
 
