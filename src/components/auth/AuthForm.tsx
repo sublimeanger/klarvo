@@ -57,7 +57,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
           email: signupData.email,
           password: signupData.password,
           options: {
-            emailRedirectTo: window.location.origin,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: {
               full_name: signupData.fullName,
             },
@@ -123,7 +123,7 @@ export function AuthForm({ mode, onSuccess }: AuthFormProps) {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
