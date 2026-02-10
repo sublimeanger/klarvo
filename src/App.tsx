@@ -81,6 +81,7 @@ const Templates = lazy(() => import("@/pages/marketing/Templates"));
 const EUAIActGuide = lazy(() => import("@/pages/marketing/EUAIActGuide"));
 const Samples = lazy(() => import("@/pages/marketing/Samples"));
 const SystemSpec = lazy(() => import("@/pages/marketing/SystemSpec"));
+const PlatformFeatureDoc = lazy(() => import("@/pages/marketing/PlatformFeatureDoc"));
 const PaidSearchLanding = lazy(() => import("@/pages/marketing/landing/PaidSearchLanding"));
 
 // SEO Hub pages
@@ -220,6 +221,7 @@ const App = () => (
             <Route path="/templates" element={<TemplatesHub />} />
             <Route path="/samples" element={<Samples />} />
             <Route path="/system-spec" element={<SystemSpec />} />
+            <Route path="/platform-doc" element={<PlatformFeatureDoc />} />
             <Route path="/eu-ai-act" element={<EUAIActGuide />} />
             
             {/* Paid Search Landing Pages */}
