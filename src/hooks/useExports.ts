@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { pdf } from "@react-pdf/renderer";
 import JSZip from "jszip";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
-import { AISystemPDF } from "@/components/exports/AISystemPDF";
-import { BoardPackPDF, type BoardPackData } from "@/components/exports/audience/BoardPackPDF";
-import { CustomerTrustPackPDF, type CustomerTrustPackData } from "@/components/exports/audience/CustomerTrustPackPDF";
-import { AuditorPackPDF, type AuditorPackData } from "@/components/exports/audience/AuditorPackPDF";
-import { ProcurementPackPDF, type ProcurementPackData } from "@/components/exports/audience/ProcurementPackPDF";
+import type { BoardPackData } from "@/components/exports/audience/BoardPackPDF";
+import type { CustomerTrustPackData } from "@/components/exports/audience/CustomerTrustPackPDF";
+import type { AuditorPackData } from "@/components/exports/audience/AuditorPackPDF";
+import type { ProcurementPackData } from "@/components/exports/audience/ProcurementPackPDF";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { calculateAuditReadinessScore, getTopBlockers } from "@/lib/calculateAuditReadiness";
@@ -165,11 +163,17 @@ export function useExports() {
   const exportAISystemPDF = async (systemId: string, showWatermark = false) => {
     setIsExporting(true);
     try {
+      toast.info("Preparing PDF export...");
       const system = await fetchAISystemData(systemId);
       if (!system) throw new Error("System not found");
 
       const organization = await getOrganization();
       const generatedBy = profile?.full_name || user?.email || "Unknown";
+
+      const [{ pdf }, { AISystemPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/AISystemPDF"),
+      ]);
 
       const doc = AISystemPDF({
         system,
@@ -204,11 +208,17 @@ export function useExports() {
   const exportAISystemZIP = async (systemId: string, options?: { includeEvidence?: boolean; showWatermark?: boolean }) => {
     setIsExporting(true);
     try {
+      toast.info("Preparing ZIP export...");
       const system = await fetchAISystemData(systemId);
       if (!system) throw new Error("System not found");
 
       const organization = await getOrganization();
       const generatedBy = profile?.full_name || user?.email || "Unknown";
+
+      const [{ pdf }, { AISystemPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/AISystemPDF"),
+      ]);
 
       const zip = new JSZip();
 
@@ -260,6 +270,8 @@ export function useExports() {
     try {
       if (!profile?.organization_id) throw new Error("No organization");
 
+      toast.info("Preparing bulk export...");
+
       const { data: systems, error } = await supabase
         .from("ai_systems")
         .select(`
@@ -278,6 +290,11 @@ export function useExports() {
 
       const organization = await getOrganization();
       const generatedBy = profile?.full_name || user?.email || "Unknown";
+
+      const [{ pdf }, { AISystemPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/AISystemPDF"),
+      ]);
 
       const zip = new JSZip();
 
@@ -322,6 +339,8 @@ export function useExports() {
     setIsExporting(true);
     try {
       if (!profile?.organization_id) throw new Error("No organization");
+
+      toast.info("Preparing Board Pack...");
 
       const [organization, rulesetVersion] = await Promise.all([
         getOrganization(),
@@ -379,6 +398,11 @@ export function useExports() {
         ],
       };
 
+      const [{ pdf }, { BoardPackPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/audience/BoardPackPDF"),
+      ]);
+
       const doc = BoardPackPDF(data);
       const blob = await pdf(doc).toBlob();
       const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Board_Pack.pdf`;
@@ -405,6 +429,8 @@ export function useExports() {
   const exportCustomerTrustPack = async () => {
     setIsExporting(true);
     try {
+      toast.info("Preparing Customer Trust Pack...");
+
       const [organization, rulesetVersion] = await Promise.all([
         getOrganization(),
         getRulesetVersion(),
@@ -437,6 +463,11 @@ export function useExports() {
         ],
       };
 
+      const [{ pdf }, { CustomerTrustPackPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/audience/CustomerTrustPackPDF"),
+      ]);
+
       const doc = CustomerTrustPackPDF(data);
       const blob = await pdf(doc).toBlob();
       const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Trust_Pack.pdf`;
@@ -464,6 +495,8 @@ export function useExports() {
     setIsExporting(true);
     try {
       if (!profile?.organization_id) throw new Error("No organization");
+
+      toast.info("Preparing Auditor Pack...");
 
       const [organization, rulesetVersion] = await Promise.all([
         getOrganization(),
@@ -508,6 +541,11 @@ export function useExports() {
         },
       };
 
+      const [{ pdf }, { AuditorPackPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/audience/AuditorPackPDF"),
+      ]);
+
       const doc = AuditorPackPDF(data);
       const blob = await pdf(doc).toBlob();
       const fileName = `${organization.name.replace(/[^a-z0-9]/gi, "_")}_Auditor_Pack.pdf`;
@@ -535,6 +573,8 @@ export function useExports() {
     setIsExporting(true);
     try {
       if (!profile?.organization_id) throw new Error("No organization");
+
+      toast.info("Preparing Procurement Pack...");
 
       const [organization, rulesetVersion] = await Promise.all([
         getOrganization(),
@@ -586,6 +626,11 @@ export function useExports() {
           retentionPeriod: "Duration of contract + 2 years",
         },
       };
+
+      const [{ pdf }, { ProcurementPackPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/audience/ProcurementPackPDF"),
+      ]);
 
       const doc = ProcurementPackPDF(data);
       const blob = await pdf(doc).toBlob();

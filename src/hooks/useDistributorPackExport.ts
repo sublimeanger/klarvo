@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { pdf } from "@react-pdf/renderer";
 import JSZip from "jszip";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,10 +6,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { logger } from "@/lib/logger";
-import {
-  DistributorVerificationPDF,
-  type DistributorVerificationData,
-} from "@/components/exports/distributor";
+import type { DistributorVerificationData } from "@/components/exports/distributor";
 
 interface DistributorPackOptions {
   aiSystemId: string;
@@ -125,6 +121,7 @@ export function useDistributorPackExport() {
   const exportDistributorPack = async (options: DistributorPackOptions) => {
     setIsExporting(true);
     try {
+      toast.info("Preparing Distributor Pack...");
       const { aiSystemId, includeEvidence = true } = options;
 
       const system = await fetchAISystem(aiSystemId);
@@ -179,6 +176,10 @@ export function useDistributorPackExport() {
           created_at: verification.created_at,
         };
 
+        const [{ pdf }, { DistributorVerificationPDF }] = await Promise.all([
+          import("@react-pdf/renderer"),
+          import("@/components/exports/distributor"),
+        ]);
         const pdfBlob = await pdf(
           DistributorVerificationPDF({
             verification: verificationData,

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { logger } from "@/lib/logger";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
-import { pdf } from "@react-pdf/renderer";
 import {
   ArrowLeft,
   Cpu,
@@ -71,9 +70,6 @@ import { detectMaterialChanges, useTriggerReassessment } from "@/hooks/useReasse
 import { useEntityAuditLogs, useLogAction } from "@/hooks/useAuditLog";
 import { useOrganization } from "@/hooks/useOrganization";
 import { useAuth } from "@/contexts/AuthContext";
-import { ClassificationMemoPDF } from "@/components/exports/ClassificationMemoPDF";
-import { AISystemPDF } from "@/components/exports/AISystemPDF";
-import { FRIAReportPDF } from "@/components/exports/FRIAReportPDF";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -147,14 +143,19 @@ export default function AISystemDetail() {
     
     setIsExporting(true);
     try {
+      toast.info("Preparing Classification Memo...");
+      const [{ pdf }, { ClassificationMemoPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/ClassificationMemoPDF"),
+      ]);
       const blob = await pdf(
-        <ClassificationMemoPDF
-          system={system as any}
-          classification={classification as any}
-          organization={{ name: organization.name }}
-          generatedBy={profile?.full_name || user?.email || "Unknown"}
-          reviewerName={getReviewerName()}
-        />
+        ClassificationMemoPDF({
+          system: system as any,
+          classification: classification as any,
+          organization: { name: organization.name },
+          generatedBy: profile?.full_name || user?.email || "Unknown",
+          reviewerName: getReviewerName(),
+        })
       ).toBlob();
       
       const url = URL.createObjectURL(blob);
@@ -179,15 +180,20 @@ export default function AISystemDetail() {
     
     setIsExporting(true);
     try {
+      toast.info("Preparing Evidence Pack...");
+      const [{ pdf }, { AISystemPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/AISystemPDF"),
+      ]);
       const blob = await pdf(
-        <AISystemPDF
-          system={{
+        AISystemPDF({
+          system: {
             ...system,
             classification: classification as any,
-          } as any}
-          organization={{ name: organization.name }}
-          generatedBy={profile?.full_name || user?.email || "Unknown"}
-        />
+          } as any,
+          organization: { name: organization.name },
+          generatedBy: profile?.full_name || user?.email || "Unknown",
+        })
       ).toBlob();
       
       const url = URL.createObjectURL(blob);
@@ -212,14 +218,19 @@ export default function AISystemDetail() {
     
     setIsExporting(true);
     try {
+      toast.info("Preparing FRIA Report...");
+      const [{ pdf }, { FRIAReportPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/FRIAReportPDF"),
+      ]);
       const blob = await pdf(
-        <FRIAReportPDF
-          fria={fria}
-          systemName={system.name}
-          organizationName={organization.name}
-          ownerName={getFRIAOwnerName()}
-          approverName={getFRIAApproverName()}
-        />
+        FRIAReportPDF({
+          fria,
+          systemName: system.name,
+          organizationName: organization.name,
+          ownerName: getFRIAOwnerName(),
+          approverName: getFRIAApproverName(),
+        })
       ).toBlob();
       
       const url = URL.createObjectURL(blob);

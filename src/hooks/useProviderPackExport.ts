@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { pdf } from "@react-pdf/renderer";
 import JSZip from "jszip";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,17 +6,13 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { logger } from "@/lib/logger";
-import {
-  AnnexIVTechDocsPDF,
-  EUDeclarationPDF,
-  CEMarkingPDF,
-  ProviderExecutiveSummaryPDF,
-  type TechnicalDocumentation,
-  type RiskRecord,
-  type Dataset,
-  type EUDeclaration,
-  type CEMarkingRecord,
-  type ProviderComplianceStatus,
+import type {
+  TechnicalDocumentation,
+  RiskRecord,
+  Dataset,
+  EUDeclaration,
+  CEMarkingRecord,
+  ProviderComplianceStatus,
 } from "@/components/exports/provider";
 
 interface ProviderPackOptions {
@@ -259,6 +254,7 @@ export function useProviderPackExport() {
   const exportProviderPack = async (options: ProviderPackOptions) => {
     setIsExporting(true);
     try {
+      toast.info("Preparing Provider Pack...");
       const { aiSystemId, versionId, includeEvidence = true } = options;
 
       const system = await fetchAISystem(aiSystemId);
@@ -323,6 +319,15 @@ export function useProviderPackExport() {
         riskRecordsCount: riskRecords.length,
         datasetsCount: datasets.length,
       };
+
+      // Lazy-load PDF renderer and all provider PDF components
+      const [
+        { pdf },
+        { AnnexIVTechDocsPDF, EUDeclarationPDF, CEMarkingPDF, ProviderExecutiveSummaryPDF },
+      ] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/provider"),
+      ]);
 
       // 00_Executive - Generate Executive Summary PDF
       const execFolder = root.folder("00_Executive")!;

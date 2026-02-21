@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { logger } from "@/lib/logger";
-import { pdf } from "@react-pdf/renderer";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +33,6 @@ import { useAISystemComparison, type ComparisonSystemData } from "@/hooks/useAIS
 import { AISystem } from "@/hooks/useAISystems";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrganization } from "@/hooks/useOrganization";
-import { ComparisonReportPDF } from "@/components/exports/ComparisonReportPDF";
 
 interface AISystemComparisonDialogProps {
   open: boolean;
@@ -202,7 +200,14 @@ export function AISystemComparisonDialog({
 
     setIsExporting(true);
     try {
+      toast.info("Preparing comparison report...");
       const generatedBy = profile?.full_name || user?.email || "Unknown";
+
+      const [{ pdf }, { ComparisonReportPDF }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/components/exports/ComparisonReportPDF"),
+      ]);
+
       const doc = ComparisonReportPDF({
         systems: sortedComparisonData,
         organization: { name: organization?.name || "Organization" },
