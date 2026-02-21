@@ -12,6 +12,7 @@ import {
   FileOutput,
   Sparkles
 } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,7 +32,7 @@ import { PlanUpgradeDialog, useUpgradeDialog } from "@/components/billing/PlanUp
 import { PLANS, type PlanId, type BillingPeriod } from "@/lib/billing-constants";
 
 export default function BillingSettings() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [upgradeBillingPeriod, setUpgradeBillingPeriod] = useState<BillingPeriod>("annual");
   const { userRole } = useAuth();
   const isAdmin = userRole?.role === "admin";
@@ -50,6 +51,7 @@ export default function BillingSettings() {
     cancelAtPeriodEnd,
     hasStripeCustomer,
     isLoading: subLoading,
+    error: subError,
     refetch 
   } = useSubscription();
   const { metrics, isLoading: metricsLoading } = useDashboardMetrics();
@@ -83,12 +85,18 @@ export default function BillingSettings() {
   // Handle success/cancel from Stripe checkout
   useEffect(() => {
     if (searchParams.get("success") === "true") {
-      toast.success("Subscription updated successfully!");
+      const addonName = searchParams.get("addon");
+      toast.success(addonName 
+        ? `${addonName} add-on activated successfully!` 
+        : "Subscription updated successfully!"
+      );
+      setSearchParams({}, { replace: true });
       refetch();
     } else if (searchParams.get("canceled") === "true") {
-      toast.info("Checkout was canceled");
+      toast.info("Checkout cancelled — no changes were made.");
+      setSearchParams({}, { replace: true });
     }
-  }, [searchParams, refetch]);
+  }, [searchParams, setSearchParams, refetch]);
 
   const formatDate = (date: Date | null) => {
     if (!date) return "—";
@@ -128,6 +136,26 @@ export default function BillingSettings() {
   const storagePercent = storageLimit === Infinity ? 0 : Math.min(100, (storageUsedGb / storageLimit) * 100);
 
   const isLoading = subLoading || metricsLoading || storageLoading || exportsLoading;
+
+  if (subError) {
+    return (
+      <div className="space-y-6 sm:space-y-8 animate-fade-up">
+        <div>
+          <h1 className="text-lg sm:text-2xl font-semibold tracking-tight">Billing & Subscription</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Manage your subscription, usage, and billing details
+          </p>
+        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Unable to load billing information</AlertTitle>
+          <AlertDescription>
+            Please refresh the page or contact support if the problem persists.
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-up">
