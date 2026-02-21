@@ -188,6 +188,47 @@ export async function checkAIFeatureAllowed(
 }
 
 /**
+ * Check if the authenticated user has one of the required roles
+ */
+export async function checkUserRole(
+  supabaseUrl: string,
+  supabaseServiceKey: string,
+  authHeader: string | null,
+  allowedRoles: string[]
+): Promise<{ allowed: boolean; role?: string; errorMessage?: string; errorStatus?: number }> {
+  const { organizationId, error } = await getOrganizationId(supabaseUrl, supabaseServiceKey, authHeader);
+
+  if (error || !organizationId) {
+    return { allowed: false, errorMessage: error || "Unauthorized", errorStatus: 401 };
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const token = authHeader!.replace("Bearer ", "");
+  const { data: { user } } = await supabase.auth.getUser(token);
+
+  if (!user) {
+    return { allowed: false, errorMessage: "Unauthorized", errorStatus: 401 };
+  }
+
+  const { data: roleData } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id)
+    .eq("organization_id", organizationId)
+    .single();
+
+  if (!roleData || !allowedRoles.includes(roleData.role)) {
+    return {
+      allowed: false,
+      errorMessage: "You don't have permission to use this feature",
+      errorStatus: 403
+    };
+  }
+
+  return { allowed: true, role: roleData.role };
+}
+
+/**
  * Create a standardized error response for AI privacy checks
  */
 export function createPrivacyErrorResponse(result: PrivacyCheckResult, corsHeaders: Record<string, string>): Response {
