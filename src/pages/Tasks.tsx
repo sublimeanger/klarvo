@@ -115,10 +115,10 @@ export default function Tasks() {
   const bulkAssign = useBulkAssignTasks();
   const bulkUpdateStatus = useBulkUpdateTaskStatus();
 
-  const filteredTasks = tasks.filter((task) =>
+  const filteredTasks = useMemo(() => tasks.filter((task) =>
     task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (task.description || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ), [tasks, searchQuery]);
 
   const resetTaskForm = () => {
     setNewTask({
@@ -223,12 +223,14 @@ export default function Tasks() {
   };
 
   // Stats
-  const todoCount = tasks.filter((t) => t.status === "todo").length;
-  const inProgressCount = tasks.filter((t) => t.status === "in_progress").length;
-  const doneCount = tasks.filter((t) => t.status === "done").length;
-  const overdueCount = tasks.filter(
-    (t) => t.due_date && isPast(new Date(t.due_date)) && t.status !== "done"
-  ).length;
+  const { todoCount, inProgressCount, doneCount, overdueCount } = useMemo(() => ({
+    todoCount: tasks.filter((t) => t.status === "todo").length,
+    inProgressCount: tasks.filter((t) => t.status === "in_progress").length,
+    doneCount: tasks.filter((t) => t.status === "done").length,
+    overdueCount: tasks.filter(
+      (t) => t.due_date && isPast(new Date(t.due_date)) && t.status !== "done"
+    ).length,
+  }), [tasks]);
 
   if (isLoading) {
     return (

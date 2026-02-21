@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { 
   Cpu, 
   AlertTriangle, 
@@ -52,24 +53,24 @@ export default function Dashboard() {
   const { data: recentTasks = [] } = useTasks({ status: "all" });
   const { totalCount: alertsCount, criticalCount } = useComplianceAlerts();
 
-  // Calculate percentages
-  const classifiedCount = metrics.highRiskCount + metrics.limitedRiskCount + metrics.minimalRiskCount;
-  const classificationProgress = metrics.totalSystems > 0 
-    ? Math.round((classifiedCount / metrics.totalSystems) * 100) 
-    : 0;
-  
-  const evidenceProgress = metrics.evidenceCount > 0
-    ? Math.round((metrics.approvedEvidenceCount / metrics.evidenceCount) * 100)
-    : 0;
-
-  const controlsProgress = metrics.controlsTotal > 0
-    ? Math.round((metrics.controlsImplemented / metrics.controlsTotal) * 100)
-    : 0;
-
-  // Get pending tasks for display
-  const pendingTasks = recentTasks
-    .filter(t => t.status === "todo" || t.status === "in_progress")
-    .slice(0, 3);
+  const { classifiedCount, classificationProgress, evidenceProgress, controlsProgress, pendingTasks } = useMemo(() => {
+    const classified = metrics.highRiskCount + metrics.limitedRiskCount + metrics.minimalRiskCount;
+    return {
+      classifiedCount: classified,
+      classificationProgress: metrics.totalSystems > 0 
+        ? Math.round((classified / metrics.totalSystems) * 100) 
+        : 0,
+      evidenceProgress: metrics.evidenceCount > 0
+        ? Math.round((metrics.approvedEvidenceCount / metrics.evidenceCount) * 100)
+        : 0,
+      controlsProgress: metrics.controlsTotal > 0
+        ? Math.round((metrics.controlsImplemented / metrics.controlsTotal) * 100)
+        : 0,
+      pendingTasks: recentTasks
+        .filter(t => t.status === "todo" || t.status === "in_progress")
+        .slice(0, 3),
+    };
+  }, [metrics, recentTasks]);
 
   return (
     <div className="space-y-4 sm:space-y-6 lg:space-y-8 animate-fade-up">
