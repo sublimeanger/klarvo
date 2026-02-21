@@ -147,7 +147,7 @@ serve(async (req) => {
     }
 
     // Generate invite URL
-    const baseUrl = req.headers.get("origin") || "https://klarvo.lovable.app";
+    const baseUrl = Deno.env.get("APP_URL") || "https://klarvo.io";
     const inviteUrl = `${baseUrl}/invite/${invite.token}`;
 
     // Send email via Resend
@@ -181,7 +181,7 @@ serve(async (req) => {
               </head>
               <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a1a; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <div style="text-align: center; margin-bottom: 30px;">
-                  <img src="https://klarvo.lovable.app/klarvo-logo-primary.svg" alt="Klarvo" style="height: 40px;" />
+                  <img src="https://klarvo.io/klarvo-logo-primary.svg" alt="Klarvo" style="height: 40px;" />
                 </div>
                 
                 <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 16px;">You're invited to join ${orgName}</h1>
@@ -208,7 +208,7 @@ serve(async (req) => {
                 
                 <p style="color: #999; font-size: 12px; text-align: center;">
                   Klarvo · EU AI Act Compliance Platform<br/>
-                  <a href="https://klarvo.lovable.app" style="color: #0d9373;">klarvo.lovable.app</a>
+                  <a href="https://klarvo.io" style="color: #0d9373;">klarvo.io</a>
                 </p>
               </body>
             </html>
