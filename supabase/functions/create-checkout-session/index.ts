@@ -148,13 +148,12 @@ serve(async (req) => {
     let session: Stripe.Checkout.Session;
 
     if (checkoutType === "addon" && addonId) {
-      // Handle add-on purchase
       const addonPriceId = ADDON_PRICE_IDS[addonId]?.[billingPeriod];
       if (!addonPriceId) {
         throw new Error(`Invalid addon: ${addonId} ${billingPeriod}`);
       }
 
-      // Check if user has an active subscription first
+      // Get existing subscription
       const { data: currentSub } = await supabaseClient
         .from("subscriptions")
         .select("stripe_subscription_id, plan_id")
@@ -165,47 +164,69 @@ serve(async (req) => {
         throw new Error("An active subscription is required to purchase add-ons");
       }
 
-      // Add addon to existing subscription
+      // Retrieve the Stripe subscription
       const stripeSubscription = await stripe.subscriptions.retrieve(
         currentSub.stripe_subscription_id
       );
 
-      // Check if addon already exists
+      // Check if addon already exists on the subscription
       const existingItem = stripeSubscription.items.data.find(
-        (item: Stripe.SubscriptionItem) => ADDON_PRICE_IDS[addonId] && 
-          Object.values(ADDON_PRICE_IDS[addonId]).includes(item.price.id)
+        (item: Stripe.SubscriptionItem) => Object.values(ADDON_PRICE_IDS[addonId] || {}).includes(item.price.id)
       );
 
       if (existingItem) {
         throw new Error("This add-on is already active on your subscription");
       }
 
-      // Create a checkout session to add the addon
-      session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        mode: "subscription",
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price: addonPriceId,
-            quantity: 1,
+      // Add the addon as a new line item to the existing subscription
+      const updatedSubscription = await stripe.subscriptions.update(
+        currentSub.stripe_subscription_id,
+        {
+          items: [
+            ...stripeSubscription.items.data.map((item: Stripe.SubscriptionItem) => ({ id: item.id })),
+            { price: addonPriceId },
+          ],
+          proration_behavior: "create_prorations",
+          metadata: {
+            ...stripeSubscription.metadata,
+            [`addon_${addonId}`]: "active",
           },
-        ],
-        success_url: `${origin}/settings/billing?success=true&addon=${addonId}`,
-        cancel_url: `${origin}/settings/billing?canceled=true`,
-        metadata: {
+        }
+      );
+
+      // Find the new subscription item for this addon
+      const newItem = updatedSubscription.items.data.find(
+        (item: Stripe.SubscriptionItem) => item.price.id === addonPriceId
+      );
+
+      // Record the addon in our database
+      await supabaseClient
+        .from("subscription_addons")
+        .upsert({
           organization_id: profile.organization_id,
           addon_id: addonId,
+          status: "active",
+          stripe_subscription_item_id: newItem?.id || null,
+          stripe_price_id: addonPriceId,
           billing_period: billingPeriod,
-          checkout_type: "addon",
-        },
-        subscription_data: {
-          metadata: {
-            organization_id: profile.organization_id,
-            addon_id: addonId,
-          },
-        },
-      });
+          current_period_start: new Date(updatedSubscription.current_period_start * 1000).toISOString(),
+          current_period_end: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
+          cancel_at_period_end: false,
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: "organization_id,addon_id",
+        });
+
+      // Return success (no redirect needed — the addon is immediately active)
+      const appUrl = Deno.env.get("APP_URL") || "https://klarvo.io";
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          url: `${appUrl}/settings/billing?success=true&addon=${addonId}`,
+          addon_id: addonId 
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      );
     } else {
       // Handle plan purchase (existing logic)
       if (!planId) {

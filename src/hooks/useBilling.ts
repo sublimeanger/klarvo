@@ -64,7 +64,11 @@ export function useBilling() {
         throw new Error(error.message);
       }
 
-      if (data?.url) {
+      if (data?.success) {
+        // Addon added directly to existing subscription
+        toast.success("Add-on activated successfully!");
+        window.location.href = data.url;
+      } else if (data?.url) {
         if (!isAllowedRedirectUrl(data.url)) {
           throw new Error("Invalid checkout URL received");
         }
