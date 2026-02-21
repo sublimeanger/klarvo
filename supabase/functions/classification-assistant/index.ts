@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { checkAIFeatureAllowed, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
+import { checkAIFeatureAllowed, checkUserRole, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
@@ -92,6 +92,20 @@ serve(async (req) => {
     
     if (!privacyCheck.allowed) {
       return createPrivacyErrorResponse(privacyCheck, corsHeaders);
+    }
+
+    // Check user role
+    const roleCheck = await checkUserRole(
+      supabaseUrl,
+      supabaseServiceKey,
+      req.headers.get("authorization"),
+      ["admin", "compliance_owner", "system_owner"]
+    );
+    if (!roleCheck.allowed) {
+      return new Response(
+        JSON.stringify({ error: roleCheck.errorMessage }),
+        { status: roleCheck.errorStatus, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     if (!LOVABLE_API_KEY) {
