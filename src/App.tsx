@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AIAssistant } from "@/components/ai-assistant";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 // Loading fallback component
@@ -189,6 +190,7 @@ const queryClient = new QueryClient({
 // ═══════════════════════════════════════════════════════════════════
 
 const App = () => (
+  <ErrorBoundary>
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -332,7 +334,9 @@ const App = () => (
             <Route
               element={
                 <ProtectedRoute>
-                  <AppLayout />
+                  <ErrorBoundary minimal>
+                    <AppLayout />
+                  </ErrorBoundary>
                 </ProtectedRoute>
               }
             >
@@ -381,6 +385,7 @@ const App = () => (
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
