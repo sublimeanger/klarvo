@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { 
   AlertTriangle, 
@@ -41,7 +42,7 @@ const actionTypeIcons: Record<string, typeof Shield> = {
   vendor: Building2,
 };
 
-export function RecommendationCard({
+export const RecommendationCard = React.memo(function RecommendationCard({
   recommendation,
   onDismiss,
   onCreateTask,
@@ -112,4 +113,4 @@ export function RecommendationCard({
       </div>
     </div>
   );
-}
+});

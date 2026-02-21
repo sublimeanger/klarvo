@@ -1,3 +1,4 @@
+import React from "react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,7 +17,7 @@ interface MetricCardProps {
   href?: string;
 }
 
-export function MetricCard({
+export const MetricCard = React.memo(function MetricCard({
   title,
   value,
   subtitle,
@@ -78,4 +79,4 @@ export function MetricCard({
   }
 
   return content;
-}
+});
