@@ -359,8 +359,16 @@ const App = () => (
               <Route path="/disclosures" element={<Disclosures />} />
               <Route path="/audit-log" element={<AuditLog />} />
               <Route path="/discovery" element={<Discovery />} />
-              <Route path="/settings" element={<GeneralSettings />} />
-              <Route path="/settings/billing" element={<BillingSettings />} />
+              <Route path="/settings" element={
+                <ProtectedRoute requireOnboarding={false} requiredRoles={['admin', 'compliance_owner']}>
+                  <GeneralSettings />
+                </ProtectedRoute>
+              } />
+              <Route path="/settings/billing" element={
+                <ProtectedRoute requireOnboarding={false} requiredRoles={['admin', 'compliance_owner']}>
+                  <BillingSettings />
+                </ProtectedRoute>
+              } />
               
               {/* Provider Track Routes (hidden, non-indexable) */}
               <Route path="/provider-track" element={<ProviderDashboard />} />
