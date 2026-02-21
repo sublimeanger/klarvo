@@ -1,3 +1,8 @@
+// WARNING: These routes are defined for future SSG/prerendering but no
+// prerendering tool is currently installed. See vite.config.ts.
+// Until prerendering is set up, these routes are NOT pre-rendered —
+// crawlers receive client-side rendered content only.
+
 /**
  * SSG Routes Manifest
  * 
