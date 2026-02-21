@@ -66,6 +66,12 @@ serve(async (req) => {
       }
     }
 
+    // Cleanup old webhook events (older than 30 days)
+    await supabase
+      .from("stripe_webhook_events")
+      .delete()
+      .lt("processed_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+
     return new Response(
       JSON.stringify({ message: `Downgraded ${downgraded} expired trials`, count: downgraded }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

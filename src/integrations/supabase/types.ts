@@ -3543,6 +3543,35 @@ export type Database = {
           },
         ]
       }
+      stripe_webhook_events: {
+        Row: {
+          event_id: string
+          event_type: string
+          organization_id: string | null
+          processed_at: string
+        }
+        Insert: {
+          event_id: string
+          event_type: string
+          organization_id?: string | null
+          processed_at?: string
+        }
+        Update: {
+          event_id?: string
+          event_type?: string
+          organization_id?: string | null
+          processed_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stripe_webhook_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscription_addons: {
         Row: {
           addon_id: string

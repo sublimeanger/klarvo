@@ -62,7 +62,24 @@ serve(async (req) => {
       );
     }
 
+    // Idempotency check: skip if we've already processed this event
+    const { data: existingEvent } = await supabaseClient
+      .from("stripe_webhook_events")
+      .select("event_id")
+      .eq("event_id", event.id)
+      .maybeSingle();
+
+    if (existingEvent) {
+      console.log(`Skipping already-processed event: ${event.id}`);
+      return new Response(
+        JSON.stringify({ received: true, skipped: true }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
+      );
+    }
+
     console.log("Processing webhook event:", event.type);
+
+    let processedOrgId: string | null = null;
 
     switch (event.type) {
       case "checkout.session.completed": {
@@ -75,6 +92,7 @@ serve(async (req) => {
           console.error("Missing organization_id in checkout session");
           break;
         }
+        processedOrgId = organizationId;
 
         // Get subscription details from Stripe
         const stripeSubscription = await stripe.subscriptions.retrieve(
@@ -158,6 +176,7 @@ serve(async (req) => {
           console.error("Missing organization_id in subscription metadata");
           break;
         }
+        processedOrgId = organizationId;
 
         // Map Stripe status to our status
         let status: "active" | "past_due" | "canceled" | "trialing" = "active";
@@ -210,6 +229,7 @@ serve(async (req) => {
         const organizationId = subscription.metadata?.organization_id;
         const addonId = subscription.metadata?.addon_id;
 
+        processedOrgId = organizationId || null;
         if (addonId && organizationId) {
           // Handle addon cancellation
           const { error } = await supabaseClient
@@ -293,6 +313,15 @@ serve(async (req) => {
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
+
+    // Record that we've processed this event
+    await supabaseClient
+      .from("stripe_webhook_events")
+      .insert({
+        event_id: event.id,
+        event_type: event.type,
+        organization_id: processedOrgId,
+      });
 
     return new Response(
       JSON.stringify({ received: true }),
