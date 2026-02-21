@@ -1,13 +1,15 @@
+import { lazy, Suspense } from "react";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HomepageHero } from "@/components/marketing/hero";
 import { LogoCloud } from "@/components/marketing/LogoCloud";
-import { FeatureGrid } from "@/components/marketing/FeatureGrid";
-import { FeatureShowcase } from "@/components/marketing/FeatureShowcase";
-import { TimelineSection } from "@/components/marketing/TimelineSection";
-import { StatsSection } from "@/components/marketing/StatsSection";
-import { TestimonialSection } from "@/components/marketing/TestimonialSection";
-import { CTASection } from "@/components/marketing/CTASection";
-import { ProductWalkthrough } from "@/components/marketing/ProductWalkthrough";
+
+const FeatureGrid = lazy(() => import("@/components/marketing/FeatureGrid").then(m => ({ default: m.FeatureGrid })));
+const FeatureShowcase = lazy(() => import("@/components/marketing/FeatureShowcase").then(m => ({ default: m.FeatureShowcase })));
+const TimelineSection = lazy(() => import("@/components/marketing/TimelineSection").then(m => ({ default: m.TimelineSection })));
+const StatsSection = lazy(() => import("@/components/marketing/StatsSection").then(m => ({ default: m.StatsSection })));
+const TestimonialSection = lazy(() => import("@/components/marketing/TestimonialSection").then(m => ({ default: m.TestimonialSection })));
+const CTASection = lazy(() => import("@/components/marketing/CTASection").then(m => ({ default: m.CTASection })));
+const ProductWalkthrough = lazy(() => import("@/components/marketing/ProductWalkthrough").then(m => ({ default: m.ProductWalkthrough })));
 import { SEOHead, SchemaMarkup, organizationSchema, websiteSchema, createSoftwareApplicationSchema, createFAQSchema } from "@/components/seo";
 import {
   Cpu,
@@ -133,40 +135,47 @@ export default function LandingPage() {
       {/* Logo Cloud */}
       <LogoCloud />
 
-      {/* Problem → Solution */}
-      <FeatureGrid
-        title="Stop Compliance Chaos"
-        subtitle="EU AI Act compliance shouldn't require a law degree or a team of consultants. Klarvo gives you the tools to get compliant fast."
-        features={problemSolutionFeatures}
-        columns={3}
-      />
+      <Suspense fallback={<div className="h-96" />}>
+        <FeatureGrid
+          title="Stop Compliance Chaos"
+          subtitle="EU AI Act compliance shouldn't require a law degree or a team of consultants. Klarvo gives you the tools to get compliant fast."
+          features={problemSolutionFeatures}
+          columns={3}
+        />
+      </Suspense>
 
-      {/* Feature Showcase */}
-      <FeatureShowcase items={showcaseItems} />
+      <Suspense fallback={<div className="h-96" />}>
+        <FeatureShowcase items={showcaseItems} />
+      </Suspense>
 
-      {/* Timeline */}
-      <TimelineSection />
+      <Suspense fallback={<div className="h-96" />}>
+        <TimelineSection />
+      </Suspense>
 
-      {/* Interactive Product Walkthrough - Replaces static "How It Works" */}
-      <ProductWalkthrough />
+      <Suspense fallback={<div className="h-96" />}>
+        <ProductWalkthrough />
+      </Suspense>
 
-      {/* Stats */}
-      <StatsSection
-        title="Built for Compliance Teams"
-        subtitle="Purpose-built to simplify EU AI Act compliance"
-      />
+      <Suspense fallback={<div className="h-96" />}>
+        <StatsSection
+          title="Built for Compliance Teams"
+          subtitle="Purpose-built to simplify EU AI Act compliance"
+        />
+      </Suspense>
 
-      {/* Testimonials */}
-      <TestimonialSection />
+      <Suspense fallback={<div className="h-96" />}>
+        <TestimonialSection />
+      </Suspense>
 
-      {/* Final CTA */}
-      <CTASection
-        title="Ready to Get EU AI Act Compliant?"
-        subtitle="Start for free. No credit card required. Get your first AI system classified in under 10 minutes."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
-        secondaryCta={{ label: "See How It Works", href: "/features" }}
-        variant="gradient"
-      />
+      <Suspense fallback={<div className="h-96" />}>
+        <CTASection
+          title="Ready to Get EU AI Act Compliant?"
+          subtitle="Start for free. No credit card required. Get your first AI system classified in under 10 minutes."
+          primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+          secondaryCta={{ label: "See How It Works", href: "/features" }}
+          variant="gradient"
+        />
+      </Suspense>
     </MarketingLayout>
   );
 }
