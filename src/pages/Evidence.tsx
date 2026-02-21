@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { format } from "date-fns";
 import {
   Plus,
@@ -142,10 +142,10 @@ export default function Evidence() {
 
   const pendingCount = pendingApprovals.length;
 
-  const filteredFiles = files.filter((file) =>
+  const filteredFiles = useMemo(() => files.filter((file) =>
     file.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (file.description || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ), [files, searchQuery]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -184,9 +184,11 @@ export default function Evidence() {
   };
 
   // Stats
-  const totalFiles = files.length;
-  const approvedFiles = files.filter((f) => f.status === "approved").length;
-  const draftFiles = files.filter((f) => f.status === "draft").length;
+  const { totalFiles, approvedFiles, draftFiles } = useMemo(() => ({
+    totalFiles: files.length,
+    approvedFiles: files.filter((f) => f.status === "approved").length,
+    draftFiles: files.filter((f) => f.status === "draft").length,
+  }), [files]);
 
   if (isLoading) {
     return (

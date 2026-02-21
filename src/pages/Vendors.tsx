@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import {
@@ -139,10 +139,10 @@ export default function Vendors() {
   const deleteVendor = useDeleteVendor();
   const updateVendor = useUpdateVendor();
 
-  const filteredVendors = vendors.filter(vendor =>
+  const filteredVendors = useMemo(() => vendors.filter(vendor =>
     vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (vendor.website || "").toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ), [vendors, searchQuery]);
 
   const handleCreateVendor = async () => {
     if (!newVendor.name.trim()) {
@@ -173,9 +173,11 @@ export default function Vendors() {
   };
 
   // Calculate summary stats
-  const totalVendors = vendors.length;
-  const completedDueDiligence = vendors.filter(v => v.due_diligence_status === "completed").length;
-  const pendingDueDiligence = vendors.filter(v => v.due_diligence_status === "in_progress" || v.due_diligence_status === "needs_review").length;
+  const { totalVendors, completedDueDiligence, pendingDueDiligence } = useMemo(() => ({
+    totalVendors: vendors.length,
+    completedDueDiligence: vendors.filter(v => v.due_diligence_status === "completed").length,
+    pendingDueDiligence: vendors.filter(v => v.due_diligence_status === "in_progress" || v.due_diligence_status === "needs_review").length,
+  }), [vendors]);
 
   if (isLoading) {
     return (

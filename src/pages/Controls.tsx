@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
   Shield,
@@ -153,7 +153,7 @@ export default function Controls() {
 
   const { data: grouped, controls, isLoading } = useControlsByCategory();
 
-  const filteredControls = controls?.filter((control) => {
+  const filteredControls = useMemo(() => controls?.filter((control) => {
     const matchesSearch =
       search === "" ||
       control.code.toLowerCase().includes(search.toLowerCase()) ||
@@ -164,23 +164,22 @@ export default function Controls() {
       categoryFilter === "all" || control.category === categoryFilter;
 
     return matchesSearch && matchesCategory;
-  });
+  }), [controls, search, categoryFilter]);
 
-  const filteredGrouped = filteredControls?.reduce((acc, control) => {
+  const filteredGrouped = useMemo(() => filteredControls?.reduce((acc, control) => {
     if (!acc[control.category]) {
       acc[control.category] = [];
     }
     acc[control.category].push(control);
     return acc;
-  }, {} as Record<string, Control[]>);
+  }, {} as Record<string, Control[]>), [filteredControls]);
 
-  // Stats
-  const stats = {
+  const stats = useMemo(() => ({
     total: controls?.length || 0,
     categories: grouped ? Object.keys(grouped).length : 0,
     highRisk: controls?.filter((c) => c.applies_to.includes("high_risk")).length || 0,
     allSystems: controls?.filter((c) => c.applies_to.includes("all")).length || 0,
-  };
+  }), [controls, grouped]);
 
   if (isLoading) {
     return (
