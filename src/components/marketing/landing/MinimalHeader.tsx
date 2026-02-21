@@ -10,6 +10,8 @@ export const MinimalHeader = () => {
             src={klarvoLogo}
             alt="Klarvo"
             className="h-8 w-auto"
+            width={128}
+            height={32}
           />
         </Link>
       </div>

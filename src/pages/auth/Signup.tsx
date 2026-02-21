@@ -5,7 +5,7 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SEOHead } from "@/components/seo";
-import klarvoLogo from "@/assets/klarvo-logo.png";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
 export default function Signup() {
   const { user, profile, isLoading } = useAuth();
@@ -32,8 +32,7 @@ export default function Signup() {
       <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 py-8 sm:py-12">
         <div className="w-full max-w-md space-y-4 sm:space-y-6">
           <div className="flex flex-col items-center space-y-2">
-            <img src={klarvoLogo} alt="Klarvo" className="h-10 w-10 sm:h-12 sm:w-12" />
-            <h1 className="text-xl sm:text-2xl font-bold">Klarvo</h1>
+            <img src={klarvoLogo} alt="Klarvo" className="h-8 sm:h-10 w-auto" width={160} height={40} />
             <p className="text-sm sm:text-base text-muted-foreground text-center">
               EU AI Act Compliance Hub
             </p>
