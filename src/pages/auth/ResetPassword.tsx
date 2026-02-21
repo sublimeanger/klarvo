@@ -43,8 +43,16 @@ export default function ResetPassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      toast.error("Password must contain uppercase, lowercase, and a number");
       return;
     }
 
@@ -154,7 +162,7 @@ export default function ResetPassword() {
                 placeholder="Enter new password"
                 autoComplete="new-password"
                 required
-                minLength={6}
+                minLength={8}
               />
             </div>
             <div className="space-y-2">
