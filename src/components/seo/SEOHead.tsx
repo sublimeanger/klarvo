@@ -19,7 +19,7 @@ export function SEOHead({
   description,
   keywords = [],
   canonical,
-  ogImage = "https://klarvo.io/og-image.png",
+  ogImage = "https://klarvo.io/og-image.jpg",
   ogType = "website",
   publishedTime,
   modifiedTime,
