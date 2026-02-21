@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Download, Loader2, Package } from "lucide-react";
@@ -62,7 +63,7 @@ export default function Creatives() {
       await downloadAdAsPng(element, `klarvo-ad-${size}-${variant}`);
       toast.success(`Downloaded ${label}`);
     } catch (error) {
-      console.error("Download failed:", error);
+      logger.error("Download failed:", error);
       toast.error("Failed to download. Please try again.");
     } finally {
       setDownloadingId(null);
@@ -75,7 +76,7 @@ export default function Creatives() {
       await downloadAllAdsAsZip(adRefs.current);
       toast.success("Downloaded all ads as ZIP!");
     } catch (error) {
-      console.error("ZIP download failed:", error);
+      logger.error("ZIP download failed:", error);
       toast.error("Failed to create ZIP. Please try again.");
     } finally {
       setDownloadingAll(false);

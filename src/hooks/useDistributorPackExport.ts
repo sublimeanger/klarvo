@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { logger } from "@/lib/logger";
 import {
   DistributorVerificationPDF,
   type DistributorVerificationData,
@@ -41,7 +42,7 @@ export function useDistributorPackExport() {
       queryClient.invalidateQueries({ queryKey: ["export-history"] });
       queryClient.invalidateQueries({ queryKey: ["export-stats"] });
     } catch (error) {
-      console.error("Failed to log export:", error);
+      logger.error("Failed to log export:", error);
     }
   };
 
@@ -106,7 +107,7 @@ export function useDistributorPackExport() {
       .download(filePath);
 
     if (error) {
-      console.error("Error downloading file:", error);
+      logger.error("Error downloading file:", error);
       return null;
     }
 
@@ -254,7 +255,7 @@ Generated: ${format(new Date(), "dd MMMM yyyy, HH:mm")}
 
       toast.success("Distributor Pack exported successfully");
     } catch (error) {
-      console.error("Distributor Pack export error:", error);
+      logger.error("Distributor Pack export error:", error);
       toast.error("Failed to export Distributor Pack");
     } finally {
       setIsExporting(false);

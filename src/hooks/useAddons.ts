@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { AddonId } from "@/lib/billing-constants";
+import { logger } from "@/lib/logger";
 
 interface SubscriptionAddon {
   id: string;
@@ -37,7 +38,7 @@ export function useAddons() {
         .in("status", ["active", "trialing"]);
 
       if (error) {
-        console.error("Error fetching addons:", error);
+        logger.error("Error fetching addons:", error);
         return [];
       }
 
@@ -124,7 +125,7 @@ export function useOperatorTrackAccess() {
         .single();
 
       if (error && error.code !== "PGRST116") {
-        console.error("Error fetching subscription:", error);
+        logger.error("Error fetching subscription:", error);
       }
 
       return data;

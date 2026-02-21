@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 import { MarketingLayout } from "@/components/marketing";
 import { SEOHead } from "@/components/seo";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,7 @@ export default function SystemSpec() {
       setIsComplete(true);
       toast.success("System Specification PDF downloaded successfully!");
     } catch (error) {
-      console.error("PDF generation error:", error);
+      logger.error("PDF generation error:", error);
       toast.error("Failed to generate PDF. Please try again.");
     } finally {
       setIsGenerating(false);

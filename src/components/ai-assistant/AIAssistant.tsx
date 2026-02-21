@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, forwardRef } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -127,7 +128,7 @@ export const AIAssistant = forwardRef<HTMLDivElement, object>(function AIAssista
         }
       }
     } catch (error) {
-      console.error("Chat error:", error);
+      logger.error("Chat error:", error);
       setMessages(prev => [
         ...prev.filter(m => m.content !== ""),
         {

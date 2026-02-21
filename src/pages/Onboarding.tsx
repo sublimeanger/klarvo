@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -125,7 +126,7 @@ export default function Onboarding() {
       await refreshProfile();
       navigate("/dashboard", { replace: true });
     } catch (error: any) {
-      console.error("Onboarding error:", error);
+      logger.error("Onboarding error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to complete onboarding",

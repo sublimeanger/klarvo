@@ -16,7 +16,7 @@ const gtag = (...args: any[]) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag(...args);
   } else {
-    console.debug('[Analytics] gtag not available:', args);
+    // gtag not available - silently skip in production
   }
 };
 

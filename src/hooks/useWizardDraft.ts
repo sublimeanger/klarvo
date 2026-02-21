@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { DEFAULT_WIZARD_DATA, type AISystemWizardData } from "@/components/ai-systems/wizard/types";
+import { logger } from "@/lib/logger";
 
 /**
  * Hook to manage wizard draft state with auto-save to database.
@@ -197,7 +198,7 @@ export function useWizardDraft() {
         setSearchParams({});
       }
     } catch (error) {
-      console.error("Failed to load draft:", error);
+      logger.error("Failed to load draft:", error);
       toast.error("Failed to load draft");
       setSearchParams({});
     } finally {
@@ -386,7 +387,7 @@ export function useWizardDraft() {
         return newId;
       }
     } catch (error) {
-      console.error("Failed to save draft:", error);
+      logger.error("Failed to save draft:", error);
       // Don't show error toast on every save attempt, just log it
       return existingId || null;
     } finally {
@@ -446,7 +447,7 @@ export function useWizardDraft() {
       if (error) throw error;
       return updated;
     } catch (error) {
-      console.error("Failed to complete draft:", error);
+      logger.error("Failed to complete draft:", error);
       throw error;
     } finally {
       setIsSaving(false);

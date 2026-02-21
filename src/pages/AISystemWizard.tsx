@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { logger } from "@/lib/logger";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Loader2, CloudOff, Cloud, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -114,7 +115,7 @@ export default function AISystemWizard() {
         try {
           await createBulkTasks.mutateAsync(tasks);
         } catch (taskError) {
-          console.error("Failed to create tasks:", taskError);
+          logger.error("Failed to create tasks:", taskError);
           toast.error("AI system saved, but failed to create some tasks");
         }
       }
@@ -125,7 +126,7 @@ export default function AISystemWizard() {
       // Note: We use direct step setting here as the wizard is complete
       window.location.hash = "#done";
     } catch (error) {
-      console.error("Submit error:", error);
+      logger.error("Submit error:", error);
       toast.error("Failed to complete assessment");
     } finally {
       setIsSubmitting(false);

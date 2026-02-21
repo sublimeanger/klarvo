@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export interface AuditorLink {
   id: string;
@@ -100,7 +101,7 @@ export function useCreateAuditorLink() {
       toast.success("Auditor link created");
     },
     onError: (error) => {
-      console.error("Failed to create auditor link:", error);
+      logger.error("Failed to create auditor link:", error);
       toast.error("Failed to create auditor link");
     },
   });
@@ -123,7 +124,7 @@ export function useDeactivateAuditorLink() {
       toast.success("Auditor link deactivated");
     },
     onError: (error) => {
-      console.error("Failed to deactivate auditor link:", error);
+      logger.error("Failed to deactivate auditor link:", error);
       toast.error("Failed to deactivate link");
     },
   });
@@ -146,7 +147,7 @@ export function useDeleteAuditorLink() {
       toast.success("Auditor link deleted");
     },
     onError: (error) => {
-      console.error("Failed to delete auditor link:", error);
+      logger.error("Failed to delete auditor link:", error);
       toast.error("Failed to delete link");
     },
   });

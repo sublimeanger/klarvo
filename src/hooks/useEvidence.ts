@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { logEvidenceEvent } from "@/lib/auditLogger";
+import { logger } from "@/lib/logger";
 
 export interface EvidenceFile {
   id: string;
@@ -150,7 +151,7 @@ export function useDeleteEvidence() {
         .from("evidence")
         .remove([filePath]);
 
-      if (storageError) console.warn("Storage delete failed:", storageError);
+      if (storageError) logger.warn("Storage delete failed:", storageError);
 
       // Delete metadata
       const { error } = await supabase.from("evidence_files").delete().eq("id", id);

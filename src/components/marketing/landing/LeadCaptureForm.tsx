@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { logger } from "@/lib/logger";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -113,7 +114,7 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
       setLeadId(lead.id);
       setStep(2);
     } catch (error) {
-      console.error("Error submitting step 1:", error);
+      logger.error("Error submitting step 1:", error);
       toast({
         title: "Something went wrong",
         description: "Please try again.",
@@ -151,7 +152,7 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
 
       setIsComplete(true);
     } catch (error) {
-      console.error("Error submitting step 2:", error);
+      logger.error("Error submitting step 2:", error);
       toast({
         title: "Something went wrong",
         description: "Please try again.",

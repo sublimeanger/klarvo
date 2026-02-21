@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -85,7 +86,7 @@ export function SampleDownloadButton({
         triggerDownload();
       }, 500);
     } catch (error) {
-      console.error("Sample gate error:", error);
+      logger.error("Sample gate error:", error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
@@ -128,7 +129,7 @@ export function SampleDownloadButton({
         setIsOpen(false);
       }, 1500);
     } catch (error) {
-      console.error("Generation error:", error);
+      logger.error("Generation error:", error);
       toast.error("Failed to generate document. Please try again.");
     } finally {
       setIsGenerating(false);

@@ -4,6 +4,7 @@ import JSZip from "jszip";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 import { AISystemPDF } from "@/components/exports/AISystemPDF";
 import { BoardPackPDF, type BoardPackData } from "@/components/exports/audience/BoardPackPDF";
 import { CustomerTrustPackPDF, type CustomerTrustPackData } from "@/components/exports/audience/CustomerTrustPackPDF";
@@ -75,7 +76,7 @@ export function useExports() {
       queryClient.invalidateQueries({ queryKey: ["export-history"] });
       queryClient.invalidateQueries({ queryKey: ["export-stats"] });
     } catch (error) {
-      console.error("Failed to log export:", error);
+      logger.error("Failed to log export:", error);
     }
   };
 
@@ -132,7 +133,7 @@ export function useExports() {
       .download(filePath);
 
     if (error) {
-      console.error("Error downloading file:", error);
+      logger.error("Error downloading file:", error);
       return null;
     }
 
@@ -193,7 +194,7 @@ export function useExports() {
 
       toast.success("PDF exported successfully");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export PDF");
     } finally {
       setIsExporting(false);
@@ -247,7 +248,7 @@ export function useExports() {
 
       toast.success("ZIP exported successfully");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export ZIP");
     } finally {
       setIsExporting(false);
@@ -309,7 +310,7 @@ export function useExports() {
 
       toast.success(`Exported ${systems.length} AI systems`);
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export systems");
     } finally {
       setIsExporting(false);
@@ -394,7 +395,7 @@ export function useExports() {
       await logExport("board_pack", fileName, blob.size);
       toast.success("Board Pack exported successfully");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export Board Pack");
     } finally {
       setIsExporting(false);
@@ -452,7 +453,7 @@ export function useExports() {
       await logExport("customer_trust_pack", fileName, blob.size);
       toast.success("Customer Trust Pack exported successfully");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export Customer Trust Pack");
     } finally {
       setIsExporting(false);
@@ -523,7 +524,7 @@ export function useExports() {
       await logExport("auditor_pack", fileName, blob.size);
       toast.success("Auditor Pack exported successfully");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export Auditor Pack");
     } finally {
       setIsExporting(false);
@@ -602,7 +603,7 @@ export function useExports() {
       await logExport("procurement_pack", fileName, blob.size);
       toast.success("Procurement Pack exported successfully");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export Procurement Pack");
     } finally {
       setIsExporting(false);

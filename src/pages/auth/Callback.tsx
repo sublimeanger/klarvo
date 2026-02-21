@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { logger } from "@/lib/logger";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/seo";
@@ -17,7 +18,7 @@ export default function Callback() {
         const errorDescription = searchParams.get("error_description");
         
         if (errorParam) {
-          console.error("OAuth error:", errorParam, errorDescription);
+          logger.error("OAuth error:", errorParam, errorDescription);
           setError(errorDescription || errorParam);
           setTimeout(() => navigate("/auth/login", { replace: true }), 3000);
           return;
@@ -28,7 +29,7 @@ export default function Callback() {
         if (code) {
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           if (exchangeError) {
-            console.error("Code exchange error:", exchangeError);
+            logger.error("Code exchange error:", exchangeError);
             setError(exchangeError.message);
             setTimeout(() => navigate("/auth/login", { replace: true }), 3000);
             return;
@@ -39,7 +40,7 @@ export default function Callback() {
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
         if (sessionError) {
-          console.error("Auth callback error:", sessionError);
+          logger.error("Auth callback error:", sessionError);
           navigate("/auth/login", { replace: true });
           return;
         }
@@ -61,7 +62,7 @@ export default function Callback() {
           navigate("/auth/login", { replace: true });
         }
       } catch (err) {
-        console.error("Callback error:", err);
+        logger.error("Callback error:", err);
         navigate("/auth/login", { replace: true });
       }
     };

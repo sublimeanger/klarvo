@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { logger } from "@/lib/logger";
 import {
   ImporterVerificationPDF,
   type ImporterVerificationData,
@@ -41,7 +42,7 @@ export function useImporterPackExport() {
       queryClient.invalidateQueries({ queryKey: ["export-history"] });
       queryClient.invalidateQueries({ queryKey: ["export-stats"] });
     } catch (error) {
-      console.error("Failed to log export:", error);
+      logger.error("Failed to log export:", error);
     }
   };
 
@@ -106,7 +107,7 @@ export function useImporterPackExport() {
       .download(filePath);
 
     if (error) {
-      console.error("Error downloading file:", error);
+      logger.error("Error downloading file:", error);
       return null;
     }
 
@@ -234,7 +235,7 @@ export function useImporterPackExport() {
 
       toast.success("Importer Pack exported successfully");
     } catch (error) {
-      console.error("Importer Pack export error:", error);
+      logger.error("Importer Pack export error:", error);
       toast.error("Failed to export Importer Pack");
     } finally {
       setIsExporting(false);

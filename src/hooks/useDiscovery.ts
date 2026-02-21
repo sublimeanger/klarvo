@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
@@ -205,7 +206,7 @@ export function useUpdateDiscoveredTool() {
     },
     onError: (error) => {
       toast.error("Failed to update tool status");
-      console.error(error);
+      logger.error(error);
     },
   });
 }
@@ -251,7 +252,7 @@ export function useBulkUpdateDiscoveredTools() {
     },
     onError: (error) => {
       toast.error("Failed to update tools");
-      console.error(error);
+      logger.error(error);
     },
   });
 }
@@ -275,7 +276,7 @@ export function useDisconnectWorkspace() {
     },
     onError: (error) => {
       toast.error("Failed to disconnect workspace");
-      console.error(error);
+      logger.error(error);
     },
   });
 }
@@ -317,7 +318,7 @@ export function useInitiateOAuth() {
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "Failed to connect workspace");
-      console.error(error);
+      logger.error(error);
     },
   });
 }
@@ -361,7 +362,7 @@ export function useTriggerScan() {
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "Failed to trigger scan");
-      console.error(error);
+      logger.error(error);
     },
   });
 }

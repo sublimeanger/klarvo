@@ -1,4 +1,5 @@
 import { useState, forwardRef } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, CheckCircle2, Loader2, Mail } from "lucide-react";
@@ -62,7 +63,7 @@ export const NewsletterForm = forwardRef<HTMLFormElement, NewsletterFormProps>(
           setEmail("");
         }
       } catch (error) {
-        console.error("Newsletter signup error:", error);
+        logger.error("Newsletter signup error:", error);
         toast.error("Something went wrong. Please try again.");
       } finally {
         setIsLoading(false);
