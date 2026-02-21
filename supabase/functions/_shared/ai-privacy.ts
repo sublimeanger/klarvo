@@ -229,6 +229,56 @@ export async function checkUserRole(
 }
 
 /**
+ * Check if the organization's subscription plan allows this AI feature
+ */
+export async function checkPlanEntitlement(
+  supabaseUrl: string,
+  supabaseServiceKey: string,
+  organizationId: string,
+  requiredFeature: 'ai_assistant' | 'ai_classification' | 'ai_document' | 'ai_copilot' | 'ai_intake' | 'ai_recommendations'
+): Promise<{ allowed: boolean; planId?: string; errorMessage?: string }> {
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("plan_id, status, trial_end")
+    .eq("organization_id", organizationId)
+    .single();
+
+  if (!subscription) {
+    return { allowed: false, errorMessage: "No active subscription" };
+  }
+
+  const isActive = subscription.status === 'active';
+  const isValidTrial = subscription.status === 'trialing' &&
+    new Date(subscription.trial_end) > new Date();
+
+  if (!isActive && !isValidTrial) {
+    return { allowed: false, planId: subscription.plan_id, errorMessage: "Your subscription is not active. Please update your billing." };
+  }
+
+  const PLAN_AI_FEATURES: Record<string, string[]> = {
+    free: [],
+    starter: ['ai_assistant', 'ai_classification', 'ai_intake'],
+    growth: ['ai_assistant', 'ai_classification', 'ai_intake', 'ai_document', 'ai_recommendations'],
+    pro: ['ai_assistant', 'ai_classification', 'ai_intake', 'ai_document', 'ai_copilot', 'ai_recommendations'],
+    enterprise: ['ai_assistant', 'ai_classification', 'ai_intake', 'ai_document', 'ai_copilot', 'ai_recommendations'],
+  };
+
+  const allowedFeatures = PLAN_AI_FEATURES[subscription.plan_id] || [];
+
+  if (!allowedFeatures.includes(requiredFeature)) {
+    return {
+      allowed: false,
+      planId: subscription.plan_id,
+      errorMessage: `This feature requires a higher plan. Please upgrade to access it.`
+    };
+  }
+
+  return { allowed: true, planId: subscription.plan_id };
+}
+
+/**
  * Create a standardized error response for AI privacy checks
  */
 export function createPrivacyErrorResponse(result: PrivacyCheckResult, corsHeaders: Record<string, string>): Response {
