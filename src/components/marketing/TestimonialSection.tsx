@@ -1,138 +1,63 @@
 import { cn } from "@/lib/utils";
-import { Quote, Building2, HeartPulse, Laptop } from "lucide-react";
+import { Building2, HeartPulse, Laptop } from "lucide-react";
 
-interface Testimonial {
-  quote: string;
-  role: string;
-  industry: string;
+interface Reason {
   icon: React.ElementType;
+  title: string;
+  description: string;
 }
 
 interface TestimonialSectionProps {
   title?: string;
   subtitle?: string;
-  testimonials?: Testimonial[];
-  variant?: "grid" | "carousel" | "featured";
   className?: string;
 }
 
-// Anonymous industry testimonials - no fake names
-const defaultTestimonials: Testimonial[] = [
+const defaultReasons: Reason[] = [
   {
-    quote: "We went from spreadsheet chaos to audit-ready documentation in weeks. The classification engine saved us countless hours of legal interpretation.",
-    role: "Chief Compliance Officer",
-    industry: "Financial Services",
     icon: Building2,
+    title: "Built for SMEs, Not Enterprises",
+    description: "Guided workflows that make EU AI Act compliance approachable — no consulting firm required. Start in minutes, not months.",
   },
   {
-    quote: "The evidence vault and export packs are game-changers. Our auditors were impressed by the professional documentation we produced.",
-    role: "VP of Legal & Compliance",
-    industry: "Healthcare Technology",
     icon: HeartPulse,
+    title: "Audit-Ready from Day One",
+    description: "Every action generates documentation. When an auditor or customer asks for evidence, export a complete pack in one click.",
   },
   {
-    quote: "As a fast-growing startup, we needed a solution that scaled with us. The guided wizards made EU AI Act compliance straightforward, not scary.",
-    role: "Head of Product",
-    industry: "AI/ML Platform",
     icon: Laptop,
+    title: "Stays Current as Guidance Evolves",
+    description: "Templates and checklists update as the EU AI Office publishes new guidance. Your compliance posture never goes stale.",
   },
 ];
 
 export function TestimonialSection({
-  title = "What Compliance Teams Say",
-  subtitle = "See how organizations are achieving EU AI Act compliance",
-  testimonials = defaultTestimonials,
-  variant = "grid",
+  title = "Why Teams Choose Klarvo",
+  subtitle = "Purpose-built to make EU AI Act compliance straightforward",
   className,
 }: TestimonialSectionProps) {
-  if (variant === "featured" && testimonials.length > 0) {
-    const featured = testimonials[0];
-    const Icon = featured.icon;
-    return (
-      <section className={cn("py-12 sm:py-16 md:py-20 lg:py-24 bg-surface-1", className)}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
-          <div className="text-center">
-            <Quote className="h-10 w-10 sm:h-12 sm:w-12 text-primary/20 mx-auto mb-4 sm:mb-6" />
-            <blockquote className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold tracking-tight mb-6 sm:mb-8 text-balance leading-relaxed">
-              "{featured.quote}"
-            </blockquote>
-            <div className="flex items-center justify-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-sm sm:text-base">{featured.role}</p>
-                <p className="text-xs sm:text-sm text-muted-foreground">{featured.industry}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className={cn("py-12 sm:py-16 md:py-20 lg:py-24", className)}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3 sm:mb-4">{title}</h2>
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground">{subtitle}</p>
         </div>
 
-        {/* Mobile: Horizontal scroll, Desktop: Grid */}
-        <div className="md:hidden -mx-4 px-4">
-          <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-            {testimonials.map((testimonial, index) => {
-              const Icon = testimonial.icon;
-              return (
-                <div
-                  key={index}
-                  className="flex-shrink-0 w-[300px] p-5 rounded-2xl bg-card border snap-start animate-fade-up"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <Quote className="h-6 w-6 text-primary/20 mb-3" />
-                  <blockquote className="text-base mb-4 line-clamp-4">
-                    "{testimonial.quote}"
-                  </blockquote>
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Icon className="h-4 w-4 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">{testimonial.role}</p>
-                      <p className="text-xs text-muted-foreground">{testimonial.industry}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        
-        {/* Desktop Grid */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((testimonial, index) => {
-            const Icon = testimonial.icon;
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {defaultReasons.map((reason, index) => {
+            const Icon = reason.icon;
             return (
               <div
                 key={index}
                 className="p-6 rounded-2xl bg-card border hover:shadow-elevated transition-shadow animate-fade-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <Quote className="h-8 w-8 text-primary/20 mb-4" />
-                <blockquote className="text-lg mb-6">
-                  "{testimonial.quote}"
-                </blockquote>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{testimonial.role}</p>
-                    <p className="text-xs text-muted-foreground">{testimonial.industry}</p>
-                  </div>
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <Icon className="h-5 w-5 text-primary" />
                 </div>
+                <h3 className="font-semibold text-lg mb-2">{reason.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{reason.description}</p>
               </div>
             );
           })}
