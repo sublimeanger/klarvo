@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Building2, User, Rocket, Check, ArrowRight, ArrowLeft } from "lucide-react";
-import klarvoLogo from "@/assets/klarvo-logo.png";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
 const INDUSTRY_SECTORS = [
   "Technology & Software",
@@ -99,7 +99,7 @@ export default function Onboarding() {
       <div className="max-w-lg mx-auto space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="flex flex-col items-center space-y-2">
-          <img src={klarvoLogo} alt="Klarvo" className="h-10 w-10 sm:h-12 sm:w-12" />
+          <img src={klarvoLogo} alt="Klarvo" className="h-8 sm:h-10 w-auto" width={160} height={40} />
           <h1 className="text-xl sm:text-2xl font-bold">Welcome to Klarvo</h1>
           <p className="text-sm sm:text-base text-muted-foreground text-center">
             Let's set up your workspace in 2 minutes

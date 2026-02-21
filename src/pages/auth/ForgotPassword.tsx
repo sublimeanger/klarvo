@@ -18,7 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { SEOHead } from "@/components/seo";
 import { ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
-import klarvoLogo from "@/assets/klarvo-logo.png";
+import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
 const schema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -71,7 +71,7 @@ export default function ForgotPassword() {
         <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
         <div className="w-full max-w-md space-y-6">
           <div className="flex flex-col items-center space-y-2">
-            <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
+            <img src={klarvoLogo} alt="Klarvo" className="h-10 w-auto" width={160} height={40} />
           </div>
 
           <Card>
@@ -113,8 +113,7 @@ export default function ForgotPassword() {
       <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md space-y-6">
         <div className="flex flex-col items-center space-y-2">
-          <img src={klarvoLogo} alt="Klarvo" className="h-12 w-12" />
-          <h1 className="text-2xl font-bold">Klarvo</h1>
+          <img src={klarvoLogo} alt="Klarvo" className="h-10 w-auto" width={160} height={40} />
         </div>
 
         <Card>
