@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { logger } from "@/lib/logger";
 import {
   AnnexIVTechDocsPDF,
   EUDeclarationPDF,
@@ -50,7 +51,7 @@ export function useProviderPackExport() {
       queryClient.invalidateQueries({ queryKey: ["export-history"] });
       queryClient.invalidateQueries({ queryKey: ["export-stats"] });
     } catch (error) {
-      console.error("Failed to log export:", error);
+      logger.error("Failed to log export:", error);
     }
   };
 
@@ -216,7 +217,7 @@ export function useProviderPackExport() {
       .download(filePath);
 
     if (error) {
-      console.error("Error downloading file:", error);
+      logger.error("Error downloading file:", error);
       return null;
     }
 
@@ -498,7 +499,7 @@ export function useProviderPackExport() {
 
       toast.success("Provider Pack exported successfully");
     } catch (error) {
-      console.error("Provider Pack export error:", error);
+      logger.error("Provider Pack export error:", error);
       toast.error("Failed to export Provider Pack");
     } finally {
       setIsExporting(false);

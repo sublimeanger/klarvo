@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 import { Bell, Mail, Loader2, Save, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -58,7 +59,7 @@ export function NotificationSettings() {
         notification_frequency: data.notification_frequency ?? "daily",
       });
     } catch (error) {
-      console.error("Failed to load notification preferences:", error);
+      logger.error("Failed to load notification preferences:", error);
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +79,7 @@ export function NotificationSettings() {
       if (error) throw error;
       toast.success("Notification preferences saved");
     } catch (error) {
-      console.error("Failed to save notification preferences:", error);
+      logger.error("Failed to save notification preferences:", error);
       toast.error("Failed to save preferences");
     } finally {
       setIsSaving(false);
@@ -95,7 +96,7 @@ export function NotificationSettings() {
       if (error) throw error;
       toast.success("Test digest sent! Check your email.");
     } catch (error) {
-      console.error("Failed to send test digest:", error);
+      logger.error("Failed to send test digest:", error);
       toast.error("Failed to send test digest");
     } finally {
       setIsSendingTest(false);

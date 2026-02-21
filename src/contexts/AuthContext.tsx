@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 interface Profile {
   id: string;
@@ -42,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .single();
 
       if (profileError && profileError.code !== "PGRST116") {
-        console.error("Error fetching profile:", profileError);
+        logger.error("Error fetching profile:", profileError);
         return;
       }
 
@@ -59,14 +60,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             .single();
 
           if (roleError && roleError.code !== "PGRST116") {
-            console.error("Error fetching role:", roleError);
+            logger.error("Error fetching role:", roleError);
           } else if (roleData) {
             setUserRole(roleData as UserRole);
           }
         }
       }
     } catch (error) {
-      console.error("Error in fetchProfile:", error);
+      logger.error("Error in fetchProfile:", error);
     }
   };
 

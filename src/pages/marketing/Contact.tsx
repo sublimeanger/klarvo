@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export default function Contact() {
       setIsSubmitted(true);
       toast.success("Message sent! We'll get back to you within 24 hours.");
     } catch (error) {
-      console.error("Contact form error:", error);
+      logger.error("Contact form error:", error);
       toast.error("Something went wrong. Please try again or email us directly.");
     } finally {
       setIsSubmitting(false);

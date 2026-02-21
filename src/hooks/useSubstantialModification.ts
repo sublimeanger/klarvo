@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useTriggerReassessment } from "./useReassessment";
+import { logger } from "@/lib/logger";
 
 /**
  * Article 25 - Substantial Modification Detection
@@ -124,7 +125,7 @@ export function usePendingModifications(aiSystemId?: string) {
 
       const { data, error } = await queryBuilder;
       if (error) {
-        console.warn("Substantial modifications query failed:", error.message);
+        logger.warn("Substantial modifications query failed:", error.message);
         return [];
       }
       return (data || []) as unknown as ModificationRecord[];
@@ -151,7 +152,7 @@ export function useModificationHistory(aiSystemId?: string) {
         .order("detected_at", { ascending: false });
 
       if (error) {
-        console.warn("Modification history query failed:", error.message);
+        logger.warn("Modification history query failed:", error.message);
         return [];
       }
       return (data || []) as unknown as ModificationRecord[];

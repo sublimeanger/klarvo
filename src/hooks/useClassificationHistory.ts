@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export interface ClassificationHistoryEntry {
   id: string;
@@ -125,7 +126,7 @@ export function useCreateClassificationHistory() {
       toast.success("Classification version recorded");
     },
     onError: (error) => {
-      console.error("Failed to create classification history:", error);
+      logger.error("Failed to create classification history:", error);
       toast.error("Failed to record classification version");
     },
   });

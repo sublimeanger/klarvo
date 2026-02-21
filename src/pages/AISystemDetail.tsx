@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { format } from "date-fns";
 import { pdf } from "@react-pdf/renderer";
@@ -165,7 +166,7 @@ export default function AISystemDetail() {
       
       toast.success("Classification Memo exported successfully");
     } catch (err) {
-      console.error("Export failed:", err);
+      logger.error("Export failed:", err);
       toast.error("Failed to export Classification Memo");
     } finally {
       setIsExporting(false);
@@ -198,7 +199,7 @@ export default function AISystemDetail() {
       
       toast.success("Evidence Pack exported successfully");
     } catch (err) {
-      console.error("Export failed:", err);
+      logger.error("Export failed:", err);
       toast.error("Failed to export Evidence Pack");
     } finally {
       setIsExporting(false);
@@ -230,7 +231,7 @@ export default function AISystemDetail() {
       
       toast.success("FRIA Report exported successfully");
     } catch (err) {
-      console.error("Export failed:", err);
+      logger.error("Export failed:", err);
       toast.error("Failed to export FRIA Report");
     } finally {
       setIsExporting(false);

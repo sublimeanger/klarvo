@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { PlanId, BillingPeriod, AddonId } from "@/lib/billing-constants";
+import { logger } from "@/lib/logger";
 
 /**
  * Hook for billing actions (checkout, portal, addon purchases)
@@ -31,7 +32,7 @@ export function useBilling() {
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
-      console.error("Checkout error:", error);
+      logger.error("Checkout error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to start checkout");
     } finally {
       setIsLoading(false);
@@ -55,7 +56,7 @@ export function useBilling() {
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
-      console.error("Addon checkout error:", error);
+      logger.error("Addon checkout error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to start addon checkout");
     } finally {
       setIsLoading(false);
@@ -77,7 +78,7 @@ export function useBilling() {
         throw new Error("No portal URL returned");
       }
     } catch (error) {
-      console.error("Portal error:", error);
+      logger.error("Portal error:", error);
       toast.error(error instanceof Error ? error.message : "Failed to open billing portal");
     } finally {
       setIsLoading(false);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 import { MarketingLayout } from "@/components/marketing";
 import { SEOHead } from "@/components/seo";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ export default function PlatformFeatureDoc() {
       setIsComplete(true);
       toast.success("PDF downloaded successfully!");
     } catch (error) {
-      console.error("PDF generation error:", error);
+      logger.error("PDF generation error:", error);
       toast.error("Failed to generate PDF. Please try again.");
     } finally {
       setIsGenerating(false);

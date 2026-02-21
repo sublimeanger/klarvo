@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -77,7 +78,7 @@ export function TemplateDownloadGate({
         triggerDownload();
       }, 1000);
     } catch (error) {
-      console.error("Template gate error:", error);
+      logger.error("Template gate error:", error);
       toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);

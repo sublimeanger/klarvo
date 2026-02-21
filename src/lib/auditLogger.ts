@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { ActionType, EntityType } from "@/hooks/useAuditLog";
+import { logger } from "@/lib/logger";
 
 interface LogParams {
   organizationId: string;
@@ -28,7 +29,7 @@ export async function logAuditEvent(params: LogParams): Promise<void> {
     });
   } catch (error) {
     // Log to console but don't throw - audit logging shouldn't break main flows
-    console.error("Audit log failed:", error);
+    logger.error("Audit log failed:", error);
   }
 }
 

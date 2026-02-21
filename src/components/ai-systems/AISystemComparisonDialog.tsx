@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { logger } from "@/lib/logger";
 import { pdf } from "@react-pdf/renderer";
 import {
   Dialog,
@@ -220,7 +221,7 @@ export function AISystemComparisonDialog({
 
       toast.success("Comparison report exported");
     } catch (error) {
-      console.error("Export error:", error);
+      logger.error("Export error:", error);
       toast.error("Failed to export comparison");
     } finally {
       setIsExporting(false);

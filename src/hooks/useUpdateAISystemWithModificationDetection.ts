@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import type { TablesInsert } from "@/integrations/supabase/types";
+import { logger } from "@/lib/logger";
 import { 
   detectSubstantialModifications, 
   getModificationTypeLabel,
@@ -84,7 +85,7 @@ export function useUpdateAISystemWithModificationDetection() {
             .insert(modificationRecords);
 
           if (modError) {
-            console.warn("Failed to record substantial modifications:", modError.message);
+            logger.warn("Failed to record substantial modifications:", modError.message);
             // Don't throw - the update succeeded, just log the warning
           }
         }
