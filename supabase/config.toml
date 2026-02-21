@@ -21,6 +21,9 @@ verify_jwt = false
 [functions.classification-assistant]
 verify_jwt = false
 
+[functions.expire-trials]
+verify_jwt = false
+
 [functions.workspace-oauth-init]
 verify_jwt = false
 

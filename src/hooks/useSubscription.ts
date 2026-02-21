@@ -50,8 +50,12 @@ export function useSubscription() {
     refetchOnWindowFocus: true,
   });
 
-  const planId = (subscription?.plan_id || "free") as PlanId;
-  const isTrialing = subscription?.status === "trialing";
+  const isTrialExpired = subscription?.status === "trialing" && 
+    subscription?.trial_end && 
+    new Date(subscription.trial_end) < new Date();
+
+  const planId = isTrialExpired ? "free" as PlanId : (subscription?.plan_id || "free") as PlanId;
+  const isTrialing = subscription?.status === "trialing" && !isTrialExpired;
   
   const daysRemaining = subscription?.trial_end 
     ? Math.max(0, Math.ceil((new Date(subscription.trial_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
