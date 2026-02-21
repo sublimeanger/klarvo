@@ -65,58 +65,12 @@ export default function Onboarding() {
     setIsLoading(true);
 
     try {
-      // 1. Create organization
-      const { data: org, error: orgError } = await supabase
-        .from("organizations")
-        .insert({
-          name: companyName,
-          industry_sector: industrySector,
-          company_size: companySize,
-        })
-        .select()
-        .single();
+      const { data, error } = await supabase.functions.invoke('complete-onboarding', {
+        body: { companyName, industrySector, companySize, selectedRole },
+      });
 
-      if (orgError) throw orgError;
-
-      // 2. Update profile with organization
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .update({
-          organization_id: org.id,
-          onboarding_completed: true,
-        })
-        .eq("id", user.id);
-
-      if (profileError) throw profileError;
-
-      // 3. Create user role
-      const { error: roleError } = await supabase
-        .from("user_roles")
-        .insert({
-          user_id: user.id,
-          organization_id: org.id,
-          role: selectedRole as any,
-        });
-
-      if (roleError) throw roleError;
-
-      // 4. Create subscription (14-day Growth trial)
-      const trialEnd = new Date();
-      trialEnd.setDate(trialEnd.getDate() + 14);
-
-      const { error: subError } = await supabase
-        .from("subscriptions")
-        .insert({
-          organization_id: org.id,
-          plan_id: "growth",
-          status: "trialing",
-          billing_period: "annual",
-          trial_end: trialEnd.toISOString(),
-          current_period_start: new Date().toISOString(),
-          current_period_end: trialEnd.toISOString(),
-        });
-
-      if (subError) throw subError;
+      if (error) throw new Error(error.message || "Onboarding failed");
+      if (data?.error) throw new Error(data.error);
 
       toast({
         title: "Welcome to Klarvo! 🎉",
