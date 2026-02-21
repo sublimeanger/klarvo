@@ -119,7 +119,7 @@ export default function AISystemDetail() {
   const logAction = useLogAction();
   const { data: activityLogs = [], isLoading: isLoadingActivity } = useEntityAuditLogs("ai_system", id);
   const { data: organization } = useOrganization();
-  const { profile, user } = useAuth();
+  const { profile, user, userRole } = useAuth();
 
   // Get reviewer name for the classification memo
   const getReviewerName = () => {
@@ -396,14 +396,18 @@ export default function AISystemDetail() {
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={handleEdit} size="sm">
-                <Edit2 className="mr-1 sm:mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Edit</span>
-              </Button>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(true)} size="sm">
-                <Trash2 className="mr-1 sm:mr-2 h-4 w-4" />
-                <span className="hidden sm:inline">Delete</span>
-              </Button>
+              {['admin', 'compliance_owner', 'system_owner'].includes(userRole?.role || '') && (
+                <Button variant="outline" onClick={handleEdit} size="sm">
+                  <Edit2 className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Edit</span>
+                </Button>
+              )}
+              {userRole?.role === 'admin' && (
+                <Button variant="outline" onClick={() => setShowDeleteDialog(true)} size="sm">
+                  <Trash2 className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Delete</span>
+                </Button>
+              )}
             </>
           )}
         </div>
