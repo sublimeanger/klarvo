@@ -20,6 +20,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/contexts/AuthContext";
 import { useDashboardMetrics } from "@/hooks/useDashboardMetrics";
 import { useBilling } from "@/hooks/useBilling";
 import { useStorageUsage } from "@/hooks/useStorageUsage";
@@ -32,6 +33,8 @@ import { PLANS, type PlanId, type BillingPeriod } from "@/lib/billing-constants"
 export default function BillingSettings() {
   const [searchParams] = useSearchParams();
   const [upgradeBillingPeriod, setUpgradeBillingPeriod] = useState<BillingPeriod>("annual");
+  const { userRole } = useAuth();
+  const isAdmin = userRole?.role === "admin";
   const { dialogState, openUpgradeDialog, setDialogOpen } = useUpgradeDialog();
   
   const { 
@@ -182,7 +185,7 @@ export default function BillingSettings() {
               )}
 
               {/* Billing Period Toggle for Upgrades */}
-              {nextPlanId && (
+              {isAdmin && nextPlanId && (
                 <div className="pt-2">
                   <BillingToggle 
                     billingPeriod={upgradeBillingPeriod} 
@@ -191,28 +194,34 @@ export default function BillingSettings() {
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-3 pt-2">
-                {hasStripeCustomer && (
-                  <Button 
-                    variant="outline" 
-                    onClick={openCustomerPortal}
-                    disabled={billingLoading}
-                  >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Manage Subscription
-                  </Button>
-                )}
-                
-                {nextPlanId && (
-                  <Button 
-                    onClick={() => openUpgradeDialog(nextPlanId)} 
-                    disabled={billingLoading}
-                  >
-                    {getUpgradeButtonText()}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
-              </div>
+              {isAdmin ? (
+                <div className="flex flex-wrap gap-3 pt-2">
+                  {hasStripeCustomer && (
+                    <Button 
+                      variant="outline" 
+                      onClick={openCustomerPortal}
+                      disabled={billingLoading}
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Manage Subscription
+                    </Button>
+                  )}
+                  
+                  {nextPlanId && (
+                    <Button 
+                      onClick={() => openUpgradeDialog(nextPlanId)} 
+                      disabled={billingLoading}
+                    >
+                      {getUpgradeButtonText()}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground pt-2">
+                  Contact your organization admin to manage billing.
+                </p>
+              )}
             </>
           )}
         </CardContent>
@@ -322,7 +331,7 @@ export default function BillingSettings() {
       </Card>
 
       {/* Market Access Add-ons */}
-      {planId !== "free" && (
+      {planId !== "free" && isAdmin && (
         <>
           <Separator className="my-4" />
           <OperatorTrackAddons billingPeriod={billingPeriod || "monthly"} />
@@ -346,7 +355,7 @@ export default function BillingSettings() {
       )}
 
       {/* Upgrade CTA for free users */}
-      {planId === "free" && (
+      {planId === "free" && isAdmin && (
         <Card className="border-primary/50 bg-primary/5">
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
