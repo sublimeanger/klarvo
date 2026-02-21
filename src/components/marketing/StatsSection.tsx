@@ -16,9 +16,9 @@ interface StatsSectionProps {
 
 const defaultStats: Stat[] = [
   { value: "10", suffix: "min", label: "Average setup time" },
-  { value: "90", suffix: "%", label: "Time saved on compliance" },
-  { value: "500", suffix: "+", label: "AI systems classified" },
-  { value: "100", suffix: "%", label: "Audit success rate" },
+  { value: "54", suffix: "+", label: "EU AI Act articles covered" },
+  { value: "8", suffix: "", label: "Free compliance templates" },
+  { value: "0", suffix: "", label: "Credit card required" },
 ];
 
 export function StatsSection({

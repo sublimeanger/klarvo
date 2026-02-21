@@ -84,7 +84,7 @@ const sampleReports = [
 ];
 
 const trustIndicators = [
-  { icon: Building2, label: "Used by 500+ companies" },
+  { icon: Building2, label: "Built for EU AI Act compliance" },
   { icon: Users, label: "Trusted by compliance teams" },
   { icon: CheckCircle2, label: "Procurement-approved format" },
   { icon: BarChart3, label: "Saves 40+ hours per system" },
