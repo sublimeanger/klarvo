@@ -11,6 +11,11 @@
     </script>
     
     <meta charset="UTF-8" />
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://dakhmawakfpwyxshhzmd.supabase.co https://*.supabase.co https://www.google-analytics.com https://api.stripe.com https://api.resend.com; frame-src 'self' https://js.stripe.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     
