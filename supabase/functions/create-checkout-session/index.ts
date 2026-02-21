@@ -130,7 +130,7 @@ serve(async (req) => {
       throw new Error("billingPeriod is required");
     }
 
-    const origin = req.headers.get("origin") || "https://localhost:5173";
+    const origin = Deno.env.get("APP_URL") || "https://klarvo.io";
     let session: Stripe.Checkout.Session;
 
     if (checkoutType === "addon" && addonId) {

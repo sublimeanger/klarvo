@@ -64,7 +64,7 @@ serve(async (req) => {
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
 
     // Get the origin for redirect URL
-    const origin = req.headers.get("origin") || "https://localhost:5173";
+    const origin = Deno.env.get("APP_URL") || "https://klarvo.io";
 
     // Create billing portal session
     const session = await stripe.billingPortal.sessions.create({
