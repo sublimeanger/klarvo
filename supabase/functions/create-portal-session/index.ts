@@ -50,6 +50,21 @@ serve(async (req) => {
       throw new Error("User profile or organization not found");
     }
 
+    // Check user has admin role
+    const { data: roleData } = await supabaseClient
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("organization_id", profile.organization_id)
+      .single();
+
+    if (!roleData || roleData.role !== "admin") {
+      return new Response(
+        JSON.stringify({ error: "Only admins can manage billing" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Get subscription with Stripe customer ID
     const { data: subscription, error: subError } = await supabaseClient
       .from("subscriptions")
