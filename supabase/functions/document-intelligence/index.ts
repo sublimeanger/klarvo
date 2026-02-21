@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { checkAIFeatureAllowed, checkUserRole, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
+import { checkAIFeatureAllowed, checkUserRole, checkPlanEntitlement, getOrganizationId, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
@@ -85,6 +85,18 @@ serve(async (req) => {
         JSON.stringify({ error: roleCheck.errorMessage }),
         { status: roleCheck.errorStatus, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Check plan entitlement
+    const { organizationId: orgId } = await getOrganizationId(supabaseUrl, supabaseServiceKey, req.headers.get("authorization"));
+    if (orgId) {
+      const planCheck = await checkPlanEntitlement(supabaseUrl, supabaseServiceKey, orgId, 'ai_document');
+      if (!planCheck.allowed) {
+        return new Response(
+          JSON.stringify({ error: planCheck.errorMessage, plan_restricted: true }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     if (!LOVABLE_API_KEY) {

@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { checkUserRole } from "../_shared/ai-privacy.ts";
+import { checkUserRole, checkPlanEntitlement, getOrganizationId } from "../_shared/ai-privacy.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
@@ -61,6 +61,18 @@ serve(async (req) => {
         JSON.stringify({ error: roleCheck.errorMessage }),
         { status: roleCheck.errorStatus, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    // Check plan entitlement
+    const { organizationId: orgId } = await getOrganizationId(supabaseUrl, supabaseServiceKey, authHeader);
+    if (orgId) {
+      const planCheck = await checkPlanEntitlement(supabaseUrl, supabaseServiceKey, orgId, 'ai_recommendations');
+      if (!planCheck.allowed) {
+        return new Response(
+          JSON.stringify({ error: planCheck.errorMessage, plan_restricted: true }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
