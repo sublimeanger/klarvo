@@ -138,12 +138,21 @@
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web Browser",
       "description": "EU AI Act compliance platform. Build AI inventories, classify risk levels, manage evidence, and generate audit-ready export packs.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "EUR",
-        "description": "Free tier available with 2 AI systems"
-      },
+      "offers": [
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR",
+          "description": "Free tier — 1 AI system, evidence vault, watermarked exports"
+        },
+        {
+          "@type": "AggregateOffer",
+          "lowPrice": "149",
+          "highPrice": "749",
+          "priceCurrency": "EUR",
+          "description": "Paid plans from €149/month — unlimited users, full exports, approvals"
+        }
+      ],
       "featureList": [
         "AI System Inventory",
         "Risk Classification Engine",
