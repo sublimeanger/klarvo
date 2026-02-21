@@ -152,8 +152,8 @@ export default function LandingPage() {
 
       {/* Stats */}
       <StatsSection
-        title="Trusted by Compliance Teams"
-        subtitle="See why teams choose Klarvo for EU AI Act compliance"
+        title="Built for Compliance Teams"
+        subtitle="Purpose-built to simplify EU AI Act compliance"
       />
 
       {/* Testimonials */}
