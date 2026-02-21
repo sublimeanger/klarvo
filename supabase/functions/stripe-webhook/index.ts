@@ -255,6 +255,7 @@ serve(async (req) => {
             .single();
 
           if (sub) {
+            processedOrgId = sub.organization_id;
             await supabaseClient
               .from("subscriptions")
               .update({
@@ -263,6 +264,19 @@ serve(async (req) => {
                 stripe_subscription_id: null,
               })
               .eq("organization_id", sub.organization_id);
+
+            // Also cancel all addons for this organization
+            const { error: addonError } = await supabaseClient
+              .from("subscription_addons")
+              .update({ status: "canceled", updated_at: new Date().toISOString() })
+              .eq("organization_id", sub.organization_id)
+              .in("status", ["active", "trialing"]);
+
+            if (addonError) {
+              console.error(`Failed to cancel addons for org ${sub.organization_id}:`, addonError);
+            } else {
+              console.log(`Cancelled all addons for org ${sub.organization_id}`);
+            }
 
             console.log(`Subscription canceled for org ${sub.organization_id}`);
           }
@@ -275,6 +289,19 @@ serve(async (req) => {
               stripe_subscription_id: null,
             })
             .eq("organization_id", organizationId);
+
+          // Also cancel all addons for this organization
+          const { error: addonError } = await supabaseClient
+            .from("subscription_addons")
+            .update({ status: "canceled", updated_at: new Date().toISOString() })
+            .eq("organization_id", organizationId)
+            .in("status", ["active", "trialing"]);
+
+          if (addonError) {
+            console.error(`Failed to cancel addons for org ${organizationId}:`, addonError);
+          } else {
+            console.log(`Cancelled all addons for org ${organizationId}`);
+          }
 
           console.log(`Subscription canceled for org ${organizationId}`);
         }
