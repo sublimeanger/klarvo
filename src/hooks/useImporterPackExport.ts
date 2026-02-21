@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { pdf } from "@react-pdf/renderer";
 import JSZip from "jszip";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,10 +6,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { logger } from "@/lib/logger";
-import {
-  ImporterVerificationPDF,
-  type ImporterVerificationData,
-} from "@/components/exports/importer";
+import type { ImporterVerificationData } from "@/components/exports/importer";
 
 interface ImporterPackOptions {
   aiSystemId: string;
@@ -125,6 +121,7 @@ export function useImporterPackExport() {
   const exportImporterPack = async (options: ImporterPackOptions) => {
     setIsExporting(true);
     try {
+      toast.info("Preparing Importer Pack...");
       const { aiSystemId, includeEvidence = true } = options;
 
       const system = await fetchAISystem(aiSystemId);
@@ -180,6 +177,10 @@ export function useImporterPackExport() {
           created_at: verification.created_at,
         };
 
+        const [{ pdf }, { ImporterVerificationPDF }] = await Promise.all([
+          import("@react-pdf/renderer"),
+          import("@/components/exports/importer"),
+        ]);
         const pdfBlob = await pdf(
           ImporterVerificationPDF({
             verification: verificationData,
