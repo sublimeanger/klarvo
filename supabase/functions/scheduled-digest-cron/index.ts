@@ -55,18 +55,20 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Optional: Add a simple auth check for cron requests
+  // Require authentication for cron requests
   const authHeader = req.headers.get("authorization");
   const cronSecret = Deno.env.get("CRON_SECRET");
-  
-  // If CRON_SECRET is set, require it for non-Supabase calls
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-    // Allow Supabase service role key as well
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-    if (!authHeader?.includes(supabaseKey || "")) {
-      console.log("Unauthorized cron request");
-      // Still process - just log warning
-    }
+  const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+  const isAuthorizedByCronSecret = cronSecret && authHeader === `Bearer ${cronSecret}`;
+  const isAuthorizedByServiceKey = supabaseServiceKey && authHeader === `Bearer ${supabaseServiceKey}`;
+
+  if (!isAuthorizedByCronSecret && !isAuthorizedByServiceKey) {
+    console.error("Unauthorized cron request rejected");
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 
   try {
