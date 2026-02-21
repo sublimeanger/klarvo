@@ -310,6 +310,42 @@ serve(async (req) => {
         break;
       }
 
+      case "invoice.paid": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const customerId = invoice.customer as string;
+
+        // Only process subscription invoices (not one-off)
+        if (invoice.subscription) {
+          const { data: sub } = await supabaseClient
+            .from("subscriptions")
+            .select("organization_id, status")
+            .eq("stripe_customer_id", customerId)
+            .single();
+
+          if (sub) {
+            processedOrgId = sub.organization_id;
+
+            // If subscription was past_due, restore to active
+            if (sub.status === "past_due") {
+              await supabaseClient
+                .from("subscriptions")
+                .update({ status: "active" })
+                .eq("organization_id", sub.organization_id);
+
+              // Also restore any past_due addons
+              await supabaseClient
+                .from("subscription_addons")
+                .update({ status: "active", updated_at: new Date().toISOString() })
+                .eq("organization_id", sub.organization_id)
+                .eq("status", "past_due");
+
+              console.log(`Payment recovered for org ${sub.organization_id} — status restored to active`);
+            }
+          }
+        }
+        break;
+      }
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
