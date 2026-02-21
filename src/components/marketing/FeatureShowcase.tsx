@@ -102,6 +102,7 @@ export function FeatureShowcase({ items, className }: FeatureShowcaseProps) {
                       <img
                         src={item.image}
                         alt={item.title}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     ) : (
