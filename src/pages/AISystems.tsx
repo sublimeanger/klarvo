@@ -53,6 +53,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAISystems, useDeleteAISystem } from "@/hooks/useAISystems";
 import { AISystemComparisonDialog } from "@/components/ai-systems/AISystemComparisonDialog";
+import { useAuth } from "@/contexts/AuthContext";
 
 const lifecycleStatusConfig: Record<string, { label: string; variant: "draft" | "pending" | "success" | "warning" }> = {
   draft: { label: "Draft", variant: "draft" },
@@ -76,6 +77,9 @@ export default function AISystems() {
   const [compareOpen, setCompareOpen] = useState(false);
   const { systems, isLoading } = useAISystems();
   const deleteSystem = useDeleteAISystem();
+  const { userRole } = useAuth();
+  const canWrite = ['admin', 'compliance_owner', 'system_owner'].includes(userRole?.role || '');
+  const isAdmin = userRole?.role === 'admin';
 
   // Get filter values from URL
   const classificationFilter = searchParams.get("classification");
@@ -180,12 +184,14 @@ export default function AISystems() {
               Compare
             </Button>
           )}
-          <Button asChild size="sm" className="flex-1 sm:flex-initial">
-            <Link to="/ai-systems/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Add AI System
-            </Link>
-          </Button>
+          {canWrite && (
+            <Button asChild size="sm" className="flex-1 sm:flex-initial">
+              <Link to="/ai-systems/new">
+                <Plus className="mr-2 h-4 w-4" />
+                Add AI System
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -563,17 +569,23 @@ export default function AISystems() {
                         <DropdownMenuItem asChild>
                           <Link to={`/ai-systems/${system.id}`}>View Details</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to={`/ai-systems/${system.id}/classify`}>Start Classification</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          className="text-destructive"
-                          onClick={() => setDeleteId(system.id)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Delete System
-                        </DropdownMenuItem>
+                        {canWrite && (
+                          <DropdownMenuItem asChild>
+                            <Link to={`/ai-systems/${system.id}/classify`}>Start Classification</Link>
+                          </DropdownMenuItem>
+                        )}
+                        {isAdmin && (
+                          <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem 
+                              className="text-destructive"
+                              onClick={() => setDeleteId(system.id)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete System
+                            </DropdownMenuItem>
+                          </>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
