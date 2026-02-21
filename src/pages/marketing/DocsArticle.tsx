@@ -38,7 +38,11 @@ function renderMarkdown(content: string): string {
     // Italic
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
     // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+      const isAllowed = url.startsWith('/') || url.startsWith('http://') || url.startsWith('https://') || url.startsWith('#');
+      const safeUrl = isAllowed ? url : '#';
+      return `<a href="${safeUrl}" class="text-primary hover:underline">${text}</a>`;
+    })
     // Blockquotes
     .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-primary/30 pl-4 py-2 my-4 bg-primary/5 rounded-r-lg text-sm">$1</blockquote>')
     // Horizontal rules
