@@ -8,35 +8,35 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs mapping for plans (Production)
+// Plan price IDs from environment (allows test/live switching)
 const PLAN_PRICE_IDS: Record<string, Record<string, string>> = {
   starter: {
-    monthly: "price_1SwRgRE5Z0P87vcieb31CciX",
-    annual: "price_1SwRgSE5Z0P87vciaateHbEt",
+    monthly: Deno.env.get("STRIPE_PRICE_STARTER_MONTHLY") || "price_1SwRgRE5Z0P87vcieb31CciX",
+    annual: Deno.env.get("STRIPE_PRICE_STARTER_ANNUAL") || "price_1SwRgSE5Z0P87vciaateHbEt",
   },
   growth: {
-    monthly: "price_1SwRgUE5Z0P87vciYIcVI7ju",
-    annual: "price_1SwRgVE5Z0P87vciJyDiTPSk",
+    monthly: Deno.env.get("STRIPE_PRICE_GROWTH_MONTHLY") || "price_1SwRgUE5Z0P87vciYIcVI7ju",
+    annual: Deno.env.get("STRIPE_PRICE_GROWTH_ANNUAL") || "price_1SwRgVE5Z0P87vciJyDiTPSk",
   },
   pro: {
-    monthly: "price_1SwRgWE5Z0P87vcinPPbuZYm",
-    annual: "price_1SwRgXE5Z0P87vci5F3a3Sg1",
+    monthly: Deno.env.get("STRIPE_PRICE_PRO_MONTHLY") || "price_1SwRgWE5Z0P87vcinPPbuZYm",
+    annual: Deno.env.get("STRIPE_PRICE_PRO_ANNUAL") || "price_1SwRgXE5Z0P87vci5F3a3Sg1",
   },
 };
 
-// Price IDs mapping for add-ons (operator tracks) (Production)
+// Add-on price IDs from environment (allows test/live switching)
 const ADDON_PRICE_IDS: Record<string, Record<string, string>> = {
   importer_distributor: {
-    monthly: "price_1SwRgbE5Z0P87vcifd1UzDA5",
-    annual: "price_1SwRgcE5Z0P87vciiPYza6Bu",
+    monthly: Deno.env.get("STRIPE_PRICE_IMPORTER_MONTHLY") || "price_1SwRgbE5Z0P87vcifd1UzDA5",
+    annual: Deno.env.get("STRIPE_PRICE_IMPORTER_ANNUAL") || "price_1SwRgcE5Z0P87vciiPYza6Bu",
   },
   provider_track: {
-    monthly: "price_1SwRgdE5Z0P87vci2LGR6eA7",
-    annual: "price_1SwRgeE5Z0P87vciJQVObrH5",
+    monthly: Deno.env.get("STRIPE_PRICE_PROVIDER_MONTHLY") || "price_1SwRgdE5Z0P87vci2LGR6eA7",
+    annual: Deno.env.get("STRIPE_PRICE_PROVIDER_ANNUAL") || "price_1SwRgeE5Z0P87vciJQVObrH5",
   },
   provider_assurance: {
-    monthly: "price_1SwRggE5Z0P87vci9sk1b7su",
-    annual: "price_1SwRghE5Z0P87vcixctHWEcR",
+    monthly: Deno.env.get("STRIPE_PRICE_ASSURANCE_MONTHLY") || "price_1SwRggE5Z0P87vci9sk1b7su",
+    annual: Deno.env.get("STRIPE_PRICE_ASSURANCE_ANNUAL") || "price_1SwRghE5Z0P87vcixctHWEcR",
   },
 };
 
