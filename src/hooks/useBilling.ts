@@ -4,6 +4,17 @@ import { toast } from "sonner";
 import type { PlanId, BillingPeriod, AddonId } from "@/lib/billing-constants";
 import { logger } from "@/lib/logger";
 
+const ALLOWED_REDIRECT_HOSTS = ["checkout.stripe.com", "billing.stripe.com"];
+
+function isAllowedRedirectUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return ALLOWED_REDIRECT_HOSTS.some(host => parsed.hostname === host || parsed.hostname.endsWith("." + host));
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Hook for billing actions (checkout, portal, addon purchases)
  */
@@ -27,6 +38,9 @@ export function useBilling() {
       }
 
       if (data?.url) {
+        if (!isAllowedRedirectUrl(data.url)) {
+          throw new Error("Invalid checkout URL received");
+        }
         window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
@@ -51,6 +65,9 @@ export function useBilling() {
       }
 
       if (data?.url) {
+        if (!isAllowedRedirectUrl(data.url)) {
+          throw new Error("Invalid checkout URL received");
+        }
         window.location.href = data.url;
       } else {
         throw new Error("No checkout URL returned");
@@ -73,6 +90,9 @@ export function useBilling() {
       }
 
       if (data?.url) {
+        if (!isAllowedRedirectUrl(data.url)) {
+          throw new Error("Invalid portal URL received");
+        }
         window.open(data.url, "_blank");
       } else {
         throw new Error("No portal URL returned");
