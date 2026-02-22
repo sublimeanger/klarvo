@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { logger } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,6 +56,12 @@ export const AIAssistant = forwardRef<HTMLDivElement, object>(function AIAssista
   }, [isOpen]);
 
   const streamChat = async (userMessage: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.access_token) {
+      toast.error("Please sign in to use the AI assistant.");
+      return;
+    }
+
     const newMessages: Message[] = [...messages, { role: "user", content: userMessage }];
     setMessages(newMessages);
     setInput("");
@@ -68,7 +76,7 @@ export const AIAssistant = forwardRef<HTMLDivElement, object>(function AIAssista
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({ messages: newMessages }),
         }
