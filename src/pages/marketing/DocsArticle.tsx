@@ -1,4 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { DocsSidebar } from "@/components/docs/DocsSidebar";
@@ -165,7 +166,7 @@ export default function DocsArticle() {
               {/* Article Content */}
               <article 
                 className="prose prose-neutral dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: renderMarkdown(article.content) }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(renderMarkdown(article.content)) }}
               />
 
               {/* Article Footer */}
