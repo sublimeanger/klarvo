@@ -85,8 +85,33 @@ export function useUploadEvidence() {
         throw new Error("Not authenticated");
       }
 
+      // Validate file size and type
+      const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+      const ALLOWED_TYPES = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+        'text/csv',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ];
+
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error("File size exceeds 50MB limit");
+      }
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        throw new Error("File type not allowed. Please upload PDF, Word, Excel, CSV, or image files.");
+      }
+
+      // Sanitise filename to prevent path traversal
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+
       // Upload file to storage
-      const filePath = `${profile.organization_id}/${Date.now()}-${file.name}`;
+      const filePath = `${profile.organization_id}/${Date.now()}-${safeName}`;
       const { error: uploadError } = await supabase.storage
         .from("evidence")
         .upload(filePath, file);
