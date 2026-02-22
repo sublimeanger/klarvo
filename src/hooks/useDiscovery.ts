@@ -69,7 +69,7 @@ export function useWorkspaceConnections() {
       
       const { data, error } = await supabase
         .from("workspace_connections")
-        .select("*")
+        .select("id, organization_id, provider, domain, connected_by, connected_at, last_scan_at, next_scan_at, status, error_message, created_at, updated_at")
         .eq("organization_id", orgId)
         .order("created_at", { ascending: false });
 
