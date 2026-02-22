@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { checkAIFeatureAllowed, checkUserRole, checkPlanEntitlement, getOrganizationId, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
+import { checkRateLimit, createRateLimitResponse } from "../_shared/rate-limiter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
@@ -122,6 +124,18 @@ serve(async (req) => {
 
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    // Rate limiting: 20 requests per 15 minutes per user
+    const authHeader = req.headers.get("authorization")!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const tokenRL = authHeader.replace("Bearer ", "");
+    const { data: { user: rlUser } } = await supabase.auth.getUser(tokenRL);
+    if (rlUser) {
+      const rateLimit = await checkRateLimit(supabaseUrl, supabaseServiceKey, rlUser.id, "classification-assistant", 20, 15);
+      if (!rateLimit.allowed) {
+        return createRateLimitResponse(rateLimit.retryAfterSeconds || 60, corsHeaders);
+      }
     }
 
     const { systemData } = await req.json();

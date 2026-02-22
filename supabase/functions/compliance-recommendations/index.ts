@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { checkUserRole, checkPlanEntitlement, getOrganizationId } from "../_shared/ai-privacy.ts";
+import { checkRateLimit, createRateLimitResponse } from "../_shared/rate-limiter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
@@ -89,6 +90,12 @@ serve(async (req) => {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Rate limiting: 10 requests per 15 minutes per user
+    const rateLimit = await checkRateLimit(supabaseUrl, supabaseServiceKey, user.id, "compliance-recommendations", 10, 15);
+    if (!rateLimit.allowed) {
+      return createRateLimitResponse(rateLimit.retryAfterSeconds || 60, corsHeaders);
     }
 
     // Get user's organization

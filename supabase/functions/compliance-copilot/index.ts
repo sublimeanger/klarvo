@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { checkAIFeatureAllowed, checkUserRole, checkPlanEntitlement, getOrganizationId, createPrivacyErrorResponse } from "../_shared/ai-privacy.ts";
+import { checkRateLimit, createRateLimitResponse } from "../_shared/rate-limiter.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
@@ -113,11 +114,19 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Get organization ID from the privacy check helper
+    // Rate limiting: 10 requests per 15 minutes per user
     const authHeader = req.headers.get("authorization")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const token = authHeader.replace("Bearer ", "");
     const { data: { user } } = await supabase.auth.getUser(token);
+
+    if (user) {
+      const rateLimit = await checkRateLimit(supabaseUrl, supabaseServiceKey, user.id, "compliance-copilot", 10, 15);
+      if (!rateLimit.allowed) {
+        return createRateLimitResponse(rateLimit.retryAfterSeconds || 60, corsHeaders);
+      }
+    }
+
     const { data: profile } = await supabase
       .from("profiles")
       .select("organization_id")

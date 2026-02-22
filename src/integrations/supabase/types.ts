@@ -3272,6 +3272,30 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          count: number
+          created_at: string
+          id: string
+          key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          id?: string
+          key: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          id?: string
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       regulatory_rulesets: {
         Row: {
           changes_summary: string | null
@@ -4314,6 +4338,7 @@ export type Database = {
         Returns: Json
       }
       can_create_organization: { Args: { _user_id: string }; Returns: boolean }
+      cleanup_rate_limits: { Args: never; Returns: undefined }
       get_user_organization_id: { Args: { _user_id: string }; Returns: string }
       has_any_role: {
         Args: {
