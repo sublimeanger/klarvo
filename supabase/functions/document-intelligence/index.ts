@@ -286,7 +286,7 @@ Extract key clauses, AI provisions, control mappings, and identify any gaps.`;
   } catch (error) {
     console.error("Document Intelligence error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

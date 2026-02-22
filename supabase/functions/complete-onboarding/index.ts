@@ -141,8 +141,8 @@ serve(async (req) => {
     const message = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message });
     return new Response(
-      JSON.stringify({ error: message }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
     );
   }
 });

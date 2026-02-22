@@ -234,25 +234,24 @@ serve(async (req) => {
     return Response.redirect(`${redirect_uri}?success=true`);
   } catch (err) {
     console.error("OAuth callback error:", err);
-    const errorMessage = err instanceof Error ? err.message : "Unknown error";
     
-    // Try to redirect with error, fallback to JSON response
+    // Try to redirect with generic error, fallback to JSON response
     try {
       const url = new URL(req.url);
       const encodedState = url.searchParams.get("state");
       if (encodedState) {
         const { redirect_uri } = JSON.parse(atob(encodedState));
         return Response.redirect(
-          `${redirect_uri}?error=${encodeURIComponent(errorMessage)}`
+          `${redirect_uri}?error=${encodeURIComponent("Connection failed. Please try again.")}`
         );
       }
     } catch {}
 
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
       {
         headers: { "Content-Type": "application/json" },
-        status: 400,
+        status: 500,
       }
     );
   }
