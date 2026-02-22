@@ -15,6 +15,14 @@ export default function Login() {
 
   useEffect(() => {
     if (user && !isLoading) {
+      // If user just logged in and has a pending invite, redirect to accept it
+      const pendingInvite = sessionStorage.getItem('pending_invite');
+      if (pendingInvite) {
+        sessionStorage.setItem('invite_token', pendingInvite);
+        sessionStorage.removeItem('pending_invite');
+        navigate("/invite", { replace: true });
+        return;
+      }
       if (profile && !profile.onboarding_completed) {
         navigate("/onboarding", { replace: true });
       } else {

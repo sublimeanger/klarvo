@@ -319,6 +319,7 @@ const App = () => (
             
             {/* Team Invite */}
             <Route path="/invite/:token" element={<AcceptInvite />} />
+            <Route path="/invite" element={<AcceptInvite />} />
             
             {/* Onboarding */}
             <Route
