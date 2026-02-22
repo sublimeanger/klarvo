@@ -53,9 +53,10 @@ export default function Discovery() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { data: connections, isLoading: connectionsLoading, refetch: refetchConnections } = useWorkspaceConnections();
-  const { data: tools, isLoading: toolsLoading } = useDiscoveredTools(
+  const { data: toolsResult, isLoading: toolsLoading } = useDiscoveredTools(
     statusFilter === "all" ? undefined : (statusFilter as DiscoveredTool["status"])
   );
+  const tools = toolsResult?.data;
   const bulkUpdate = useBulkUpdateDiscoveredTools();
   const { hasAddon, isLoading: addonsLoading } = useAddons();
 

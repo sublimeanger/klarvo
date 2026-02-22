@@ -31,7 +31,8 @@ export interface GapAnalysisResult {
 export function useGapAnalysis(aiSystemId: string | undefined): GapAnalysisResult {
   const { data: controls, isLoading: loadingControls } = useAISystemControls(aiSystemId);
   const { data: allControls } = useControlLibrary();
-  const { data: evidence, isLoading: loadingEvidence } = useEvidenceFiles({ ai_system_id: aiSystemId });
+  const { data: evidenceResult, isLoading: loadingEvidence } = useEvidenceFiles({ ai_system_id: aiSystemId });
+  const evidence = evidenceResult?.data;
   const { data: classification, isLoading: loadingClassification } = useClassification(aiSystemId);
   const { data: tasks, isLoading: loadingTasks } = useTasks({ ai_system_id: aiSystemId });
 

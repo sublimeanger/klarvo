@@ -29,13 +29,19 @@ export interface EvidenceFile {
   
 }
 
-export function useEvidenceFiles(filters?: { ai_system_id?: string; vendor_id?: string }) {
+const EVIDENCE_PAGE_SIZE = 50;
+
+export function useEvidenceFiles(filters?: { ai_system_id?: string; vendor_id?: string; page?: number }) {
   const { profile } = useAuth();
+  const page = filters?.page ?? 0;
 
   return useQuery({
     queryKey: ["evidence-files", filters],
     queryFn: async () => {
-      if (!profile?.organization_id) return [];
+      if (!profile?.organization_id) return { data: [] as EvidenceFile[], hasMore: false };
+
+      const from = page * EVIDENCE_PAGE_SIZE;
+      const to = from + EVIDENCE_PAGE_SIZE;
 
       let query = supabase
         .from("evidence_files")
@@ -45,7 +51,8 @@ export function useEvidenceFiles(filters?: { ai_system_id?: string; vendor_id?: 
           vendors:vendor_id(name)
         `)
         .eq("organization_id", profile.organization_id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
       if (filters?.ai_system_id) {
         query = query.eq("ai_system_id", filters.ai_system_id);
@@ -56,7 +63,11 @@ export function useEvidenceFiles(filters?: { ai_system_id?: string; vendor_id?: 
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as EvidenceFile[];
+
+      const items = (data || []) as EvidenceFile[];
+      // We fetched one extra to detect if there are more pages
+      const hasMore = items.length > EVIDENCE_PAGE_SIZE;
+      return { data: hasMore ? items.slice(0, EVIDENCE_PAGE_SIZE) : items, hasMore };
     },
     enabled: !!profile?.organization_id,
   });
