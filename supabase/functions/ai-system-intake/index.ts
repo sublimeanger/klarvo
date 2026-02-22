@@ -377,7 +377,7 @@ Extract all relevant information you can determine from this description.`;
   } catch (error) {
     console.error("AI System Intake error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
