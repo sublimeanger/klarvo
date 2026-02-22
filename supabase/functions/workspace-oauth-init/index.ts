@@ -59,6 +59,24 @@ serve(async (req) => {
       throw new Error("Missing redirect_uri");
     }
 
+    // Validate redirect_uri against allowed origins to prevent open redirect
+    const ALLOWED_ORIGINS = [
+      Deno.env.get("ALLOWED_ORIGIN") || "https://klarvo.io",
+      "https://app.klarvo.io",
+      "http://localhost:5173",
+      "http://localhost:8080",
+    ];
+
+    try {
+      new URL(redirect_uri); // Validate it's a proper URL
+    } catch {
+      throw new Error("Invalid redirect_uri format");
+    }
+
+    if (!ALLOWED_ORIGINS.some(origin => redirect_uri.startsWith(origin))) {
+      throw new Error("Invalid redirect_uri: origin not allowed");
+    }
+
     // Generate state token for CSRF protection
     const state = crypto.randomUUID();
     
