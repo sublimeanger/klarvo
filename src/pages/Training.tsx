@@ -89,7 +89,8 @@ export default function Training() {
     expires_at: "",
   });
 
-  const { data: records = [], isLoading } = useTrainingRecords({ status: statusFilter });
+  const { data: trainingResult, isLoading } = useTrainingRecords({ status: statusFilter });
+  const records = trainingResult?.data ?? [];
   const { members } = useOrgMembers();
   const createRecord = useCreateTrainingRecord();
   const updateStatus = useUpdateTrainingStatus();

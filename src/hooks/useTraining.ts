@@ -27,13 +27,19 @@ export const TRAINING_TYPES = [
   { value: "custom", label: "Custom Training", description: "Organization-specific training" },
 ];
 
-export function useTrainingRecords(filters?: { status?: string; type?: string }) {
+const TRAINING_PAGE_SIZE = 50;
+
+export function useTrainingRecords(filters?: { status?: string; type?: string; page?: number }) {
   const { profile } = useAuth();
+  const page = filters?.page ?? 0;
 
   return useQuery({
     queryKey: ["training-records", filters],
     queryFn: async () => {
-      if (!profile?.organization_id) return [];
+      if (!profile?.organization_id) return { data: [] as TrainingRecord[], hasMore: false };
+
+      const from = page * TRAINING_PAGE_SIZE;
+      const to = from + TRAINING_PAGE_SIZE;
 
       let query = supabase
         .from("training_records")
@@ -42,7 +48,8 @@ export function useTrainingRecords(filters?: { status?: string; type?: string })
           user:user_id(full_name)
         `)
         .eq("organization_id", profile.organization_id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
       if (filters?.status && filters.status !== "all") {
         query = query.eq("status", filters.status);
@@ -53,7 +60,9 @@ export function useTrainingRecords(filters?: { status?: string; type?: string })
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as TrainingRecord[];
+      const items = (data || []) as TrainingRecord[];
+      const hasMore = items.length > TRAINING_PAGE_SIZE;
+      return { data: hasMore ? items.slice(0, TRAINING_PAGE_SIZE) : items, hasMore };
     },
     enabled: !!profile?.organization_id,
   });

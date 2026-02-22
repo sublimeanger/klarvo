@@ -131,7 +131,8 @@ export default function Evidence() {
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: files = [], isLoading } = useEvidenceFiles();
+  const { data: evidenceResult, isLoading } = useEvidenceFiles();
+  const files = evidenceResult?.data ?? [];
   const { data: pendingApprovals = [] } = usePendingApprovals();
   const { systems } = useAISystems();
   const { vendors } = useVendors();

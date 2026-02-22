@@ -80,16 +80,21 @@ export function useWorkspaceConnections() {
   });
 }
 
+const DISCOVERY_PAGE_SIZE = 100;
+
 // Fetch discovered tools
-export function useDiscoveredTools(status?: DiscoveredTool["status"]) {
+export function useDiscoveredTools(status?: DiscoveredTool["status"], page: number = 0) {
   const { profile } = useAuth();
   const orgId = profile?.organization_id;
 
   return useQuery({
-    queryKey: ["discovered-tools", orgId, status],
+    queryKey: ["discovered-tools", orgId, status, page],
     queryFn: async () => {
-      if (!orgId) return [];
+      if (!orgId) return { data: [] as DiscoveredTool[], hasMore: false };
       
+      const from = page * DISCOVERY_PAGE_SIZE;
+      const to = from + DISCOVERY_PAGE_SIZE;
+
       let query = supabase
         .from("discovered_ai_tools")
         .select(`
@@ -97,7 +102,8 @@ export function useDiscoveredTools(status?: DiscoveredTool["status"]) {
           matched_pattern:ai_tool_patterns(*)
         `)
         .eq("organization_id", orgId)
-        .order("last_seen_at", { ascending: false });
+        .order("last_seen_at", { ascending: false })
+        .range(from, to);
 
       if (status) {
         query = query.eq("status", status);
@@ -106,7 +112,9 @@ export function useDiscoveredTools(status?: DiscoveredTool["status"]) {
       const { data, error } = await query;
 
       if (error) throw error;
-      return data as DiscoveredTool[];
+      const items = (data || []) as DiscoveredTool[];
+      const hasMore = items.length > DISCOVERY_PAGE_SIZE;
+      return { data: hasMore ? items.slice(0, DISCOVERY_PAGE_SIZE) : items, hasMore };
     },
     enabled: !!orgId,
   });

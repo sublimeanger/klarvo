@@ -149,9 +149,10 @@ function LinkEvidenceDialog({
   linkedEvidenceIds: string[];
   onClose: () => void;
 }) {
-  const { data: allEvidence = [], isLoading } = useEvidenceFiles(
+  const { data: evidenceResult, isLoading } = useEvidenceFiles(
     aiSystemId ? { ai_system_id: aiSystemId } : undefined
   );
+  const allEvidence = evidenceResult?.data ?? [];
   const linkEvidence = useLinkEvidence();
 
   // Filter out already linked evidence
