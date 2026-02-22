@@ -14,9 +14,24 @@ import { useValidateInvite, useAcceptInvite } from "@/hooks/useTeamInvites";
 import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
 export default function AcceptInvite() {
-  const { token } = useParams<{ token: string }>();
+  const { token: urlToken } = useParams<{ token: string }>();
   const navigate = useNavigate();
   const { user, profile, isLoading: authLoading } = useAuth();
+  const [storedToken, setStoredToken] = useState<string | null>(null);
+
+  // Store token in sessionStorage and clean the URL
+  useEffect(() => {
+    if (urlToken) {
+      sessionStorage.setItem('invite_token', urlToken);
+      setStoredToken(urlToken);
+      window.history.replaceState({}, '', '/invite');
+    } else {
+      const saved = sessionStorage.getItem('invite_token');
+      setStoredToken(saved);
+    }
+  }, [urlToken]);
+
+  const token = storedToken;
   const { data: inviteData, isLoading: validating, error: validateError } = useValidateInvite(token || null);
   const { mutate: acceptInvite, isPending: accepting } = useAcceptInvite();
   const [accepted, setAccepted] = useState(false);
@@ -30,6 +45,8 @@ export default function AcceptInvite() {
     acceptInvite(token, {
       onSuccess: () => {
         setAccepted(true);
+        sessionStorage.removeItem('invite_token');
+        sessionStorage.removeItem('pending_invite');
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 2000);
@@ -100,15 +117,18 @@ export default function AcceptInvite() {
               Create an account or sign in to accept this invitation.
             </p>
             <div className="flex flex-col gap-2">
-              <Button asChild>
-                <Link to={`/auth/signup?invite=${token}&email=${encodeURIComponent(inviteData.email || "")}`}>
-                  Create Account
-                </Link>
+              <Button onClick={() => {
+                if (token) sessionStorage.setItem('pending_invite', token);
+                if (inviteData.email) sessionStorage.setItem('pending_invite_email', inviteData.email);
+                navigate(`/auth/signup`);
+              }}>
+                Create Account
               </Button>
-              <Button asChild variant="outline">
-                <Link to={`/auth/login?invite=${token}`}>
-                  Sign In
-                </Link>
+              <Button variant="outline" onClick={() => {
+                if (token) sessionStorage.setItem('pending_invite', token);
+                navigate(`/auth/login`);
+              }}>
+                Sign In
               </Button>
             </div>
           </CardContent>
