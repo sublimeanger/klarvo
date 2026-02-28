@@ -68,7 +68,7 @@ export default function HRRecruitmentPage() {
     headline: "EU AI Act for HR & Recruitment",
     description: "How the EU AI Act affects HR teams using AI for recruitment, screening, and employee management. Understand your high-risk obligations.",
     datePublished: "2025-01-25",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   const faqSchema = createFAQSchema({ questions: faqQuestions });

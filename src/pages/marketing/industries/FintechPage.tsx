@@ -62,7 +62,7 @@ export default function FintechPage() {
     headline: "EU AI Act for Fintech & Financial Services",
     description: "Complete guide to EU AI Act compliance for fintech companies. Credit scoring, insurance AI, fraud detection, and robo-advisors.",
     datePublished: "2025-01-20",
-    dateModified: "2025-01-30",
+    dateModified: "2026-02-28",
     author: "Klarvo Compliance Team"
   });
 

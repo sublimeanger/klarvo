@@ -64,7 +64,7 @@ export default function SaaSPage() {
     headline: "EU AI Act for SaaS Companies",
     description: "EU AI Act compliance guide for SaaS companies. Provider vs deployer obligations, customer evidence packs, and selling AI into EU markets.",
     datePublished: "2025-01-18",
-    dateModified: "2025-01-30",
+    dateModified: "2026-02-28",
     author: "Klarvo Compliance Team"
   });
 

@@ -13,6 +13,19 @@ import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } fr
 
 const releases = [
   {
+    version: "2.5.0",
+    date: "February 28, 2026",
+    type: "feature",
+    title: "Content Density & SEO Infrastructure Overhaul",
+    changes: [
+      "Enriched 6 BOFU product pages with 800+ words of regulatory-referenced content each",
+      "Expanded 10 guide pages to 2000+ words with Article references, practical examples, and internal linking",
+      "Updated all structured data schemas with current dateModified values",
+      "Added FAQ structured data to Pricing page for rich snippet eligibility",
+      "Strengthened internal cross-linking across all marketing pages"
+    ]
+  },
+  {
     version: "2.4.0",
     date: "February 20, 2026",
     type: "feature",

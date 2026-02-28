@@ -17,12 +17,13 @@ import { CTASection } from "@/components/marketing/CTASection";
 import { OperatorTrackAddons } from "@/components/billing/OperatorTrackAddons";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBilling } from "@/hooks/useBilling";
-import { SEOHead, SchemaMarkup, createProductSchema, createBreadcrumbSchema } from "@/components/seo";
+import { SEOHead, SchemaMarkup, createProductSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
 import { 
   PLANS, 
   WORKFLOW_ADDONS,
   PARTNER_ADDONS,
   SERVICES, 
+  FAQS,
   INCLUDED_IN_ALL_PAID,
   type BillingPeriod,
   type PlanId 
@@ -82,6 +83,10 @@ export default function Pricing() {
     }
   });
 
+  const faqSchema = createFAQSchema({
+    questions: FAQS.map(f => ({ question: f.question, answer: f.answer }))
+  });
+
   const breadcrumbSchema = createBreadcrumbSchema({
     items: [
       { name: "Home", url: "https://klarvo.io" },
@@ -97,7 +102,7 @@ export default function Pricing() {
         keywords={["AI compliance pricing", "EU AI Act software pricing", "compliance platform cost", "SME compliance pricing"]}
         canonical="https://klarvo.io/pricing"
       />
-      <SchemaMarkup schema={[productSchema, breadcrumbSchema]} />
+      <SchemaMarkup schema={[productSchema, faqSchema, breadcrumbSchema]} />
       
       {/* Hero */}
       <section className="relative py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">

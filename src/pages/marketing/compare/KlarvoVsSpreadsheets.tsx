@@ -120,7 +120,7 @@ export default function KlarvoVsSpreadsheets() {
     headline: "AI Inventory: Spreadsheets vs Dedicated Software",
     description: "Compare spreadsheet-based AI inventories with purpose-built software. See why audit trails, automation, and evidence packs matter for EU AI Act compliance.",
     datePublished: "2025-01-26",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   const faqSchema = createFAQSchema({ questions: faqQuestions });

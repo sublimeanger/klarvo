@@ -133,7 +133,7 @@ const articleSchema = createArticleSchema({
   headline: "The EU AI Act Explained - Complete Guide",
   description: "Comprehensive guide to the EU AI Act. Understand requirements, timeline, risk levels, and compliance obligations for AI systems.",
   datePublished: "2024-12-01",
-  dateModified: "2025-01-28"
+  dateModified: "2026-02-28"
 });
 
 const breadcrumbSchema = createBreadcrumbSchema({

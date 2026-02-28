@@ -437,6 +437,46 @@ export default function TrainingTrackerPage() {
         </div>
       </section>
 
+      {/* Cross-linking */}
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-center mb-8">Explore the Full Platform</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <Link to="/eu-ai-act-compliance-software" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Compliance Platform</h3>
+                    <p className="text-sm text-muted-foreground">Training fits into the complete compliance lifecycle.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/evidence-vault-software" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Evidence Vault</h3>
+                    <p className="text-sm text-muted-foreground">Store training completion reports as audit evidence.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/ai-governance-evidence-packs" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Evidence Packs</h3>
+                    <p className="text-sm text-muted-foreground">Include training records in audit-ready export bundles.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Learn more: <Link to="/guides/ai-literacy-article-4" className="text-primary hover:underline">AI Literacy Guide</Link> · <Link to="/guides/deployer-obligations-article-26" className="text-primary hover:underline">Article 26 Guide</Link> · <Link to="/templates/ai-acceptable-use-policy" className="text-primary hover:underline">AI Use Policy Template</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CTASection
         title="Start Tracking AI Literacy Today"
         subtitle="Article 4 applies now. Get compliant with role-based training and audit-ready reports."

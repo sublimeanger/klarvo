@@ -62,7 +62,7 @@ export default function EducationPage() {
     headline: "EU AI Act for Education & EdTech",
     description: "Complete guide to EU AI Act compliance for educational institutions and EdTech. Admissions, grading, proctoring, and tutoring AI.",
     datePublished: "2025-01-22",
-    dateModified: "2025-01-30",
+    dateModified: "2026-02-28",
     author: "Klarvo Compliance Team"
   });
 

@@ -143,7 +143,7 @@ const webPageSchema = createWebPageSchema({
   description: "Klarvo REST API documentation. Full CRUD access, webhooks, and OAuth 2.0 authentication for AI compliance integration.",
   url: "https://klarvo.io/api",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function APIReference() {

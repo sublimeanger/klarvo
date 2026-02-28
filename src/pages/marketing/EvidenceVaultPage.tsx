@@ -376,6 +376,46 @@ export default function EvidenceVaultPage() {
         </div>
       </section>
 
+      {/* Cross-linking */}
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-center mb-8">Complete Your Compliance Stack</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <Link to="/ai-governance-evidence-packs" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Evidence Packs</h3>
+                    <p className="text-sm text-muted-foreground">Export vault contents as audit-ready PDF & ZIP bundles.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/ai-inventory-software" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">AI Inventory</h3>
+                    <p className="text-sm text-muted-foreground">Link evidence directly to AI system records and controls.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/fria-software-article-27" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">FRIA Workflow</h3>
+                    <p className="text-sm text-muted-foreground">Attach FRIA artifacts and oversight evidence to assessments.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Resources: <Link to="/guides/evidence-pack-procurement" className="text-primary hover:underline">Evidence Pack Guide</Link> · <Link to="/guides/deployer-obligations-article-26" className="text-primary hover:underline">Article 26 Guide</Link> · <Link to="/templates/vendor-due-diligence" className="text-primary hover:underline">Vendor Due Diligence Template</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CTASection
         title="Centralize Your Compliance Evidence"
         subtitle="Upload, organize, and export audit-ready documentation from one vault."
