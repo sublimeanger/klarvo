@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getAllBlogPosts, getFeaturedPost } from "@/lib/blogContent";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,6 @@ import {
   User,
   Tag,
   Search,
-  Calendar,
   TrendingUp,
   AlertTriangle,
   FileText,
@@ -23,92 +23,19 @@ import {
 import { Link } from "react-router-dom";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 
-const featuredPost = {
+const featuredPostData = getFeaturedPost();
+const featuredPost = featuredPostData || {
   slug: "february-2025-deadline",
   title: "February 2025 Deadline: What You Need to Know About Prohibited AI Practices",
-  excerpt: "The first major EU AI Act deadline is approaching. Here's a comprehensive breakdown of prohibited AI practices and how to ensure your organization is compliant before February 2, 2025.",
+  excerpt: "The first major EU AI Act deadline is approaching.",
   category: "Regulation",
-  author: "Dr. Anna Müller",
-  authorRole: "Head of Compliance",
-  date: "January 20, 2025",
+  author: "Klarvo Staff",
   readTime: "12 min read",
-  featured: true
+  featured: true,
+  featuredImage: undefined as string | undefined,
 };
 
-const blogPosts = [
-  {
-    slug: "annex-iii-categories-explained",
-    title: "Annex III High-Risk Categories: A Practical Guide for SMEs",
-    excerpt: "Deep dive into each Annex III category with real-world examples. Understand if your AI systems qualify as high-risk and what obligations apply.",
-    category: "Deep Dive",
-    author: "James Robertson",
-    date: "January 18, 2025",
-    readTime: "15 min read"
-  },
-  {
-    slug: "ai-literacy-article-4",
-    title: "Article 4 AI Literacy: Building Your Training Program",
-    excerpt: "The EU AI Act requires 'sufficient AI literacy' for staff operating AI systems. Here's how to build a training program that meets the requirement.",
-    category: "Training",
-    author: "Sarah Chen",
-    date: "January 15, 2025",
-    readTime: "8 min read"
-  },
-  {
-    slug: "deployer-obligations-checklist",
-    title: "The Complete Deployer Obligations Checklist (Article 26)",
-    excerpt: "Most SMEs are deployers, not providers. Here's your complete checklist for deployer obligations under the EU AI Act.",
-    category: "Best Practices",
-    author: "Dr. Anna Müller",
-    date: "January 12, 2025",
-    readTime: "10 min read"
-  },
-  {
-    slug: "fria-step-by-step",
-    title: "Step-by-Step: Conducting Your First FRIA",
-    excerpt: "A practical walkthrough of the Fundamental Rights Impact Assessment process, with templates and examples.",
-    category: "How-To",
-    author: "James Robertson",
-    date: "January 10, 2025",
-    readTime: "14 min read"
-  },
-  {
-    slug: "ai-inventory-mistakes",
-    title: "5 Common Mistakes When Building Your AI System Inventory",
-    excerpt: "Avoid these pitfalls when documenting your AI systems. Learn from organizations that got it wrong—and how to get it right.",
-    category: "Best Practices",
-    author: "Sarah Chen",
-    date: "January 8, 2025",
-    readTime: "7 min read"
-  },
-  {
-    slug: "vendor-due-diligence-ai",
-    title: "Vendor Due Diligence for AI Systems: What to Ask",
-    excerpt: "Your AI vendors need to support your compliance. Here's a comprehensive due diligence questionnaire for AI vendors.",
-    category: "Vendor Management",
-    author: "Dr. Anna Müller",
-    date: "January 5, 2025",
-    readTime: "9 min read"
-  },
-  {
-    slug: "transparency-obligations-guide",
-    title: "Transparency Obligations: When and How to Disclose AI Use",
-    excerpt: "From chatbots to deepfakes to emotion recognition—understand your transparency obligations under Article 50.",
-    category: "Regulation",
-    author: "James Robertson",
-    date: "January 3, 2025",
-    readTime: "11 min read"
-  },
-  {
-    slug: "building-oversight-culture",
-    title: "Building a Human Oversight Culture for AI",
-    excerpt: "Human oversight isn't just about having someone review outputs. It's about building processes that actually work.",
-    category: "Best Practices",
-    author: "Sarah Chen",
-    date: "December 28, 2024",
-    readTime: "8 min read"
-  }
-];
+const blogPosts = getAllBlogPosts().filter(p => !p.featured);
 
 const categories = [
   { name: "All", count: 9 },
@@ -192,11 +119,17 @@ export default function Blog() {
               <div className="grid md:grid-cols-2 gap-0">
                 {/* Image placeholder */}
                 <div className="aspect-[4/3] md:aspect-auto bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
-                  <div className="relative text-center p-8">
-                    <AlertTriangle className="h-16 w-16 text-primary mx-auto mb-4" />
-                    <span className="text-lg font-semibold text-primary">Featured Article</span>
-                  </div>
+                  {featuredPost.featuredImage ? (
+                    <img src={featuredPost.featuredImage} alt={featuredPost.title} className="absolute inset-0 w-full h-full object-cover" />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-mesh-gradient opacity-50" />
+                      <div className="relative text-center p-8">
+                        <AlertTriangle className="h-16 w-16 text-primary mx-auto mb-4" />
+                        <span className="text-lg font-semibold text-primary">Featured Article</span>
+                      </div>
+                    </>
+                  )}
                 </div>
                 
                 {/* Content */}
@@ -354,7 +287,11 @@ export default function Blog() {
                       <Link key={i} to={`/blog/${post.slug}`} className="block">
                         <Card className="group hover:shadow-xl transition-all duration-300 hover:border-primary/30 border-border/50 flex flex-col h-full">
                           <div className="aspect-[16/9] bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center relative overflow-hidden">
-                            <CategoryIcon className="h-10 w-10 text-primary/50" />
+                            {post.featuredImage ? (
+                              <img src={post.featuredImage} alt={post.title} className="absolute inset-0 w-full h-full object-cover" />
+                            ) : (
+                              <CategoryIcon className="h-10 w-10 text-primary/50" />
+                            )}
                           </div>
                           <CardHeader className="pb-3">
                             <div className="flex items-center gap-2 mb-2">
@@ -366,7 +303,7 @@ export default function Blog() {
                             <CardDescription className="line-clamp-2 mb-4 flex-1">{post.excerpt}</CardDescription>
                             <div className="flex items-center justify-between pt-4 border-t border-border/50">
                               <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                                <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{post.date}</span>
+                                <span className="flex items-center gap-1"><User className="h-3 w-3" />{post.author}</span>
                                 <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{post.readTime}</span>
                               </div>
                               <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />

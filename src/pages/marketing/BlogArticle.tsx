@@ -3,7 +3,7 @@ import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Calendar, Clock, User, Share2, Linkedin, Twitter } from "lucide-react";
+import { ArrowLeft, Clock, User, Share2, Linkedin, Twitter } from "lucide-react";
 import { getBlogPostBySlug, getAllBlogPosts } from "@/lib/blogContent";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 import { NewsletterForm } from "@/components/marketing/NewsletterForm";
@@ -98,11 +98,6 @@ export default function BlogArticle() {
                 <span className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   {post.author}
-                  {post.authorRole && <span className="text-muted-foreground/70">· {post.authorRole}</span>}
-                </span>
-                <span className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {post.date}
                 </span>
                 <span className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
@@ -110,6 +105,13 @@ export default function BlogArticle() {
                 </span>
               </div>
             </header>
+
+            {/* Featured Image */}
+            {post.featuredImage && (
+              <div className="aspect-[16/9] rounded-xl overflow-hidden mb-12">
+                <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover" />
+              </div>
+            )}
 
             {/* Content */}
             <div className="prose prose-lg dark:prose-invert max-w-none mb-12">
