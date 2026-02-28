@@ -6,6 +6,7 @@ export const organizationSchema = {
   "@type": "Organization",
   "@id": "https://klarvo.io/#organization",
   name: "Klarvo",
+  legalName: "Open Digital WEB LTD",
   url: "https://klarvo.io",
   logo: {
     "@type": "ImageObject",
@@ -15,6 +16,7 @@ export const organizationSchema = {
   },
   description: "EU AI Act compliance software for SMEs. Build AI inventories, classify risk, and generate audit-ready evidence packs.",
   foundingDate: "2024",
+  telephone: "+443300435929",
   sameAs: [
     "https://linkedin.com/company/klarvo",
     "https://twitter.com/KlarvoHQ"
@@ -23,11 +25,15 @@ export const organizationSchema = {
     "@type": "ContactPoint",
     contactType: "customer service",
     email: "support@klarvo.io",
+    telephone: "+443300435929",
     availableLanguage: ["English"]
   },
   address: {
     "@type": "PostalAddress",
-    addressCountry: "EU"
+    streetAddress: "36 Tyndall Court, Lynchwood Business Park",
+    addressLocality: "Peterborough",
+    postalCode: "PE2 6LR",
+    addressCountry: "GB"
   }
 };
 

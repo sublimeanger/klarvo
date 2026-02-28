@@ -5,16 +5,16 @@ export default function Privacy() {
   return (
     <LegalLayout 
       title="Privacy Policy" 
-      lastUpdated="January 30, 2025"
+      lastUpdated="February 28, 2026"
       slug="privacy"
-      description="Privacy Policy for Klarvo. Learn how we collect, use, and protect your data when using our EU AI Act compliance platform."
+      description="Privacy Policy for Klarvo, operated by Open Digital WEB LTD. Learn how we collect, use, and protect your data when using our EU AI Act compliance platform."
     >
       <h2>1. Introduction</h2>
       <p>
-        Klarvo ("Company," "we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our EU AI Act compliance platform and related services (the "Service").
+        <strong>Open Digital WEB LTD</strong> (trading as Klarvo), a company registered in England and Wales with its registered office at 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom ("Company," "we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our EU AI Act compliance platform and related services (the "Service").
       </p>
       <p>
-        This policy applies to all users of the Service, including visitors to our website, registered users, and customers.
+        This policy applies to all users of the Service, including visitors to our website, registered users, and customers. We act as the data controller for the personal data described in this policy.
       </p>
 
       <h2>2. Information We Collect</h2>
@@ -26,7 +26,7 @@ export default function Privacy() {
         <li><strong>Profile Information:</strong> Additional details you add to your profile.</li>
         <li><strong>Compliance Data:</strong> Information about your AI systems, vendors, policies, and evidence that you enter into the platform.</li>
         <li><strong>Communications:</strong> Messages you send to us for support or feedback.</li>
-        <li><strong>Payment Information:</strong> Billing details and payment information (processed by our payment provider).</li>
+        <li><strong>Payment Information:</strong> Billing details and payment information (processed by our payment provider, Stripe).</li>
       </ul>
 
       <h3>2.2 Information Collected Automatically</h3>
@@ -50,11 +50,11 @@ export default function Privacy() {
         <li><strong>Marketing:</strong> With your consent, to send promotional communications.</li>
       </ul>
 
-      <h2>4. Legal Basis for Processing (GDPR)</h2>
-      <p>Under the General Data Protection Regulation (GDPR), we process personal data based on:</p>
+      <h2>4. Legal Basis for Processing (GDPR & UK GDPR)</h2>
+      <p>Under the General Data Protection Regulation (GDPR) and the UK GDPR, we process personal data based on:</p>
       <ul>
         <li><strong>Contract Performance:</strong> Processing necessary to provide the Service you requested.</li>
-        <li><strong>Legitimate Interests:</strong> Processing for our legitimate business interests, such as improving the Service.</li>
+        <li><strong>Legitimate Interests:</strong> Processing for our legitimate business interests, such as improving the Service and ensuring security.</li>
         <li><strong>Legal Obligation:</strong> Processing required by law.</li>
         <li><strong>Consent:</strong> Processing based on your explicit consent (e.g., marketing emails).</li>
       </ul>
@@ -78,8 +78,8 @@ export default function Privacy() {
         Compliance data that you enter into the platform is retained according to your subscription terms and the regulatory requirements for EU AI Act compliance documentation.
       </p>
 
-      <h2>7. Your Rights (GDPR)</h2>
-      <p>If you are located in the European Economic Area, you have the following rights:</p>
+      <h2>7. Your Rights (GDPR & UK GDPR)</h2>
+      <p>If you are located in the European Economic Area or the United Kingdom, you have the following rights:</p>
       <ul>
         <li><strong>Access:</strong> Request a copy of your personal data.</li>
         <li><strong>Rectification:</strong> Request correction of inaccurate data.</li>
@@ -89,16 +89,18 @@ export default function Privacy() {
         <li><strong>Objection:</strong> Object to processing based on legitimate interests.</li>
         <li><strong>Withdraw Consent:</strong> Withdraw consent at any time (where processing is based on consent).</li>
       </ul>
-      <p>To exercise these rights, contact us at privacy@klarvo.com.</p>
+      <p>
+        To exercise these rights, contact us at <a href="mailto:privacy@klarvo.io">privacy@klarvo.io</a> or write to: Data Protection Officer, Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom.
+      </p>
 
       <h2>8. International Data Transfers</h2>
       <p>
-        Your data may be transferred to and processed in countries outside your country of residence. When we transfer data outside the EEA, we ensure appropriate safeguards are in place, such as Standard Contractual Clauses approved by the European Commission.
+        Your data may be transferred to and processed in countries outside your country of residence. When we transfer data outside the EEA or UK, we ensure appropriate safeguards are in place, such as Standard Contractual Clauses approved by the European Commission or the UK Information Commissioner's Office (ICO).
       </p>
 
       <h2>9. Data Security</h2>
       <p>
-        We implement appropriate technical and organizational measures to protect your personal data, including:
+        We implement appropriate technical and organisational measures to protect your personal data, including:
       </p>
       <ul>
         <li>Encryption in transit (TLS) and at rest</li>
@@ -120,16 +122,23 @@ export default function Privacy() {
         We may update this Privacy Policy from time to time. We will notify you of material changes by email or through the Service. Your continued use after such notification constitutes acceptance.
       </p>
 
-      <h2>12. Contact Us</h2>
+      <h2>12. Supervisory Authority</h2>
+      <p>
+        As a UK-registered company, our lead supervisory authority is the <strong>UK Information Commissioner's Office (ICO)</strong>. You have the right to lodge a complaint with the ICO or with the supervisory authority in your country of residence.
+      </p>
+      <ul>
+        <li><strong>ICO website:</strong> <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer">ico.org.uk</a></li>
+        <li><strong>ICO telephone:</strong> 0303 123 1113</li>
+      </ul>
+
+      <h2>13. Contact Us</h2>
       <p>For questions about this Privacy Policy or to exercise your rights:</p>
       <ul>
-        <li><strong>Email:</strong> privacy@klarvo.com</li>
-        <li><strong>Data Protection Officer:</strong> dpo@klarvo.com</li>
-        <li><strong>Address:</strong> [Company Address]</li>
+        <li><strong>Email:</strong> <a href="mailto:privacy@klarvo.io">privacy@klarvo.io</a></li>
+        <li><strong>Data Protection Officer:</strong> <a href="mailto:dpo@klarvo.io">dpo@klarvo.io</a></li>
+        <li><strong>Phone:</strong> +44 330 043 5929</li>
+        <li><strong>Address:</strong> Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</li>
       </ul>
-      <p>
-        You also have the right to lodge a complaint with your local data protection authority.
-      </p>
     </LegalLayout>
   );
 }

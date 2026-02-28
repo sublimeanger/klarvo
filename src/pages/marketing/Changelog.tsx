@@ -13,26 +13,85 @@ import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } fr
 
 const releases = [
   {
-    version: "1.3.0",
-    date: "January 28, 2025",
+    version: "2.4.0",
+    date: "February 20, 2026",
     type: "feature",
-    title: "AI System Comparison & PDF Export",
+    title: "Shadow AI Discovery & Workspace Scanning",
     changes: [
-      "Compare up to 3 AI systems side-by-side",
-      "Generate comparison report PDFs",
-      "Visual progress indicators for controls and evidence"
+      "Connect Google Workspace or Microsoft 365 to discover AI tools in use",
+      "Automatic draft AI system records from discovered tools",
+      "Discovery dashboard with stats and review workflow"
     ]
   },
   {
-    version: "1.2.0",
-    date: "January 20, 2025",
+    version: "2.3.0",
+    date: "January 30, 2026",
     type: "feature",
-    title: "Enhanced Dashboard Analytics",
+    title: "Team Collaboration & Invites",
     changes: [
-      "Audit readiness score with weighted categories",
-      "Compliance trend charts",
-      "Department risk distribution heatmap",
-      "Improved classification breakdown visualization"
+      "Invite team members via email with role-based access",
+      "Evidence approval workflows with reviewer assignments",
+      "Activity feeds per AI system with commenting"
+    ]
+  },
+  {
+    version: "2.2.0",
+    date: "December 15, 2025",
+    type: "feature",
+    title: "Provider Track & Multi-Role Support",
+    changes: [
+      "Complete provider obligations workflow (QMS, CE marking, Annex IV technical docs)",
+      "Importer and distributor verification checklists",
+      "EU database registration wizard",
+      "Substantial modification detection and alerts"
+    ]
+  },
+  {
+    version: "2.1.0",
+    date: "October 28, 2025",
+    type: "feature",
+    title: "AI-Assisted Classification & Compliance Copilot",
+    changes: [
+      "AI-powered classification assistant with confidence scoring",
+      "Compliance copilot chat for contextual guidance",
+      "Natural language AI system intake mode",
+      "Document intelligence for automatic clause extraction"
+    ]
+  },
+  {
+    version: "2.0.0",
+    date: "August 15, 2025",
+    type: "feature",
+    title: "Advanced Exports & Auditor Portal",
+    changes: [
+      "Audience-specific export packs (Board, Auditor, Procurement, Customer Trust)",
+      "Shareable read-only auditor links with access controls",
+      "Organisation-wide governance pack PDF export",
+      "Evidence pack ZIP bundles with folder structure"
+    ]
+  },
+  {
+    version: "1.5.0",
+    date: "June 10, 2025",
+    type: "feature",
+    title: "Control Library v2 & Gap Analysis",
+    changes: [
+      "50+ pre-built controls mapped to EU AI Act obligations",
+      "Automated gap analysis per AI system",
+      "Control-evidence linking with N/A justifications",
+      "Evidence expiry tracking and renewal reminders"
+    ]
+  },
+  {
+    version: "1.3.0",
+    date: "March 28, 2025",
+    type: "feature",
+    title: "AI System Comparison & Reassessment Alerts",
+    changes: [
+      "Compare up to 3 AI systems side-by-side",
+      "Generate comparison report PDFs",
+      "Automatic reassessment alerts on material changes",
+      "Classification version history with diff tracking"
     ]
   },
   {
@@ -48,30 +107,17 @@ const releases = [
     ]
   },
   {
-    version: "1.0.1",
-    date: "January 5, 2025",
-    type: "fix",
-    title: "Bug Fixes & Performance Improvements",
-    changes: [
-      "Fixed evidence upload progress indicator",
-      "Improved wizard step navigation on mobile",
-      "Resolved duplicate task creation issue",
-      "Performance optimizations for large inventories"
-    ]
-  },
-  {
     version: "1.0.0",
     date: "December 15, 2024",
     type: "feature",
     title: "Initial Release",
     changes: [
-      "AI System Inventory with 20-step wizard",
-      "Risk classification engine",
-      "Control library with implementation tracking",
-      "Evidence vault with approval workflows",
+      "AI System Inventory with 20-step guided wizard",
+      "Risk classification engine with prohibited practices screening",
+      "Evidence vault with file uploads and metadata",
       "Policy templates and version history",
       "Training and AI literacy tracking",
-      "One-click PDF/ZIP export packs"
+      "One-click PDF export packs"
     ]
   }
 ];
@@ -114,7 +160,7 @@ const webPageSchema = createWebPageSchema({
   description: "See what's new in Klarvo. Latest features, improvements, and bug fixes for the EU AI Act compliance platform.",
   url: "https://klarvo.io/changelog",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function Changelog() {

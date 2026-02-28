@@ -44,7 +44,7 @@ export default function Careers() {
     description: "Join Klarvo and help build the future of AI governance. Remote-first culture, competitive benefits, and meaningful work.",
     url: "https://klarvo.io/careers",
     datePublished: "2025-01-01",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   return (
@@ -88,7 +88,8 @@ export default function Careers() {
       <section id="openings" className="py-20 scroll-mt-20">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">Open Positions</h2>
-          <p className="text-center text-muted-foreground mb-12">Don't see a perfect fit? Email careers@klarvo.io</p>
+          <p className="text-center text-muted-foreground mb-4">The positions listed below are indicative of the roles we're looking to fill.</p>
+          <p className="text-center text-muted-foreground mb-12">Don't see a perfect fit? Email <a href="mailto:careers@klarvo.io" className="text-primary hover:underline">careers@klarvo.io</a> to discuss current openings.</p>
           <div className="max-w-3xl mx-auto space-y-4">
             {openPositions.map((position, i) => (
               <Card key={i} className="group cursor-pointer hover:shadow-lg transition-all hover:border-primary/30">

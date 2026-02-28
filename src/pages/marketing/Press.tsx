@@ -48,7 +48,7 @@ const webPageSchema = createWebPageSchema({
   description: "Download Klarvo brand assets, logos, and media resources. Press kit with company information and brand guidelines.",
   url: "https://klarvo.io/press",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function Press() {
@@ -275,15 +275,20 @@ export default function Press() {
               <CardContent className="p-8">
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   <strong className="text-foreground">Klarvo</strong> is the EU AI Act compliance platform 
-                  designed for organizations of all sizes. Founded in 2024, Klarvo helps companies 
-                  inventory their AI systems, classify risk levels, implement required controls, 
-                  and generate audit-ready evidence packs—all in one platform.
+                  built by <strong className="text-foreground">Open Digital WEB LTD</strong>, a UK company 
+                  registered in England and Wales. Founded in 2024 and based in Peterborough, UK, Klarvo helps 
+                  organisations inventory their AI systems, classify risk levels, implement required controls, 
+                  and generate audit-ready evidence packs — all in one platform.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  With the EU AI Act entering force, organizations across Europe face new obligations 
-                  around AI governance, transparency, and risk management. Klarvo democratizes 
-                  compliance by providing SMEs with the same caliber of tools previously available 
-                  only to large enterprises with dedicated compliance teams.
+                  With the EU AI Act entering force on 1 August 2024 and obligations phasing in through 2027, 
+                  organisations across Europe and beyond face new requirements around AI governance, transparency, 
+                  and risk management. Klarvo democratises compliance by providing SMEs with the same calibre of 
+                  tools previously available only to large enterprises with dedicated compliance teams.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong className="text-foreground">Registered Office:</strong> 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom<br />
+                  <strong className="text-foreground">Telephone:</strong> +44 330 043 5929
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
                   Learn more at <a href="https://klarvo.io" className="text-primary hover:underline font-medium">klarvo.io</a>.

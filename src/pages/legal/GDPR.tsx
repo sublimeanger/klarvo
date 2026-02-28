@@ -5,7 +5,7 @@ export default function GDPR() {
   return (
     <LegalLayout 
       title="GDPR Compliance" 
-      lastUpdated="January 30, 2025"
+      lastUpdated="February 28, 2026"
       slug="gdpr"
       description="GDPR compliance at Klarvo. Learn how we protect your data and support your GDPR obligations for AI governance."
     >
@@ -70,8 +70,9 @@ export default function GDPR() {
         To exercise any of these rights, please contact our Data Protection Officer:
       </p>
       <ul>
-        <li><strong>Email:</strong> dpo@klarvo.com</li>
+        <li><strong>Email:</strong> <a href="mailto:dpo@klarvo.io">dpo@klarvo.io</a></li>
         <li><strong>Subject line:</strong> "GDPR Rights Request"</li>
+        <li><strong>Address:</strong> Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</li>
       </ul>
       <p>
         We will respond to your request within 30 days. If we need more time (up to 60 additional days for complex requests), we will inform you.
@@ -146,8 +147,9 @@ export default function GDPR() {
         For any GDPR-related questions or concerns:
       </p>
       <ul>
-        <li><strong>Data Protection Officer:</strong> dpo@klarvo.com</li>
-        <li><strong>General Privacy Inquiries:</strong> privacy@klarvo.com</li>
+        <li><strong>Data Protection Officer:</strong> <a href="mailto:dpo@klarvo.io">dpo@klarvo.io</a></li>
+        <li><strong>General Privacy Inquiries:</strong> <a href="mailto:privacy@klarvo.io">privacy@klarvo.io</a></li>
+        <li><strong>Address:</strong> Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</li>
       </ul>
     </LegalLayout>
   );

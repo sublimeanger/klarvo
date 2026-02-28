@@ -18,33 +18,29 @@ import {
 import { Link } from "react-router-dom";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema, createWebPageSchema } from "@/components/seo";
 
-const availableIntegrations = [
+const plannedIntegrations = [
   {
     name: "Jira",
     category: "Project Management",
     description: "Sync compliance tasks with Jira issues and track progress across teams.",
-    status: "available",
     icon: "🎫"
   },
   {
     name: "Slack",
     category: "Communication",
     description: "Get notifications, reminders, and alerts delivered to your Slack channels.",
-    status: "available",
     icon: "💬"
   },
   {
     name: "Microsoft Teams",
     category: "Communication",
     description: "Receive compliance updates and collaborate within Microsoft Teams.",
-    status: "available",
     icon: "👥"
   },
   {
     name: "Google Workspace",
     category: "Productivity",
     description: "Import documents from Google Drive and sync with Google Calendar.",
-    status: "available",
     icon: "📁"
   }
 ];
@@ -106,7 +102,7 @@ const webPageSchema = createWebPageSchema({
   description: "Integrate Klarvo with Jira, Slack, Teams, and more. Seamlessly connect EU AI Act compliance to your existing tools and workflows.",
   url: "https://klarvo.io/integrations",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function Integrations() {
@@ -155,22 +151,22 @@ export default function Integrations() {
         </div>
       </section>
 
-      {/* Available Integrations */}
+      {/* Planned Integrations */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Available Now
+              <Calendar className="h-3 w-3 mr-1" />
+              On the Roadmap
             </Badge>
-            <h2 className="text-3xl font-bold mb-4">Connect Today</h2>
+            <h2 className="text-3xl font-bold mb-4">Planned Integrations</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Connect these integrations today to streamline your compliance workflow.
+              We're building integrations with the tools you already use. Let us know which integrations matter most to you.
             </p>
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {availableIntegrations.map((integration, i) => (
+            {plannedIntegrations.map((integration, i) => (
               <Card key={i} className="group hover:shadow-xl transition-all duration-300 hover:border-primary/30 hover:-translate-y-1 border-border/50">
                 <CardContent className="p-6">
                   <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{integration.icon}</div>
@@ -179,9 +175,9 @@ export default function Integrations() {
                   <p className="text-muted-foreground text-sm mb-4">
                     {integration.description}
                   </p>
-                  <Badge className="bg-success/20 text-success border-success/30">
-                    <CheckCircle2 className="h-3 w-3 mr-1" />
-                    Available
+                  <Badge variant="outline">
+                    <Calendar className="h-3 w-3 mr-1" />
+                    Coming Soon
                   </Badge>
                 </CardContent>
               </Card>
@@ -240,11 +236,11 @@ export default function Integrations() {
                       Developer API
                     </Badge>
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                      Build Custom Integrations
+                      Developer API
                     </h2>
                     <p className="text-muted-foreground mb-6">
-                      Need something specific? Our REST API gives you full access to 
-                      Klarvo's data and functionality for custom integrations.
+                      Need programmatic access? A REST API for custom integrations is on our roadmap. 
+                      Contact us to discuss your needs and get early access.
                     </p>
                     <div className="space-y-2 mb-6">
                       {[
@@ -256,13 +252,13 @@ export default function Integrations() {
                           <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
                             <CheckCircle2 className="h-3 w-3 text-primary" />
                           </div>
-                          {item}
+                          <span className="text-muted-foreground">{item} <Badge variant="outline" className="ml-1 text-xs">Planned</Badge></span>
                         </div>
                       ))}
                     </div>
                     <Button className="btn-premium" asChild>
                       <Link to="/contact">
-                        Request API Access
+                        Request Early Access
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>

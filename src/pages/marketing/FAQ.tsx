@@ -103,7 +103,7 @@ const faqCategories = [
       },
       {
         question: "Does Klarvo integrate with other tools?",
-        answer: "Yes. We offer integrations with Jira, Slack, Microsoft Teams, and Google Workspace. Our REST API enables custom integrations. See our Integrations page for the full list and roadmap."
+        answer: "We're building integrations with popular tools like Jira, Slack, Microsoft Teams, and Google Workspace — these are currently on our roadmap. In the meantime, our platform covers the full compliance workflow natively, and you can export data in standard formats for use in other systems."
       },
       {
         question: "How does the Control Library work?",
@@ -153,7 +153,7 @@ const faqCategories = [
       },
       {
         question: "Is there a free trial?",
-        answer: "Yes. Our Free tier lets you add 1 AI system and explore core features indefinitely—no credit card required. You can upgrade to a paid plan anytime to add more systems and unlock advanced features."
+        answer: "Yes. Our Free tier lets you add 1 AI system and explore core features indefinitely — no credit card required. You can upgrade to a paid plan anytime to add more systems and unlock advanced features like full exports, approvals, and team collaboration."
       },
       {
         question: "What happens if I exceed my AI system limit?",

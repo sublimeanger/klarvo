@@ -5,23 +5,24 @@ export default function DPA() {
   return (
     <LegalLayout 
       title="Data Processing Agreement" 
-      lastUpdated="January 30, 2025"
+      lastUpdated="February 28, 2026"
       slug="dpa"
-      description="Data Processing Agreement (DPA) for Klarvo. GDPR-compliant terms for processing personal data on behalf of customers."
+      description="Data Processing Agreement (DPA) for Klarvo, operated by Open Digital WEB LTD. GDPR and UK GDPR compliant terms for processing personal data on behalf of customers."
     >
       <p className="lead">
-        This Data Processing Agreement ("DPA") forms part of the agreement between Klarvo and Customer for the provision of the EU AI Act compliance platform services ("Services").
+        This Data Processing Agreement ("DPA") forms part of the agreement between <strong>Open Digital WEB LTD</strong> (trading as Klarvo), registered in England and Wales with its registered office at 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom, and Customer for the provision of the EU AI Act compliance platform services ("Services").
       </p>
 
       <h2>1. Definitions</h2>
       <p>In this DPA:</p>
       <ul>
         <li><strong>"Controller"</strong> means the Customer who determines the purposes and means of processing Personal Data.</li>
-        <li><strong>"Processor"</strong> means Klarvo, which processes Personal Data on behalf of the Controller.</li>
+        <li><strong>"Processor"</strong> means Open Digital WEB LTD (trading as Klarvo), which processes Personal Data on behalf of the Controller.</li>
         <li><strong>"Personal Data"</strong> means any information relating to an identified or identifiable natural person.</li>
         <li><strong>"Processing"</strong> means any operation performed on Personal Data, including collection, storage, use, and deletion.</li>
         <li><strong>"Data Subject"</strong> means an identifiable natural person whose Personal Data is processed.</li>
         <li><strong>"GDPR"</strong> means Regulation (EU) 2016/679 (General Data Protection Regulation).</li>
+        <li><strong>"UK GDPR"</strong> means the GDPR as retained in UK law by the Data Protection Act 2018.</li>
       </ul>
 
       <h2>2. Roles and Responsibilities</h2>
@@ -38,12 +39,12 @@ export default function DPA() {
 
       <h3>2.2 Klarvo as Processor</h3>
       <p>
-        Klarvo acts as a Processor, processing Personal Data only on documented instructions from the Customer. Klarvo will:
+        Open Digital WEB LTD (trading as Klarvo) acts as a Processor, processing Personal Data only on documented instructions from the Customer. We will:
       </p>
       <ul>
         <li>Process Personal Data only as instructed by the Customer</li>
         <li>Ensure personnel are bound by confidentiality obligations</li>
-        <li>Implement appropriate technical and organizational measures</li>
+        <li>Implement appropriate technical and organisational measures</li>
         <li>Assist the Customer with Data Subject requests</li>
         <li>Delete or return Personal Data upon termination</li>
       </ul>
@@ -61,7 +62,7 @@ export default function DPA() {
 
       <h3>3.3 Nature and Purpose</h3>
       <p>
-        Processing is necessary to provide the Services, including storing and organizing compliance data, generating reports, and facilitating user access.
+        Processing is necessary to provide the Services, including storing and organising compliance data, generating reports, and facilitating user access.
       </p>
 
       <h3>3.4 Types of Personal Data</h3>
@@ -73,13 +74,13 @@ export default function DPA() {
 
       <h3>3.5 Categories of Data Subjects</h3>
       <ul>
-        <li>Customer employees and authorized users</li>
+        <li>Customer employees and authorised users</li>
         <li>Individuals referenced in Customer's compliance data</li>
       </ul>
 
       <h2>4. Security Measures</h2>
       <p>
-        Klarvo implements appropriate technical and organizational measures including:
+        Open Digital WEB LTD implements appropriate technical and organisational measures including:
       </p>
       <ul>
         <li>Encryption of data at rest and in transit</li>
@@ -87,16 +88,16 @@ export default function DPA() {
         <li>Regular security testing and monitoring</li>
         <li>Incident detection and response procedures</li>
         <li>Employee security training</li>
-        <li>Physical security controls for data centers</li>
+        <li>Physical security controls for data centres</li>
       </ul>
       <p>
         For details, see our <Link to="/security">Security page</Link>.
       </p>
 
       <h2>5. Sub-Processors</h2>
-      <h3>5.1 Authorization</h3>
+      <h3>5.1 Authorisation</h3>
       <p>
-        The Customer authorizes Klarvo to engage sub-processors for the provision of Services. Klarvo will:
+        The Customer authorises Open Digital WEB LTD to engage sub-processors for the provision of Services. We will:
       </p>
       <ul>
         <li>Maintain a list of current sub-processors</li>
@@ -125,6 +126,11 @@ export default function DPA() {
             <td>EU (Germany)</td>
           </tr>
           <tr>
+            <td>Stripe</td>
+            <td>Payment processing</td>
+            <td>EU/US (with SCCs)</td>
+          </tr>
+          <tr>
             <td>Email Provider</td>
             <td>Transactional email</td>
             <td>EU</td>
@@ -134,7 +140,7 @@ export default function DPA() {
 
       <h2>6. Data Subject Rights</h2>
       <p>
-        Klarvo will assist the Customer in responding to Data Subject requests including:
+        Open Digital WEB LTD will assist the Customer in responding to Data Subject requests including:
       </p>
       <ul>
         <li>Access to Personal Data</li>
@@ -147,7 +153,7 @@ export default function DPA() {
 
       <h2>7. Data Breach Notification</h2>
       <p>
-        In the event of a Personal Data breach, Klarvo will:
+        In the event of a Personal Data breach, Open Digital WEB LTD will:
       </p>
       <ul>
         <li>Notify the Customer without undue delay (and within 48 hours where feasible)</li>
@@ -158,17 +164,17 @@ export default function DPA() {
 
       <h2>8. International Transfers</h2>
       <p>
-        Klarvo primarily processes data within the European Economic Area. Where transfers outside the EEA are necessary:
+        Open Digital WEB LTD primarily processes data within the European Economic Area. Where transfers outside the EEA or UK are necessary:
       </p>
       <ul>
         <li>Transfers are made to countries with an adequacy decision</li>
-        <li>Or subject to Standard Contractual Clauses (SCCs)</li>
+        <li>Or subject to Standard Contractual Clauses (SCCs) or UK International Data Transfer Agreements (IDTAs)</li>
         <li>Supplementary measures are applied where required</li>
       </ul>
 
       <h2>9. Audit Rights</h2>
       <p>
-        Klarvo will make available information necessary to demonstrate compliance with this DPA. The Customer may:
+        Open Digital WEB LTD will make available information necessary to demonstrate compliance with this DPA. The Customer may:
       </p>
       <ul>
         <li>Request and review audit reports and certifications</li>
@@ -177,7 +183,7 @@ export default function DPA() {
 
       <h2>10. Data Deletion</h2>
       <p>
-        Upon termination of Services, Klarvo will:
+        Upon termination of Services, Open Digital WEB LTD will:
       </p>
       <ul>
         <li>Provide an option to export Customer data</li>
@@ -198,8 +204,9 @@ export default function DPA() {
         For DPA inquiries:
       </p>
       <ul>
-        <li><strong>Email:</strong> dpa@klarvo.com</li>
-        <li><strong>DPO:</strong> dpo@klarvo.com</li>
+        <li><strong>Email:</strong> <a href="mailto:dpa@klarvo.io">dpa@klarvo.io</a></li>
+        <li><strong>DPO:</strong> <a href="mailto:dpo@klarvo.io">dpo@klarvo.io</a></li>
+        <li><strong>Address:</strong> Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</li>
       </ul>
 
       <h2>Related Documents</h2>
@@ -209,7 +216,7 @@ export default function DPA() {
       <ul>
         <li><Link to="/terms">Terms of Service</Link> — Main service agreement</li>
         <li><Link to="/privacy">Privacy Policy</Link> — How we handle personal data</li>
-        <li><Link to="/security">Security</Link> — Technical and organizational measures</li>
+        <li><Link to="/security">Security</Link> — Technical and organisational measures</li>
         <li><Link to="/gdpr">GDPR Compliance</Link> — Our GDPR compliance approach</li>
         <li><Link to="/cookies">Cookie Policy</Link> — Use of cookies and tracking technologies</li>
       </ul>

@@ -79,7 +79,7 @@ const faqQuestions = [
   },
   {
     question: "Can I try Klarvo for free?",
-    answer: "Yes! Klarvo offers a free tier that lets you inventory up to 2 AI systems with basic classification and export functionality. No credit card required."
+    answer: "Yes! Klarvo offers a free tier that lets you inventory 1 AI system with basic classification and watermarked exports. No credit card required. Upgrade anytime for more systems and full exports."
   },
   {
     question: "How long does it take to get compliant with Klarvo?",
@@ -92,8 +92,7 @@ export default function ComplianceSoftwarePage() {
     name: "Klarvo - EU AI Act Compliance Software",
     description: "AI system-of-record for EU AI Act compliance. Build AI inventories, classify risk, and generate audit-ready evidence packs.",
     applicationCategory: "BusinessApplication",
-    offers: { price: "0", priceCurrency: "EUR" },
-    aggregateRating: { ratingValue: 4.9, reviewCount: 47 }
+    offers: { price: "0", priceCurrency: "EUR" }
   });
 
   const faqSchema = createFAQSchema({ questions: faqQuestions });
