@@ -411,19 +411,37 @@ function validateSEO(routes) {
     }
 
     const isAuthPage = route.startsWith('/auth');
+    const isNoIndexPage = isAuthPage || route.startsWith('/lp/') || route.startsWith('/ads/') || route.startsWith('/ad/');
 
     log(`\n  ${c.dim}── ${relativePath} ──${c.reset}`);
 
     // ── Meta robots ───────────────────────────────────────────────────
     const robotsMatch = content.match(/<meta\s+name="robots"\s+content="([^"]*)"/i);
-    if (isAuthPage) {
-      if (robotsMatch) {
-        if (!robotsMatch[1].includes('noindex')) {
-          logWarn(`Auth page ${route} should have noindex`);
-        }
+    if (isNoIndexPage) {
+      // PPC landing pages, ads, and auth pages must be noindex
+      const noindexRobots = 'noindex, nofollow';
+      if (!robotsMatch) {
+        const injected = content.replace(
+          /<head>/i,
+          `<head>\n<meta name="robots" content="${noindexRobots}">`
+        );
+        fs.writeFileSync(filePath, injected, 'utf-8');
+        report.seo.robotsMeta.injected++;
+        logInfo(`Injected noindex for ${route}`);
+      } else if (!robotsMatch[1].includes('noindex')) {
+        const fixed = content.replace(
+          robotsMatch[0],
+          `<meta name="robots" content="${noindexRobots}"`
+        );
+        fs.writeFileSync(filePath, fixed, 'utf-8');
+        report.seo.robotsMeta.injected++;
+        logInfo(`Fixed → noindex for ${route}`);
+      } else {
+        report.seo.robotsMeta.ok++;
       }
-      // Auth pages exist due to prerender but _redirects should handle them
-      logWarn(`Auth page ${route} was prerendered — _redirects will handle the 301`);
+      if (isAuthPage) {
+        logWarn(`Auth page ${route} was prerendered — _redirects will handle the 301`);
+      }
     } else {
       const expectedRobots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
       if (!robotsMatch) {
@@ -435,6 +453,15 @@ function validateSEO(routes) {
         fs.writeFileSync(filePath, injected, 'utf-8');
         report.seo.robotsMeta.injected++;
         logInfo(`Injected robots meta for ${route}`);
+      } else if (robotsMatch[1].includes('noindex') || robotsMatch[1].includes('nofollow')) {
+        // ENFORCE index,follow — override any noindex/nofollow on marketing pages
+        const fixed = content.replace(
+          robotsMatch[0],
+          `<meta name="robots" content="${expectedRobots}"`
+        );
+        fs.writeFileSync(filePath, fixed, 'utf-8');
+        report.seo.robotsMeta.injected++;
+        logInfo(`Fixed noindex/nofollow → index,follow for ${route}`);
       } else {
         report.seo.robotsMeta.ok++;
       }
@@ -677,13 +704,18 @@ function findHtmlFiles(dir, result) {
 function generateSitemap(routes) {
   logStep('1f', 'Generating XML sitemap...');
 
-  // Filter out auth pages from sitemap
-  const sitemapRoutes = routes.filter(r => !r.startsWith('/auth'));
+  // Filter out noindex pages from sitemap (auth, PPC landing pages, ads)
+  const sitemapRoutes = routes.filter(r =>
+    !r.startsWith('/auth') && !r.startsWith('/lp/') && !r.startsWith('/ads/') && !r.startsWith('/ad/')
+  );
 
   function getChangefreq(route) {
     if (route === '/') return 'weekly';
     if (['/pricing', '/blog', '/changelog'].includes(route)) return 'weekly';
+    if (route.startsWith('/blog/')) return 'monthly';
+    if (route.startsWith('/docs/')) return 'monthly';
     if (route.startsWith('/guides') || route.startsWith('/templates') || route.startsWith('/tools')) return 'monthly';
+    if (route.startsWith('/lp/')) return 'monthly';
     if (['/terms', '/privacy', '/cookies', '/security', '/dpa', '/gdpr', '/aup'].includes(route)) return 'yearly';
     return 'monthly';
   }
@@ -692,29 +724,40 @@ function generateSitemap(routes) {
     if (route === '/') return '1.0';
     // Core pages
     if (['/features', '/pricing', '/about'].includes(route)) return '0.9';
-    // Product pages
+    // Product pages (BOFU)
     if (['/eu-ai-act-compliance-software', '/ai-inventory-software', '/fria-software'].includes(route)) return '0.9';
+    // Additional BOFU product pages
+    if (['/ai-governance-evidence-packs', '/ai-literacy-training-tracker', '/evidence-vault-software', '/samples'].includes(route)) return '0.8';
     // Hub pages
     if (['/templates', '/tools', '/guides', '/compare', '/industries', '/eu-ai-act'].includes(route)) return '0.8';
+    // Use case pages (high conversion intent)
+    if (route.startsWith('/use-cases/')) return '0.8';
     // Individual guides, templates, tools
     if (route.startsWith('/guides/')) return '0.7';
     if (route.startsWith('/templates/')) return '0.7';
     if (route.startsWith('/tools/')) return '0.7';
-    // Industry and use-case pages
+    // Industry pages
     if (route.startsWith('/industries/')) return '0.7';
-    if (route.startsWith('/use-cases/')) return '0.7';
     // Comparison pages
     if (route.startsWith('/compare/')) return '0.7';
-    // Additional BOFU
-    if (['/ai-governance-evidence-packs', '/ai-literacy-training-tracker', '/product/evidence-vault', '/evidence-vault', '/samples'].includes(route)) return '0.8';
-    // Blog, resources, docs
+    // Blog articles
+    if (route.startsWith('/blog/')) return '0.6';
+    // Docs articles
+    if (route.startsWith('/docs/')) return '0.6';
+    // Blog hub, resources, docs hub, API
     if (['/blog', '/resources', '/docs', '/api'].includes(route)) return '0.6';
-    // Legal pages
-    if (['/terms', '/privacy', '/cookies', '/security', '/dpa', '/gdpr', '/aup'].includes(route)) return '0.3';
-    // FAQ, careers, press, status, changelog
-    if (['/faq', '/careers', '/press', '/status', '/changelog'].includes(route)) return '0.5';
     // Contact, integrations, partners
     if (['/contact', '/integrations', '/partners'].includes(route)) return '0.6';
+    // PPC landing pages
+    if (route.startsWith('/lp/')) return '0.6';
+    // Ads
+    if (route.startsWith('/ads/')) return '0.5';
+    // Platform/system docs
+    if (['/system-spec', '/platform-doc'].includes(route)) return '0.5';
+    // FAQ, careers, press, status, changelog
+    if (['/faq', '/careers', '/press', '/status', '/changelog'].includes(route)) return '0.5';
+    // Legal pages
+    if (['/terms', '/privacy', '/cookies', '/security', '/dpa', '/gdpr', '/aup'].includes(route)) return '0.3';
     return '0.5';
   }
 
