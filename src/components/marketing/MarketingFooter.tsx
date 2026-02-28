@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Twitter, Linkedin, Github, Shield, CheckCircle2 } from "lucide-react";
+import { Twitter, Linkedin, Github, Shield, CheckCircle2, Phone, MapPin } from "lucide-react";
 import { NewsletterForm } from "./NewsletterForm";
 import klarvoLogo from "@/assets/klarvo-logo-horizontal.svg";
 
@@ -47,8 +47,10 @@ const legalLinks = [
   { title: "Terms of Service", href: "/terms" },
   { title: "Privacy Policy", href: "/privacy" },
   { title: "Cookie Policy", href: "/cookies" },
+  { title: "Acceptable Use", href: "/aup" },
   { title: "Security", href: "/security" },
   { title: "DPA", href: "/dpa" },
+  { title: "GDPR Compliance", href: "/gdpr" },
 ];
 
 const socialLinks = [
@@ -80,10 +82,22 @@ export function MarketingFooter() {
                 className="h-8"
               />
             </Link>
-            <p className="text-muted-foreground mb-8 max-w-sm leading-relaxed">
+            <p className="text-muted-foreground mb-6 max-w-sm leading-relaxed">
               The complete EU AI Act compliance platform for modern businesses. 
               Simple, evidence-based, and audit-ready.
             </p>
+
+            {/* Business details */}
+            <div className="space-y-2 mb-6 text-sm text-muted-foreground">
+              <div className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 shrink-0" />
+                <a href="tel:+443300435929" className="hover:text-foreground transition-colors">+44 330 043 5929</a>
+              </div>
+            </div>
             
             {/* Newsletter */}
             <div className="space-y-3">
@@ -146,7 +160,7 @@ export function MarketingFooter() {
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Company + Legal combined */}
           <div>
             <h3 className="font-semibold mb-5">Company</h3>
             <ul className="space-y-3.5">
@@ -161,11 +175,7 @@ export function MarketingFooter() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="font-semibold mb-5">Legal</h3>
+            <h3 className="font-semibold mt-8 mb-5">Legal</h3>
             <ul className="space-y-3.5">
               {legalLinks.map((link) => (
                 <li key={link.title}>
@@ -190,11 +200,11 @@ export function MarketingFooter() {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Shield className="h-5 w-5 text-primary" />
-              <span className="font-medium">ISO 27001</span>
+              <span className="font-medium">UK Registered Company</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span className="text-lg">🇪🇺</span>
-              <span className="font-medium">EU Data Residency</span>
+              <span className="text-lg">🇬🇧</span>
+              <span className="font-medium">Peterborough, UK</span>
             </div>
           </div>
         </div>
@@ -205,8 +215,8 @@ export function MarketingFooter() {
         <div className="container-wide py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>© {currentYear} Klarvo. All rights reserved.</span>
+            <div className="flex flex-col sm:flex-row items-center gap-2 text-sm text-muted-foreground">
+              <span>© {currentYear} Open Digital WEB LTD trading as Klarvo. All rights reserved.</span>
             </div>
 
             {/* Social Links */}

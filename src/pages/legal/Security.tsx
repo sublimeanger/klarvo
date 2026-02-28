@@ -6,7 +6,7 @@ export default function Security() {
   return (
     <LegalLayout 
       title="Security" 
-      lastUpdated="January 30, 2025"
+      lastUpdated="February 28, 2026"
       slug="security"
       description="Security practices at Klarvo. Encryption, access controls, compliance certifications, and data protection for EU AI Act compliance."
     >
@@ -174,8 +174,9 @@ export default function Security() {
         For security inquiries or to report a vulnerability:
       </p>
       <ul>
-        <li><strong>Security Team:</strong> security@klarvo.com</li>
-        <li><strong>Data Protection Officer:</strong> dpo@klarvo.com</li>
+        <li><strong>Security Team:</strong> <a href="mailto:security@klarvo.io">security@klarvo.io</a></li>
+        <li><strong>Data Protection Officer:</strong> <a href="mailto:dpo@klarvo.io">dpo@klarvo.io</a></li>
+        <li><strong>Address:</strong> Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</li>
       </ul>
     </LegalLayout>
   );

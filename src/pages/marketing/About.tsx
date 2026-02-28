@@ -44,16 +44,17 @@ const values = [
 ];
 
 const milestones = [
-  { year: "2024", event: "Klarvo founded to address EU AI Act compliance gap", quarter: "Q1" },
-  { year: "2024", event: "Platform MVP launched with core inventory & classification", quarter: "Q3" },
-  { year: "2025", event: "Full evidence vault and export pack capabilities released", quarter: "Q1" },
-  { year: "2025", event: "FRIA workflow and control library modules added", quarter: "Q2" },
+  { year: "2024", event: "Open Digital WEB LTD founded in Peterborough, UK to address the EU AI Act compliance gap for SMEs", quarter: "Q1" },
+  { year: "2024", event: "Platform MVP launched with core inventory & classification engine", quarter: "Q3" },
+  { year: "2025", event: "Full evidence vault, export packs, and FRIA workflow released", quarter: "Q1" },
+  { year: "2025", event: "Control library, provider track, and AI-assisted classification added", quarter: "Q3" },
+  { year: "2026", event: "Shadow AI discovery, team collaboration, and advanced export packs shipped", quarter: "Q1" },
 ];
 
 const stats = [
-  { value: 500, suffix: "+", label: "AI Systems Documented" },
-  { value: 50, suffix: "+", label: "Organizations Served" },
-  { value: 10, suffix: "K+", label: "Evidence Files Managed" },
+  { value: 50, suffix: "+", label: "Controls in Library" },
+  { value: 20, suffix: "-step", label: "AI System Wizard" },
+  { value: 8, suffix: "", label: "Export Pack Types" },
   { value: 99.9, suffix: "%", label: "Platform Uptime" },
 ];
 
@@ -245,6 +246,48 @@ export default function About() {
                   </Card>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Company Details */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4">
+                <Globe className="h-3 w-3 mr-1" />
+                Company Information
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+                About the Company
+              </h2>
+            </div>
+
+            <div className="prose prose-lg max-w-none text-muted-foreground space-y-4">
+              <p>
+                Klarvo is a product of <strong className="text-foreground">Open Digital WEB LTD</strong>, a company registered in England and Wales. Our registered office is at 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom.
+              </p>
+              <p>
+                Founded in 2024, we recognised that the EU AI Act — the world's first comprehensive AI regulation — would create significant compliance challenges for small and medium-sized enterprises. While large corporations can engage specialist consultancies and build internal governance teams, most businesses lack the resources, time, and regulatory expertise to navigate the Act's complex requirements.
+              </p>
+              <p>
+                Klarvo was built to close that gap. Our platform provides guided workflows that translate legal obligations into practical, actionable steps. Whether an organisation is a deployer using third-party AI tools, a provider building AI systems, or an importer distributing AI products into the EU market, Klarvo provides the tools to inventory, classify, control, and evidence every AI system — and to produce audit-ready documentation that satisfies regulators, procurement teams, and leadership alike.
+              </p>
+              <p>
+                We are committed to evidence-based compliance — not compliance theatre. Every feature we build produces traceable, version-controlled artefacts that can withstand scrutiny. Our export packs are designed to look and read like the output of a professional compliance consultancy, because we believe SMEs deserve the same quality of documentation as enterprise organisations.
+              </p>
+              <p>
+                We operate as a remote-first team across the UK and Europe, with a focus on building software that is simple, guided, and always up-to-date with the latest regulatory guidance from the European Commission and the AI Office.
+              </p>
+            </div>
+
+            <div className="mt-8 p-6 rounded-xl bg-muted/50 border space-y-2 text-sm text-muted-foreground">
+              <p><strong className="text-foreground">Registered Name:</strong> Open Digital WEB LTD</p>
+              <p><strong className="text-foreground">Registered Office:</strong> 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</p>
+              <p><strong className="text-foreground">Telephone:</strong> <a href="tel:+443300435929" className="text-primary hover:underline">+44 330 043 5929</a></p>
+              <p><strong className="text-foreground">Email:</strong> <a href="mailto:hello@klarvo.io" className="text-primary hover:underline">hello@klarvo.io</a></p>
             </div>
           </div>
         </div>

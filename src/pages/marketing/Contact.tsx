@@ -17,7 +17,9 @@ import {
   FileQuestion,
   Handshake,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Phone,
+  MapPin
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -44,6 +46,26 @@ const contactOptions = [
     action: "partners@klarvo.io",
   }
 ];
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://klarvo.io/#business",
+  name: "Klarvo (Open Digital WEB LTD)",
+  url: "https://klarvo.io",
+  telephone: "+443300435929",
+  email: "hello@klarvo.io",
+  description: "EU AI Act compliance platform for SMEs. AI system inventory, risk classification, and audit-ready evidence packs.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "36 Tyndall Court, Lynchwood Business Park",
+    addressLocality: "Peterborough",
+    postalCode: "PE2 6LR",
+    addressCountry: "GB"
+  },
+  openingHours: "Mo-Fr 09:00-18:00",
+  priceRange: "€0 - €749/mo"
+};
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -98,11 +120,11 @@ export default function Contact() {
     <MarketingLayout>
       <SEOHead
         title="Contact Klarvo - Get Help with AI Compliance"
-        description="Contact the Klarvo team for EU AI Act compliance support, sales inquiries, or partnership opportunities. We respond within 24 hours."
+        description="Contact the Klarvo team for EU AI Act compliance support, sales inquiries, or partnership opportunities. Based in Peterborough, UK. We respond within 24 hours."
         keywords={["contact Klarvo", "AI compliance support", "EU AI Act help", "compliance questions"]}
         canonical="https://klarvo.io/contact"
       />
-      <SchemaMarkup schema={[breadcrumbSchema]} />
+      <SchemaMarkup schema={[breadcrumbSchema, localBusinessSchema]} />
 
       {/* Hero Section */}
       <HeroSection
@@ -285,9 +307,11 @@ export default function Contact() {
               
               <div className="space-y-6">
                 {[
+                  { icon: Phone, title: "Phone", desc: "+44 330 043 5929", isLink: true, linkType: "tel" },
                   { icon: Clock, title: "Response Time", desc: "We aim to respond to all inquiries within 24 business hours." },
-                  { icon: Building2, title: "Office Hours", desc: "Monday - Friday, 9:00 AM - 6:00 PM CET" },
-                  { icon: Mail, title: "General Inquiries", desc: "hello@klarvo.io", isLink: true },
+                  { icon: Building2, title: "Office Hours", desc: "Monday – Friday, 9:00 AM – 6:00 PM GMT" },
+                  { icon: Mail, title: "General Inquiries", desc: "hello@klarvo.io", isLink: true, linkType: "email" },
+                  { icon: MapPin, title: "Registered Office", desc: "36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, UK" },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-4 group">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -295,8 +319,12 @@ export default function Contact() {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">{item.title}</h3>
-                      {item.isLink ? (
+                      {item.isLink && item.linkType === "email" ? (
                         <a href={`mailto:${item.desc}`} className="text-primary hover:underline text-sm">
+                          {item.desc}
+                        </a>
+                      ) : item.isLink && item.linkType === "tel" ? (
+                        <a href="tel:+443300435929" className="text-primary hover:underline text-sm">
                           {item.desc}
                         </a>
                       ) : (

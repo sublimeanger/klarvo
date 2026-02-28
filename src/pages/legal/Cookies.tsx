@@ -4,7 +4,7 @@ export default function Cookies() {
   return (
     <LegalLayout 
       title="Cookie Policy" 
-      lastUpdated="January 30, 2025"
+      lastUpdated="February 28, 2026"
       slug="cookies"
       description="Cookie Policy for Klarvo. Learn about the cookies we use, their purposes, and how to manage your cookie preferences."
     >
@@ -149,7 +149,7 @@ export default function Cookies() {
 
       <h2>7. Contact Us</h2>
       <p>
-        If you have questions about our use of cookies, please contact us at privacy@klarvo.com.
+        If you have questions about our use of cookies, please contact us at <a href="mailto:privacy@klarvo.io">privacy@klarvo.io</a> or write to: Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom.
       </p>
     </LegalLayout>
   );

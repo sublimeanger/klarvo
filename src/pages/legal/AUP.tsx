@@ -5,7 +5,7 @@ export default function AUP() {
   return (
     <LegalLayout 
       title="Acceptable Use Policy" 
-      lastUpdated="January 30, 2025"
+      lastUpdated="February 28, 2026"
       slug="acceptable-use"
       description="Acceptable Use Policy for Klarvo. Guidelines for using our EU AI Act compliance platform responsibly."
     >
@@ -87,7 +87,7 @@ export default function AUP() {
         If you become aware of any violation of this AUP, please report it to:
       </p>
       <ul>
-        <li><strong>Email:</strong> abuse@klarvo.com</li>
+        <li><strong>Email:</strong> <a href="mailto:abuse@klarvo.io">abuse@klarvo.io</a></li>
       </ul>
       <p>
         Please include as much detail as possible, including screenshots or examples where relevant.
@@ -118,7 +118,8 @@ export default function AUP() {
         If you have questions about this AUP or are unsure whether a specific use is permitted, please contact us at:
       </p>
       <ul>
-        <li><strong>Email:</strong> legal@klarvo.com</li>
+        <li><strong>Email:</strong> <a href="mailto:legal@klarvo.io">legal@klarvo.io</a></li>
+        <li><strong>Address:</strong> Open Digital WEB LTD, 36 Tyndall Court, Lynchwood Business Park, Peterborough, PE2 6LR, United Kingdom</li>
       </ul>
     </LegalLayout>
   );
