@@ -95,13 +95,26 @@ serve(async (req) => {
       );
     }
 
-    // Check if user already exists in the organization
-    const { data: existingProfile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("organization_id", profile.organization_id)
-      .ilike("id", `%`) // We need to check by email from auth.users
-      .limit(1);
+    // Check if user already exists in the organization by looking up email in auth.users
+    const { data: authUsers } = await supabase.auth.admin.listUsers();
+    const matchedUser = authUsers?.users?.find(
+      (u: { email?: string }) => u.email?.toLowerCase() === email.toLowerCase()
+    );
+    if (matchedUser) {
+      const { data: existingMember } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", matchedUser.id)
+        .eq("organization_id", profile.organization_id)
+        .maybeSingle();
+
+      if (existingMember) {
+        return new Response(
+          JSON.stringify({ error: "This user is already a member of your organization" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
 
     // Check for existing pending invite
     const { data: existingInvite } = await supabase

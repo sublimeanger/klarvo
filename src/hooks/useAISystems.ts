@@ -109,14 +109,18 @@ export function useCreateAISystem() {
 }
 
 export function useUpdateAISystem() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string } & Partial<AISystemInsert>) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("ai_systems")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -136,14 +140,18 @@ export function useUpdateAISystem() {
 }
 
 export function useDeleteAISystem() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("ai_systems")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
       return id;

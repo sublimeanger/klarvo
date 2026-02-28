@@ -191,6 +191,7 @@ export function useCreateBulkTasks() {
 }
 
 export function useUpdateTask() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -217,10 +218,13 @@ export function useUpdateTask() {
         updateData.completed_at = null;
       }
 
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("tasks")
         .update(updateData)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -250,11 +254,14 @@ export function useUpdateTask() {
 }
 
 export function useDeleteTask() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("tasks").delete().eq("id", id);
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const { error } = await supabase.from("tasks").delete().eq("id", id).eq("organization_id", profile.organization_id);
       if (error) throw error;
       return id;
     },

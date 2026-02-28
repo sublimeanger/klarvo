@@ -38,7 +38,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           <div className="text-center space-y-4">
             <h2 className="text-lg font-semibold text-foreground">Something went wrong</h2>
             <p className="text-sm text-muted-foreground">An unexpected error occurred in this section.</p>
-            {this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <p className="text-xs text-muted-foreground/70 max-w-md mx-auto break-words">
                 {this.state.error.message}
               </p>
@@ -68,7 +68,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           <p className="text-sm text-muted-foreground text-center mb-4">
             An unexpected error occurred. Your data is safe.
           </p>
-          {this.state.error && (
+          {import.meta.env.DEV && this.state.error && (
             <p className="text-xs text-muted-foreground/70 bg-muted rounded-md p-3 mb-6 break-words">
               {this.state.error.message}
             </p>

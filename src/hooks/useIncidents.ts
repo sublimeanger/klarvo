@@ -148,6 +148,7 @@ export function useCreateIncident() {
 }
 
 export function useUpdateIncident() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -155,8 +156,10 @@ export function useUpdateIncident() {
       id,
       ...updates
     }: Partial<Incident> & { id: string }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const updateData: Record<string, unknown> = { ...updates };
-      
+
       // Auto-set resolved_at when status changes to resolved/closed
       if (updates.status === "resolved" || updates.status === "closed") {
         updateData.resolved_at = new Date().toISOString();
@@ -166,6 +169,7 @@ export function useUpdateIncident() {
         .from("incidents")
         .update(updateData)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -183,11 +187,14 @@ export function useUpdateIncident() {
 }
 
 export function useDeleteIncident() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("incidents").delete().eq("id", id);
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const { error } = await supabase.from("incidents").delete().eq("id", id).eq("organization_id", profile.organization_id);
       if (error) throw error;
       return id;
     },

@@ -141,7 +141,8 @@ export function useAcceptInvite() {
     },
     onSuccess: async () => {
       await refreshProfile();
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ["team-members"] });
+      queryClient.invalidateQueries({ queryKey: ["team-invites"] });
       toast.success("Welcome to the team!", {
         description: "You've successfully joined the organization.",
       });

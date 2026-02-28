@@ -97,38 +97,19 @@ export function useCreateOrUpdateClassification() {
         classified_at: new Date().toISOString(),
       };
 
-      // Check if classification exists
-      const { data: existing } = await supabase
+      // Use upsert to avoid race condition (duplicate records from concurrent requests)
+      const { data, error } = await supabase
         .from("ai_system_classifications")
-        .select("id")
-        .eq("ai_system_id", input.ai_system_id)
-        .maybeSingle();
+        .upsert({
+          ...dbData,
+          ai_system_id: input.ai_system_id,
+          organization_id: profile.organization_id,
+        }, { onConflict: "ai_system_id" })
+        .select()
+        .single();
 
-      if (existing) {
-        // Update existing
-        const { data, error } = await supabase
-          .from("ai_system_classifications")
-          .update(dbData)
-          .eq("id", existing.id)
-          .select()
-          .single();
-
-        if (error) throw error;
-        return data;
-      } else {
-        // Create new
-        const { data, error } = await supabase
-          .from("ai_system_classifications")
-          .insert({
-            ...dbData,
-            organization_id: profile.organization_id,
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-        return data;
-      }
+      if (error) throw error;
+      return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["classification", data.ai_system_id] });

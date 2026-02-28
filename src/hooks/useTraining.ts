@@ -107,6 +107,7 @@ export function useCreateTrainingRecord() {
 }
 
 export function useUpdateTrainingStatus() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -119,8 +120,10 @@ export function useUpdateTrainingStatus() {
       status: TrainingRecord["status"];
       notes?: string;
     }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const updateData: Record<string, unknown> = { status };
-      
+
       if (status === "completed") {
         updateData.completed_at = new Date().toISOString();
       }
@@ -132,6 +135,7 @@ export function useUpdateTrainingStatus() {
         .from("training_records")
         .update(updateData)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -149,11 +153,14 @@ export function useUpdateTrainingStatus() {
 }
 
 export function useDeleteTrainingRecord() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("training_records").delete().eq("id", id);
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const { error } = await supabase.from("training_records").delete().eq("id", id).eq("organization_id", profile.organization_id);
       if (error) throw error;
       return id;
     },

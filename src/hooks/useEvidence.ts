@@ -153,11 +153,10 @@ export function useUploadEvidence() {
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["evidence-files"] });
-      // Log audit event
+      // Log audit event (fire-and-forget)
       if (data && variables.metadata) {
-        const profile = supabase.auth.getUser().then(({ data: userData }) => {
+        supabase.auth.getUser().then(({ data: userData }) => {
           if (userData?.user) {
-            // Get org from the returned data since it's stored there
             logEvidenceEvent(
               data.organization_id,
               userData.user.id,
@@ -167,7 +166,7 @@ export function useUploadEvidence() {
               variables.metadata.ai_system_id
             );
           }
-        });
+        }).catch(() => {});
       }
       toast.success("Evidence uploaded successfully");
     },
@@ -178,10 +177,12 @@ export function useUploadEvidence() {
 }
 
 export function useDeleteEvidence() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id, filePath }: { id: string; filePath: string }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
       // Delete from storage
       const { error: storageError } = await supabase.storage
         .from("evidence")
@@ -190,7 +191,7 @@ export function useDeleteEvidence() {
       if (storageError) logger.warn("Storage delete failed:", storageError);
 
       // Delete metadata
-      const { error } = await supabase.from("evidence_files").delete().eq("id", id);
+      const { error } = await supabase.from("evidence_files").delete().eq("id", id).eq("organization_id", profile.organization_id);
       if (error) throw error;
       return id;
     },
@@ -205,7 +206,7 @@ export function useDeleteEvidence() {
 }
 
 export function useUpdateEvidenceStatus() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -216,6 +217,8 @@ export function useUpdateEvidenceStatus() {
       id: string;
       status: "draft" | "approved" | "expired" | "archived";
     }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const updates: Record<string, unknown> = { status };
       if (status === "approved") {
         updates.approved_by = user?.id;
@@ -226,6 +229,7 @@ export function useUpdateEvidenceStatus() {
         .from("evidence_files")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -361,12 +365,11 @@ export function useRejectEvidence() {
       id: string;
       reason: string;
     }) => {
-      // For now, we keep as draft. In future could add rejection_reason field
       const { data, error } = await supabase
         .from("evidence_files")
         .update({
           status: "draft",
-          // Could add rejection notes to description or a dedicated field
+          description: reason,
         })
         .eq("id", id)
         .select()

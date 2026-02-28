@@ -158,6 +158,7 @@ export function useInitializeControls() {
 }
 
 export function useUpdateControlStatus() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -172,6 +173,8 @@ export function useUpdateControlStatus() {
       notes?: string;
       na_justification?: string | null;
     }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const updates: Record<string, unknown> = { status };
       if (notes !== undefined) updates.notes = notes;
       
@@ -188,7 +191,8 @@ export function useUpdateControlStatus() {
       const { error } = await supabase
         .from("control_implementations")
         .update(updates)
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
     },
@@ -205,6 +209,7 @@ export function useUpdateControlStatus() {
  * Bulk update control statuses - for updating multiple controls at once
  */
 export function useBulkUpdateControlStatus() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -216,11 +221,13 @@ export function useBulkUpdateControlStatus() {
       status: string;
     }) => {
       if (ids.length === 0) return;
+      if (!profile?.organization_id) throw new Error("No organization");
 
       const { error } = await supabase
         .from("control_implementations")
         .update({ status })
-        .in("id", ids);
+        .in("id", ids)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
       return ids.length;
