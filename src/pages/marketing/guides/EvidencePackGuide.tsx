@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { CTASection } from "@/components/marketing/CTASection";
 import { SEOHead, SchemaMarkup, createArticleSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
+import { RelatedContent } from "@/components/marketing/RelatedContent";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,89 +17,87 @@ import {
   FolderOpen,
   Users,
   Building,
-  Lock
+  Lock,
+  AlertTriangle,
+  Eye,
+  Database
 } from "lucide-react";
 
 const packContents = [
   {
-    section: "AI System Summary",
-    items: ["System name & ID", "Business owner", "Purpose description", "Deployment scope"],
-    purpose: "Quick reference for auditors"
+    section: "1. Executive Summary",
+    items: ["System name & ID", "Risk Classification badge", "Compliance Status", "Key gaps", "Next review date"],
+    purpose: "For leadership/board. High-level assurance without technical detail."
   },
   {
-    section: "Classification Memo",
-    items: ["AI definition test result", "Prohibited screening", "High-risk assessment", "Final classification"],
-    purpose: "Demonstrates due diligence"
+    section: "2. Inventory Record",
+    items: ["Owner", "Department", "Purpose", "Deployment regions", "Vendor details", "Model info"],
+    purpose: "For auditors. Proves you know what the system is and who owns it."
   },
   {
-    section: "Obligations Checklist",
-    items: ["Article 26 deployer duties", "Article 50 transparency", "Logging requirements", "Control status"],
-    purpose: "Shows compliance mapping"
+    section: "3. Classification Logic",
+    items: ["Article 5 screening", "Annex III screening", "Article 50 screening", "Final verdict", "Rationale", "Reviewer sign-off"],
+    purpose: "For regulators. Demonstrates due diligence in determining risk."
   },
   {
-    section: "Human Oversight Plan",
-    items: ["Oversight model (HITL/HOTL)", "Competence requirements", "Authority to intervene", "Monitoring procedures"],
-    purpose: "High-risk requirement"
+    section: "4. Obligations Checklist",
+    items: ["Article 26 deployer duties status", "Transparency implementation", "Literacy coverage", "Gap remediation plan"],
+    purpose: "For compliance officers. Shows progress against legal requirements."
   },
   {
-    section: "Evidence Index",
-    items: ["Training records", "Policy documents", "Vendor attestations", "Screenshots/configs"],
-    purpose: "Proves implementation"
+    section: "5. Human Oversight Plan",
+    items: ["Oversight model (HITL/HOTL)", "Named overseers", "Competence/training records", "Authority to intervene"],
+    purpose: "For high-risk audits. Proves meaningful human control."
   },
   {
-    section: "Vendor Documentation",
-    items: ["Vendor profile", "Security docs", "Contract/DPA", "Model card (if applicable)"],
-    purpose: "Supply chain due diligence"
+    section: "6. Evidence Index",
+    items: ["List of all attachments", "Document versions", "Dates", "Confidentiality level"],
+    purpose: "For everyone. The 'table of contents' for your compliance proof."
   },
 ];
 
 const procurementQuestions = [
   {
-    question: "How do you identify and classify AI systems?",
-    answer: "Show your classification memo with Annex III screening results and rationale",
-    urgency: "Common"
+    question: "Do you have an AI governance framework?",
+    answer: "Yes. Share the Executive Summary showing your policy framework and risk classification methodology.",
+    urgency: "High"
   },
   {
-    question: "What controls are in place for high-risk AI?",
-    answer: "Provide obligations checklist and control implementation status",
-    urgency: "Common"
+    question: "Is this system high-risk under the EU AI Act?",
+    answer: "Share the Classification Logic section. If low risk, show the screening that proves it.",
+    urgency: "High"
   },
   {
     question: "How do you ensure human oversight?",
-    answer: "Include your human oversight plan with competence requirements",
-    urgency: "Common"
+    answer: "Share the Human Oversight Plan. Demonstrate that a human can intervene or stop the system.",
+    urgency: "Medium"
   },
   {
-    question: "What training do staff receive?",
-    answer: "Attach training completion records and AI policy acknowledgements",
-    urgency: "Common"
+    question: "What training do your staff receive?",
+    answer: "Share the AI Literacy/Training records section of the pack.",
+    urgency: "Medium"
   },
   {
-    question: "How do you handle AI incidents?",
-    answer: "Reference your incident register template and escalation procedures",
-    urgency: "Less Common"
-  },
-  {
-    question: "What vendor due diligence do you perform?",
-    answer: "Include vendor questionnaire responses and security documentation",
-    urgency: "Less Common"
-  },
+    question: "How do you handle incidents?",
+    answer: "Share your Incident Response procedure and log template from the pack.",
+    urgency: "Low"
+  }
 ];
 
 const exportFormats = [
   {
     format: "Single PDF",
-    useCase: "Quick sharing with leadership or procurement contacts",
+    useCase: "Executive summary for board meetings or initial sales conversations.",
     icon: FileText
   },
   {
     format: "ZIP Bundle",
-    useCase: "Detailed auditor pack with organized folders and raw evidence",
+    useCase: "Full audit or procurement due diligence. Contains raw evidence files (policies, screenshots).",
     icon: FolderOpen
   },
   {
-    format: "Read-Only Portal Link",
-    useCase: "Secure auditor access without sending files",
+    format: "Secure Link",
+    useCase: "Sharing with external auditors or customers without sending files via email.",
     icon: Lock
   },
 ];
@@ -106,23 +105,23 @@ const exportFormats = [
 const faqQuestions = [
   {
     question: "What is an AI governance evidence pack?",
-    answer: "An evidence pack is a structured bundle of documents that demonstrates your EU AI Act compliance—including AI inventory, classification memos, control implementation, training records, and vendor documentation. It's what you present to auditors, customers, or procurement teams."
+    answer: "It is a structured compilation of documents that proves your AI system complies with relevant regulations (EU AI Act, GDPR). It links your claims (e.g., 'we have oversight') to proof (e.g., 'here is the signed oversight plan')."
   },
   {
-    question: "Why do procurement teams ask for AI governance documentation?",
-    answer: "Enterprise customers and public sector organizations increasingly require vendors to demonstrate AI compliance before contracting. The evidence pack answers their due diligence questions in one document."
+    question: "Why do I need one?",
+    answer: "Two reasons: 1) To pass procurement. Enterprise buyers won't sign contracts without proof of AI safety. 2) To survive audits. If a regulator calls, you need to produce documentation immediately, not start writing it then."
   },
   {
-    question: "What should an evidence pack include?",
-    answer: "At minimum: AI system inventory, classification documentation, applicable obligations checklist, human oversight plan, training records, and vendor documentation. For high-risk systems, add FRIA reports and incident procedures."
+    question: "How is this different from a technical file?",
+    answer: "A technical file (Annex IV) is for Providers (builders). An evidence pack is broader—it includes Deployer (user) evidence like training records, oversight logs, and internal policies, which the technical file doesn't cover."
   },
   {
-    question: "How often should we update our evidence pack?",
-    answer: "Refresh quarterly or when material changes occur—new AI systems, vendor changes, model updates, or regulatory guidance. Keep evidence validity periods tracked and renew before expiry."
+    question: "Can Klarvo generate this automatically?",
+    answer: "Yes. Klarvo pulls data from your inventory, classification, and evidence vault to compile the pack. You don't need to manually copy-paste into Word documents."
   },
   {
-    question: "Can we use Klarvo to generate evidence packs?",
-    answer: "Yes. Klarvo automatically compiles all your AI governance documentation into audit-ready PDF and ZIP exports. One click generates a professional evidence pack from your current compliance data."
+    question: "How often should I update it?",
+    answer: "Ideally, the pack is generated 'on demand' from live data. If you maintain static files, update them quarterly or whenever the system undergoes a material change."
   }
 ];
 
@@ -131,7 +130,7 @@ export default function EvidencePackGuide() {
     headline: "AI Governance Evidence Packs: Procurement-Ready Documentation",
     description: "Learn how to create audit-ready AI governance evidence packs. What to include, how to organize it, and how to respond to procurement questionnaires.",
     datePublished: "2025-01-25",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   const faqSchema = createFAQSchema({ questions: faqQuestions });
@@ -149,7 +148,7 @@ export default function EvidencePackGuide() {
       <SEOHead
         title="AI Governance Evidence Packs: Procurement Guide"
         description="Create audit-ready AI governance evidence packs. Learn what to include, how to structure documentation, and respond to procurement due diligence."
-        keywords={["AI governance evidence pack", "AI due diligence", "AI audit documentation", "EU AI Act evidence", "AI procurement"]}
+        keywords={["AI governance evidence pack", "AI due diligence", "AI audit documentation", "EU AI Act evidence", "AI procurement", "AI trust pack"]}
         canonical="https://klarvo.io/guides/evidence-pack-procurement"
         ogType="article"
       />
@@ -171,7 +170,7 @@ export default function EvidencePackGuide() {
               AI Governance Evidence Packs
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Enterprise customers and auditors want proof of AI compliance. Here's what to include in your evidence pack and how to structure it for maximum impact.
+              "Show me your AI policy." "Prove this isn't high-risk." Enterprise buyers and auditors are asking hard questions. The Evidence Pack is your answer.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button size="lg" asChild>
@@ -195,38 +194,38 @@ export default function EvidencePackGuide() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Why Evidence Packs Matter</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Why You Need an Evidence Pack</h2>
             <div className="grid gap-6 md:grid-cols-3">
               <Card>
                 <CardHeader>
                   <Building className="h-10 w-10 text-primary mb-2" />
-                  <CardTitle>Procurement Due Diligence</CardTitle>
+                  <CardTitle>Close Deals Faster</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
-                    Enterprise and public sector buyers increasingly require AI governance documentation before signing contracts.
+                  <p className="text-muted-foreground text-sm">
+                    Procurement cycles for AI software are stalling due to compliance concerns. Handing over a complete evidence pack on Day 1 builds trust and speeds up approval.
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
                   <Shield className="h-10 w-10 text-primary mb-2" />
-                  <CardTitle>Auditor Requests</CardTitle>
+                  <CardTitle>Pass Audits</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
-                    When regulators or internal audit ask "show me your AI governance," you need a ready answer.
+                  <p className="text-muted-foreground text-sm">
+                    Regulators (and internal auditors) don't trust what you say; they trust what you can prove. An organized pack turns a chaotic audit into a tick-box exercise.
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
                   <Users className="h-10 w-10 text-primary mb-2" />
-                  <CardTitle>Board Reporting</CardTitle>
+                  <CardTitle>Reassure Leadership</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">
-                    Leadership wants visibility into AI risk. A professional pack demonstrates your governance maturity.
+                  <p className="text-muted-foreground text-sm">
+                    Your Board wants to know: "Are we compliant? Are we safe?" A one-page executive summary from your pack answers this definitively.
                   </p>
                 </CardContent>
               </Card>
@@ -235,13 +234,13 @@ export default function EvidencePackGuide() {
         </div>
       </section>
 
-      {/* What to Include */}
+      {/* What to Include - Expanded */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-center">What to Include</h2>
+            <h2 className="text-3xl font-bold mb-4 text-center">Anatomy of a Perfect Pack</h2>
             <p className="text-lg text-muted-foreground text-center mb-12">
-              A comprehensive evidence pack has these sections:
+              Don't just dump files in a folder. Structure your evidence like this:
             </p>
             <div className="space-y-4">
               {packContents.map((section, index) => (
@@ -251,15 +250,16 @@ export default function EvidencePackGuide() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <Package className="h-5 w-5 text-primary" />
-                          <span className="font-semibold">{section.section}</span>
+                          <span className="font-semibold text-lg">{section.section}</span>
                         </div>
                         <div className="flex flex-wrap gap-2 mb-2">
                           {section.items.map((item, i) => (
-                            <Badge key={i} variant="outline" className="text-xs">{item}</Badge>
+                            <Badge key={i} variant="secondary" className="text-xs font-normal">{item}</Badge>
                           ))}
                         </div>
                       </div>
-                      <div className="text-sm text-muted-foreground md:text-right">
+                      <div className="text-sm text-muted-foreground md:text-right md:w-48 shrink-0">
+                        <div className="font-medium text-foreground">Purpose</div>
                         {section.purpose}
                       </div>
                     </div>
@@ -275,9 +275,9 @@ export default function EvidencePackGuide() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Common Procurement Questions</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Answering Due Diligence</h2>
             <p className="text-lg text-muted-foreground text-center mb-12">
-              Here's what buyers typically ask and how your evidence pack answers:
+              When procurement sends a questionnaire, your pack provides the answers:
             </p>
             <div className="space-y-4">
               {procurementQuestions.map((item, index) => (
@@ -285,11 +285,13 @@ export default function EvidencePackGuide() {
                   <CardContent className="p-6">
                     <div className="flex gap-4">
                       <CheckCircle className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                      <div>
+                      <div className="flex-1">
                         <div className="font-semibold mb-1">"{item.question}"</div>
                         <div className="text-sm text-muted-foreground">{item.answer}</div>
                       </div>
-                      <Badge variant="secondary" className="shrink-0">{item.urgency}</Badge>
+                      <Badge variant={item.urgency === "High" ? "destructive" : "secondary"} className="shrink-0 h-fit">
+                        {item.urgency} Priority
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -312,7 +314,7 @@ export default function EvidencePackGuide() {
                     <CardTitle>{format.format}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{format.useCase}</p>
+                    <p className="text-muted-foreground text-sm">{format.useCase}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -330,11 +332,11 @@ export default function EvidencePackGuide() {
               <Card className="hover:border-primary transition-colors">
                 <CardHeader>
                   <Package className="h-8 w-8 text-primary mb-2" />
-                  <CardTitle className="text-lg">Evidence Packs Product</CardTitle>
+                  <CardTitle className="text-lg">Generate Packs</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    One-click generation of audit-ready packs.
+                    Software to auto-generate packs from your inventory.
                   </p>
                   <Button asChild variant="link" className="p-0 h-auto">
                     <Link to="/ai-governance-evidence-packs">
@@ -350,7 +352,7 @@ export default function EvidencePackGuide() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Template for vendor AI due diligence.
+                    Template for assessing your own vendors.
                   </p>
                   <Button asChild variant="link" className="p-0 h-auto">
                     <Link to="/templates/vendor-due-diligence-questionnaire">
@@ -366,7 +368,7 @@ export default function EvidencePackGuide() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Organize and manage all your compliance evidence.
+                    Central storage for all your compliance files.
                   </p>
                   <Button asChild variant="link" className="p-0 h-auto">
                     <Link to="/evidence-vault-software">

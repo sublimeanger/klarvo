@@ -16,71 +16,97 @@ import {
   AlertTriangle,
   FileText,
   Users,
-  Download
+  Download,
+  Shield,
+  Search,
+  Scale
 } from "lucide-react";
 
 const timeline = [
-  { date: "1 Aug 2024", event: "EU AI Act entered into force", status: "past" },
-  { date: "2 Feb 2025", event: "Prohibited practices + AI literacy obligations apply", status: "current" },
-  { date: "2 Aug 2025", event: "GPAI + governance rules apply", status: "future" },
-  { date: "2 Aug 2026", event: "Most obligations apply (including high-risk)", status: "future" },
-  { date: "2 Aug 2027", event: "Extended transition for some Annex I high-risk AI", status: "future" },
+  { date: "1 Aug 2024", event: "EU AI Act entered into force", status: "past", desc: "The law became official." },
+  { date: "2 Feb 2025", event: "Prohibited practices + AI literacy obligations apply", status: "current", desc: "Deadline passed. Bans on harmful AI and staff training rules are now live." },
+  { date: "2 Aug 2025", event: "GPAI + governance rules apply", status: "future", desc: "Rules for General Purpose AI models and national authorities kick in." },
+  { date: "2 Aug 2026", event: "Most obligations apply (including high-risk)", status: "future", desc: "The big deadline. High-risk deployer duties, transparency, and FRIA rules apply." },
+  { date: "2 Aug 2027", event: "Extended transition for Annex I", status: "future", desc: "For AI embedded in products already regulated (cars, medical devices, toys)." },
 ];
 
 const priorityActions = [
   {
     priority: 1,
     title: "Build Your AI Inventory",
-    description: "Document every AI system you use or deploy. This is the foundation of compliance.",
+    description: "You can't manage what you don't know. Survey your departments to find every AI tool in use—from ChatGPT to HR screening software. Create a central register.",
     link: "/templates/ai-inventory-template",
     linkText: "Get Inventory Template"
   },
   {
     priority: 2,
     title: "Screen for Prohibited Practices",
-    description: "Check that none of your AI uses fall under Article 5 prohibited practices (applies now).",
+    description: "This applies NOW. Check that none of your AI systems perform banned activities (e.g., social scoring, emotion inference in the workplace). If they do, stop using them.",
     link: "/tools/prohibited-practices-screening",
     linkText: "Run Screening Tool"
   },
   {
     priority: 3,
     title: "Address AI Literacy",
-    description: "Ensure staff using AI have sufficient understanding (Article 4 applies now).",
+    description: "This also applies NOW. Ensure staff have 'sufficient AI literacy'. Roll out a basic training module and an AI Acceptable Use Policy.",
     link: "/guides/ai-literacy-article-4",
     linkText: "Read AI Literacy Guide"
   },
   {
     priority: 4,
     title: "Classify Risk Levels",
-    description: "Determine which systems are high-risk under Annex III.",
+    description: "Use Annex III criteria to tag each system in your inventory: Minimal, Limited, or High-Risk. This tells you what to do next.",
     link: "/tools/high-risk-checker-annex-iii",
     linkText: "Run Risk Checker"
   },
   {
     priority: 5,
     title: "Check Transparency Requirements",
-    description: "Identify Article 50 disclosure obligations for AI interactions and synthetic content.",
+    description: "Identify systems needing Article 50 disclosures (chatbots, deepfakes). Prepare the notices now so you're ready.",
     link: "/tools/transparency-obligation-checker",
     linkText: "Check Transparency"
   },
 ];
 
+const smeMistakes = [
+  {
+    mistake: "\"We don't use AI\"",
+    reality: "Most SMEs use AI without realizing it—embedded in SaaS tools, HR platforms, marketing software, or cybersecurity tools. Shadow AI is a major risk.",
+    icon: Search
+  },
+  {
+    mistake: "\"It's the vendor's problem\"",
+    reality: "If you use (deploy) the system, you have legal obligations (Article 26). You cannot contract out your regulatory liability to a vendor.",
+    icon: Shield
+  },
+  {
+    mistake: "\"We'll deal with it in 2026\"",
+    reality: "Prohibited practices and literacy rules are already live. Auditors and customers are starting to ask questions now. Waiting creates a massive backlog.",
+    icon: Clock
+  },
+  {
+    mistake: "\"We need expensive lawyers\"",
+    reality: "For most SMEs, compliance is an operational task, not a legal one. Good documentation, policies, and standard processes (using tools like Klarvo) are often sufficient.",
+    icon: Scale
+  }
+];
+
 const faqQuestions = [
   {
     question: "Does the EU AI Act apply to SMEs?",
-    answer: "Yes. The EU AI Act applies to all organizations using or deploying AI systems in the EU, regardless of size. However, SMEs benefit from some lighter requirements and support measures."
+    answer: "Yes. The Act applies to all organizations using or deploying AI systems in the EU, regardless of size. While some fines are capped lower for SMEs, the obligations for high-risk systems are largely the same as for enterprises."
   },
   {
-    question: "What should SMEs do first?",
-    answer: "Start by building an AI inventory—documenting all AI systems you use. Then screen for prohibited practices (applies now), ensure AI literacy, and classify risk levels."
+    question: "What if we only use standard software like ChatGPT?",
+    answer: "If you use ChatGPT (General Purpose AI) for business, you need to ensure staff are trained (AI literacy), have a policy in place, and if you integrate it into customer-facing bots, you must disclose it (transparency). It is likely NOT high-risk, but minimal compliance is still required."
   },
   {
-    question: "What are the current deadlines?",
-    answer: "Prohibited practices and AI literacy requirements applied from 2 February 2025. Broader obligations including high-risk requirements apply from 2 August 2026."
+    question: "What happens if we don't comply?",
+    answer: "Fines can be steep—up to €35M or 7% of turnover for prohibited practices. But the more immediate risk for SMEs is commercial: enterprise customers will refuse to buy from you if you can't prove AI governance, and investors will see it as a due diligence red flag."
   },
   {
-    question: "Do we need to hire consultants?",
-    answer: "Not necessarily. Tools like Klarvo are designed to help SMEs achieve compliance without expensive consultants. Start with our free templates and guided workflows."
+    question: "How much does compliance cost?",
+    answer: "It depends on your AI usage. If you have no high-risk systems, the cost is minimal—mainly staff time for training and inventory maintenance. If you deploy high-risk AI, you will need budget for conformity assessments, monitoring, and potentially external audit."
   }
 ];
 
@@ -89,7 +115,7 @@ export default function EUAIActForSMEs() {
     headline: "EU AI Act for SMEs: The Practical Roadmap",
     description: "A practical guide for small and medium businesses to comply with the EU AI Act. Covers timelines, priorities, and step-by-step actions.",
     datePublished: "2025-01-15",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   const faqSchema = createFAQSchema({ questions: faqQuestions });
@@ -107,7 +133,7 @@ export default function EUAIActForSMEs() {
       <SEOHead
         title="EU AI Act for SMEs: Practical Compliance Guide"
         description="The practical EU AI Act compliance guide for SMEs. Learn what you need to do, when, and how to prioritize your AI governance efforts."
-        keywords={["EU AI Act SME", "EU AI Act small business", "AI compliance guide SME", "EU AI Act guide", "AI regulation SME"]}
+        keywords={["EU AI Act SME", "EU AI Act small business", "AI compliance guide SME", "EU AI Act guide", "AI regulation SME", "AI Act roadmap"]}
         canonical="https://klarvo.io/guides/eu-ai-act-for-smes"
         ogType="article"
       />
@@ -136,12 +162,14 @@ export default function EUAIActForSMEs() {
               EU AI Act for SMEs
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              The practical roadmap for small and medium businesses. What you need to do, when, and how to prioritize—without the legal jargon.
+              The regulation is massive, but for most SMEs, compliance boils down to 5 key steps. Here is your practical roadmap to getting compliant without drowning in paperwork.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg">
-                <Download className="mr-2 h-5 w-5" />
-                Download SME Starter Kit
+              <Button size="lg" asChild>
+                <Link to="/templates/ai-inventory-template">
+                  <Download className="mr-2 h-5 w-5" />
+                  Download SME Starter Kit
+                </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/auth/signup">
@@ -158,7 +186,7 @@ export default function EUAIActForSMEs() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Key Deadlines</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Your Timeline</h2>
             <div className="space-y-4">
               {timeline.map((item, index) => (
                 <div
@@ -174,12 +202,15 @@ export default function EUAIActForSMEs() {
                     {item.status === "future" && <Calendar className="h-6 w-6 text-muted-foreground" />}
                   </div>
                   <div>
-                    <div className="font-semibold">{item.date}</div>
-                    <div className="text-sm text-muted-foreground">{item.event}</div>
+                    <div className="flex items-center gap-2">
+                      <div className="font-semibold">{item.date}</div>
+                      {item.status === "current" && (
+                        <Badge variant="default" className="text-xs">Current Focus</Badge>
+                      )}
+                    </div>
+                    <div className="font-medium">{item.event}</div>
+                    <div className="text-sm text-muted-foreground mt-1">{item.desc}</div>
                   </div>
-                  {item.status === "current" && (
-                    <Badge variant="default" className="ml-auto">Current</Badge>
-                  )}
                 </div>
               ))}
             </div>
@@ -193,7 +224,7 @@ export default function EUAIActForSMEs() {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold mb-4 text-center">Your Priority Actions</h2>
             <p className="text-lg text-muted-foreground text-center mb-12">
-              Focus on these five steps to get compliant efficiently.
+              Forget the 400-page legal text. Focus on these five steps to get 80% of the way there.
             </p>
             <div className="space-y-6">
               {priorityActions.map((action) => (
@@ -226,60 +257,23 @@ export default function EUAIActForSMEs() {
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Common Mistakes to Avoid</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Common SME Mistakes</h2>
             <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                    "We don't use AI"
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Many SMEs use AI without realizing it—chatbots, recommendation systems, automated screening tools. Audit your software stack carefully.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                    "It's the vendor's problem"
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    As a deployer, you have obligations too—especially for high-risk systems. You can't outsource compliance entirely to your vendor.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                    "We'll deal with it in 2026"
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Prohibited practices and AI literacy requirements already apply. Don't wait—start your inventory and screening now.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <AlertTriangle className="h-5 w-5 text-destructive" />
-                    "We need expensive lawyers"
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    While legal advice helps for complex cases, most SME compliance can be achieved with the right tools and templates.
-                  </p>
-                </CardContent>
-              </Card>
+              {smeMistakes.map((item, index) => (
+                <Card key={index}>
+                  <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <item.icon className="h-5 w-5 text-destructive" />
+                      {item.mistake}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      {item.reality}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </div>
@@ -317,7 +311,7 @@ export default function EUAIActForSMEs() {
 
       <CTASection
         title="Ready to Get Compliant?"
-        subtitle="Klarvo helps SMEs achieve EU AI Act compliance without expensive consultants."
+        subtitle="Klarvo helps SMEs achieve EU AI Act compliance without expensive consultants. Start with our free inventory tool."
         primaryCta={{ label: "Start Free", href: "/auth/signup" }}
         secondaryCta={{ label: "See All Guides", href: "/guides" }}
         variant="gradient"
