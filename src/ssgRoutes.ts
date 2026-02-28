@@ -1,26 +1,22 @@
-// WARNING: These routes are defined for future SSG/prerendering but no
-// prerendering tool is currently installed. See vite.config.ts.
-// Until prerendering is set up, these routes are NOT pre-rendered —
-// crawlers receive client-side rendered content only.
-
 /**
  * SSG Routes Manifest
- * 
+ *
  * This file defines all routes that should be pre-rendered at build time
  * for SEO purposes. Only public marketing pages are included.
- * 
+ *
  * Protected routes (dashboard, settings, etc.) remain client-side rendered.
+ * Auth routes are NOT included — they redirect to app.klarvo.io via _redirects.
  */
 
 export const ssgRoutes: string[] = [
-  // Core Marketing Pages
+  // ── Core Marketing Pages ──────────────────────────────────────────────
   '/',
   '/features',
   '/pricing',
   '/about',
   '/contact',
-  
-  // Resource & Info Pages
+
+  // ── Resource & Info Pages ─────────────────────────────────────────────
   '/resources',
   '/integrations',
   '/partners',
@@ -33,20 +29,35 @@ export const ssgRoutes: string[] = [
   '/blog',
   '/api',
   '/eu-ai-act',
-  
-  // SEO Hub Pages
+
+  // ── SEO Hub Pages ─────────────────────────────────────────────────────
   '/templates',
   '/tools',
   '/guides',
   '/compare',
   '/industries',
-  
-  // Product Pages (BOFU)
+
+  // ── Product Pages (BOFU) ──────────────────────────────────────────────
   '/eu-ai-act-compliance-software',
   '/ai-inventory-software',
   '/fria-software',
-  
-  // Template Pages
+
+  // ── Additional BOFU Product Pages ─────────────────────────────────────
+  '/ai-governance-evidence-packs',
+  '/ai-literacy-training-tracker',
+  '/evidence-vault-software',
+  '/samples',
+  '/system-spec',
+  '/platform-doc',
+
+  // ── PPC Landing Pages ─────────────────────────────────────────────────
+  '/lp/demo',
+  '/lp/start',
+
+  // ── Ads ────────────────────────────────────────────────────────────────
+  '/ads/creatives',
+
+  // ── Template Pages ────────────────────────────────────────────────────
   '/templates/ai-inventory-template',
   '/templates/fria-template',
   '/templates/article-26-checklist',
@@ -55,14 +66,14 @@ export const ssgRoutes: string[] = [
   '/templates/vendor-due-diligence-questionnaire',
   '/templates/human-oversight-plan-template',
   '/templates/ai-incident-register-template',
-  
-  // Tool Pages
+
+  // ── Tool Pages ────────────────────────────────────────────────────────
   '/tools/ai-system-definition-checker',
   '/tools/high-risk-checker-annex-iii',
   '/tools/transparency-obligation-checker',
   '/tools/prohibited-practices-screening',
-  
-  // Guide Pages
+
+  // ── Guide Pages ───────────────────────────────────────────────────────
   '/guides/eu-ai-act-for-smes',
   '/guides/article-26-deployer-obligations',
   '/guides/article-50-transparency-obligations',
@@ -73,32 +84,25 @@ export const ssgRoutes: string[] = [
   '/guides/ai-literacy-article-4',
   '/guides/fria-article-27',
   '/guides/evidence-pack-procurement',
-  
-  // Comparison Pages
+
+  // ── Comparison Pages ──────────────────────────────────────────────────
   '/compare/klarvo-vs-spreadsheets',
   '/compare/klarvo-vs-trust-platforms',
-  
-  // Additional BOFU Product Pages
-  '/ai-governance-evidence-packs',
-  '/ai-literacy-training-tracker',
-  '/product/evidence-vault',
-  '/evidence-vault',
-  '/samples',
-  
-  // Industry Pages
+
+  // ── Industry Pages ────────────────────────────────────────────────────
   '/industries/hr-recruitment-ai-act',
   '/industries/fintech-credit-ai-act',
   '/industries/education-edtech-ai-act',
   '/industries/saas-ai-act',
-  
-  // Use Case Pages
+
+  // ── Use Case Pages ────────────────────────────────────────────────────
   '/use-cases/sme',
   '/use-cases/enterprise',
   '/use-cases/hr',
   '/use-cases/fintech',
   '/use-cases/healthcare',
-  
-  // Legal Pages
+
+  // ── Legal Pages ───────────────────────────────────────────────────────
   '/terms',
   '/privacy',
   '/cookies',
@@ -106,11 +110,89 @@ export const ssgRoutes: string[] = [
   '/dpa',
   '/gdpr',
   '/aup',
-  
-  // Auth Pages (pre-rendered for faster load, noindex for SEO)
-  '/auth/login',
-  '/auth/signup',
-  '/auth/forgot-password',
+
+  // ── Blog Articles ─────────────────────────────────────────────────────
+  '/blog/february-2025-deadline',
+  '/blog/annex-iii-categories-explained',
+  '/blog/ai-literacy-article-4',
+  '/blog/deployer-obligations-checklist',
+  '/blog/fria-step-by-step',
+  '/blog/ai-inventory-mistakes',
+  '/blog/vendor-due-diligence-ai',
+  '/blog/transparency-obligations-guide',
+  '/blog/building-oversight-culture',
+
+  // ── Docs Articles: Getting Started ────────────────────────────────────
+  '/docs/quick-start',
+  '/docs/dashboard-overview',
+  '/docs/first-ai-system',
+  '/docs/invite-team',
+
+  // ── Docs Articles: AI System Inventory ────────────────────────────────
+  '/docs/ai-system-wizard',
+  '/docs/capture-modes',
+  '/docs/ownership-oversight',
+  '/docs/vendor-tracking',
+  '/docs/bulk-import',
+
+  // ── Docs Articles: Classification ─────────────────────────────────────
+  '/docs/classification-engine',
+  '/docs/definition-test',
+  '/docs/prohibited-screening',
+  '/docs/high-risk-categories',
+  '/docs/transparency-obligations',
+  '/docs/classification-memos',
+
+  // ── Docs Articles: FRIA ───────────────────────────────────────────────
+  '/docs/fria-requirements',
+  '/docs/fria-wizard',
+  '/docs/fria-risks',
+  '/docs/fria-mitigation',
+  '/docs/fria-reports',
+
+  // ── Docs Articles: Evidence ───────────────────────────────────────────
+  '/docs/evidence-vault',
+  '/docs/uploading-evidence',
+  '/docs/approval-workflows',
+  '/docs/evidence-expiration',
+  '/docs/linking-evidence',
+
+  // ── Docs Articles: Exports ────────────────────────────────────────────
+  '/docs/export-overview',
+  '/docs/classification-exports',
+  '/docs/fria-exports',
+  '/docs/evidence-pack',
+  '/docs/org-reports',
+
+  // ── Docs Articles: Team ───────────────────────────────────────────────
+  '/docs/roles-permissions',
+  '/docs/task-owners',
+  '/docs/activity-feed',
+  '/docs/evidence-requests',
+
+  // ── Docs Articles: Incidents ──────────────────────────────────────────
+  '/docs/incident-management',
+  '/docs/creating-incidents',
+  '/docs/monitoring-events',
+  '/docs/reassessment-triggers',
+
+  // ── Docs Articles: Training ───────────────────────────────────────────
+  '/docs/ai-literacy',
+  '/docs/training-programs',
+  '/docs/training-completion',
+  '/docs/training-reports',
+
+  // ── Docs Articles: Vendors ────────────────────────────────────────────
+  '/docs/vendor-profiles',
+  '/docs/due-diligence',
+  '/docs/vendor-attestations',
+  '/docs/contract-management',
+
+  // ── Docs Articles: Settings ───────────────────────────────────────────
+  '/docs/org-settings',
+  '/docs/notifications',
+  '/docs/billing',
+  '/docs/data-privacy',
 ];
 
 // Total count for reference
