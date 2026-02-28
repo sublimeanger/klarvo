@@ -8,34 +8,39 @@ interface BillingToggleProps {
 }
 
 export function BillingToggle({ billingPeriod, onChange }: BillingToggleProps) {
-  // Calculate actual savings based on Growth plan (most popular)
   const growthMonthly = PLANS.growth.priceMonthly * 12;
   const growthAnnual = PLANS.growth.priceAnnual;
   const savingsAmount = growthMonthly - growthAnnual;
   const savingsPercent = Math.round((savingsAmount / growthMonthly) * 100);
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="flex items-center justify-center gap-4">
-        <span className={billingPeriod === 'monthly' ? 'font-medium' : 'text-muted-foreground'}>
+    <div className="inline-flex flex-col items-center gap-3">
+      <div className="flex items-center gap-4 bg-muted/50 rounded-full px-6 py-3 border border-border/50">
+        <button 
+          onClick={() => onChange('monthly')}
+          className={`text-sm font-medium transition-colors ${billingPeriod === 'monthly' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}
+        >
           Monthly
-        </span>
+        </button>
         <Switch
           checked={billingPeriod === 'annual'}
           onCheckedChange={(checked) => onChange(checked ? 'annual' : 'monthly')}
         />
         <div className="flex items-center gap-2">
-          <span className={billingPeriod === 'annual' ? 'font-medium' : 'text-muted-foreground'}>
+          <button 
+            onClick={() => onChange('annual')}
+            className={`text-sm font-medium transition-colors ${billingPeriod === 'annual' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}
+          >
             Annual
-          </span>
-          <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
-            Save {savingsPercent}%
+          </button>
+          <Badge variant="secondary" className="bg-success/10 text-success border-success/20 text-xs font-semibold">
+            -{savingsPercent}%
           </Badge>
         </div>
       </div>
       {billingPeriod === 'annual' && (
-        <p className="text-xs text-success animate-in fade-in slide-in-from-top-1 duration-200">
-          You save €{savingsAmount.toLocaleString()} per year on Growth
+        <p className="text-xs text-success font-medium animate-in fade-in slide-in-from-top-1 duration-200">
+          Save €{savingsAmount.toLocaleString()}/year on Growth
         </p>
       )}
     </div>
