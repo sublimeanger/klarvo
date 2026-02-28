@@ -378,6 +378,46 @@ export default function FRIASoftwarePage() {
         </div>
       </section>
 
+      {/* Cross-linking */}
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-center mb-8">Related Tools & Resources</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <Link to="/eu-ai-act-compliance-software" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Full Compliance Platform</h3>
+                    <p className="text-sm text-muted-foreground">See how FRIA fits into the complete compliance workflow.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/evidence-vault-software" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Evidence Vault</h3>
+                    <p className="text-sm text-muted-foreground">Store FRIA evidence alongside all compliance artifacts.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/ai-literacy-training-tracker" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Training Tracker</h3>
+                    <p className="text-sm text-muted-foreground">Track AI literacy training required alongside FRIA obligations.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Guides: <Link to="/guides/fria-article-27" className="text-primary hover:underline">FRIA Guide</Link> · <Link to="/guides/high-risk-ai-classification" className="text-primary hover:underline">High-Risk Classification</Link> · <Link to="/templates/fria-template" className="text-primary hover:underline">Free FRIA Template</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CTASection
         title="Complete Your FRIA Today"
         subtitle="Start free. Our guided workflow makes FRIA completion straightforward."

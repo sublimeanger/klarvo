@@ -132,7 +132,7 @@ const webPageSchema = createWebPageSchema({
   description: "Free EU AI Act resources: guides, whitepapers, webinars, and checklists. Learn compliance best practices from industry experts.",
   url: "https://klarvo.io/resources",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function Resources() {

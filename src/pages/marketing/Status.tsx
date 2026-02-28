@@ -62,7 +62,7 @@ const webPageSchema = createWebPageSchema({
   description: "Check the current status of Klarvo services. Real-time monitoring of platform availability and performance.",
   url: "https://klarvo.io/status",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function Status() {

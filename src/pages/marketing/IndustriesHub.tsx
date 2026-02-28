@@ -59,7 +59,7 @@ export default function IndustriesHub() {
     description: "Industry-specific EU AI Act compliance guides for HR, Fintech, SaaS, and Healthcare. Understand your obligations and get compliant faster.",
     url: "https://klarvo.io/industries",
     datePublished: "2025-01-01",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   return (

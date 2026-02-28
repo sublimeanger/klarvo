@@ -120,7 +120,7 @@ export default function KlarvoVsTrustPlatforms() {
     headline: "EU AI Act Compliance: Klarvo vs GRC Platforms",
     description: "Compare Klarvo with trust platforms like Vanta, Drata, and OneTrust. See why AI-specific controls matter for EU AI Act compliance.",
     datePublished: "2025-01-27",
-    dateModified: "2025-01-31"
+    dateModified: "2026-02-28"
   });
 
   const faqSchema = createFAQSchema({ questions: faqQuestions });

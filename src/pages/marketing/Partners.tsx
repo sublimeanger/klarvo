@@ -90,7 +90,7 @@ const webPageSchema = createWebPageSchema({
   description: "Join the Klarvo partner program. Reseller, consulting, and technology partnerships for EU AI Act compliance. Earn competitive commissions.",
   url: "https://klarvo.io/partners",
   datePublished: "2025-01-01",
-  dateModified: "2025-01-31"
+  dateModified: "2026-02-28"
 });
 
 export default function Partners() {

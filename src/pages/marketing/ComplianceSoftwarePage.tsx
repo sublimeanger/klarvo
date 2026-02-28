@@ -419,6 +419,46 @@ export default function ComplianceSoftwarePage() {
         </div>
       </section>
 
+      {/* Cross-linking */}
+      <section className="py-16 bg-surface-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-center mb-8">Explore More Capabilities</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <Link to="/ai-inventory-software" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">AI System Inventory</h3>
+                    <p className="text-sm text-muted-foreground">Track every AI system with guided intake and completeness scoring.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/ai-governance-evidence-packs" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">Evidence Packs</h3>
+                    <p className="text-sm text-muted-foreground">One-click PDF & ZIP exports for auditors and procurement.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+              <Link to="/fria-software-article-27" className="group">
+                <Card className="h-full hover:border-primary/30 transition-colors">
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors">FRIA Workflow</h3>
+                    <p className="text-sm text-muted-foreground">Complete Fundamental Rights Impact Assessments with guided steps.</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+            <div className="mt-8 text-center">
+              <p className="text-sm text-muted-foreground">
+                Learn more: <Link to="/guides/eu-ai-act-sme-guide" className="text-primary hover:underline">EU AI Act for SMEs</Link> · <Link to="/guides/deployer-obligations-article-26" className="text-primary hover:underline">Article 26 Guide</Link> · <Link to="/templates/ai-inventory-template" className="text-primary hover:underline">Free Inventory Template</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <CTASection
         title="Get EU AI Act Compliant Today"
         subtitle="Start free. No credit card required. Get your first AI system classified in under 10 minutes."
