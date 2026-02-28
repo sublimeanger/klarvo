@@ -27,7 +27,9 @@ import { useEffect } from "react";
 // Simple markdown renderer
 function renderMarkdown(content: string): string {
   return content
-    // Headers
+    // Headers (order matters: longest prefix first)
+    .replace(/^##### (.+)$/gm, '<h5 class="text-sm font-semibold mt-5 mb-2 scroll-mt-24">$1</h5>')
+    .replace(/^#### (.+)$/gm, '<h4 class="text-base font-semibold mt-6 mb-2 scroll-mt-24">$1</h4>')
     .replace(/^### (.+)$/gm, '<h3 id="$1" class="text-lg font-semibold mt-8 mb-3 scroll-mt-24">$1</h3>')
     .replace(/^## (.+)$/gm, '<h2 id="$1" class="text-xl font-bold mt-10 mb-4 scroll-mt-24">$1</h2>')
     // Code blocks
