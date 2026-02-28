@@ -170,7 +170,7 @@ export default function BillingSettings() {
       {/* Current Plan Card */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-primary/10 p-2">
                 <CreditCard className="h-5 w-5 text-primary" />

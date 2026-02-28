@@ -16,9 +16,9 @@ export function BillingToggle({ billingPeriod, onChange }: BillingToggleProps) {
   return (
     <div className="inline-flex flex-col items-center gap-3">
       <div className="flex items-center gap-4 bg-muted/50 rounded-full px-6 py-3 border border-border/50">
-        <button 
+        <button
           onClick={() => onChange('monthly')}
-          className={`text-sm font-medium transition-colors ${billingPeriod === 'monthly' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}
+          className={`text-sm font-medium transition-colors py-1 px-1 ${billingPeriod === 'monthly' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}
         >
           Monthly
         </button>
@@ -27,9 +27,9 @@ export function BillingToggle({ billingPeriod, onChange }: BillingToggleProps) {
           onCheckedChange={(checked) => onChange(checked ? 'annual' : 'monthly')}
         />
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={() => onChange('annual')}
-            className={`text-sm font-medium transition-colors ${billingPeriod === 'annual' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}
+            className={`text-sm font-medium transition-colors py-1 px-1 ${billingPeriod === 'annual' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground/80'}`}
           >
             Annual
           </button>

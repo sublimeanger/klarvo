@@ -22,7 +22,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -31,7 +31,7 @@ const navigationGroups = [
   {
     label: "Overview",
     items: [
-      { name: "Dashboard", href: "/", icon: LayoutDashboard },
+      { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { name: "AI Systems", href: "/ai-systems", icon: Cpu },
       { name: "Vendors", href: "/vendors", icon: Building2 },
     ],
@@ -99,6 +99,7 @@ export function MobileNav() {
           </Button>
         </SheetTrigger>
         <SheetContent side="right" className="w-[300px] sm:w-[320px] p-0 flex flex-col">
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
           {/* Swipe indicator */}
           <div className="pt-3 pb-2">
             <div className="swipe-indicator" />

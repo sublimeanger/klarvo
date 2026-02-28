@@ -325,7 +325,83 @@ export default function Evidence() {
           </CardContent>
         </Card>
       ) : (
-        <div className="rounded-xl border bg-card">
+        <>
+        {/* Mobile card view */}
+        <div className="space-y-3 sm:hidden">
+          {filteredFiles.map((file) => {
+            const FileIcon = getFileIcon(file.mime_type);
+            return (
+              <div key={file.id} className="rounded-xl border bg-card p-4 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                      <FileIcon className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{file.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatFileSize(file.file_size)} · {format(new Date(file.created_at), "PP")}
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => downloadEvidence.mutate(file.file_path)}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Download
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => setDeleteTarget({ id: file.id, filePath: file.file_path })}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Select
+                    value={file.status}
+                    onValueChange={(v) => updateStatus.mutate({ id: file.id, status: v as any })}
+                  >
+                    <SelectTrigger className="w-[120px] h-8">
+                      <StatusBadge variant={statusConfig[file.status]?.variant || "draft"} dot>
+                        {statusConfig[file.status]?.label || file.status}
+                      </StatusBadge>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="draft">Draft</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="expired">Expired</SelectItem>
+                      <SelectItem value="archived">Archived</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {(EVIDENCE_TYPES.find((t) => t.value === file.evidence_type)?.label) && (
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                      {EVIDENCE_TYPES.find((t) => t.value === file.evidence_type)?.label}
+                    </span>
+                  )}
+                </div>
+                {(file.ai_systems?.name || file.vendors?.name) && (
+                  <div className="text-xs text-muted-foreground">
+                    {file.ai_systems?.name && <span className="text-primary">{file.ai_systems.name}</span>}
+                    {file.ai_systems?.name && file.vendors?.name && " · "}
+                    {file.vendors?.name && <span>{file.vendors.name}</span>}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        {/* Desktop table view */}
+        <div className="rounded-xl border bg-card hidden sm:block">
           <Table>
             <TableHeader>
               <TableRow>
@@ -435,6 +511,7 @@ export default function Evidence() {
             </TableBody>
           </Table>
         </div>
+        </>
       )}
         </TabsContent>
 
@@ -508,7 +585,7 @@ export default function Evidence() {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Evidence Type</Label>
                 <Select

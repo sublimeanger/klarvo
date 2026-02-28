@@ -1,3 +1,4 @@
+import React from "react";
 import { Check, X, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PLANS, type PlanId } from "@/lib/billing-constants";
@@ -272,7 +273,7 @@ export function PlanComparisonTable() {
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              <TableHead className="w-[280px] sticky left-0 bg-muted/50 z-10">Feature</TableHead>
+              <TableHead className="w-[280px] sticky left-0 bg-muted z-10">Feature</TableHead>
               {PLAN_ORDER.map((planId) => (
                 <TableHead key={planId} className="text-center min-w-[100px]">
                   <div className="flex flex-col items-center gap-1">
@@ -289,8 +290,8 @@ export function PlanComparisonTable() {
           </TableHeader>
           <TableBody>
             {COMPARISON_DATA.map((category) => (
-              <>
-                <TableRow key={category.name} className="bg-muted/30">
+              <React.Fragment key={category.name}>
+                <TableRow className="bg-muted/30">
                   <TableCell
                     colSpan={PLAN_ORDER.length + 1}
                     className="font-semibold text-sm py-2 sticky left-0 bg-muted/30 z-10"
@@ -300,7 +301,7 @@ export function PlanComparisonTable() {
                 </TableRow>
                 {category.features.map((row, index) => (
                   <TableRow key={`${category.name}-${index}`}>
-                    <TableCell className="sticky left-0 bg-background z-10 text-sm">
+                    <TableCell className="sticky left-0 bg-card z-10 text-sm">
                       {row.feature}
                     </TableCell>
                     {PLAN_ORDER.map((planId) => (
@@ -316,7 +317,7 @@ export function PlanComparisonTable() {
                     ))}
                   </TableRow>
                 ))}
-              </>
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>

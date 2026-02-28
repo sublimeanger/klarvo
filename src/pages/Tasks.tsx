@@ -424,123 +424,129 @@ export default function Tasks() {
             return (
               <div
                 key={task.id}
-                className={`flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors ${
+                className={`rounded-xl border bg-card p-3 sm:p-4 transition-colors ${
                   task.status === "done" ? "opacity-60" : ""
                 } ${selectedTasks.has(task.id) ? "ring-2 ring-primary" : ""}`}
               >
-                {isSelectionMode ? (
-                  <Checkbox
-                    checked={selectedTasks.has(task.id)}
-                    onCheckedChange={() => toggleTaskSelection(task.id)}
-                    className="h-5 w-5"
-                  />
-                ) : (
-                  <Checkbox
-                    checked={task.status === "done"}
-                    onCheckedChange={() => handleStatusToggle(task)}
-                    className="h-5 w-5"
-                  />
-                )}
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                    <p className={`font-medium text-sm sm:text-base truncate max-w-[200px] sm:max-w-none ${task.status === "done" ? "line-through" : ""}`}>
-                      {task.title}
-                    </p>
-                    <StatusBadge variant={priorityConfig[task.priority]?.variant || "draft"} className="text-xs shrink-0">
-                      {priorityConfig[task.priority]?.label}
-                    </StatusBadge>
-                    {task.task_type && (
-                      <span className="text-[10px] sm:text-xs text-muted-foreground bg-muted px-1.5 sm:px-2 py-0.5 rounded shrink-0 hidden sm:inline">
-                        {TASK_TYPES.find((t) => t.value === task.task_type)?.label}
-                      </span>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="pt-0.5">
+                    {isSelectionMode ? (
+                      <Checkbox
+                        checked={selectedTasks.has(task.id)}
+                        onCheckedChange={() => toggleTaskSelection(task.id)}
+                        className="h-5 w-5"
+                      />
+                    ) : (
+                      <Checkbox
+                        checked={task.status === "done"}
+                        onCheckedChange={() => handleStatusToggle(task)}
+                        className="h-5 w-5"
+                      />
                     )}
                   </div>
-                  {task.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
-                      {task.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                    {task.due_date && (
-                      <span className={`flex items-center gap-1 ${isOverdue ? "text-destructive" : isDueToday ? "text-warning" : ""}`}>
-                        <Calendar className="h-3 w-3" />
-                        {isOverdue ? "Overdue: " : isDueToday ? "Due today" : ""}
-                        {!isDueToday && format(new Date(task.due_date), "PP")}
-                      </span>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                      <p className={`font-medium text-sm sm:text-base truncate max-w-full ${task.status === "done" ? "line-through" : ""}`}>
+                        {task.title}
+                      </p>
+                      <StatusBadge variant={priorityConfig[task.priority]?.variant || "draft"} className="text-xs shrink-0">
+                        {priorityConfig[task.priority]?.label}
+                      </StatusBadge>
+                      {task.task_type && (
+                        <span className="text-[10px] sm:text-xs text-muted-foreground bg-muted px-1.5 sm:px-2 py-0.5 rounded shrink-0 hidden sm:inline">
+                          {TASK_TYPES.find((t) => t.value === task.task_type)?.label}
+                        </span>
+                      )}
+                    </div>
+                    {task.description && (
+                      <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
+                        {task.description}
+                      </p>
                     )}
-                    {task.assignee?.full_name && (
-                      <span className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        {task.assignee.full_name}
-                      </span>
-                    )}
-                    {task.ai_systems?.name && (
-                      <span className="flex items-center gap-1">
-                        <Cpu className="h-3 w-3" />
-                        {task.ai_systems.name}
-                      </span>
-                    )}
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
+                      {task.due_date && (
+                        <span className={`flex items-center gap-1 ${isOverdue ? "text-destructive" : isDueToday ? "text-warning" : ""}`}>
+                          <Calendar className="h-3 w-3" />
+                          {isOverdue ? "Overdue: " : isDueToday ? "Due today" : ""}
+                          {!isDueToday && format(new Date(task.due_date), "PP")}
+                        </span>
+                      )}
+                      {task.assignee?.full_name && (
+                        <span className="flex items-center gap-1">
+                          <User className="h-3 w-3" />
+                          {task.assignee.full_name}
+                        </span>
+                      )}
+                      {task.ai_systems?.name && (
+                        <span className="flex items-center gap-1">
+                          <Cpu className="h-3 w-3" />
+                          {task.ai_systems.name}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Select
+                      value={task.status}
+                      onValueChange={(v) => updateTask.mutate({ id: task.id, status: v as Task["status"] })}
+                    >
+                      <SelectTrigger className="w-[80px] sm:w-[130px] h-8">
+                        <StatusIcon className="mr-1 sm:mr-2 h-3 w-3" />
+                        <span className="text-[10px] sm:text-xs hidden sm:inline">{statusConfig[task.status]?.label}</span>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="todo">To Do</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="done">Done</SelectItem>
+                        <SelectItem value="blocked">Blocked</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          aria-label={`Actions for task: ${task.title}`}
+                        >
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => {
+                            setNewTask({
+                              title: task.title,
+                              description: task.description || "",
+                              priority: task.priority,
+                              due_date: task.due_date || "",
+                              assigned_to: task.assigned_to || "",
+                              ai_system_id: task.ai_system_id || "",
+                              task_type: task.task_type || "",
+                            });
+                            setEditTaskId(task.id);
+                            setShowEditDialog(true);
+                          }}
+                        >
+                          Edit Task
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => setDeleteId(task.id)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
-
-                <Select
-                  value={task.status}
-                  onValueChange={(v) => updateTask.mutate({ id: task.id, status: v as Task["status"] })}
-                >
-                  <SelectTrigger className="w-[100px] sm:w-[130px] h-8 shrink-0">
-                    <StatusIcon className="mr-1.5 sm:mr-2 h-3 w-3" />
-                    <span className="text-[10px] sm:text-xs">{statusConfig[task.status]?.label}</span>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todo">To Do</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="done">Done</SelectItem>
-                    <SelectItem value="blocked">Blocked</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-8 w-8"
-                      aria-label={`Actions for task: ${task.title}`}
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setNewTask({
-                          title: task.title,
-                          description: task.description || "",
-                          priority: task.priority,
-                          due_date: task.due_date || "",
-                          assigned_to: task.assigned_to || "",
-                          ai_system_id: task.ai_system_id || "",
-                          task_type: task.task_type || "",
-                        });
-                        setEditTaskId(task.id);
-                        setShowEditDialog(true);
-                      }}
-                    >
-                      Edit Task
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="text-destructive"
-                      onClick={() => setDeleteId(task.id)}
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
             );
           })}
@@ -575,7 +581,7 @@ export default function Tasks() {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Priority</Label>
                 <Select
@@ -604,7 +610,7 @@ export default function Tasks() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Assign To</Label>
                 <Select
@@ -714,7 +720,7 @@ export default function Tasks() {
               />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Priority</Label>
                 <Select
@@ -743,7 +749,7 @@ export default function Tasks() {
               </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Assign To</Label>
                 <Select

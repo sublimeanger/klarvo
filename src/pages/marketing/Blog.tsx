@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
+import { NewsletterForm } from "@/components/marketing/NewsletterForm";
+import {
   Newspaper,
   ArrowRight,
   Clock,
@@ -151,7 +152,7 @@ export default function Blog() {
                     {featuredPost.excerpt}
                   </p>
                   
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <User className="h-4 w-4" />
@@ -162,7 +163,7 @@ export default function Blog() {
                         {featuredPost.readTime}
                       </span>
                     </div>
-                    <Button className="btn-premium" asChild>
+                    <Button className="btn-premium w-full sm:w-auto" asChild>
                       <Link to={`/blog/${featuredPost.slug}`}>
                         Read Article
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -180,8 +181,8 @@ export default function Blog() {
       <section className="py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-4 gap-12">
-            {/* Sidebar */}
-            <div className="lg:col-span-1 space-y-8">
+            {/* Sidebar - appears after posts on mobile */}
+            <div className="lg:col-span-1 space-y-8 order-2 lg:order-1">
               {/* Search */}
               <div>
                 <div className="relative">
@@ -230,13 +231,17 @@ export default function Blog() {
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {trendingTopics.map((topic, i) => (
-                    <Badge
+                    <button
                       key={i}
-                      variant="outline"
-                      className="cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-colors"
+                      onClick={() => setSearchQuery(topic)}
                     >
-                      {topic}
-                    </Badge>
+                      <Badge
+                        variant="outline"
+                        className="cursor-pointer hover:bg-primary/5 hover:border-primary/30 transition-colors"
+                      >
+                        {topic}
+                      </Badge>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -248,20 +253,13 @@ export default function Blog() {
                   <p className="text-sm text-muted-foreground mb-4">
                     Get the latest EU AI Act insights delivered to your inbox.
                   </p>
-                  <Input
-                    type="email"
-                    placeholder="Your email"
-                    className="mb-3 bg-background"
-                  />
-                  <Button className="w-full btn-premium" size="sm">
-                    Subscribe
-                  </Button>
+                  <NewsletterForm source="blog-sidebar" variant="stacked" />
                 </CardContent>
               </Card>
             </div>
 
             {/* Posts Grid */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 order-1 lg:order-2">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-2xl font-bold">
                   {selectedCategory === "All" ? "Latest Articles" : selectedCategory}
@@ -316,15 +314,6 @@ export default function Blog() {
                 </div>
               )}
 
-              {/* Load More */}
-              {filteredPosts.length > 0 && (
-                <div className="text-center mt-12">
-                  <Button variant="outline" size="lg">
-                    Load More Articles
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              )}
             </div>
           </div>
         </div>

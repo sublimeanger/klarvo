@@ -196,7 +196,7 @@ export function HeroSection({
             {primaryCta.href.startsWith("http") ? (
               <a
                 href={primaryCta.href}
-                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center h-12 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
               >
                 {primaryCta.label}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -204,7 +204,7 @@ export function HeroSection({
             ) : (
               <Link
                 to={primaryCta.href}
-                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
+                className="group inline-flex items-center justify-center h-12 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
               >
                 {primaryCta.label}
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -214,7 +214,7 @@ export function HeroSection({
               secondaryCta.href.startsWith("http") ? (
                 <a
                   href={secondaryCta.href}
-                  className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                  className="group inline-flex items-center justify-center h-12 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
                 >
                   {secondaryCta.icon}
                   {secondaryCta.label}
@@ -222,7 +222,7 @@ export function HeroSection({
               ) : (
                 <Link
                   to={secondaryCta.href}
-                  className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                  className="group inline-flex items-center justify-center h-12 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
                 >
                   {secondaryCta.icon}
                   {secondaryCta.label}
