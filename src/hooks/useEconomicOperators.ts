@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 export interface EconomicOperator {
@@ -136,15 +137,19 @@ export function useCreateEconomicOperator() {
 }
 
 export function useUpdateEconomicOperator() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: UpdateEconomicOperatorInput) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("economic_operators")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
       
@@ -170,15 +175,19 @@ export function useUpdateEconomicOperator() {
 }
 
 export function useDeleteEconomicOperator() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: async (id: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("economic_operators")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
       
       if (error) throw error;
       return id;

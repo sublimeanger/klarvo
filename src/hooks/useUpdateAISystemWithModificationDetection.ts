@@ -54,6 +54,7 @@ export function useUpdateAISystemWithModificationDetection() {
         .from("ai_systems")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 

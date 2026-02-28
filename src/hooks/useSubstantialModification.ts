@@ -247,7 +247,7 @@ export function useUpdateModificationStatus() {
       status: 'in_progress' | 'complete' | 'waived';
       waiverReason?: string;
     }) => {
-      if (!profile?.id) throw new Error("Not authenticated");
+      if (!profile?.id || !profile?.organization_id) throw new Error("Not authenticated");
 
       const updateData: Record<string, any> = {
         conformity_assessment_status: status,
@@ -263,6 +263,7 @@ export function useUpdateModificationStatus() {
         .from("substantial_modifications" as any)
         .update(updateData)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 

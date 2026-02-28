@@ -358,7 +358,8 @@ export function useWizardDraft() {
         const { error } = await supabase
           .from("ai_systems")
           .update(payload)
-          .eq("id", existingId);
+          .eq("id", existingId)
+          .eq("organization_id", profile.organization_id);
 
         if (error) throw error;
         setLastSaved(new Date());
@@ -441,6 +442,7 @@ export function useWizardDraft() {
           signoff_date: data.wizard_mode === "full_assessment" ? new Date().toISOString() : null,
         })
         .eq("id", draftId)
+        .eq("organization_id", profile?.organization_id)
         .select()
         .single();
 

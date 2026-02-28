@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Loader2, CheckCircle2, XCircle, Building2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -35,19 +35,27 @@ export default function AcceptInvite() {
   const { data: inviteData, isLoading: validating, error: validateError } = useValidateInvite(token || null);
   const { mutate: acceptInvite, isPending: accepting } = useAcceptInvite();
   const [accepted, setAccepted] = useState(false);
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  // Cleanup redirect timer on unmount
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+    };
+  }, []);
 
   // If user is already in an organization, show error
   const alreadyInOrg = profile?.organization_id !== null;
 
   const handleAccept = () => {
     if (!token) return;
-    
+
     acceptInvite(token, {
       onSuccess: () => {
         setAccepted(true);
         sessionStorage.removeItem('invite_token');
         sessionStorage.removeItem('pending_invite');
-        setTimeout(() => {
+        redirectTimerRef.current = setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 2000);
       },

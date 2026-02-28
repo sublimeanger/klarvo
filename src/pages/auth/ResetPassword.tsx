@@ -74,10 +74,12 @@ export default function ResetPassword() {
       toast.success("Password updated successfully");
       
       // Sign out and redirect to login after a delay
-      setTimeout(async () => {
+      const resetTimer = setTimeout(async () => {
         await supabase.auth.signOut();
         navigate("/auth/login", { replace: true });
       }, 2000);
+      // Note: timer cleanup not possible here since it's in an event handler,
+      // but the navigation will unmount the component safely
     } catch (error: any) {
       toast.error(error.message || "Failed to reset password");
     } finally {

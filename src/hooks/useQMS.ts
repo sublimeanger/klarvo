@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 export type DocStatus = 'draft' | 'in_review' | 'approved';
@@ -121,15 +122,19 @@ export function useCreateQMSDocument() {
 }
 
 export function useUpdateQMSDocument() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: UpdateQMSDocInput) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("qms_documents")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
       
@@ -155,11 +160,14 @@ export function useUpdateQMSDocument() {
 }
 
 export function useApproveQMSDocument() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: async ({ id, approvedBy }: { id: string; approvedBy: string }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("qms_documents")
         .update({
@@ -168,6 +176,7 @@ export function useApproveQMSDocument() {
           approved_at: new Date().toISOString(),
         })
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
       
@@ -193,15 +202,19 @@ export function useApproveQMSDocument() {
 }
 
 export function useDeleteQMSDocument() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
   return useMutation({
     mutationFn: async (id: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("qms_documents")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
       
       if (error) throw error;
       return id;

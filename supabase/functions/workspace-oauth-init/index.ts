@@ -79,31 +79,27 @@ serve(async (req) => {
 
     // Generate state token for CSRF protection
     const state = crypto.randomUUID();
-    
+
     // Store state in database for verification during callback
-    await supabase
+    // Use insert...select to atomically get the ID, avoiding race conditions
+    const { data: pendingConnection, error: connError } = await supabase
       .from("workspace_connections")
       .insert({
         organization_id: profile.organization_id,
         provider,
         status: "pending",
         connected_by: user.id,
-      });
-
-    // We'll use the connection ID as part of the state
-    const { data: pendingConnection } = await supabase
-      .from("workspace_connections")
+      })
       .select("id")
-      .eq("organization_id", profile.organization_id)
-      .eq("provider", provider)
-      .eq("status", "pending")
-      .order("created_at", { ascending: false })
-      .limit(1)
       .single();
+
+    if (connError || !pendingConnection) {
+      throw new Error("Failed to create workspace connection");
+    }
 
     const statePayload = JSON.stringify({
       state,
-      connection_id: pendingConnection?.id,
+      connection_id: pendingConnection.id,
       redirect_uri,
     });
     const encodedState = btoa(statePayload);

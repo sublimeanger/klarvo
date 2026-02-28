@@ -108,10 +108,13 @@ export function useSystemRecommendations(aiSystemId?: string) {
 
   const dismissMutation = useMutation({
     mutationFn: async (recommendationId: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("compliance_recommendations")
         .update({ is_dismissed: true })
-        .eq("id", recommendationId);
+        .eq("id", recommendationId)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
       return recommendationId;
@@ -195,10 +198,13 @@ export function useOrgRecommendations() {
 
   const dismissMutation = useMutation({
     mutationFn: async (recommendationId: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("compliance_recommendations")
         .update({ is_dismissed: true })
-        .eq("id", recommendationId);
+        .eq("id", recommendationId)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
       return recommendationId;

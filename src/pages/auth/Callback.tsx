@@ -11,16 +11,18 @@ export default function Callback() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let redirectTimer: ReturnType<typeof setTimeout>;
+
     const handleCallback = async () => {
       try {
         // Check for error in URL params (OAuth errors)
         const errorParam = searchParams.get("error");
         const errorDescription = searchParams.get("error_description");
-        
+
         if (errorParam) {
           logger.error("OAuth error:", errorParam, errorDescription);
           setError(errorDescription || errorParam);
-          setTimeout(() => navigate("/auth/login", { replace: true }), 3000);
+          redirectTimer = setTimeout(() => navigate("/auth/login", { replace: true }), 3000);
           return;
         }
 
@@ -31,7 +33,7 @@ export default function Callback() {
           if (exchangeError) {
             logger.error("Code exchange error:", exchangeError);
             setError(exchangeError.message);
-            setTimeout(() => navigate("/auth/login", { replace: true }), 3000);
+            redirectTimer = setTimeout(() => navigate("/auth/login", { replace: true }), 3000);
             return;
           }
         }
@@ -68,6 +70,8 @@ export default function Callback() {
     };
 
     handleCallback();
+
+    return () => clearTimeout(redirectTimer);
   }, [navigate, searchParams]);
 
   if (error) {

@@ -31,8 +31,8 @@ export async function checkRateLimit(
 
   if (countError) {
     console.error("Rate limit check error:", countError);
-    // Fail open — don't block on DB errors
-    return { allowed: true, remaining: maxRequests };
+    // Fail closed — deny requests when rate limit state is unknown
+    return { allowed: false, remaining: 0, retryAfterSeconds: 60 };
   }
 
   const currentCount = count || 0;
