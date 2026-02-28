@@ -19,22 +19,24 @@ export function useTeamMembers() {
     queryFn: async () => {
       if (!profile?.organization_id) return [];
 
-      // Get profiles with their roles
-      const { data: profiles, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("organization_id", profile.organization_id)
-        .order("full_name", { ascending: true });
+      // Fetch profiles and roles in parallel to avoid sequential queries
+      const [profilesResult, rolesResult] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("organization_id", profile.organization_id)
+          .order("full_name", { ascending: true }),
+        supabase
+          .from("user_roles")
+          .select("user_id, role")
+          .eq("organization_id", profile.organization_id),
+      ]);
 
-      if (profileError) throw profileError;
+      if (profilesResult.error) throw profilesResult.error;
+      if (rolesResult.error) throw rolesResult.error;
 
-      // Get roles for these users
-      const { data: roles, error: roleError } = await supabase
-        .from("user_roles")
-        .select("user_id, role")
-        .eq("organization_id", profile.organization_id);
-
-      if (roleError) throw roleError;
+      const profiles = profilesResult.data;
+      const roles = rolesResult.data;
 
       // Merge profiles with roles
       const roleMap = new Map(roles?.map(r => [r.user_id, r.role]) || []);

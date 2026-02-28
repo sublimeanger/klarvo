@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Json } from "@/integrations/supabase/types";
 
@@ -148,13 +149,17 @@ export function useCreateDataset() {
 export function useUpdateDataset() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: UpdateDatasetInput) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("dataset_registry")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
       
@@ -182,13 +187,17 @@ export function useUpdateDataset() {
 export function useDeleteDataset() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, versionId }: { id: string; versionId: string }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("dataset_registry")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
       
       if (error) throw error;
       return { id, versionId };

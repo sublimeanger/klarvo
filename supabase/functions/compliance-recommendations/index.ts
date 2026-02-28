@@ -293,13 +293,19 @@ ${JSON.stringify(systemAnalyses[0], null, 2)}`
 ${JSON.stringify(systemAnalyses, null, 2)}`;
 
     // Call Lovable AI Gateway with tool calling
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${lovableApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+    let aiResponse: Response;
+    try {
+      aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${lovableApiKey}`,
+          "Content-Type": "application/json",
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
@@ -366,8 +372,11 @@ ${JSON.stringify(systemAnalyses, null, 2)}`;
           },
         ],
         tool_choice: { type: "function", function: { name: "generate_recommendations" } },
-      }),
-    });
+        }),
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!aiResponse.ok) {
       if (aiResponse.status === 429) {

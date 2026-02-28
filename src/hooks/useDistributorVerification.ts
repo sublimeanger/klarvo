@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import type { Json } from "@/integrations/supabase/types";
 
@@ -122,15 +123,18 @@ export function useCreateDistributorVerification() {
 export function useUpdateDistributorVerification() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: UpdateDistributorVerificationInput) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       // Check for escalation triggers
       let escalationTriggered = updates.escalation_to_provider_triggered;
       if (updates.has_rebranded || updates.has_modified) {
         escalationTriggered = true;
       }
-      
+
       const { data, error } = await supabase
         .from("distributor_verifications")
         .update({
@@ -138,6 +142,7 @@ export function useUpdateDistributorVerification() {
           escalation_to_provider_triggered: escalationTriggered,
         })
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
       
@@ -173,13 +178,16 @@ export function useUpdateDistributorVerification() {
 export function useCompleteDistributorVerification() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   return useMutation({
-    mutationFn: async ({ id, verifiedBy, status }: { 
-      id: string; 
+    mutationFn: async ({ id, verifiedBy, status }: {
+      id: string;
       verifiedBy: string;
       status: 'compliant' | 'non_compliant' | 'escalated';
     }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("distributor_verifications")
         .update({
@@ -188,6 +196,7 @@ export function useCompleteDistributorVerification() {
           verified_at: new Date().toISOString(),
         })
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
       

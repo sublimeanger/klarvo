@@ -198,10 +198,13 @@ export function useUpdateDiscoveredTool() {
         updateData.ai_system_id = ai_system_id;
       }
 
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("discovered_ai_tools")
         .update(updateData)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -244,10 +247,13 @@ export function useBulkUpdateDiscoveredTools() {
         updateData.dismiss_reason = dismiss_reason;
       }
 
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("discovered_ai_tools")
         .update(updateData)
         .in("id", ids)
+        .eq("organization_id", profile.organization_id)
         .select();
 
       if (error) throw error;
@@ -268,13 +274,17 @@ export function useBulkUpdateDiscoveredTools() {
 // Disconnect workspace
 export function useDisconnectWorkspace() {
   const queryClient = useQueryClient();
+  const { profile } = useAuth();
 
   return useMutation({
     mutationFn: async (connectionId: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("workspace_connections")
         .update({ status: "disconnected" })
-        .eq("id", connectionId);
+        .eq("id", connectionId)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
     },

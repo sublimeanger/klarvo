@@ -176,14 +176,20 @@ ${sanitizedData}
 
 Provide a detailed classification analysis with confidence score and reasoning.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+    let response: Response;
+    try {
+      response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: CLASSIFICATION_PROMPT },
           { role: "user", content: userPrompt },
@@ -308,8 +314,11 @@ Provide a detailed classification analysis with confidence score and reasoning.`
           },
         ],
         tool_choice: { type: "function", function: { name: "classify_ai_system" } },
-      }),
-    });
+        }),
+      });
+    } finally {
+      clearTimeout(timeoutId);
+    }
 
     if (!response.ok) {
       if (response.status === 429) {

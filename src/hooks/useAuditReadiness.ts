@@ -29,41 +29,28 @@ export function useAuditReadiness(): AuditReadinessResult {
         return null;
       }
 
-      // Fetch AI systems count
-      const { data: systems } = await supabase
-        .from("ai_systems")
-        .select("id")
-        .eq("organization_id", profile.organization_id);
+      // Fetch all data in parallel instead of sequential queries
+      const [systemsRes, classificationsRes, controlsRes, evidenceRes, tasksRes, trainingRes] = await Promise.all([
+        supabase.from("ai_systems").select("id")
+          .eq("organization_id", profile.organization_id),
+        supabase.from("ai_system_classifications").select("risk_level, reassessment_needed")
+          .eq("organization_id", profile.organization_id),
+        supabase.from("control_implementations").select("status")
+          .eq("organization_id", profile.organization_id),
+        supabase.from("evidence_files").select("status, expires_at")
+          .eq("organization_id", profile.organization_id),
+        supabase.from("tasks").select("status, due_date")
+          .eq("organization_id", profile.organization_id),
+        supabase.from("training_records").select("status")
+          .eq("organization_id", profile.organization_id),
+      ]);
 
-      // Fetch classifications
-      const { data: classifications } = await supabase
-        .from("ai_system_classifications")
-        .select("risk_level, reassessment_needed")
-        .eq("organization_id", profile.organization_id);
-
-      // Fetch control implementations
-      const { data: controls } = await supabase
-        .from("control_implementations")
-        .select("status")
-        .eq("organization_id", profile.organization_id);
-
-      // Fetch evidence files
-      const { data: evidence } = await supabase
-        .from("evidence_files")
-        .select("status, expires_at")
-        .eq("organization_id", profile.organization_id);
-
-      // Fetch tasks
-      const { data: tasks } = await supabase
-        .from("tasks")
-        .select("status, due_date")
-        .eq("organization_id", profile.organization_id);
-
-      // Fetch training records
-      const { data: trainingRecords } = await supabase
-        .from("training_records")
-        .select("status")
-        .eq("organization_id", profile.organization_id);
+      const systems = systemsRes.data;
+      const classifications = classificationsRes.data;
+      const controls = controlsRes.data;
+      const evidence = evidenceRes.data;
+      const tasks = tasksRes.data;
+      const trainingRecords = trainingRes.data;
 
       const now = new Date();
       const totalSystems = systems?.length || 0;

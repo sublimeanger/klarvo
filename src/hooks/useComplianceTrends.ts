@@ -47,66 +47,51 @@ export function useComplianceTrends(days: number = 30) {
       const interval = days >= 30 ? 7 : 1;
       const numPoints = Math.ceil(days / interval);
 
+      // Build date points array first
+      const dates = [];
       for (let i = numPoints - 1; i >= 0; i--) {
         const date = startOfDay(subDays(now, i * interval));
-        const dateStr = date.toISOString();
-        const label = format(date, days >= 30 ? "MMM d" : "MMM d");
+        dates.push({
+          date,
+          dateStr: date.toISOString(),
+          label: format(date, days >= 30 ? "MMM d" : "MMM d"),
+        });
+      }
 
-        // Get AI systems count at this date
-        const { count: aiSystemsCount } = await supabase
-          .from("ai_systems")
-          .select("*", { count: "exact", head: true })
-          .eq("organization_id", profile.organization_id)
-          .lte("created_at", dateStr);
+      // Fetch all date points in parallel (6 queries per date point, all concurrent)
+      const results = await Promise.all(
+        dates.map(async ({ dateStr }) => {
+          const [aiSystems, classified, highRisk, controls, evidence, tasks] = await Promise.all([
+            supabase.from("ai_systems").select("*", { count: "exact", head: true })
+              .eq("organization_id", profile.organization_id).lte("created_at", dateStr),
+            supabase.from("ai_system_classifications").select("*", { count: "exact", head: true })
+              .eq("organization_id", profile.organization_id).lte("created_at", dateStr),
+            supabase.from("ai_system_classifications").select("*", { count: "exact", head: true })
+              .eq("organization_id", profile.organization_id).eq("risk_level", "high_risk").lte("created_at", dateStr),
+            supabase.from("control_implementations").select("*", { count: "exact", head: true })
+              .eq("organization_id", profile.organization_id).eq("status", "implemented").lte("created_at", dateStr),
+            supabase.from("evidence_files").select("*", { count: "exact", head: true })
+              .eq("organization_id", profile.organization_id).eq("status", "approved").lte("created_at", dateStr),
+            supabase.from("tasks").select("*", { count: "exact", head: true })
+              .eq("organization_id", profile.organization_id).eq("status", "done").lte("completed_at", dateStr),
+          ]);
+          return {
+            aiSystems: aiSystems.count || 0,
+            classified: classified.count || 0,
+            highRisk: highRisk.count || 0,
+            controlsImplemented: controls.count || 0,
+            evidenceApproved: evidence.count || 0,
+            tasksCompleted: tasks.count || 0,
+          };
+        })
+      );
 
-        // Get classifications count at this date
-        const { count: classifiedCount } = await supabase
-          .from("ai_system_classifications")
-          .select("*", { count: "exact", head: true })
-          .eq("organization_id", profile.organization_id)
-          .lte("created_at", dateStr);
-
-        // Get high-risk count at this date
-        const { count: highRiskCount } = await supabase
-          .from("ai_system_classifications")
-          .select("*", { count: "exact", head: true })
-          .eq("organization_id", profile.organization_id)
-          .eq("risk_level", "high_risk")
-          .lte("created_at", dateStr);
-
-        // Get implemented controls count at this date
-        const { count: controlsCount } = await supabase
-          .from("control_implementations")
-          .select("*", { count: "exact", head: true })
-          .eq("organization_id", profile.organization_id)
-          .eq("status", "implemented")
-          .lte("created_at", dateStr);
-
-        // Get approved evidence count at this date
-        const { count: evidenceCount } = await supabase
-          .from("evidence_files")
-          .select("*", { count: "exact", head: true })
-          .eq("organization_id", profile.organization_id)
-          .eq("status", "approved")
-          .lte("created_at", dateStr);
-
-        // Get completed tasks count at this date
-        const { count: tasksCount } = await supabase
-          .from("tasks")
-          .select("*", { count: "exact", head: true })
-          .eq("organization_id", profile.organization_id)
-          .eq("status", "done")
-          .lte("completed_at", dateStr);
-
+      // Combine dates with results
+      for (let i = 0; i < dates.length; i++) {
         datePoints.push({
-          date: dateStr,
-          label,
-          aiSystems: aiSystemsCount || 0,
-          classified: classifiedCount || 0,
-          highRisk: highRiskCount || 0,
-          controlsImplemented: controlsCount || 0,
-          evidenceApproved: evidenceCount || 0,
-          tasksCompleted: tasksCount || 0,
+          date: dates[i].dateStr,
+          label: dates[i].label,
+          ...results[i],
         });
       }
 

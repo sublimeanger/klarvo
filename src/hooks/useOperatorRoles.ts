@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 export type OperatorRoleType = 'provider' | 'deployer' | 'importer' | 'distributor' | 'authorised_representative';
@@ -81,13 +82,17 @@ export function useCreateOperatorRole() {
 export function useDeleteOperatorRole() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   return useMutation({
     mutationFn: async ({ id, aiSystemId }: { id: string; aiSystemId: string }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("ai_system_operator_roles")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
       
       if (error) throw error;
       return { id, aiSystemId };

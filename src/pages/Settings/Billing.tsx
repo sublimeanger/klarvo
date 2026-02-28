@@ -82,21 +82,25 @@ export default function BillingSettings() {
     return `Upgrade to ${nextPlan.name} · €${price.toLocaleString()}${suffix}`;
   };
 
-  // Handle success/cancel from Stripe checkout
+  // Handle success/cancel from Stripe checkout (run once on mount)
   useEffect(() => {
-    if (searchParams.get("success") === "true") {
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+
+    if (success === "true") {
       const addonName = searchParams.get("addon");
-      toast.success(addonName 
-        ? `${addonName} add-on activated successfully!` 
+      toast.success(addonName
+        ? `${addonName} add-on activated successfully!`
         : "Subscription updated successfully!"
       );
       setSearchParams({}, { replace: true });
       refetch();
-    } else if (searchParams.get("canceled") === "true") {
+    } else if (canceled === "true") {
       toast.info("Checkout cancelled — no changes were made.");
       setSearchParams({}, { replace: true });
     }
-  }, [searchParams, setSearchParams, refetch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formatDate = (date: Date | null) => {
     if (!date) return "—";

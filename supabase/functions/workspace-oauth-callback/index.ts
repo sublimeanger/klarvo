@@ -134,6 +134,18 @@ function parseState(encodedState: string | null): StatePayload {
 }
 
 serve(async (req) => {
+  // Only allow GET requests for OAuth callback
+  if (req.method !== "GET" && req.method !== "OPTIONS") {
+    return new Response(
+      JSON.stringify({ error: "Method not allowed" }),
+      { status: 405, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204 });
+  }
+
   try {
     const url = new URL(req.url);
     const code = url.searchParams.get("code");
@@ -141,8 +153,12 @@ serve(async (req) => {
     const error = url.searchParams.get("error");
     const errorDescription = url.searchParams.get("error_description");
 
-    // Parse state
-    const { connection_id, redirect_uri } = parseState(encodedState);
+    // Parse state and validate required fields
+    const { state, connection_id, redirect_uri } = parseState(encodedState);
+
+    if (!state || !connection_id) {
+      throw new Error("Invalid state: missing required fields");
+    }
 
     // Use service role to update connection status
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -150,7 +166,7 @@ serve(async (req) => {
     // Handle OAuth errors
     if (error) {
       console.error("OAuth error:", error, errorDescription);
-      
+
       await supabase
         .from("workspace_connections")
         .update({
@@ -168,15 +184,17 @@ serve(async (req) => {
       throw new Error("Missing authorization code");
     }
 
-    // Get connection to determine provider
+    // Get connection and verify it exists and is still in pending status
+    // This prevents replay attacks and processing already-completed connections
     const { data: connection, error: connError } = await supabase
       .from("workspace_connections")
       .select("*")
       .eq("id", connection_id)
+      .eq("status", "pending")
       .single();
 
     if (connError || !connection) {
-      throw new Error("Connection not found");
+      throw new Error("Connection not found or already processed");
     }
 
     const callbackUrl = `${SUPABASE_URL}/functions/v1/workspace-oauth-callback`;

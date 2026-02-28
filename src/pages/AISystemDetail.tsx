@@ -565,7 +565,7 @@ export default function AISystemDetail() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium">{system.vendors.name}</p>
-                    {system.vendors.website && (
+                    {system.vendors.website && /^https?:\/\//.test(system.vendors.website) && (
                       <a
                         href={system.vendors.website}
                         target="_blank"

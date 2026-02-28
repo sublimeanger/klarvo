@@ -14,26 +14,34 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
  */
 
 async function sendEmail(to: string, subject: string, html: string) {
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-    },
-    body: JSON.stringify({
-      from: "Klarvo <notifications@klarvo.app>",
-      to: [to],
-      subject,
-      html,
-    }),
-  });
-  
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`Resend API error: ${error}`);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "Klarvo <notifications@klarvo.app>",
+        to: [to],
+        subject,
+        html,
+      }),
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(`Resend API error: ${error}`);
+    }
+
+    return res.json();
+  } finally {
+    clearTimeout(timeoutId);
   }
-  
-  return res.json();
 }
 
 interface ComplianceAlert {
@@ -61,9 +69,8 @@ const handler = async (req: Request): Promise<Response> => {
   const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
   const isAuthorizedByCronSecret = cronSecret && authHeader === `Bearer ${cronSecret}`;
-  const isAuthorizedByServiceKey = supabaseServiceKey && authHeader === `Bearer ${supabaseServiceKey}`;
 
-  if (!isAuthorizedByCronSecret && !isAuthorizedByServiceKey) {
+  if (!isAuthorizedByCronSecret) {
     console.error("Unauthorized cron request rejected");
     return new Response(
       JSON.stringify({ error: "Unauthorized" }),

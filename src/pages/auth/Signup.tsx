@@ -15,7 +15,7 @@ export default function Signup() {
     if (user && !isLoading) {
       // If user just signed up and has a pending invite, redirect to accept it
       const pendingInvite = sessionStorage.getItem('pending_invite');
-      if (pendingInvite) {
+      if (pendingInvite && /^[a-zA-Z0-9_-]{10,500}$/.test(pendingInvite)) {
         sessionStorage.setItem('invite_token', pendingInvite);
         sessionStorage.removeItem('pending_invite');
         sessionStorage.removeItem('pending_invite_email');
