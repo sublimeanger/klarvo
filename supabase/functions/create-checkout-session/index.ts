@@ -90,9 +90,9 @@ serve(async (req) => {
       .eq("organization_id", profile.organization_id)
       .single();
 
-    if (!roleData || roleData.role !== "admin") {
+    if (!roleData || !["admin", "compliance_owner"].includes(roleData.role)) {
       return new Response(
-        JSON.stringify({ error: "Only admins can manage billing" }),
+        JSON.stringify({ error: "Only admins and compliance owners can manage billing" }),
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

@@ -33,9 +33,9 @@ export function ProtectedRoute({
     return <Navigate to="/onboarding" replace />;
   }
 
-  // Check if user has required role
-  if (requiredRoles && requiredRoles.length > 0 && userRole) {
-    if (!requiredRoles.includes(userRole.role)) {
+  // Check if user has required role - deny access if no role is assigned
+  if (requiredRoles && requiredRoles.length > 0) {
+    if (!userRole || !requiredRoles.includes(userRole.role)) {
       return <Navigate to="/dashboard" replace />;
     }
   }

@@ -321,8 +321,17 @@ export function useInitiateOAuth() {
       return data.auth_url as string;
     },
     onSuccess: (authUrl) => {
-      // Redirect to OAuth provider
-      window.location.href = authUrl;
+      // Validate OAuth redirect URL against allowed hosts
+      const ALLOWED_OAUTH_HOSTS = ["accounts.google.com", "login.microsoftonline.com"];
+      try {
+        const url = new URL(authUrl);
+        if (!ALLOWED_OAUTH_HOSTS.some(h => url.hostname === h || url.hostname.endsWith("." + h))) {
+          throw new Error("Invalid OAuth URL received");
+        }
+        window.location.href = authUrl;
+      } catch {
+        toast.error("Invalid OAuth redirect URL");
+      }
     },
     onError: (error) => {
       toast.error(error instanceof Error ? error.message : "Failed to connect workspace");

@@ -141,6 +141,7 @@ export function useCreateFRIA() {
 }
 
 export function useUpdateFRIA() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -148,16 +149,19 @@ export function useUpdateFRIA() {
       id,
       ...updates
     }: Partial<FRIAAssessment> & { id: string }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       // Convert identified_risks to JSON-compatible format
       const dbUpdates = {
         ...updates,
         identified_risks: updates.identified_risks ? JSON.parse(JSON.stringify(updates.identified_risks)) : undefined,
       };
-      
+
       const { data, error } = await supabase
         .from("fria_assessments")
         .update(dbUpdates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -217,14 +221,18 @@ export function useCompleteFRIA() {
 }
 
 export function useDeleteFRIA() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { error } = await supabase
         .from("fria_assessments")
         .delete()
-        .eq("id", id);
+        .eq("id", id)
+        .eq("organization_id", profile.organization_id);
 
       if (error) throw error;
     },

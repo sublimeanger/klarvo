@@ -134,6 +134,7 @@ export function useCreatePolicy() {
 }
 
 export function useUpdatePolicy() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -148,10 +149,13 @@ export function useUpdatePolicy() {
       status?: Policy["status"];
       policy_type?: string;
     }) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("policies")
         .update(updates)
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -170,11 +174,13 @@ export function useUpdatePolicy() {
 }
 
 export function useApprovePolicy() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
+      if (!profile?.organization_id) throw new Error("No organization");
+
       const { data, error } = await supabase
         .from("policies")
         .update({
@@ -183,6 +189,7 @@ export function useApprovePolicy() {
           approved_at: new Date().toISOString(),
         })
         .eq("id", id)
+        .eq("organization_id", profile.organization_id)
         .select()
         .single();
 
@@ -201,11 +208,14 @@ export function useApprovePolicy() {
 }
 
 export function useDeletePolicy() {
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("policies").delete().eq("id", id);
+      if (!profile?.organization_id) throw new Error("No organization");
+
+      const { error } = await supabase.from("policies").delete().eq("id", id).eq("organization_id", profile.organization_id);
       if (error) throw error;
       return id;
     },
@@ -330,8 +340,21 @@ export function useUpdatePolicyWithVersion() {
     }) => {
       if (!profile?.organization_id) throw new Error("No organization");
 
-      // First, save the current version
-      const { error: versionError } = await supabase
+      // Update the policy first (critical path) - if this fails, no orphaned version
+      const { data, error } = await supabase
+        .from("policies")
+        .update({
+          ...updates,
+          version: currentPolicy.version + 1,
+        })
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Then save the previous version snapshot (best effort)
+      await supabase
         .from("policy_versions")
         .insert({
           policy_id: currentPolicy.id,
@@ -346,20 +369,6 @@ export function useUpdatePolicyWithVersion() {
           change_summary: changeSummary || "Updated policy",
         });
 
-      if (versionError) throw versionError;
-
-      // Then update the policy with incremented version
-      const { data, error } = await supabase
-        .from("policies")
-        .update({
-          ...updates,
-          version: currentPolicy.version + 1,
-        })
-        .eq("id", id)
-        .select()
-        .single();
-
-      if (error) throw error;
       return data;
     },
     onSuccess: (data) => {
@@ -391,7 +400,7 @@ export function useRollbackPolicy() {
     }) => {
       if (!profile?.organization_id) throw new Error("No organization");
 
-      // Get current policy to save as version first
+      // Get current policy state before rollback
       const { data: currentPolicy, error: fetchError } = await supabase
         .from("policies")
         .select("*")
@@ -400,20 +409,7 @@ export function useRollbackPolicy() {
 
       if (fetchError) throw fetchError;
 
-      // Save current state as a version
-      await supabase.from("policy_versions").insert({
-        policy_id: policyId,
-        organization_id: profile.organization_id,
-        version_number: currentPolicy.version,
-        name: currentPolicy.name,
-        description: currentPolicy.description,
-        content: currentPolicy.content,
-        policy_type: currentPolicy.policy_type,
-        status: currentPolicy.status,
-        change_summary: `Rolled back to version ${version.version_number}`,
-      });
-
-      // Restore from the selected version
+      // Restore from the selected version first (critical path)
       const { data, error } = await supabase
         .from("policies")
         .update({
@@ -428,6 +424,20 @@ export function useRollbackPolicy() {
         .single();
 
       if (error) throw error;
+
+      // Then save previous state as a version snapshot (best effort)
+      await supabase.from("policy_versions").insert({
+        policy_id: policyId,
+        organization_id: profile.organization_id,
+        version_number: currentPolicy.version,
+        name: currentPolicy.name,
+        description: currentPolicy.description,
+        content: currentPolicy.content,
+        policy_type: currentPolicy.policy_type,
+        status: currentPolicy.status,
+        change_summary: `Rolled back to version ${version.version_number}`,
+      });
+
       return data;
     },
     onSuccess: (data) => {

@@ -67,7 +67,8 @@ export function useBilling() {
       if (data?.success) {
         // Addon added directly to existing subscription
         toast.success("Add-on activated successfully!");
-        window.location.href = data.url;
+        // Use a known safe redirect instead of unvalidated server URL
+        window.location.href = "/settings/billing?success=true";
       } else if (data?.url) {
         if (!isAllowedRedirectUrl(data.url)) {
           throw new Error("Invalid checkout URL received");
