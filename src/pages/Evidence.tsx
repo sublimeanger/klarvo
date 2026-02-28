@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from "react";
+import { toast } from "sonner";
 import { format } from "date-fns";
 import {
   Plus,
@@ -148,13 +149,21 @@ export default function Evidence() {
     (file.description || "").toLowerCase().includes(searchQuery.toLowerCase())
   ), [files, searchQuery]);
 
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      if (!uploadForm.name) {
-        setUploadForm({ ...uploadForm, name: file.name });
-      }
+    if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("File too large", { description: "Maximum file size is 50MB." });
+      e.target.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+    if (!uploadForm.name) {
+      setUploadForm({ ...uploadForm, name: file.name });
     }
   };
 

@@ -1,5 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
+
+/** Only allow http/https URLs to prevent javascript: and data: injection */
+function isSafeUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return ["http:", "https:"].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+}
 import { format } from "date-fns";
 import {
   Plus,
@@ -406,7 +416,7 @@ export default function Vendors() {
                   </Select>
                   
                   <div className="flex items-center gap-2">
-                    {vendor.website && (
+                    {vendor.website && isSafeUrl(vendor.website) && (
                       <a
                         href={vendor.website}
                         target="_blank"
@@ -471,7 +481,7 @@ export default function Vendors() {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      {vendor.website ? (
+                      {vendor.website && isSafeUrl(vendor.website) ? (
                         <a
                           href={vendor.website}
                           target="_blank"

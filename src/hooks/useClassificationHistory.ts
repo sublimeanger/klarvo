@@ -35,7 +35,7 @@ export function useClassificationHistory(aiSystemId: string | undefined) {
   return useQuery({
     queryKey: ["classification-history", aiSystemId],
     queryFn: async (): Promise<ClassificationHistoryEntry[]> => {
-      if (!aiSystemId) return [];
+      if (!aiSystemId || !profile?.organization_id) return [];
 
       const { data, error } = await supabase
         .from("classification_history")
@@ -44,6 +44,7 @@ export function useClassificationHistory(aiSystemId: string | undefined) {
           classifier:profiles!classification_history_classified_by_fkey(full_name)
         `)
         .eq("ai_system_id", aiSystemId)
+        .eq("organization_id", profile.organization_id)
         .order("version_number", { ascending: false });
 
       if (error) throw error;
@@ -59,7 +60,7 @@ export function useCurrentClassificationVersion(aiSystemId: string | undefined) 
   return useQuery({
     queryKey: ["classification-history-current", aiSystemId],
     queryFn: async (): Promise<ClassificationHistoryEntry | null> => {
-      if (!aiSystemId) return null;
+      if (!aiSystemId || !profile?.organization_id) return null;
 
       const { data, error } = await supabase
         .from("classification_history")
@@ -68,6 +69,7 @@ export function useCurrentClassificationVersion(aiSystemId: string | undefined) 
           classifier:profiles!classification_history_classified_by_fkey(full_name)
         `)
         .eq("ai_system_id", aiSystemId)
+        .eq("organization_id", profile.organization_id)
         .eq("is_current", true)
         .maybeSingle();
 

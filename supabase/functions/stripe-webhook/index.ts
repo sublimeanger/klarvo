@@ -63,11 +63,20 @@ serve(async (req) => {
     }
 
     // Idempotency check: skip if we've already processed this event
-    const { data: existingEvent } = await supabaseClient
+    const { data: existingEvent, error: idempotencyError } = await supabaseClient
       .from("stripe_webhook_events")
       .select("event_id")
       .eq("event_id", event.id)
       .maybeSingle();
+
+    if (idempotencyError) {
+      console.error("Idempotency check failed:", idempotencyError.message);
+      // Fail closed - don't process if we can't verify idempotency
+      return new Response(
+        JSON.stringify({ error: "Idempotency check failed" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     if (existingEvent) {
       console.log(`Skipping already-processed event: ${event.id}`);

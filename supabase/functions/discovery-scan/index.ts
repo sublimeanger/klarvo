@@ -601,10 +601,10 @@ serve(async (req) => {
   } catch (err) {
     console.error("Discovery scan error:", err);
     return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : "Unknown error" }),
+      JSON.stringify({ error: "An internal error occurred. Please try again." }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
+        status: 500,
       }
     );
   }
