@@ -373,7 +373,7 @@ export default function Article50Guide() {
       <CTASection
         title="Track Your Transparency Compliance"
         subtitle="Klarvo identifies which AI systems need disclosures and helps you evidence compliance with screenshots, copy docs, and audit trails."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Guides", href: "/guides" }}
         variant="gradient"
       />

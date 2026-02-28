@@ -122,7 +122,7 @@ export function HeroSection({
   badge,
   title,
   subtitle,
-  primaryCta = { label: "Start Free", href: "/auth/signup" },
+  primaryCta = { label: "Start Free", href: "https://app.klarvo.io/auth/signup" },
   secondaryCta = { label: "See Samples", href: "/samples" },
   variant = "default",
   heroVariant = "default",
@@ -193,21 +193,41 @@ export function HeroSection({
             )}
             style={{ animationDelay: "0.3s" }}
           >
-            <Link
-              to={primaryCta.href}
-              className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
-            >
-              {primaryCta.label}
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
-            {secondaryCta && (
-              <Link
-                to={secondaryCta.href}
-                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+            {primaryCta.href.startsWith("http") ? (
+              <a
+                href={primaryCta.href}
+                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
               >
-                {secondaryCta.icon}
-                {secondaryCta.label}
+                {primaryCta.label}
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </a>
+            ) : (
+              <Link
+                to={primaryCta.href}
+                className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5"
+              >
+                {primaryCta.label}
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
+            )}
+            {secondaryCta && (
+              secondaryCta.href.startsWith("http") ? (
+                <a
+                  href={secondaryCta.href}
+                  className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                >
+                  {secondaryCta.icon}
+                  {secondaryCta.label}
+                </a>
+              ) : (
+                <Link
+                  to={secondaryCta.href}
+                  className="group inline-flex items-center justify-center h-13 px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                >
+                  {secondaryCta.icon}
+                  {secondaryCta.label}
+                </Link>
+              )
             )}
           </div>
 

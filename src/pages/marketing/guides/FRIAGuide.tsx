@@ -437,7 +437,7 @@ export default function FRIAGuide() {
       <CTASection
         title="Conduct Your FRIA with Confidence"
         subtitle="Klarvo's FRIA workflow guides you through all six elements and generates audit-ready PDF reports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Download Template", href: "/templates/fria-template" }}
         variant="gradient"
       />

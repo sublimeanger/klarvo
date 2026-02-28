@@ -157,10 +157,10 @@ export default function KlarvoVsSpreadsheets() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Import Your Spreadsheet
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/templates/ai-inventory-template">
@@ -348,7 +348,7 @@ export default function KlarvoVsSpreadsheets() {
       <CTASection
         title="Ready to Upgrade from Spreadsheets?"
         subtitle="Import your existing inventory and get audit-ready compliance in days, not months."
-        primaryCta={{ label: "Start Free Import", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Import", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Download Template First", href: "/templates/ai-inventory-template" }}
         variant="gradient"
       />

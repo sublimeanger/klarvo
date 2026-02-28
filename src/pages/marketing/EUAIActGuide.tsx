@@ -166,7 +166,7 @@ export default function EUAIActGuide() {
           </>
         }
         subtitle="The world's first comprehensive AI regulation. Understand the requirements, timeline, and what it means for your organization."
-        primaryCta={{ label: "Check Compliance", href: "/auth/signup" }}
+        primaryCta={{ label: "Check Compliance", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Download Guide", href: "/templates" }}
         variant="centered"
         showTrustBadges={false}
@@ -393,7 +393,7 @@ export default function EUAIActGuide() {
       <CTASection
         title="Ready to Get Compliant?"
         subtitle="Klarvo makes EU AI Act compliance simple. Start documenting your AI systems today."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Learn More", href: "/features" }}
         variant="gradient"
       />

@@ -20,7 +20,7 @@ interface CTASectionProps {
 export function CTASection({
   title,
   subtitle,
-  primaryCta = { label: "Start Free", href: "/auth/signup" },
+  primaryCta = { label: "Start Free", href: "https://app.klarvo.io/auth/signup" },
   secondaryCta,
   variant = "default",
   className,
@@ -101,28 +101,55 @@ export function CTASection({
 
           {/* CTAs - Full width stacked on mobile */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center animate-fade-up delay-200">
-            <Link
-              to={primaryCta.href}
-              className={cn(
-                "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90",
-                variant === "gradient" && "bg-white text-primary hover:bg-white/90 shadow-dramatic",
-                variant === "dark" && "bg-background text-foreground hover:bg-background/90 shadow-dramatic"
-              )}
-            >
-              {primaryCta.label}
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
-            {secondaryCta && (
-              <Link
-                to={secondaryCta.href}
+            {primaryCta.href.startsWith("http") ? (
+              <a
+                href={primaryCta.href}
                 className={cn(
-                  "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-                  variant === "gradient" && "bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white/50",
-                  variant === "dark" && "bg-transparent border-background/30 text-background hover:bg-background/10"
+                  "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90",
+                  variant === "gradient" && "bg-white text-primary hover:bg-white/90 shadow-dramatic",
+                  variant === "dark" && "bg-background text-foreground hover:bg-background/90 shadow-dramatic"
                 )}
               >
-                {secondaryCta.label}
+                {primaryCta.label}
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </a>
+            ) : (
+              <Link
+                to={primaryCta.href}
+                className={cn(
+                  "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] btn-shimmer relative overflow-hidden group bg-primary text-primary-foreground hover:bg-primary/90",
+                  variant === "gradient" && "bg-white text-primary hover:bg-white/90 shadow-dramatic",
+                  variant === "dark" && "bg-background text-foreground hover:bg-background/90 shadow-dramatic"
+                )}
+              >
+                {primaryCta.label}
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
+            )}
+            {secondaryCta && (
+              secondaryCta.href.startsWith("http") ? (
+                <a
+                  href={secondaryCta.href}
+                  className={cn(
+                    "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                    variant === "gradient" && "bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white/50",
+                    variant === "dark" && "bg-transparent border-background/30 text-background hover:bg-background/10"
+                  )}
+                >
+                  {secondaryCta.label}
+                </a>
+              ) : (
+                <Link
+                  to={secondaryCta.href}
+                  className={cn(
+                    "inline-flex items-center justify-center h-12 sm:h-14 px-6 sm:px-10 text-base font-semibold rounded-xl sm:rounded-2xl transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+                    variant === "gradient" && "bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white/50",
+                    variant === "dark" && "bg-transparent border-background/30 text-background hover:bg-background/10"
+                  )}
+                >
+                  {secondaryCta.label}
+                </Link>
+              )
             )}
           </div>
           

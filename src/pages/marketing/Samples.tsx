@@ -241,16 +241,16 @@ export default function Samples() {
                             buttonSize="lg"
                             className="w-full h-11 sm:h-12"
                           />
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="lg"
                             asChild
                             className="gap-2 w-full h-11 sm:h-12"
                           >
-                            <Link to="/auth/signup">
+                            <a href="https://app.klarvo.io/auth/signup">
                               <Lock className="h-4 w-4" />
                               Create Your Own
-                            </Link>
+                            </a>
                           </Button>
                         </div>
                       </div>
@@ -274,10 +274,10 @@ export default function Samples() {
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <Button size="lg" className="btn-premium gap-2 h-12 w-full sm:w-auto" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start Free Trial
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" className="h-12 w-full sm:w-auto" asChild>
                 <Link to="/features">

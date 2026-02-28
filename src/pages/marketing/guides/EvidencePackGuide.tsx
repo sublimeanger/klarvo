@@ -400,7 +400,7 @@ export default function EvidencePackGuide() {
       <CTASection
         title="Generate Evidence Packs in One Click"
         subtitle="Klarvo compiles your AI governance data into professional, audit-ready exports automatically."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Sample Pack", href: "/ai-governance-evidence-packs" }}
         variant="gradient"
       />

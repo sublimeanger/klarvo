@@ -201,10 +201,10 @@ export default function ProhibitedPracticesScreening() {
                         Your answers indicate a potential prohibited practice. You must stop using this AI system and seek legal advice immediately.
                       </p>
                       <Button variant="destructive" asChild>
-                        <Link to="/auth/signup">
+                        <a href="https://app.klarvo.io/auth/signup">
                           Get Compliance Support
                           <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
+                        </a>
                       </Button>
                     </div>
                   </div>
@@ -221,10 +221,10 @@ export default function ProhibitedPracticesScreening() {
                         Some answers are uncertain. Document your analysis and seek legal review before proceeding.
                       </p>
                       <Button variant="outline" asChild>
-                        <Link to="/auth/signup">
+                        <a href="https://app.klarvo.io/auth/signup">
                           Document in Klarvo
                           <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
+                        </a>
                       </Button>
                     </div>
                   </div>
@@ -248,7 +248,7 @@ export default function ProhibitedPracticesScreening() {
                           </Link>
                         </Button>
                         <Button variant="outline" asChild>
-                          <Link to="/auth/signup">Save to Klarvo</Link>
+                          <a href="https://app.klarvo.io/auth/signup">Save to Klarvo</a>
                         </Button>
                       </div>
                     </div>
@@ -278,7 +278,7 @@ export default function ProhibitedPracticesScreening() {
       <CTASection
         title="Document Your Compliance Screening"
         subtitle="Klarvo stores all your screening results with audit trails."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Tools", href: "/tools" }}
       />
     </MarketingLayout>

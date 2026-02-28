@@ -389,7 +389,7 @@ export default function Templates() {
       <CTASection
         title="Want Templates That Auto-Update?"
         subtitle="Inside Klarvo, templates are always current and automatically populate with your organization's data."
-        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Features", href: "/features" }}
         variant="gradient"
       />

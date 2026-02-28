@@ -438,7 +438,7 @@ export default function HighRiskGuide() {
       <CTASection
         title="Manage High-Risk AI Compliance"
         subtitle="Klarvo auto-generates deployer checklists, tracks evidence, and produces audit-ready packs for every high-risk system."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Guides", href: "/guides" }}
         variant="gradient"
       />

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { CTASection, TemplateDownloadGate } from "@/components/marketing";
 import { SEOHead, SchemaMarkup, createHowToSchema, createFAQSchema, createBreadcrumbSchema } from "@/components/seo";
@@ -137,10 +136,10 @@ export default function VendorDueDiligence() {
                 buttonSize="lg"
               />
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Track in Klarvo
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -206,7 +205,7 @@ export default function VendorDueDiligence() {
       <CTASection
         title="Centralize Your Vendor Management"
         subtitle="Klarvo tracks all your AI vendors, their documentation, and renewal dates in one place."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

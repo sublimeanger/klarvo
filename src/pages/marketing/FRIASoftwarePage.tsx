@@ -421,7 +421,7 @@ export default function FRIASoftwarePage() {
       <CTASection
         title="Complete Your FRIA Today"
         subtitle="Start free. Our guided workflow makes FRIA completion straightforward."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Pricing", href: "/pricing" }}
         variant="gradient"
       />

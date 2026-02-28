@@ -408,7 +408,7 @@ export default function AILiteracyGuide() {
       <CTASection
         title="Start Tracking AI Literacy"
         subtitle="Don't use spreadsheets. Klarvo automates training assignment, tracking, and evidence generation."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Get Training Tracker", href: "/ai-literacy-training-tracker" }}
         variant="gradient"
       />

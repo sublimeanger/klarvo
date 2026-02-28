@@ -347,7 +347,7 @@ export default function AIInventorySoftwarePage() {
       <CTASection
         title="Build Your AI Inventory Today"
         subtitle="Start free. Get your first AI system documented in under 10 minutes."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Pricing", href: "/pricing" }}
         variant="gradient"
       />

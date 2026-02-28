@@ -96,13 +96,13 @@ export function HomepageHero() {
 
             {/* CTAs - Full width stacked on mobile */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10 animate-fade-up sm:justify-center lg:justify-start" style={{ animationDelay: "0.3s" }}>
-              <Link
-                to="/auth/signup"
+              <a
+                href="https://app.klarvo.io/auth/signup"
                 className="group inline-flex items-center justify-center h-12 sm:h-13 px-6 sm:px-8 text-base font-semibold rounded-xl bg-primary text-white shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 hover:bg-primary/90 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]"
               >
                 Start Free
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Link>
+              </a>
               <Link
                 to="/samples"
                 className="group inline-flex items-center justify-center h-12 sm:h-13 px-6 sm:px-8 text-base font-semibold rounded-xl border-2 border-border bg-white hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 active:scale-[0.98]"

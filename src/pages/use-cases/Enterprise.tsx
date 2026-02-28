@@ -136,10 +136,10 @@ export default function EnterpriseUseCase() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="btn-premium" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start Free Trial
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/contact">Contact Sales</Link>
@@ -283,7 +283,7 @@ export default function EnterpriseUseCase() {
       <CTASection
         title="Ready to Scale AI Governance?"
         subtitle="Let's discuss how Klarvo can support your organization's unique compliance requirements."
-        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Contact Sales", href: "/contact" }}
         variant="gradient"
       />

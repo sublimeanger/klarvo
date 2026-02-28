@@ -189,10 +189,10 @@ export default function TransparencyChecker() {
                     </Link>
                   </Button>
                   <Button variant="outline" asChild>
-                    <Link to="/auth/signup">
+                    <a href="https://app.klarvo.io/auth/signup">
                       Track in Klarvo
                       <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
+                    </a>
                   </Button>
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function TransparencyChecker() {
       <CTASection
         title="Manage All Transparency Obligations"
         subtitle="Klarvo tracks which AI systems need disclosures and stores your evidence."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Tools", href: "/tools" }}
       />
     </MarketingLayout>

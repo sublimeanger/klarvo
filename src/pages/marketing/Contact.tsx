@@ -22,7 +22,6 @@ import {
   MapPin
 } from "lucide-react";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 import { SEOHead, SchemaMarkup, createBreadcrumbSchema } from "@/components/seo";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -347,10 +346,10 @@ export default function Contact() {
                         Explore our platform and classify your first AI system in under 10 minutes.
                       </p>
                       <Button size="sm" asChild>
-                        <Link to="/auth/signup">
+                        <a href="https://app.klarvo.io/auth/signup">
                           Start Free Trial
                           <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
+                        </a>
                       </Button>
                     </div>
                   </div>

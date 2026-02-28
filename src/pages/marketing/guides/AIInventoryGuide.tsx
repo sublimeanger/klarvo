@@ -411,7 +411,7 @@ export default function AIInventoryGuide() {
       <CTASection
         title="Ready to Build Your AI Inventory?"
         subtitle="Klarvo automates inventory management with guided intake, classification, and audit-ready exports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Download Template", href: "/templates/ai-inventory-template" }}
         variant="gradient"
       />

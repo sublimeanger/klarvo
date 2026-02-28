@@ -305,7 +305,7 @@ export default function Features() {
       <CTASection
         title="See It In Action"
         subtitle="Start for free and classify your first AI system in under 10 minutes."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "View Pricing", href: "/pricing" }}
         variant="gradient"
       />

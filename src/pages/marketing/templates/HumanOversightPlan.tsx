@@ -196,7 +196,7 @@ export default function HumanOversightPlan() {
       <CTASection
         title="Track Oversight in Klarvo"
         subtitle="Assign oversight owners, track training, and evidence your oversight arrangements—all in one place."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

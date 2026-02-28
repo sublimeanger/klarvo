@@ -142,10 +142,10 @@ export default function EvidenceVaultPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start Free Trial
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/features">
@@ -419,7 +419,7 @@ export default function EvidenceVaultPage() {
       <CTASection
         title="Centralize Your Compliance Evidence"
         subtitle="Upload, organize, and export audit-ready documentation from one vault."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Features", href: "/features" }}
         variant="gradient"
       />

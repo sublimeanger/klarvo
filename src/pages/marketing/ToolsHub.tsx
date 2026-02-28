@@ -218,7 +218,7 @@ export default function ToolsHub() {
       <CTASection
         title="Need Full Compliance Management?"
         subtitle="Tools are great for checking. Klarvo gives you the full system: inventory, evidence vault, approvals, and audit-ready exports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Features", href: "/features" }}
       />
     </MarketingLayout>

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
@@ -183,7 +182,7 @@ export default function FintechPage() {
       <CTASection
         title="Prepare Your Fintech for Compliance"
         subtitle="Klarvo helps financial services companies classify, document, and evidence AI compliance."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Industries", href: "/industries" }}
       />
     </MarketingLayout>

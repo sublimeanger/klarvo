@@ -214,7 +214,7 @@ export default function FRIATemplate() {
       <CTASection
         title="Need FRIA Workflow Automation?"
         subtitle="Klarvo's FRIA module guides you through every step with PDF report generation."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

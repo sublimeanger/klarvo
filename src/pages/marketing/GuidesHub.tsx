@@ -244,7 +244,7 @@ export default function GuidesHub() {
       <CTASection
         title="Ready to Put This Into Practice?"
         subtitle="Klarvo turns these guides into action. Build your inventory, classify risk, and generate evidence packs—all in one platform."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Download Templates", href: "/templates" }}
       />
     </MarketingLayout>
