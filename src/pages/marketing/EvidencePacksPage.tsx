@@ -126,10 +126,10 @@ export default function EvidencePacksPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start Free Trial
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/guides/evidence-pack-procurement">
@@ -303,7 +303,7 @@ export default function EvidencePacksPage() {
       <CTASection
         title="Generate Your First Evidence Pack"
         subtitle="Start free and export audit-ready documentation in minutes."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Read the Guide", href: "/guides/evidence-pack-procurement" }}
         variant="gradient"
       />

@@ -171,7 +171,7 @@ export default function LandingPage() {
         <CTASection
           title="Ready to Get EU AI Act Compliant?"
           subtitle="Start for free. No credit card required. Get your first AI system classified in under 10 minutes."
-          primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+          primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
           secondaryCta={{ label: "See How It Works", href: "/features" }}
           variant="gradient"
         />

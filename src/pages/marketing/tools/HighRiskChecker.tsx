@@ -304,7 +304,7 @@ export default function HighRiskChecker() {
       <CTASection
         title="Need Full Classification & Compliance?"
         subtitle="Klarvo automatically classifies your AI systems and generates the right obligations checklist."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Tools", href: "/tools" }}
       />
     </MarketingLayout>

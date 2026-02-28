@@ -344,7 +344,7 @@ export default function FAQ() {
       <CTASection
         title="Ready to Get Started?"
         subtitle="Join hundreds of organizations using Klarvo for EU AI Act compliance."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Features", href: "/features" }}
         variant="gradient"
       />

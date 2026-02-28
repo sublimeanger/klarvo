@@ -239,7 +239,7 @@ export default function HRRecruitmentPage() {
       <CTASection
         title="Get Your HR AI Compliant"
         subtitle="Klarvo helps HR teams inventory, classify, and manage AI compliance—without the legal complexity."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Industries", href: "/industries" }}
         variant="gradient"
       />

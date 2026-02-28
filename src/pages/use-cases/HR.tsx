@@ -146,10 +146,10 @@ export default function HRUseCase() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="btn-premium" asChild>
-                  <Link to="/auth/signup">
+                  <a href="https://app.klarvo.io/auth/signup">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
                   <Link to="/features">See How It Works</Link>
@@ -278,10 +278,10 @@ export default function HRUseCase() {
                   
                   <div className="mt-8 pt-6 border-t">
                     <Button className="w-full btn-premium" asChild>
-                      <Link to="/auth/signup">
+                      <a href="https://app.klarvo.io/auth/signup">
                         Get Started Free
                         <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
+                      </a>
                     </Button>
                   </div>
                 </CardContent>
@@ -295,7 +295,7 @@ export default function HRUseCase() {
       <CTASection
         title="Don't Wait Until August 2026"
         subtitle="HR AI systems have some of the strictest requirements under the EU AI Act. Start building your compliance foundation today."
-        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "HR Compliance Guide", href: "/resources" }}
         variant="gradient"
       />

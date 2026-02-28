@@ -110,10 +110,10 @@ export default function AIInventoryTemplate() {
                 buttonSize="lg"
               />
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Import to Klarvo
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -244,7 +244,7 @@ export default function AIInventoryTemplate() {
       <CTASection
         title="Ready for Automated Compliance?"
         subtitle="Import your inventory into Klarvo for classification, evidence linking, and audit-ready exports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

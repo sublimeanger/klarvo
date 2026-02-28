@@ -125,10 +125,10 @@ export default function SMEUseCase() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="btn-premium" asChild>
-                  <Link to="/auth/signup">
+                  <a href="https://app.klarvo.io/auth/signup">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
                   <Link to="/samples">See Samples</Link>
@@ -234,7 +234,7 @@ export default function SMEUseCase() {
       <CTASection
         title="Compliance Made Simple"
         subtitle="Join hundreds of SMEs already using Klarvo to navigate EU AI Act compliance without the complexity or cost."
-        primaryCta={{ label: "Start Your Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Your Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "View Pricing", href: "/pricing" }}
         variant="gradient"
       />

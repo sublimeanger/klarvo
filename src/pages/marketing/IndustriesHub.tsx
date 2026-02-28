@@ -123,7 +123,7 @@ export default function IndustriesHub() {
       <CTASection
         title="Get Industry-Specific Guidance"
         subtitle="Klarvo's classification engine automatically applies the right obligations based on your AI use case and industry context."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Features", href: "/features" }}
       />
     </MarketingLayout>

@@ -118,10 +118,10 @@ export default function AIAcceptableUsePolicy() {
                 buttonSize="lg"
               />
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Track in Klarvo
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -221,7 +221,7 @@ export default function AIAcceptableUsePolicy() {
       <CTASection
         title="Manage Policies with Klarvo"
         subtitle="Version, approve, and track acknowledgements for all your AI policies in one place."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { HeroSection } from "@/components/marketing/HeroSection";
 import { CTASection } from "@/components/marketing/CTASection";
@@ -98,7 +97,7 @@ export default function SaaSPage() {
           </>
         }
         subtitle="SaaS companies building or using AI need to understand their obligations. Whether you're a provider, deployer, or both—and how to evidence compliance to customers."
-        primaryCta={{ label: "Start Your Inventory", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Your Inventory", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Samples", href: "/samples" }}
         heroVariant="gradient-cool"
         variant="centered"
@@ -195,7 +194,7 @@ export default function SaaSPage() {
       <CTASection
         title="Win EU Deals with AI Governance"
         subtitle="Klarvo helps SaaS companies build and evidence AI compliance for customer confidence."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Industries", href: "/industries" }}
       />
     </MarketingLayout>

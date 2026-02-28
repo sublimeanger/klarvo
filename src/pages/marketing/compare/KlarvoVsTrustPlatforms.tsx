@@ -157,10 +157,10 @@ export default function KlarvoVsTrustPlatforms() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start with Klarvo
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/features">
@@ -368,7 +368,7 @@ export default function KlarvoVsTrustPlatforms() {
       <CTASection
         title="Ready for AI-Specific Compliance?"
         subtitle="Get EU AI Act controls, FRIA workflows, and classification automation out of the box."
-        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Features", href: "/features" }}
         variant="gradient"
       />

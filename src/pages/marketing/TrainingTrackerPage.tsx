@@ -158,10 +158,10 @@ export default function TrainingTrackerPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start Free Trial
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
               <Button size="lg" variant="outline" asChild>
                 <Link to="/guides/ai-literacy-article-4">
@@ -480,7 +480,7 @@ export default function TrainingTrackerPage() {
       <CTASection
         title="Start Tracking AI Literacy Today"
         subtitle="Article 4 applies now. Get compliant with role-based training and audit-ready reports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Read Article 4 Guide", href: "/guides/ai-literacy-article-4" }}
         variant="gradient"
       />

@@ -189,7 +189,7 @@ export default function Article50Disclosure() {
       <CTASection
         title="Manage All Your Disclosures in One Place"
         subtitle="Klarvo tracks which AI systems need disclosures and stores your evidence."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

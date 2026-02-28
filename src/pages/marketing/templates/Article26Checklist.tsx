@@ -147,10 +147,10 @@ export default function Article26Checklist() {
                 buttonSize="lg"
               />
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Import to Klarvo
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -239,7 +239,7 @@ export default function Article26Checklist() {
       <CTASection
         title="Automate Your Article 26 Compliance"
         subtitle="Klarvo auto-generates deployer checklists based on your AI system classification."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

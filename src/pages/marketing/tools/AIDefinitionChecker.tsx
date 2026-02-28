@@ -307,7 +307,7 @@ export default function AIDefinitionChecker() {
       <CTASection
         title="Need Full Compliance Management?"
         subtitle="Save your definition results in Klarvo and proceed with classification, evidence, and exports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Tools", href: "/tools" }}
       />
     </MarketingLayout>

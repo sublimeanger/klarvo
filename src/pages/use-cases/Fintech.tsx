@@ -138,10 +138,10 @@ export default function FintechUseCase() {
               
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="btn-premium" asChild>
-                  <Link to="/auth/signup">
+                  <a href="https://app.klarvo.io/auth/signup">
                     Start Free Trial
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+                  </a>
                 </Button>
                 <Button size="lg" variant="outline" asChild>
                   <Link to="/features">See How It Works</Link>
@@ -311,7 +311,7 @@ export default function FintechUseCase() {
       <CTASection
         title="Compliance That Scales With Your Business"
         subtitle="From startups to established banks, Klarvo helps financial services organizations document and manage AI compliance efficiently."
-        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Enterprise Options", href: "/use-cases/enterprise" }}
         variant="gradient"
       />

@@ -462,7 +462,7 @@ export default function ComplianceSoftwarePage() {
       <CTASection
         title="Get EU AI Act Compliant Today"
         subtitle="Start free. No credit card required. Get your first AI system classified in under 10 minutes."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See Pricing", href: "/pricing" }}
         variant="gradient"
       />

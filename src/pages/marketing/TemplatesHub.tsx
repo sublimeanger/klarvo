@@ -184,7 +184,7 @@ export default function TemplatesHub() {
       <CTASection
         title="Want Automated Compliance?"
         subtitle="Import templates into Klarvo for version control, evidence attachment, approval workflows, and audit-ready exports."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Features", href: "/features" }}
       />
     </MarketingLayout>

@@ -353,7 +353,7 @@ If your AI system is classified as high-risk, your obligations as a deployer inc
 1. Use Klarvo's [High-Risk Checker](/tools/high-risk-checker) to quickly screen your AI systems against all Annex III categories
 2. For each system flagged as potentially high-risk, review the detailed deployer obligations in our [Article 26 Checklist](/templates/article-26-checklist)
 3. Build your complete [AI System Inventory](/ai-systems/wizard) to ensure nothing is missed
-4. [Sign up for Klarvo](/auth/signup) to manage classification, controls, and evidence in one platform
+4. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to manage classification, controls, and evidence in one platform
     `
   },
   {
@@ -517,7 +517,7 @@ Track these metrics to demonstrate compliance and program value:
 2. **Set up your training program** with Klarvo's Training Tracker to manage courses, assignments, and completion
 3. **Download role-based training templates** from our [Templates library](/templates)
 4. **Start tracking completions** immediately—even basic awareness training counts
-5. [Sign up for Klarvo](/auth/signup) to manage AI literacy compliance alongside all your other EU AI Act obligations
+5. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to manage AI literacy compliance alongside all your other EU AI Act obligations
     `
   },
   {
@@ -704,7 +704,7 @@ Rather than treating each obligation in isolation, build an integrated complianc
 ## What to Do Next
 
 1. Download our [Article 26 Deployer Checklist](/templates/article-26-checklist) as a working template
-2. [Sign up for Klarvo](/auth/signup) to manage your deployer obligations with automated controls, evidence tracking, and gap analysis
+2. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to manage your deployer obligations with automated controls, evidence tracking, and gap analysis
 3. Read our companion guides on [FRIA](/blog/fria-step-by-step), [Human Oversight](/blog/building-oversight-culture), and [Vendor Due Diligence](/blog/vendor-due-diligence-ai)
 
 ---
@@ -905,7 +905,7 @@ Your final FRIA document should include:
 1. Determine if FRIA is required for your AI systems using Klarvo's [FRIA trigger assessment](/ai-systems/wizard)
 2. Download our [FRIA Template](/templates/fria-template) to structure your assessment
 3. Use Klarvo's FRIA Wizard to complete the assessment with guided steps and auto-generated reports
-4. [Sign up for Klarvo](/auth/signup) to manage your complete EU AI Act compliance journey
+4. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to manage your complete EU AI Act compliance journey
 
 ---
 
@@ -1060,7 +1060,7 @@ Klarvo's [AI System Intake Wizard](/ai-systems/wizard) is designed to prevent al
 - **Context capture** includes purpose, decisions, affected persons, and impact scale
 - **Completeness scoring** shows exactly what's missing from each record
 
-[Start your inventory today](/auth/signup) and build a foundation that supports your entire EU AI Act compliance journey.
+[Start your inventory today](https://app.klarvo.io/auth/signup) and build a foundation that supports your entire EU AI Act compliance journey.
     `
   },
   {
@@ -1227,7 +1227,7 @@ These questions assess the vendor's own regulatory awareness and preparedness.
 1. Download our [Vendor Due Diligence Questionnaire](/templates/vendor-due-diligence) as a ready-to-use template
 2. Review your current AI vendors against this framework
 3. Add AI due diligence requirements to your procurement process
-4. [Sign up for Klarvo](/auth/signup) to track vendor compliance alongside your full AI system inventory
+4. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to track vendor compliance alongside your full AI system inventory
 
 ---
 
@@ -1401,7 +1401,7 @@ For each "yes" answer, design disclosures that are:
 1. Screen your AI systems using Klarvo's [Transparency Checker](/tools/transparency-checker)
 2. Download our [Article 50 Disclosure Templates](/templates/article-50-disclosure) for ready-to-use transparency notices
 3. Build your AI system inventory with Klarvo's [guided wizard](/ai-systems/wizard) to ensure all transparency-relevant systems are captured
-4. [Sign up for Klarvo](/auth/signup) to manage transparency obligations alongside your complete EU AI Act compliance program
+4. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to manage transparency obligations alongside your complete EU AI Act compliance program
 
 ---
 
@@ -1596,7 +1596,7 @@ Use Klarvo's controls and evidence management to track all of these systematical
 1. Assess your current oversight arrangements using the framework above
 2. Use our [Human Oversight Plan Template](/templates/human-oversight-plan) to document oversight for each high-risk AI system
 3. Build your complete [AI System Inventory](/ai-systems/wizard) to identify all systems requiring oversight
-4. [Sign up for Klarvo](/auth/signup) to manage oversight documentation, controls, and evidence in one platform
+4. [Sign up for Klarvo](https://app.klarvo.io/auth/signup) to manage oversight documentation, controls, and evidence in one platform
 
 ---
 

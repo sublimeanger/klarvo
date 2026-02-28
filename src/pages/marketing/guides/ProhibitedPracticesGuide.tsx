@@ -179,9 +179,9 @@ export default function ProhibitedPracticesGuide() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Document Compliance
-                </Link>
+                </a>
               </Button>
             </div>
           </div>

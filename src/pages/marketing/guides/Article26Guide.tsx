@@ -376,7 +376,7 @@ export default function Article26Guide() {
       <CTASection
         title="Automate Your Article 26 Compliance"
         subtitle="Klarvo auto-generates deployer checklists, tracks evidence for each obligation, and produces audit-ready packs."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Guides", href: "/guides" }}
         variant="gradient"
       />

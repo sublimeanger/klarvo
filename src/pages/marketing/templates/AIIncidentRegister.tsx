@@ -110,10 +110,10 @@ export default function AIIncidentRegister() {
                 buttonSize="lg"
               />
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Use Klarvo Incidents
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -213,7 +213,7 @@ export default function AIIncidentRegister() {
       <CTASection
         title="Automate Incident Management"
         subtitle="Klarvo's incident module tracks events, triggers notifications, and links evidence automatically."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Templates", href: "/templates" }}
       />
     </MarketingLayout>

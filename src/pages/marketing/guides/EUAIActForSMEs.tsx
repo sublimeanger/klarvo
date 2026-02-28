@@ -172,10 +172,10 @@ export default function EUAIActForSMEs() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <Link to="/auth/signup">
+                <a href="https://app.klarvo.io/auth/signup">
                   Start with Klarvo
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function EUAIActForSMEs() {
       <CTASection
         title="Ready to Get Compliant?"
         subtitle="Klarvo helps SMEs achieve EU AI Act compliance without expensive consultants. Start with our free inventory tool."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "See All Guides", href: "/guides" }}
         variant="gradient"
       />

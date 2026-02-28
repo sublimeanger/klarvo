@@ -323,7 +323,7 @@ export default function About() {
       <CTASection
         title="Ready to Join Us?"
         subtitle="Whether you're looking to achieve compliance or join our team, we'd love to hear from you."
-        primaryCta={{ label: "Start Free Trial", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free Trial", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "View Open Positions", href: "/careers" }}
         variant="gradient"
       />

@@ -48,18 +48,18 @@ export default function Pricing() {
       if (user) {
         navigate("/");
       } else {
-        navigate("/auth/signup");
+        window.location.href = "https://app.klarvo.io/auth/signup";
       }
       return;
     }
-    
+
     if (plan === "enterprise") {
       window.open("mailto:sales@klarvo.com?subject=Enterprise%20Inquiry", "_blank");
       return;
     }
-    
+
     if (!user) {
-      navigate("/auth/signup");
+      window.location.href = "https://app.klarvo.io/auth/signup";
       return;
     }
     
@@ -130,10 +130,10 @@ export default function Pricing() {
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
               <Button size="lg" className="btn-premium w-full sm:w-auto h-12 px-8" asChild>
-                <Link to="/auth/signup">
-                  Start Free 
+                <a href="https://app.klarvo.io/auth/signup">
+                  Start Free
                   <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                </a>
               </Button>
               <Button variant="outline" size="lg" className="border-border/60 hover:border-primary/50 w-full sm:w-auto h-12 px-8" asChild>
                 <Link to="/contact">Talk to Sales</Link>
@@ -362,7 +362,7 @@ export default function Pricing() {
       <CTASection
         title="Ready to Build an Audit-Ready AI Inventory?"
         subtitle="Start free, add your first AI system, and generate your first evidence pack today."
-        primaryCta={{ label: "Start Free", href: "/auth/signup" }}
+        primaryCta={{ label: "Start Free", href: "https://app.klarvo.io/auth/signup" }}
         secondaryCta={{ label: "Talk to Sales", href: "/contact" }}
         variant="gradient"
       />
