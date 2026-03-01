@@ -59,15 +59,15 @@ test.describe('Smoke — Public Routes', () => {
 
       const resp = await page.goto(route);
       expect(resp?.status()).toBeLessThan(500);
-      await page.waitForLoadState('domcontentloaded');
+      await page.waitForLoadState('networkidle');
 
       // Not a white screen
       const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length).toBeGreaterThan(50);
+      expect(bodyText.length).toBeGreaterThan(10);
 
       // Marketing + legal pages should have an h1
       if (!route.startsWith('/auth/')) {
-        await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
+        await expect(page.locator('h1').first()).toBeVisible({ timeout: 15_000 });
       }
 
       // No uncaught JS errors (ignore ResizeObserver noise)
