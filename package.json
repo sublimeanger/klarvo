@@ -11,7 +11,13 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:prerender": "node scripts/prerender.mjs"
+    "build:prerender": "node scripts/prerender.mjs",
+    "test:e2e": "npx playwright test --project=chromium",
+    "test:e2e:smoke": "npx playwright test --project=smoke",
+    "test:e2e:all": "npx playwright test",
+    "test:e2e:headed": "npx playwright test --project=chromium --headed",
+    "test:e2e:debug": "npx playwright test --project=chromium --debug",
+    "test:e2e:report": "npx playwright show-report"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -69,6 +75,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@playwright/test": "^1.56.0",
     "@tailwindcss/typography": "^0.5.16",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -77,6 +84,7 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^17.3.1",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
