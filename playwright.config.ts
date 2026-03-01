@@ -45,10 +45,10 @@ export default defineConfig({
       dependencies: ['setup'],
     },
   ],
-  webServer: {
+  webServer: process.env.CI ? undefined : {
     command: 'npm run dev',
     url: 'http://localhost:8080',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120_000,
   },
 });
