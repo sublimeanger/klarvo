@@ -27,6 +27,17 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      - name: Create test env file
+        run: |
+          mkdir -p e2e/.auth
+          cat > e2e/.env.test << 'EOF'
+          TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }}
+          TEST_ONBOARD_EMAIL=${{ secrets.TEST_ONBOARD_EMAIL }}
+          TEST_ONBOARD_PASSWORD=${{ secrets.TEST_ONBOARD_PASSWORD }}
+          BASE_URL=https://app.klarvo.io
+          EOF
+
       - name: Run smoke tests
         run: npx playwright test --project=smoke
 
