@@ -1,11 +1,11 @@
 import { Page, expect } from '@playwright/test';
 
 export async function waitForApp(page: Page) {
-  await page.waitForLoadState('networkidle');
-  const spinner = page.locator('.animate-spin').first();
-  if (await spinner.isVisible({ timeout: 1500 }).catch(() => false)) {
-    await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-  }
+  await page.waitForLoadState('domcontentloaded');
+  // Wait for React to render — look for either the sidebar (app pages) or an h1 (marketing)
+  await page.locator('aside, h1, h2, [role="main"], main').first().waitFor({ state: 'visible', timeout: 15_000 });
+  // Give React a moment to finish hydration
+  await page.waitForTimeout(500);
 }
 
 export async function nav(page: Page, path: string) {
