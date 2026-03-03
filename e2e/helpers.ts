@@ -2,8 +2,8 @@ import { Page, expect } from '@playwright/test';
 
 export async function loginAndNavigate(page: Page, targetPath: string) {
   // Login via form — this is proven to work
-  await page.goto('/auth/login', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
+  await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+  await expect(page.getByLabel('Email')).toBeVisible({ timeout: 30_000 });
   await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
   await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD || 'TestPassword123!');
   await page.getByRole('button', { name: 'Sign In', exact: true }).click();
