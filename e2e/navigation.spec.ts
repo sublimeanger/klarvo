@@ -1,5 +1,9 @@
 import { test, expect } from '@playwright/test';
-import { waitForApp, nav, expectDialogTitle, closeDialog } from './helpers';
+import { login, waitForApp, nav, expectDialogTitle, closeDialog } from './helpers';
+
+test.beforeEach(async ({ page }) => {
+  await login(page);
+});
 
 // ================================================================
 // SETTINGS — GENERAL

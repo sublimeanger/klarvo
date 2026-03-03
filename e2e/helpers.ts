@@ -1,12 +1,18 @@
 import { Page, expect } from '@playwright/test';
 
+export async function login(page: Page, email?: string, password?: string) {
+  await page.goto('/auth/login');
+  await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
+  await page.getByLabel('Email').fill(email || process.env.TEST_USER_EMAIL || 'test@klarvo.io');
+  await page.getByLabel('Password').fill(password || process.env.TEST_USER_PASSWORD || 'TestPassword123!');
+  await page.getByRole('button', { name: 'Sign In', exact: true }).click();
+  await page.waitForURL('**/dashboard', { timeout: 30_000 });
+  await expect(page.locator('aside')).toBeVisible({ timeout: 30_000 });
+}
+
 export async function waitForApp(page: Page) {
   await page.waitForLoadState('domcontentloaded');
-  // Wait for the loading spinner to disappear — Supabase session restore can take several seconds
-  const spinner = page.locator('.animate-spin');
-  await spinner.waitFor({ state: 'hidden', timeout: 30_000 }).catch(() => {});
-  // Then wait for actual content to appear
-  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 15_000 });
+  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 30_000 });
 }
 
 export async function nav(page: Page, path: string) {
