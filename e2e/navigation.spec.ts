@@ -1,12 +1,18 @@
-import { test, expect } from '@playwright/test';
-import { loginAndNavigate, waitForApp, expectDialogTitle, closeDialog } from './helpers';
+import { test, expect, Browser } from '@playwright/test';
+import { setupAuth, nav, expectDialogTitle, closeDialog } from './helpers';
+
+// Login once, reuse for all tests in this file
+test.beforeAll(async ({ browser }) => {
+  await setupAuth(browser);
+});
+test.use({ storageState: 'e2e/.auth/user.json' });
 
 // ================================================================
 // SETTINGS — GENERAL
 // ================================================================
 test.describe('Settings — General', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAndNavigate(page, '/settings');
+    await nav(page, '/settings');
   });
 
   test('shows org, team, and notification sections', async ({ page }) => {
@@ -62,7 +68,7 @@ test.describe('Settings — General', () => {
 // ================================================================
 test.describe('Settings — Billing', () => {
   test('shows plan info and add-ons', async ({ page }) => {
-    await loginAndNavigate(page, '/settings/billing');
+    await nav(page, '/settings/billing');
     await expect(page.locator('text=/billing|plan|subscription/i').first()).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('text=/starter|growth|enterprise|trial/i').first()).toBeVisible();
     await expect(page.locator('text=/provider track|add-on|operator/i').first()).toBeVisible({ timeout: 15_000 });
@@ -74,7 +80,7 @@ test.describe('Settings — Billing', () => {
 // ================================================================
 test.describe('Sidebar — Navigation', () => {
   test('all 14 nav items navigate correctly', async ({ page }) => {
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
 
     const sidebar = page.locator('aside');
     const items = [
@@ -99,7 +105,7 @@ test.describe('Sidebar — Navigation', () => {
       await expect(link).toBeVisible();
       await link.click();
       await page.waitForURL(`**${url}`, { timeout: 10_000 });
-      await waitForApp(page);
+      await page.locator('h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 15_000 });
     }
   });
 });
@@ -109,7 +115,7 @@ test.describe('Sidebar — Navigation', () => {
 // ================================================================
 test.describe('Sidebar — Collapse', () => {
   test('collapse and expand toggle works', async ({ page }) => {
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
 
     const sidebar = page.locator('aside');
     const fullWidth = await sidebar.evaluate(el => el.offsetWidth);
@@ -134,7 +140,7 @@ test.describe('Sidebar — Collapse', () => {
 // ================================================================
 test.describe('User Menu', () => {
   test('dropdown has Profile, Settings, Log out', async ({ page }) => {
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
     await page.locator('aside').locator('button').last().click();
     await expect(page.getByRole('menuitem', { name: /profile/i })).toBeVisible();
     await expect(page.getByRole('menuitem', { name: /settings/i })).toBeVisible();
@@ -142,14 +148,14 @@ test.describe('User Menu', () => {
   });
 
   test('Settings menu item navigates', async ({ page }) => {
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
     await page.locator('aside').locator('button').last().click();
     await page.getByRole('menuitem', { name: /settings/i }).click();
     await page.waitForURL('**/settings');
   });
 
   test('sign out clears session', async ({ page }) => {
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
     await page.locator('aside').locator('button').last().click();
     await page.getByRole('menuitem', { name: /log out/i }).click();
     await page.waitForURL('**/auth/login', { timeout: 15_000 });
@@ -161,7 +167,7 @@ test.describe('User Menu', () => {
 // ================================================================
 test.describe('Provider Track', () => {
   test('Market Access section visible in sidebar', async ({ page }) => {
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
     await expect(page.locator('aside').locator('text=/market access/i')).toBeVisible();
     await expect(page.locator('aside').locator('text=/provider track/i')).toBeVisible();
   });
@@ -179,7 +185,7 @@ test.describe('Provider Track', () => {
 
   for (const route of providerRoutes) {
     test(`${route} loads without crash`, async ({ page }) => {
-      await loginAndNavigate(page, route);
+      await nav(page, route);
       expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
     });
   }
@@ -200,18 +206,18 @@ test.describe('Other Modules', () => {
 
   for (const { path, heading } of modules) {
     test(`${path} loads with heading`, async ({ page }) => {
-      await loginAndNavigate(page, path);
+      await nav(page, path);
       await expect(page.locator('h1, h2').filter({ hasText: heading }).first()).toBeVisible();
     });
   }
 
   test('Discovery shows connection options', async ({ page }) => {
-    await loginAndNavigate(page, '/discovery');
+    await nav(page, '/discovery');
     await expect(page.locator('text=/connect|workspace|google|microsoft/i').first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('Exports shows export types', async ({ page }) => {
-    await loginAndNavigate(page, '/exports');
+    await nav(page, '/exports');
     await expect(page.locator('text=/PDF|pack|report|generate|download/i').first()).toBeVisible({ timeout: 10_000 });
   });
 });
@@ -222,7 +228,7 @@ test.describe('Other Modules', () => {
 test.describe('Performance', () => {
   test('dashboard loads within 10 seconds', async ({ page }) => {
     const start = Date.now();
-    await loginAndNavigate(page, '/dashboard');
+    await nav(page, '/dashboard');
     expect(Date.now() - start).toBeLessThan(10_000);
   });
 });

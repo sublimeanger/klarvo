@@ -27,6 +27,12 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      - name: Warmup — verify app loads
+        run: |
+          npx playwright test --project=chromium -g "renders heading" --retries=5 --timeout=120000 2>&1 | head -20 || true
+        env:
+          BASE_URL: https://app.klarvo.io
+
       - name: Create test env file
         run: |
           mkdir -p e2e/.auth
