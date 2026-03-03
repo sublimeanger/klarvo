@@ -41,7 +41,7 @@ export function PlanCard({ plan, billingPeriod, currentPlan, onSelect, isLoading
     <div className={cn(
       "relative flex flex-col rounded-2xl border bg-card transition-all duration-300",
       "hover:shadow-xl hover:-translate-y-1",
-      isPopular && "border-primary shadow-lg shadow-primary/10 ring-1 ring-primary/20 scale-[1.02] z-10",
+      isPopular && "border-primary shadow-lg shadow-primary/10 ring-1 ring-primary/20 lg:scale-[1.02] z-10",
       !isPopular && "border-border/60 hover:border-primary/30",
     )}>
       {/* Popular ribbon */}

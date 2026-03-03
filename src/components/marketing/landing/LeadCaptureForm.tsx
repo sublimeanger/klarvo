@@ -284,7 +284,7 @@ export const LeadCaptureForm = ({ variant, id }: LeadCaptureFormProps) => {
             <RadioGroup
               value={stepTwoForm.watch("aiSystemCount")}
               onValueChange={(val) => stepTwoForm.setValue("aiSystemCount", val as StepTwoData["aiSystemCount"])}
-              className="grid grid-cols-3 gap-2"
+              className="grid grid-cols-2 sm:grid-cols-3 gap-2"
             >
               {["1", "2-10", "11-25", "26-100", "100+"].map((count) => (
                 <Label

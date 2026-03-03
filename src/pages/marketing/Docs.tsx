@@ -65,11 +65,10 @@ export default function Docs() {
             <DocsSidebar />
           </div>
 
-          {/* Mobile Navigation */}
-          <DocsMobileNav />
-
           {/* Main Content */}
           <main id="main-content" className="flex-1 min-w-0" tabIndex={-1}>
+            {/* Mobile Navigation */}
+            <DocsMobileNav />
             {/* Hero Section */}
             <section className="relative py-16 overflow-hidden border-b border-border/50">
               <div className="absolute inset-0 -z-10">

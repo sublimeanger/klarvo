@@ -12,12 +12,12 @@ export function ServiceCard({ service, onContact }: ServiceCardProps) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-2">
-        <div className="flex items-start justify-between">
-          <div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
             <CardTitle className="text-lg">{service.name}</CardTitle>
             <CardDescription className="mt-1">{service.description}</CardDescription>
           </div>
-          <span className="text-lg font-semibold whitespace-nowrap">{service.price}</span>
+          <span className="text-lg font-semibold whitespace-nowrap shrink-0">{service.price}</span>
         </div>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col">

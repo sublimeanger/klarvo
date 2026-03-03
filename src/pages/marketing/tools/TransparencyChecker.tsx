@@ -141,7 +141,7 @@ export default function TransparencyChecker() {
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="pl-12">
+                  <CardContent className="pl-4 sm:pl-12">
                     <p className="text-sm text-muted-foreground">
                       <span className="font-medium">Examples:</span> {scenario.examples}
                     </p>

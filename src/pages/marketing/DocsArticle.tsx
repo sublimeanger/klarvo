@@ -124,7 +124,7 @@ export default function DocsArticle() {
           <main id="main-content" className="flex-1 min-w-0" tabIndex={-1}>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
               {/* Breadcrumb */}
-              <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+              <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-8">
                 <Link to="/docs" className="hover:text-foreground transition-colors">
                   Docs
                 </Link>
@@ -142,7 +142,7 @@ export default function DocsArticle() {
 
               {/* Article Header */}
               <header className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
                   <Badge variant="outline">{article.category}</Badge>
                   <span className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Clock className="h-3.5 w-3.5" />

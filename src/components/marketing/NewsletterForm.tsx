@@ -130,7 +130,7 @@ export const NewsletterForm = forwardRef<HTMLFormElement, NewsletterFormProps>(
     // Default: inline variant
     return (
       <form ref={ref} onSubmit={handleSubmit} className={`flex gap-2 ${className}`}>
-        <div className="relative flex-1 max-w-[280px]">
+        <div className="relative flex-1 sm:max-w-[280px]">
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="email"
