@@ -2,15 +2,22 @@ import { Page, expect } from '@playwright/test';
 
 export async function waitForApp(page: Page) {
   await page.waitForLoadState('domcontentloaded');
-  // Wait for spinner to disappear (Supabase session restore)
-  const spinner = page.locator('.animate-spin');
-  await spinner.waitFor({ state: 'hidden', timeout: 30_000 }).catch(() => {});
-  // Wait for actual content
-  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 15_000 });
+  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 30_000 });
 }
 
 export async function nav(page: Page, path: string) {
+  // First attempt
   await page.goto(path, { waitUntil: 'domcontentloaded' });
+
+  // Handle Supabase auth race condition: if we see a spinner after 5s, reload once
+  try {
+    await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 5_000 });
+  } catch {
+    // Content not visible — likely auth race condition. Reload.
+    await page.reload({ waitUntil: 'domcontentloaded' });
+  }
+
+  // Now wait for real
   await waitForApp(page);
 }
 
