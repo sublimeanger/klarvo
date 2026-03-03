@@ -22,6 +22,8 @@ test.describe('Login — Validation', () => {
   });
 
   test('invalid email format → validation error', async ({ page }) => {
+    // Disable browser's native email validation so React/zod validation runs
+    await page.evaluate(() => document.querySelector('form')?.setAttribute('novalidate', ''));
     await page.getByLabel('Email').fill('not-an-email');
     await page.getByLabel('Password').fill('SomePass123');
     await page.getByRole('button', { name: 'Sign In', exact: true }).click();
