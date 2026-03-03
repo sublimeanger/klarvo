@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { login, waitForApp, nav, pickSelect } from './helpers';
-
-test.beforeEach(async ({ page }) => {
-  await login(page);
-});
+import { waitForApp, nav, pickSelect } from './helpers';
 
 // ================================================================
 // AI SYSTEMS — LIST PAGE

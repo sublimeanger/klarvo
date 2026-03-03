@@ -21,8 +21,13 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     actionTimeout: 15_000,
+    ignoreHTTPSErrors: true,
   },
   projects: [
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
     {
       name: 'smoke',
       testMatch: /.*\.smoke\.ts/,
@@ -35,7 +40,9 @@ export default defineConfig({
       testMatch: /.*\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
+        storageState: 'e2e/.auth/user.json',
       },
+      dependencies: ['setup'],
     },
   ],
   webServer: process.env.CI ? undefined : {

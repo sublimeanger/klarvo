@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { login, waitForApp, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
-
-test.beforeEach(async ({ page }) => {
-  await login(page);
-});
+import { waitForApp, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
 
 // ================================================================
 // TASKS
