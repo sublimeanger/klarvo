@@ -1,7 +1,7 @@
 import { Page, expect } from '@playwright/test';
 
 export async function loginAndNavigate(page: Page, targetPath: string) {
-  // Login via form — this is proven to work
+  // Login via form
   await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
   await expect(page.getByLabel('Email')).toBeVisible({ timeout: 30_000 });
   await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
@@ -13,40 +13,9 @@ export async function loginAndNavigate(page: Page, targetPath: string) {
   // If target is dashboard, we're done
   if (targetPath === '/dashboard') return;
 
-  // Navigate via client-side routing (sidebar click or URL bar with SPA router)
-  // Use evaluate to push state — React Router picks it up without full remount
-  await page.evaluate((path) => {
-    window.history.pushState({}, '', path);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  }, targetPath);
-  await page.waitForTimeout(1000);
-
-  // If the page didn't update (React Router might not listen to popstate), click sidebar
-  const content = await page.locator('aside, h1, h2, main').first().innerText().catch(() => '');
-  if (!content || content.length < 5) {
-    // Fallback: use sidebar link
-    const sidebarLinks: Record<string, string> = {
-      '/ai-systems': 'AI Systems',
-      '/vendors': 'Vendors',
-      '/evidence': 'Evidence',
-      '/policies': 'Policies',
-      '/training': 'Training',
-      '/tasks': 'Tasks',
-      '/incidents': 'Incidents',
-      '/settings': 'Settings',
-      '/assessments': 'Assessments',
-      '/controls': 'Controls',
-      '/disclosures': 'Disclosures',
-      '/discovery': 'Discovery',
-      '/exports': 'Exports',
-      '/audit-log': 'Audit Log',
-    };
-    const linkName = sidebarLinks[targetPath];
-    if (linkName) {
-      await page.locator('aside').getByRole('link', { name: linkName }).click();
-      await page.waitForTimeout(1000);
-    }
-  }
+  // Navigate via full page navigation — React Router v6 doesn't respond to pushState/popstate
+  await page.goto(targetPath, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+  await page.waitForTimeout(2000);
 }
 
 export async function waitForApp(page: Page) {
