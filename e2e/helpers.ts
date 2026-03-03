@@ -31,20 +31,32 @@ const SIDEBAR_LINKS: Record<string, string> = {
 
 export async function nav(page: Page, path: string) {
   const linkName = SIDEBAR_LINKS[path];
-  if (linkName && await page.locator('aside').isVisible().catch(() => false)) {
-    await page.locator('aside').getByRole('link', { name: linkName }).click();
-    await page.waitForURL('**' + path, { timeout: 15_000 });
-    await page.waitForTimeout(500);
-  } else {
-    // For sub-routes like /ai-systems/new or /settings/billing
-    // Click the parent sidebar link first, then navigate within the page
-    await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 30_000 });
-    await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 30_000 });
+
+  // Try sidebar click navigation first (fast, SPA-friendly)
+  if (linkName) {
+    try {
+      const sidebar = page.locator('aside');
+      if (await sidebar.isVisible().catch(() => false)) {
+        const link = sidebar.getByRole('link', { name: linkName });
+        await link.click({ timeout: 5_000 });
+        await page.waitForURL('**' + path, { timeout: 8_000 });
+        await page.waitForTimeout(500);
+        return;
+      }
+    } catch {
+      // Sidebar click didn't navigate — fall through to page.goto
+    }
   }
+
+  // Fallback: direct navigation via page.goto
+  await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 30_000 });
 }
 
 export async function loginAndNav(page: Page, path: string) {
   await login(page);
+  // Brief wait for React to finish rendering after login redirect
+  await page.waitForTimeout(500);
   if (path !== '/dashboard') {
     await nav(page, path);
   }
