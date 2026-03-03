@@ -1,18 +1,12 @@
-import { test, expect, Browser } from '@playwright/test';
-import { setupAuth, nav, pickSelect } from './helpers';
-
-// Login once, reuse for all tests in this file
-test.beforeAll(async ({ browser }) => {
-  await setupAuth(browser);
-});
-test.use({ storageState: 'e2e/.auth/user.json' });
+import { test, expect } from '@playwright/test';
+import { loginAndNav, nav, pickSelect } from './helpers';
 
 // ================================================================
 // AI SYSTEMS — LIST PAGE
 // ================================================================
 test.describe('AI Systems — List', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/ai-systems');
+    await loginAndNav(page, '/ai-systems');
   });
 
   test('renders heading and add button', async ({ page }) => {
@@ -43,7 +37,10 @@ test.describe('AI Systems — List', () => {
 // ================================================================
 test.describe('AI Systems — Wizard Mode Selection', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/ai-systems/new');
+    await loginAndNav(page, '/ai-systems');
+    await page.getByRole('link', { name: /add ai system/i })
+      .or(page.getByRole('button', { name: /add ai system/i })).first().click();
+    await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
   });
 
   test('shows 3 mode cards', async ({ page }) => {
@@ -71,9 +68,14 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
 // WIZARD — QUICK CAPTURE E2E
 // ================================================================
 test.describe('AI Systems — Quick Capture', () => {
-  test('complete quick capture wizard end-to-end', async ({ page }) => {
-    await nav(page, '/ai-systems/new');
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/ai-systems');
+    await page.getByRole('link', { name: /add ai system/i })
+      .or(page.getByRole('button', { name: /add ai system/i })).first().click();
+    await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+  });
 
+  test('complete quick capture wizard end-to-end', async ({ page }) => {
     // Step 0: Select Quick Capture → Next
     await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
@@ -104,7 +106,6 @@ test.describe('AI Systems — Quick Capture', () => {
   });
 
   test('Step 1 validation — name required', async ({ page }) => {
-    await nav(page, '/ai-systems/new');
     await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
 
@@ -123,9 +124,14 @@ test.describe('AI Systems — Quick Capture', () => {
 // WIZARD — FULL ASSESSMENT FIRST 5 STEPS
 // ================================================================
 test.describe('AI Systems — Full Assessment', () => {
-  test('navigate through first 5 steps', async ({ page }) => {
-    await nav(page, '/ai-systems/new');
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/ai-systems');
+    await page.getByRole('link', { name: /add ai system/i })
+      .or(page.getByRole('button', { name: /add ai system/i })).first().click();
+    await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+  });
 
+  test('navigate through first 5 steps', async ({ page }) => {
     // Step 0: Full Assessment → Next
     await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Full Assessment' }).first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
@@ -159,6 +165,10 @@ test.describe('AI Systems — Full Assessment', () => {
 // AI SYSTEM — DETAIL / ERROR HANDLING
 // ================================================================
 test.describe('AI Systems — Detail', () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
+
   test('invalid system ID handles gracefully', async ({ page }) => {
     await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000');
     const text = await page.locator('body').innerText();

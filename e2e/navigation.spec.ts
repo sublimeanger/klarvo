@@ -1,27 +1,23 @@
-import { test, expect, Browser } from '@playwright/test';
-import { setupAuth, nav, expectDialogTitle, closeDialog } from './helpers';
-
-// Login once, reuse for all tests in this file
-test.beforeAll(async ({ browser }) => {
-  await setupAuth(browser);
-});
-test.use({ storageState: 'e2e/.auth/user.json' });
+import { test, expect } from '@playwright/test';
+import { loginAndNav, nav, expectDialogTitle, closeDialog } from './helpers';
 
 // ================================================================
 // SETTINGS — GENERAL
 // ================================================================
 test.describe('Settings — General', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/settings');
+    await loginAndNav(page, '/dashboard');
   });
 
   test('shows org, team, and notification sections', async ({ page }) => {
+    await nav(page, '/settings');
     await expect(page.locator('text=/organization|company/i').first()).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('text=/team|member/i').first()).toBeVisible();
     await expect(page.locator('text=/notification/i').first()).toBeVisible();
   });
 
   test('invite dialog — fields and validation', async ({ page }) => {
+    await nav(page, '/settings');
     await page.getByRole('button', { name: /invite/i }).first().click();
     await expectDialogTitle(page, /invite team member/i);
 
@@ -49,6 +45,7 @@ test.describe('Settings — General', () => {
   });
 
   test('notification toggles are interactive', async ({ page }) => {
+    await nav(page, '/settings');
     const toggles = page.locator('[role="switch"]');
     const count = await toggles.count();
     if (count > 0) {
@@ -67,6 +64,10 @@ test.describe('Settings — General', () => {
 // SETTINGS — BILLING
 // ================================================================
 test.describe('Settings — Billing', () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
+
   test('shows plan info and add-ons', async ({ page }) => {
     await nav(page, '/settings/billing');
     await expect(page.locator('text=/billing|plan|subscription/i').first()).toBeVisible({ timeout: 10_000 });
@@ -79,9 +80,11 @@ test.describe('Settings — Billing', () => {
 // SIDEBAR NAVIGATION — ALL 14 ITEMS
 // ================================================================
 test.describe('Sidebar — Navigation', () => {
-  test('all 14 nav items navigate correctly', async ({ page }) => {
-    await nav(page, '/dashboard');
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
 
+  test('all 14 nav items navigate correctly', async ({ page }) => {
     const sidebar = page.locator('aside');
     const items = [
       { name: 'Dashboard', url: '/dashboard' },
@@ -114,9 +117,11 @@ test.describe('Sidebar — Navigation', () => {
 // SIDEBAR — COLLAPSE/EXPAND
 // ================================================================
 test.describe('Sidebar — Collapse', () => {
-  test('collapse and expand toggle works', async ({ page }) => {
-    await nav(page, '/dashboard');
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
 
+  test('collapse and expand toggle works', async ({ page }) => {
     const sidebar = page.locator('aside');
     const fullWidth = await sidebar.evaluate(el => el.offsetWidth);
     expect(fullWidth).toBeGreaterThan(200);
@@ -139,8 +144,11 @@ test.describe('Sidebar — Collapse', () => {
 // USER MENU + SIGN OUT
 // ================================================================
 test.describe('User Menu', () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
+
   test('dropdown has Profile, Settings, Log out', async ({ page }) => {
-    await nav(page, '/dashboard');
     await page.locator('aside').locator('button').last().click();
     await expect(page.getByRole('menuitem', { name: /profile/i })).toBeVisible();
     await expect(page.getByRole('menuitem', { name: /settings/i })).toBeVisible();
@@ -148,14 +156,12 @@ test.describe('User Menu', () => {
   });
 
   test('Settings menu item navigates', async ({ page }) => {
-    await nav(page, '/dashboard');
     await page.locator('aside').locator('button').last().click();
     await page.getByRole('menuitem', { name: /settings/i }).click();
     await page.waitForURL('**/settings');
   });
 
   test('sign out clears session', async ({ page }) => {
-    await nav(page, '/dashboard');
     await page.locator('aside').locator('button').last().click();
     await page.getByRole('menuitem', { name: /log out/i }).click();
     await page.waitForURL('**/auth/login', { timeout: 15_000 });
@@ -166,8 +172,11 @@ test.describe('User Menu', () => {
 // MARKET ACCESS + PROVIDER TRACK
 // ================================================================
 test.describe('Provider Track', () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
+
   test('Market Access section visible in sidebar', async ({ page }) => {
-    await nav(page, '/dashboard');
     await expect(page.locator('aside').locator('text=/market access/i')).toBeVisible();
     await expect(page.locator('aside').locator('text=/provider track/i')).toBeVisible();
   });
@@ -195,6 +204,10 @@ test.describe('Provider Track', () => {
 // REMAINING MODULES
 // ================================================================
 test.describe('Other Modules', () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
+
   const modules = [
     { path: '/assessments', heading: /assessment/i },
     { path: '/controls', heading: /control/i },
@@ -226,6 +239,10 @@ test.describe('Other Modules', () => {
 // PERFORMANCE
 // ================================================================
 test.describe('Performance', () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/dashboard');
+  });
+
   test('dashboard loads within 10 seconds', async ({ page }) => {
     const start = Date.now();
     await nav(page, '/dashboard');

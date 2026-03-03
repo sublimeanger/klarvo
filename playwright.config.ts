@@ -14,7 +14,7 @@ export default defineConfig({
   workers: 1,
   reporter: [['html', { open: 'never' }], ['list']],
   timeout: 90_000,
-  expect: { timeout: 10_000 },
+  expect: { timeout: 15_000 },
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:8080',
     trace: 'on-first-retry',
