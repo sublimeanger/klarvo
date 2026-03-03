@@ -1,24 +1,57 @@
 import { Page, expect } from '@playwright/test';
 
-export async function waitForApp(page: Page) {
-  await page.waitForLoadState('domcontentloaded');
-  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 30_000 });
+export async function loginAndNavigate(page: Page, targetPath: string) {
+  // Login via form — this is proven to work
+  await page.goto('/auth/login', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
+  await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
+  await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD || 'TestPassword123!');
+  await page.getByRole('button', { name: 'Sign In', exact: true }).click();
+  await page.waitForURL('**/dashboard', { timeout: 30_000 });
+  await expect(page.locator('aside')).toBeVisible({ timeout: 30_000 });
+
+  // If target is dashboard, we're done
+  if (targetPath === '/dashboard') return;
+
+  // Navigate via client-side routing (sidebar click or URL bar with SPA router)
+  // Use evaluate to push state — React Router picks it up without full remount
+  await page.evaluate((path) => {
+    window.history.pushState({}, '', path);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }, targetPath);
+  await page.waitForTimeout(1000);
+
+  // If the page didn't update (React Router might not listen to popstate), click sidebar
+  const content = await page.locator('aside, h1, h2, main').first().innerText().catch(() => '');
+  if (!content || content.length < 5) {
+    // Fallback: use sidebar link
+    const sidebarLinks: Record<string, string> = {
+      '/ai-systems': 'AI Systems',
+      '/vendors': 'Vendors',
+      '/evidence': 'Evidence',
+      '/policies': 'Policies',
+      '/training': 'Training',
+      '/tasks': 'Tasks',
+      '/incidents': 'Incidents',
+      '/settings': 'Settings',
+      '/assessments': 'Assessments',
+      '/controls': 'Controls',
+      '/disclosures': 'Disclosures',
+      '/discovery': 'Discovery',
+      '/exports': 'Exports',
+      '/audit-log': 'Audit Log',
+    };
+    const linkName = sidebarLinks[targetPath];
+    if (linkName) {
+      await page.locator('aside').getByRole('link', { name: linkName }).click();
+      await page.waitForTimeout(1000);
+    }
+  }
 }
 
-export async function nav(page: Page, path: string) {
-  // First attempt
-  await page.goto(path, { waitUntil: 'domcontentloaded' });
-
-  // Handle Supabase auth race condition: if we see a spinner after 5s, reload once
-  try {
-    await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 5_000 });
-  } catch {
-    // Content not visible — likely auth race condition. Reload.
-    await page.reload({ waitUntil: 'domcontentloaded' });
-  }
-
-  // Now wait for real
-  await waitForApp(page);
+export async function waitForApp(page: Page) {
+  await page.waitForLoadState('domcontentloaded');
+  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 15_000 });
 }
 
 export async function pickSelect(page: Page, labelText: string, optionText: string) {
