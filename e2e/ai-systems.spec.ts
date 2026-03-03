@@ -1,12 +1,18 @@
-import { test, expect } from '@playwright/test';
-import { loginAndNavigate, waitForApp, pickSelect } from './helpers';
+import { test, expect, Browser } from '@playwright/test';
+import { setupAuth, nav, pickSelect } from './helpers';
+
+// Login once, reuse for all tests in this file
+test.beforeAll(async ({ browser }) => {
+  await setupAuth(browser);
+});
+test.use({ storageState: 'e2e/.auth/user.json' });
 
 // ================================================================
 // AI SYSTEMS — LIST PAGE
 // ================================================================
 test.describe('AI Systems — List', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems');
+    await nav(page, '/ai-systems');
   });
 
   test('renders heading and add button', async ({ page }) => {
@@ -37,7 +43,7 @@ test.describe('AI Systems — List', () => {
 // ================================================================
 test.describe('AI Systems — Wizard Mode Selection', () => {
   test.beforeEach(async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/new');
+    await nav(page, '/ai-systems/new');
   });
 
   test('shows 3 mode cards', async ({ page }) => {
@@ -66,7 +72,7 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
 // ================================================================
 test.describe('AI Systems — Quick Capture', () => {
   test('complete quick capture wizard end-to-end', async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/new');
+    await nav(page, '/ai-systems/new');
 
     // Step 0: Select Quick Capture → Next
     await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
@@ -98,7 +104,7 @@ test.describe('AI Systems — Quick Capture', () => {
   });
 
   test('Step 1 validation — name required', async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/new');
+    await nav(page, '/ai-systems/new');
     await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
 
@@ -118,7 +124,7 @@ test.describe('AI Systems — Quick Capture', () => {
 // ================================================================
 test.describe('AI Systems — Full Assessment', () => {
   test('navigate through first 5 steps', async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/new');
+    await nav(page, '/ai-systems/new');
 
     // Step 0: Full Assessment → Next
     await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Full Assessment' }).first().click();
@@ -154,18 +160,18 @@ test.describe('AI Systems — Full Assessment', () => {
 // ================================================================
 test.describe('AI Systems — Detail', () => {
   test('invalid system ID handles gracefully', async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/00000000-0000-0000-0000-000000000000');
+    await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000');
     const text = await page.locator('body').innerText();
     expect(text).not.toContain('Unhandled Runtime Error');
   });
 
   test('classification route handles invalid ID', async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/00000000-0000-0000-0000-000000000000/classify');
+    await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000/classify');
     expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
   });
 
   test('FRIA route handles invalid ID', async ({ page }) => {
-    await loginAndNavigate(page, '/ai-systems/00000000-0000-0000-0000-000000000000/fria');
+    await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000/fria');
     expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
   });
 });
