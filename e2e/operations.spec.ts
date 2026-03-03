@@ -1,18 +1,12 @@
-import { test, expect, Browser } from '@playwright/test';
-import { setupAuth, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
-
-// Login once, reuse for all tests in this file
-test.beforeAll(async ({ browser }) => {
-  await setupAuth(browser);
-});
-test.use({ storageState: 'e2e/.auth/user.json' });
+import { test, expect } from '@playwright/test';
+import { loginAndNav, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
 
 // ================================================================
 // TASKS
 // ================================================================
 test.describe('Tasks — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/tasks');
+    await loginAndNav(page, '/tasks');
   });
 
   test('page renders with heading and add button', async ({ page }) => {
@@ -65,7 +59,7 @@ test.describe('Tasks — CRUD', () => {
 // ================================================================
 test.describe('Incidents — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/incidents');
+    await loginAndNav(page, '/incidents');
   });
 
   test('page renders with heading and report button', async ({ page }) => {
@@ -119,7 +113,7 @@ test.describe('Incidents — CRUD', () => {
 // ================================================================
 test.describe('Training', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/training');
+    await loginAndNav(page, '/training');
   });
 
   test('page renders with heading', async ({ page }) => {

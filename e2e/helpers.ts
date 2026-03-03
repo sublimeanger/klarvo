@@ -1,62 +1,50 @@
-import { Page, Browser, BrowserContext, expect } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
-let sharedContext: BrowserContext | null = null;
-
-export async function setupAuth(browser: Browser): Promise<BrowserContext> {
-  if (sharedContext) return sharedContext;
-
-  const context = await browser.newContext({ ignoreHTTPSErrors: true });
-  const page = await context.newPage();
-
+export async function login(page: Page, email?: string, password?: string) {
   await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await expect(page.getByLabel('Email')).toBeVisible({ timeout: 30_000 });
-  await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
-  await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD || 'TestPassword123!');
+  await page.getByLabel('Email').fill(email || process.env.TEST_USER_EMAIL || 'test@klarvo.io');
+  await page.getByLabel('Password').fill(password || process.env.TEST_USER_PASSWORD || 'TestPassword123!');
   await page.getByRole('button', { name: 'Sign In', exact: true }).click();
   await page.waitForURL('**/dashboard', { timeout: 60_000 });
   await expect(page.locator('aside')).toBeVisible({ timeout: 60_000 });
-
-  // Save storage state for reuse
-  await context.storageState({ path: 'e2e/.auth/user.json' });
-  await page.close();
-  await context.close();
-
-  sharedContext = await browser.newContext({
-    ignoreHTTPSErrors: true,
-    storageState: 'e2e/.auth/user.json',
-  });
-  return sharedContext;
 }
 
-export async function nav(page: Page, path: string) {
-  // Use sidebar click for client-side routing (no full page reload)
-  const sidebarLinks: Record<string, string> = {
-    '/ai-systems': 'AI Systems',
-    '/vendors': 'Vendors',
-    '/evidence': 'Evidence',
-    '/policies': 'Policies',
-    '/training': 'Training',
-    '/tasks': 'Tasks',
-    '/incidents': 'Incidents',
-    '/settings': 'Settings',
-    '/assessments': 'Assessments',
-    '/controls': 'Controls',
-    '/disclosures': 'Disclosures',
-    '/discovery': 'Discovery',
-    '/exports': 'Exports',
-    '/audit-log': 'Audit Log',
-    '/dashboard': 'Dashboard',
-  };
+const SIDEBAR_LINKS: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/ai-systems': 'AI Systems',
+  '/vendors': 'Vendors',
+  '/evidence': 'Evidence',
+  '/policies': 'Policies',
+  '/training': 'Training',
+  '/tasks': 'Tasks',
+  '/incidents': 'Incidents',
+  '/assessments': 'Assessments',
+  '/controls': 'Controls',
+  '/disclosures': 'Disclosures',
+  '/discovery': 'Discovery',
+  '/exports': 'Exports',
+  '/audit-log': 'Audit Log',
+};
 
-  const linkName = sidebarLinks[path];
+export async function nav(page: Page, path: string) {
+  const linkName = SIDEBAR_LINKS[path];
   if (linkName && await page.locator('aside').isVisible().catch(() => false)) {
     await page.locator('aside').getByRole('link', { name: linkName }).click();
-    await page.waitForTimeout(1000);
-    await page.locator('h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 15_000 });
+    await page.waitForURL('**' + path, { timeout: 15_000 });
+    await page.waitForTimeout(500);
   } else {
-    // Fallback for routes not in sidebar (e.g. /ai-systems/new, /settings/billing)
+    // For sub-routes like /ai-systems/new or /settings/billing
+    // Click the parent sidebar link first, then navigate within the page
     await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 30_000 });
     await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 30_000 });
+  }
+}
+
+export async function loginAndNav(page: Page, path: string) {
+  await login(page);
+  if (path !== '/dashboard') {
+    await nav(page, path);
   }
 }
 

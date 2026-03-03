@@ -1,14 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-// All auth tests run without saved session
-test.use({ storageState: { cookies: [], origins: [] } });
-
 // ================================================================
 // LOGIN — VALIDATION
 // ================================================================
 test.describe('Login — Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
     await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
   });
 
@@ -72,7 +69,8 @@ test.describe('Login — Validation', () => {
 // ================================================================
 test.describe('Login — Success', () => {
   test('valid credentials → redirect to /dashboard', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
     await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
     await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD || 'TestPassword123!');
     await page.getByRole('button', { name: 'Sign In' }).click();
@@ -86,7 +84,7 @@ test.describe('Login — Success', () => {
 // ================================================================
 test.describe('Signup — Validation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/auth/signup');
+    await page.goto('/auth/signup', { waitUntil: 'domcontentloaded', timeout: 30_000 });
     await expect(page.getByLabel('Full Name')).toBeVisible({ timeout: 15_000 });
   });
 
@@ -135,28 +133,31 @@ test.describe('Signup — Validation', () => {
 // ================================================================
 test.describe('Auth — Navigation', () => {
   test('login → signup link', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
     await page.getByRole('link', { name: /sign up|create account|register/i }).click();
     await page.waitForURL('**/auth/signup');
     await expect(page.getByLabel('Full Name')).toBeVisible();
   });
 
   test('login → forgot password link', async ({ page }) => {
-    await page.goto('/auth/login');
+    await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
     await page.getByRole('link', { name: /forgot/i }).click();
     await page.waitForURL('**/auth/forgot-password');
     await expect(page.getByLabel('Email')).toBeVisible();
   });
 
   test('signup → login link', async ({ page }) => {
-    await page.goto('/auth/signup');
+    await page.goto('/auth/signup', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    await expect(page.getByLabel('Full Name')).toBeVisible({ timeout: 15_000 });
     await page.getByRole('link', { name: /log in|sign in|already have/i }).click();
     await page.waitForURL('**/auth/login');
   });
 
   test('forgot password page renders', async ({ page }) => {
-    await page.goto('/auth/forgot-password');
-    await expect(page.locator('h1, h2').filter({ hasText: /forgot|reset|password/i }).first()).toBeVisible();
+    await page.goto('/auth/forgot-password', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    await expect(page.locator('h1, h2').filter({ hasText: /forgot|reset|password/i }).first()).toBeVisible({ timeout: 15_000 });
     await expect(page.getByLabel('Email')).toBeVisible();
   });
 });

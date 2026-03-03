@@ -1,18 +1,12 @@
-import { test, expect, Browser } from '@playwright/test';
-import { setupAuth, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
-
-// Login once, reuse for all tests in this file
-test.beforeAll(async ({ browser }) => {
-  await setupAuth(browser);
-});
-test.use({ storageState: 'e2e/.auth/user.json' });
+import { test, expect } from '@playwright/test';
+import { loginAndNav, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
 
 // ================================================================
 // VENDORS
 // ================================================================
 test.describe('Vendors — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/vendors');
+    await loginAndNav(page, '/vendors');
   });
 
   test('page renders with heading', async ({ page }) => {
@@ -60,7 +54,7 @@ test.describe('Vendors — CRUD', () => {
 // ================================================================
 test.describe('Evidence', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/evidence');
+    await loginAndNav(page, '/evidence');
   });
 
   test('page renders with heading and upload button', async ({ page }) => {
@@ -98,7 +92,7 @@ test.describe('Evidence', () => {
 // ================================================================
 test.describe('Policies — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/policies');
+    await loginAndNav(page, '/policies');
   });
 
   test('page renders with heading', async ({ page }) => {
