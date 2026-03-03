@@ -21,6 +21,7 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     actionTimeout: 15_000,
+    ignoreHTTPSErrors: true,
   },
   projects: [
     {
@@ -32,7 +33,6 @@ export default defineConfig({
       testMatch: /.*\.smoke\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        storageState: { cookies: [], origins: [] },
       },
     },
     {
