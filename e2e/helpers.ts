@@ -25,6 +25,8 @@ const SIDEBAR_LINKS: Record<string, string> = {
   '/discovery': 'Discovery',
   '/exports': 'Exports',
   '/audit-log': 'Audit Log',
+  '/settings': 'Settings',
+  '/provider-track': 'Provider Track',
 };
 
 export async function nav(page: Page, path: string) {

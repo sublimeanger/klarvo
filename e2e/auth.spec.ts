@@ -39,9 +39,9 @@ test.describe('Login — Validation', () => {
     await page.getByLabel('Email').fill('wrong@example.com');
     await page.getByLabel('Password').fill('WrongPassword123');
     await page.getByRole('button', { name: 'Sign In' }).click();
-    // Toast shows "Error" title with destructive variant
+    // Toast shows "Error" title with destructive variant (Radix Toast or Sonner)
     await expect(
-      page.locator('[data-sonner-toast], [role="status"], [class*="destructive"]')
+      page.locator('[data-sonner-toast], li[data-state="open"], [class*="destructive"]')
         .filter({ hasText: /error|invalid|incorrect/i }).first()
     ).toBeVisible({ timeout: 10_000 });
   });
@@ -49,7 +49,7 @@ test.describe('Login — Validation', () => {
   test('magic link without email → error toast', async ({ page }) => {
     await page.getByRole('button', { name: /magic link/i }).click();
     await expect(
-      page.locator('[data-sonner-toast], [role="status"]')
+      page.locator('[data-sonner-toast], li[data-state="open"], [class*="destructive"]')
         .filter({ hasText: /email required|enter your email/i }).first()
     ).toBeVisible({ timeout: 5_000 });
   });
@@ -58,7 +58,7 @@ test.describe('Login — Validation', () => {
     await page.getByLabel('Email').fill('test@klarvo.io');
     await page.getByRole('button', { name: /magic link/i }).click();
     await expect(
-      page.locator('[data-sonner-toast], [role="status"]')
+      page.locator('[data-sonner-toast], li[data-state="open"]')
         .filter({ hasText: /magic link sent/i }).first()
     ).toBeVisible({ timeout: 10_000 });
   });
@@ -157,7 +157,7 @@ test.describe('Auth — Navigation', () => {
 
   test('forgot password page renders', async ({ page }) => {
     await page.goto('/auth/forgot-password', { waitUntil: 'domcontentloaded', timeout: 30_000 });
-    await expect(page.locator('h1, h2').filter({ hasText: /forgot|reset|password/i }).first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('h1, h2, h3').filter({ hasText: /forgot|reset|password/i }).first()).toBeVisible({ timeout: 15_000 });
     await expect(page.getByLabel('Email')).toBeVisible();
   });
 });
@@ -174,7 +174,7 @@ test.describe('Auth — Redirects', () => {
 
   for (const route of protectedRoutes) {
     test(`${route} → redirects to /auth/login`, async ({ page }) => {
-      await page.goto(route);
+      await page.goto(route, { waitUntil: 'domcontentloaded', timeout: 30_000 });
       await page.waitForURL('**/auth/login', { timeout: 15_000 });
     });
   }

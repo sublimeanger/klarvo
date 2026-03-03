@@ -61,6 +61,15 @@ export default function Login() {
                 onSuccess={() => navigate(from, { replace: true })} 
               />
 
+              <p className="mt-3 text-center text-sm text-muted-foreground">
+                <Link
+                  to="/auth/forgot-password"
+                  className="font-medium text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </p>
+
               <p className="mt-4 sm:mt-6 text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
                 <Link
