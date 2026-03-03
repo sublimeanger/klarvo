@@ -2,10 +2,11 @@ import { Page, expect } from '@playwright/test';
 
 export async function waitForApp(page: Page) {
   await page.waitForLoadState('domcontentloaded');
-  // Wait for React to render — look for either the sidebar (app pages) or an h1 (marketing)
-  await page.locator('aside, h1, h2, [role="main"], main').first().waitFor({ state: 'visible', timeout: 15_000 });
-  // Give React a moment to finish hydration
-  await page.waitForTimeout(500);
+  // Wait for the loading spinner to disappear — Supabase session restore can take several seconds
+  const spinner = page.locator('.animate-spin');
+  await spinner.waitFor({ state: 'hidden', timeout: 30_000 }).catch(() => {});
+  // Then wait for actual content to appear
+  await page.locator('aside, h1, h2, main, [role="main"]').first().waitFor({ state: 'visible', timeout: 15_000 });
 }
 
 export async function nav(page: Page, path: string) {
