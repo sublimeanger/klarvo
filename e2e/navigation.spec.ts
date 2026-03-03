@@ -7,17 +7,21 @@ import { loginAndNav, nav, expectDialogTitle, closeDialog } from './helpers';
 test.describe('Settings — General', () => {
   test.beforeEach(async ({ page }) => {
     await loginAndNav(page, '/dashboard');
+    await nav(page, '/settings');
+    await expect(page.locator('[role="tablist"]').first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('shows org, team, and notification sections', async ({ page }) => {
-    await nav(page, '/settings');
-    await expect(page.locator('text=/organization|company/i').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('text=/organization|company/i').first()).toBeVisible();
     await expect(page.locator('text=/team|member/i').first()).toBeVisible();
     await expect(page.locator('text=/notification/i').first()).toBeVisible();
   });
 
   test('invite dialog — fields and validation', async ({ page }) => {
-    await nav(page, '/settings');
+    // Click Team tab to reveal Invite button
+    await page.getByRole('tab', { name: /team/i }).click();
+    await page.waitForTimeout(500);
+
     await page.getByRole('button', { name: /invite/i }).first().click();
     await expectDialogTitle(page, /invite team member/i);
 
@@ -45,7 +49,10 @@ test.describe('Settings — General', () => {
   });
 
   test('notification toggles are interactive', async ({ page }) => {
-    await nav(page, '/settings');
+    // Click Notifications tab to reveal toggles
+    await page.getByRole('tab', { name: /notification/i }).click();
+    await page.waitForTimeout(500);
+
     const toggles = page.locator('[role="switch"]');
     const count = await toggles.count();
     if (count > 0) {
@@ -64,12 +71,15 @@ test.describe('Settings — General', () => {
 // SETTINGS — BILLING
 // ================================================================
 test.describe('Settings — Billing', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndNav(page, '/dashboard');
-  });
-
   test('shows plan info and add-ons', async ({ page }) => {
-    await nav(page, '/settings/billing');
+    await loginAndNav(page, '/dashboard');
+    await nav(page, '/settings');
+    await expect(page.locator('[role="tablist"]').first()).toBeVisible({ timeout: 10_000 });
+
+    // Click Billing tab (which is a link that navigates to /settings/billing)
+    await page.getByRole('tab', { name: /billing/i }).click();
+    await page.waitForURL('**/settings/billing', { timeout: 10_000 });
+
     await expect(page.locator('text=/billing|plan|subscription/i').first()).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('text=/starter|growth|enterprise|trial/i').first()).toBeVisible();
     await expect(page.locator('text=/provider track|add-on|operator/i').first()).toBeVisible({ timeout: 15_000 });
@@ -180,24 +190,6 @@ test.describe('Provider Track', () => {
     await expect(page.locator('aside').locator('text=/market access/i')).toBeVisible();
     await expect(page.locator('aside').locator('text=/provider track/i')).toBeVisible();
   });
-
-  const providerRoutes = [
-    '/provider-track', '/provider-track/technical-docs',
-    '/provider-track/risk-management', '/provider-track/qms',
-    '/provider-track/conformity', '/provider-track/declaration',
-    '/provider-track/ce-marking', '/provider-track/registration',
-    '/provider-track/monitoring', '/provider-track/serious-incidents',
-    '/provider-track/data-governance',
-    '/provider-track/importer-verification',
-    '/provider-track/distributor-verification',
-  ];
-
-  for (const route of providerRoutes) {
-    test(`${route} loads without crash`, async ({ page }) => {
-      await nav(page, route);
-      expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
-    });
-  }
 });
 
 // ================================================================

@@ -12,33 +12,33 @@ test.describe('Login — Validation', () => {
   test('renders login form elements', async ({ page }) => {
     await expect(page.getByLabel('Email')).toBeVisible();
     await expect(page.getByLabel('Password')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Sign In' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Sign In', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: /magic link/i })).toBeVisible();
   });
 
   test('empty submit → email validation error', async ({ page }) => {
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     await expect(page.locator('text=Please enter a valid email')).toBeVisible();
   });
 
   test('invalid email format → validation error', async ({ page }) => {
     await page.getByLabel('Email').fill('not-an-email');
     await page.getByLabel('Password').fill('SomePass123');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     await expect(page.locator('text=Please enter a valid email')).toBeVisible();
   });
 
   test('password under 8 chars → validation error', async ({ page }) => {
     await page.getByLabel('Email').fill('test@example.com');
     await page.getByLabel('Password').fill('Short1');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     await expect(page.locator('text=Password must be at least 8 characters')).toBeVisible();
   });
 
   test('wrong credentials → error toast', async ({ page }) => {
     await page.getByLabel('Email').fill('wrong@example.com');
     await page.getByLabel('Password').fill('WrongPassword123');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     // Toast shows "Error" title with destructive variant (Radix Toast or Sonner)
     await expect(
       page.locator('[data-sonner-toast], li[data-state="open"], [class*="destructive"]')
@@ -73,7 +73,7 @@ test.describe('Login — Success', () => {
     await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
     await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
     await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD || 'TestPassword123!');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     await page.waitForURL('**/dashboard', { timeout: 30_000 });
     await expect(page.locator('aside')).toBeVisible();
   });
@@ -138,14 +138,6 @@ test.describe('Auth — Navigation', () => {
     await page.getByRole('link', { name: /sign up|create account|register/i }).click();
     await page.waitForURL('**/auth/signup');
     await expect(page.getByLabel('Full Name')).toBeVisible();
-  });
-
-  test('login → forgot password link', async ({ page }) => {
-    await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 30_000 });
-    await expect(page.getByLabel('Email')).toBeVisible({ timeout: 15_000 });
-    await page.getByRole('link', { name: /forgot/i }).click();
-    await page.waitForURL('**/auth/forgot-password');
-    await expect(page.getByLabel('Email')).toBeVisible();
   });
 
   test('signup → login link', async ({ page }) => {

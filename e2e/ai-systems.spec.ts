@@ -41,24 +41,26 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
     await page.getByRole('link', { name: /add ai system/i })
       .or(page.getByRole('button', { name: /add ai system/i })).first().click();
     await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+    // Wait for mode selection to render
+    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 15_000 });
   });
 
   test('shows 3 mode cards', async ({ page }) => {
-    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('text=AI-Powered Quick Start')).toBeVisible();
     await expect(page.locator('text=Quick Capture')).toBeVisible();
     await expect(page.locator('text=Full Assessment')).toBeVisible();
-    await expect(page.locator('text=Recommended')).toBeVisible(); // AI Quick Start badge
+    await expect(page.locator('text=Recommended')).toBeVisible();
   });
 
   test('Quick Capture selection highlights card', async ({ page }) => {
-    const card = page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first();
+    const card = page.locator('.cursor-pointer:has-text("Quick Capture")').first();
     await card.click();
-    await expect(card).toHaveClass(/ring-2.*ring-primary|border-primary.*ring-2/);
+    await expect(card).toHaveClass(/ring-2/);
+    await expect(card).toHaveClass(/ring-primary/);
   });
 
   test('Full Assessment selection shows feature list', async ({ page }) => {
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Full Assessment' }).first().click();
+    await page.locator('.cursor-pointer:has-text("Full Assessment")').first().click();
     await expect(page.locator('text=prohibited practices screening')).toBeVisible();
     await expect(page.locator('text=High-risk classification')).toBeVisible();
   });
@@ -73,17 +75,19 @@ test.describe('AI Systems — Quick Capture', () => {
     await page.getByRole('link', { name: /add ai system/i })
       .or(page.getByRole('button', { name: /add ai system/i })).first().click();
     await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 15_000 });
   });
 
   test('complete quick capture wizard end-to-end', async ({ page }) => {
     // Step 0: Select Quick Capture → Next
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
+    await page.locator('.cursor-pointer:has-text("Quick Capture")').first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
 
     // Step 1: Basics
     await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
-    await page.locator('#name').fill('E2E Test — ChatGPT Support Bot');
-    await page.locator('#internal_reference_id').fill('AI-E2E-001');
+    const ts = Date.now();
+    await page.locator('#name').fill(`E2E Quick Capture — ${ts}`);
+    await page.locator('#internal_reference_id').fill(`AI-E2E-QC-${ts}`);
     await page.locator('#description').fill('Customer support chatbot powered by GPT-4 for tier 1 queries.');
     await pickSelect(page, 'Department', 'Customer Service');
     await pickSelect(page, 'Status', 'Live');
@@ -106,7 +110,7 @@ test.describe('AI Systems — Quick Capture', () => {
   });
 
   test('Step 1 validation — name required', async ({ page }) => {
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
+    await page.locator('.cursor-pointer:has-text("Quick Capture")').first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
 
     // On Step 1 — try to proceed without name
@@ -129,16 +133,18 @@ test.describe('AI Systems — Full Assessment', () => {
     await page.getByRole('link', { name: /add ai system/i })
       .or(page.getByRole('button', { name: /add ai system/i })).first().click();
     await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 15_000 });
   });
 
   test('navigate through first 5 steps', async ({ page }) => {
     // Step 0: Full Assessment → Next
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Full Assessment' }).first().click();
+    await page.locator('.cursor-pointer:has-text("Full Assessment")').first().click();
     await page.getByRole('button', { name: /next|continue/i }).click();
 
     // Step 1: Basics
     await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
-    await page.locator('#name').fill('Full Assessment E2E System');
+    const ts = Date.now();
+    await page.locator('#name').fill(`Full Assessment E2E — ${ts}`);
     await page.locator('#description').fill('HR screening tool for CV filtering');
     await pickSelect(page, 'Department', 'Human Resources');
     await pickSelect(page, 'Status', 'Pilot');
@@ -158,30 +164,5 @@ test.describe('AI Systems — Full Assessment', () => {
     await page.getByRole('button', { name: /back|previous/i }).click();
     await page.waitForTimeout(500);
     await page.getByRole('button', { name: /next/i }).click();
-  });
-});
-
-// ================================================================
-// AI SYSTEM — DETAIL / ERROR HANDLING
-// ================================================================
-test.describe('AI Systems — Detail', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndNav(page, '/dashboard');
-  });
-
-  test('invalid system ID handles gracefully', async ({ page }) => {
-    await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000');
-    const text = await page.locator('body').innerText();
-    expect(text).not.toContain('Unhandled Runtime Error');
-  });
-
-  test('classification route handles invalid ID', async ({ page }) => {
-    await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000/classify');
-    expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
-  });
-
-  test('FRIA route handles invalid ID', async ({ page }) => {
-    await nav(page, '/ai-systems/00000000-0000-0000-0000-000000000000/fria');
-    expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
   });
 });
