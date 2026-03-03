@@ -6,7 +6,7 @@ import { login } from './helpers';
 // By warming up here, subsequent tests start fast (~2-3s login).
 test.describe('Warmup', () => {
   test('warm up server and browser', async ({ page }) => {
-    test.setTimeout(120_000); // Extra time for cold-start
+    test.setTimeout(120_000);
     await login(page);
     await expect(page.locator('aside')).toBeVisible();
   });

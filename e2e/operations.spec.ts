@@ -33,10 +33,11 @@ test.describe('Tasks — CRUD', () => {
   });
 
   test('create a task', async ({ page }) => {
+    const ts = Date.now();
     await page.getByRole('button', { name: /add task/i }).first().click();
     const dialog = page.getByRole('dialog');
 
-    await dialog.locator('input[placeholder*="Complete classification"]').fill('E2E Test Task — Review AI System');
+    await dialog.locator('input[placeholder*="Complete classification"]').fill(`E2E Task ${ts}`);
     await expect(dialog.getByRole('button', { name: /create task/i })).toBeEnabled();
     await dialog.locator('textarea[placeholder*="Additional details"]').fill('Created by Playwright E2E');
 
@@ -50,7 +51,7 @@ test.describe('Tasks — CRUD', () => {
 
     await dialog.getByRole('button', { name: /create task/i }).click();
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=E2E Test Task')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Task ${ts}`)).toBeVisible({ timeout: 10_000 });
   });
 });
 
@@ -84,10 +85,11 @@ test.describe('Incidents — CRUD', () => {
   });
 
   test('create an incident', async ({ page }) => {
+    const ts = Date.now();
     await page.getByRole('button', { name: /report incident/i }).first().click();
     const dialog = page.getByRole('dialog');
 
-    await dialog.locator('input[placeholder*="Brief description"]').fill('E2E Test Incident — PII Exposure');
+    await dialog.locator('input[placeholder*="Brief description"]').fill(`E2E Incident ${ts}`);
     await expect(dialog.getByRole('button', { name: /report incident/i })).toBeEnabled();
     await dialog.locator('textarea[placeholder*="Detailed description"]').fill('Chatbot returned PII from different user session.');
 
@@ -104,7 +106,7 @@ test.describe('Incidents — CRUD', () => {
 
     await dialog.getByRole('button', { name: /report incident/i }).click();
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=E2E Test Incident')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Incident ${ts}`)).toBeVisible({ timeout: 10_000 });
   });
 });
 
