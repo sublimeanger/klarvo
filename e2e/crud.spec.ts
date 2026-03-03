@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { waitForApp, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
+import { loginAndNavigate, waitForApp, expectDialogTitle, closeDialog, pickSelect } from './helpers';
 
 // ================================================================
 // VENDORS
 // ================================================================
 test.describe('Vendors — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/vendors');
+    await loginAndNavigate(page, '/vendors');
   });
 
   test('page renders with heading', async ({ page }) => {
@@ -54,7 +54,7 @@ test.describe('Vendors — CRUD', () => {
 // ================================================================
 test.describe('Evidence', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/evidence');
+    await loginAndNavigate(page, '/evidence');
   });
 
   test('page renders with heading and upload button', async ({ page }) => {
@@ -92,7 +92,7 @@ test.describe('Evidence', () => {
 // ================================================================
 test.describe('Policies — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/policies');
+    await loginAndNavigate(page, '/policies');
   });
 
   test('page renders with heading', async ({ page }) => {
