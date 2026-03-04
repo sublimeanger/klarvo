@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logger } from "@/lib/logger";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,9 +46,15 @@ const USER_ROLES = [
 export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const { user, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (profile?.onboarding_completed) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [profile, navigate]);
 
   // Form state
   const [companyName, setCompanyName] = useState("");

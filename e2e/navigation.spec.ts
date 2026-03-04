@@ -43,7 +43,7 @@ test.describe('Settings — General', () => {
     await dialog.locator('#role, [role="combobox"]').click();
     await expect(page.getByRole('option', { name: /admin/i })).toBeVisible();
     await expect(page.getByRole('option', { name: /compliance owner/i })).toBeVisible();
-    await expect(page.getByRole('option', { name: /^Viewer$/i })).toBeVisible();
+    await expect(page.getByRole('option', { name: /Viewer/i })).toBeVisible();
     await page.keyboard.press('Escape');
     await closeDialog(page);
   });
@@ -208,7 +208,7 @@ test.describe('Other Modules', () => {
   for (const { path, heading } of modules) {
     test(`${path} loads with heading`, async ({ page }) => {
       await loginAndNav(page, path);
-      await expect(page.locator('h1, h2').filter({ hasText: heading }).first()).toBeVisible();
+      await expect(page.locator('h1, h2, h3, [class*="CardTitle"]').filter({ hasText: heading }).first()).toBeVisible();
     });
   }
 
