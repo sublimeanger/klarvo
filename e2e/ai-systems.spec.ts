@@ -121,7 +121,7 @@ test.describe('AI Systems — Full Assessment', () => {
     await nav(page, '/ai-systems/new');
 
     // Step 0: Full Assessment → Next
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Full Assessment' }).first().click();
+    await page.getByRole('heading', { name: 'Full Assessment' }).click();
     await page.getByRole('button', { name: /next|continue/i }).click();
 
     // Step 1: Basics

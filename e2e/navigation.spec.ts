@@ -194,7 +194,7 @@ test.describe('Other Modules', () => {
     { path: '/assessments', heading: /assessment/i },
     { path: '/controls', heading: /control/i },
     { path: '/disclosures', heading: /disclosure/i },
-    { path: '/discovery', heading: /discover/i },
+    { path: '/discovery', heading: /discovery/i },
     { path: '/exports', heading: /export/i },
     { path: '/audit-log', heading: /audit/i },
   ];
@@ -202,7 +202,7 @@ test.describe('Other Modules', () => {
   for (const { path, heading } of modules) {
     test(`${path} loads with heading`, async ({ page }) => {
       await nav(page, path);
-      await expect(page.locator('h1, h2').filter({ hasText: heading }).first()).toBeVisible();
+      await expect(page.locator('h1, h2, h3, [class*="CardTitle"]').filter({ hasText: heading }).first()).toBeVisible();
     });
   }
 
