@@ -37,7 +37,7 @@ test.describe('Vendors — CRUD', () => {
     await dialog.getByRole('button', { name: /add vendor/i }).click();
 
     await page.waitForTimeout(2000);
-    await expect(page.locator(`text=E2E Vendor ${ts}`)).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Vendor ${ts}`).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('search vendors', async ({ page }) => {

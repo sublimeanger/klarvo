@@ -64,11 +64,12 @@ test.describe('Incidents — CRUD', () => {
   });
 
   test('page renders with heading and report button', async ({ page }) => {
-    await expect(page.locator('h1, h2').filter({ hasText: /incident/i }).first()).toBeVisible();
-    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible();
+    await expect(page.locator('h1, h2').filter({ hasText: /incident/i }).first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('Report Incident dialog has all fields', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /report incident/i }).first().click();
     await expectDialogTitle(page, /report incident/i);
 
@@ -86,6 +87,7 @@ test.describe('Incidents — CRUD', () => {
 
   test('create an incident', async ({ page }) => {
     const ts = Date.now();
+    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /report incident/i }).first().click();
     const dialog = page.getByRole('dialog');
 

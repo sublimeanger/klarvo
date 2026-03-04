@@ -43,7 +43,7 @@ test.describe('Settings — General', () => {
     await dialog.locator('#role, [role="combobox"]').click();
     await expect(page.getByRole('option', { name: /admin/i })).toBeVisible();
     await expect(page.getByRole('option', { name: /compliance owner/i })).toBeVisible();
-    await expect(page.getByRole('option', { name: /viewer/i })).toBeVisible();
+    await expect(page.getByRole('option', { name: /^Viewer$/i })).toBeVisible();
     await page.keyboard.press('Escape');
     await closeDialog(page);
   });
@@ -200,7 +200,7 @@ test.describe('Other Modules', () => {
     { path: '/assessments', heading: /assessment/i },
     { path: '/controls', heading: /control/i },
     { path: '/disclosures', heading: /disclosure/i },
-    { path: '/discovery', heading: /discover/i },
+    { path: '/discovery', heading: /discovery/i },
     { path: '/exports', heading: /export/i },
     { path: '/audit-log', heading: /audit/i },
   ];

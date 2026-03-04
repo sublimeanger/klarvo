@@ -46,10 +46,10 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
   });
 
   test('shows 3 mode cards', async ({ page }) => {
-    // Verify 3 mode card titles via their h4 headings
-    await expect(page.locator('h4:has-text("AI-Powered Quick Start")')).toBeVisible();
-    await expect(page.locator('h4:has-text("Quick Capture")')).toBeVisible();
-    await expect(page.locator('h4:has-text("Full Assessment")')).toBeVisible();
+    // Verify 3 mode card titles via heading role (h4 elements in Step0ModeSelection)
+    await expect(page.getByRole('heading', { name: /AI-Powered Quick Start/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Quick Capture' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Full Assessment' })).toBeVisible();
   });
 
   test('Quick Capture selection highlights card', async ({ page }) => {

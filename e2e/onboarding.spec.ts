@@ -12,7 +12,7 @@ test.describe('Onboarding — Full Flow', () => {
     await page.goto('/auth/login');
     await page.getByLabel('Email').fill(process.env.TEST_ONBOARD_EMAIL || 'test-onboard@klarvo.io');
     await page.getByLabel('Password').fill(process.env.TEST_ONBOARD_PASSWORD || 'TestPassword123!');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
 
     // Should redirect to /onboarding, NOT /dashboard
     await page.waitForURL('**/onboarding', { timeout: 30_000 });
@@ -77,7 +77,7 @@ test.describe('Onboarding — Navigation', () => {
     await page.goto('/auth/login');
     await page.getByLabel('Email').fill(process.env.TEST_ONBOARD_EMAIL || 'test-onboard@klarvo.io');
     await page.getByLabel('Password').fill(process.env.TEST_ONBOARD_PASSWORD || 'TestPassword123!');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     await page.waitForURL('**/onboarding', { timeout: 30_000 });
 
     // Fill Step 1
@@ -107,7 +107,7 @@ test.describe('Onboarding — Already Completed', () => {
     await page.goto('/auth/login');
     await page.getByLabel('Email').fill(process.env.TEST_USER_EMAIL || 'test@klarvo.io');
     await page.getByLabel('Password').fill(process.env.TEST_USER_PASSWORD || 'TestPassword123!');
-    await page.getByRole('button', { name: 'Sign In' }).click();
+    await page.getByRole('button', { name: 'Sign In', exact: true }).click();
     await page.waitForURL('**/dashboard', { timeout: 30_000 });
 
     // Try to access onboarding
