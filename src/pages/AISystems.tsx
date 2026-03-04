@@ -333,7 +333,7 @@ export default function AISystems() {
           {classificationFilter && (
             <Badge variant="secondary" className="gap-1">
               {classificationFilterLabels[classificationFilter] || classificationFilter}
-              <button onClick={() => clearFilter("classification")} className="ml-1 hover:text-destructive">
+              <button onClick={() => clearFilter("classification")} className="ml-1 p-0.5 rounded-full hover:text-destructive hover:bg-destructive/10">
                 <X className="h-3 w-3" />
               </button>
             </Badge>
@@ -341,7 +341,7 @@ export default function AISystems() {
           {departmentFilter && (
             <Badge variant="secondary" className="gap-1">
               {departmentFilter}
-              <button onClick={() => clearFilter("department")} className="ml-1 hover:text-destructive">
+              <button onClick={() => clearFilter("department")} className="ml-1 p-0.5 rounded-full hover:text-destructive hover:bg-destructive/10">
                 <X className="h-3 w-3" />
               </button>
             </Badge>
@@ -349,7 +349,7 @@ export default function AISystems() {
           {statusFilter && (
             <Badge variant="secondary" className="gap-1">
               {lifecycleStatusConfig[statusFilter]?.label || statusFilter}
-              <button onClick={() => clearFilter("status")} className="ml-1 hover:text-destructive">
+              <button onClick={() => clearFilter("status")} className="ml-1 p-0.5 rounded-full hover:text-destructive hover:bg-destructive/10">
                 <X className="h-3 w-3" />
               </button>
             </Badge>
@@ -357,7 +357,7 @@ export default function AISystems() {
           {searchQuery && (
             <Badge variant="secondary" className="gap-1">
               Search: {searchQuery}
-              <button onClick={() => setSearchQuery("")} className="ml-1 hover:text-destructive">
+              <button onClick={() => setSearchQuery("")} className="ml-1 p-0.5 rounded-full hover:text-destructive hover:bg-destructive/10">
                 <X className="h-3 w-3" />
               </button>
             </Badge>

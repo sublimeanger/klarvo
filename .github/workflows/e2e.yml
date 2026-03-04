@@ -47,7 +47,7 @@ jobs:
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
           TEST_ONBOARD_EMAIL: ${{ secrets.TEST_ONBOARD_EMAIL }}
           TEST_ONBOARD_PASSWORD: ${{ secrets.TEST_ONBOARD_PASSWORD }}
-        run: npx playwright test --project=setup --project=chromium
+        run: npx playwright test --project=chromium
 
       - name: Upload Playwright report
         if: ${{ failure() }}

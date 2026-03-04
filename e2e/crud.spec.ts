@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { waitForApp, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
+import { loginAndNav, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
 
 // ================================================================
 // VENDORS
 // ================================================================
 test.describe('Vendors — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/vendors');
+    await loginAndNav(page, '/vendors');
   });
 
   test('page renders with heading', async ({ page }) => {
@@ -26,17 +26,18 @@ test.describe('Vendors — CRUD', () => {
   });
 
   test('create a vendor', async ({ page }) => {
+    const ts = Date.now();
     await page.getByRole('button', { name: /add vendor/i }).click();
     const dialog = page.getByRole('dialog');
 
-    await dialog.locator('input[placeholder*="OpenAI"]').fill('E2E Vendor — Anthropic');
+    await dialog.locator('input[placeholder*="OpenAI"]').fill(`E2E Vendor ${ts}`);
     await dialog.locator('input[placeholder*="https"]').fill('https://anthropic.com');
     await dialog.locator('input[placeholder*="contact@"]').fill('compliance@anthropic.com');
     await dialog.locator('textarea').fill('Added by Playwright E2E');
     await dialog.getByRole('button', { name: /add vendor/i }).click();
 
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=E2E Vendor — Anthropic')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Vendor ${ts}`).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('search vendors', async ({ page }) => {
@@ -54,7 +55,7 @@ test.describe('Vendors — CRUD', () => {
 // ================================================================
 test.describe('Evidence', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/evidence');
+    await loginAndNav(page, '/evidence');
   });
 
   test('page renders with heading and upload button', async ({ page }) => {
@@ -92,7 +93,7 @@ test.describe('Evidence', () => {
 // ================================================================
 test.describe('Policies — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/policies');
+    await loginAndNav(page, '/policies');
   });
 
   test('page renders with heading', async ({ page }) => {
@@ -115,10 +116,11 @@ test.describe('Policies — CRUD', () => {
   });
 
   test('create a policy', async ({ page }) => {
+    const ts = Date.now();
     await page.getByRole('button', { name: /create policy/i }).first().click();
     const dialog = page.getByRole('dialog');
 
-    await dialog.locator('input[placeholder*="AI Acceptable Use"]').fill('E2E Test Policy');
+    await dialog.locator('input[placeholder*="AI Acceptable Use"]').fill(`E2E Policy ${ts}`);
 
     // Submit should now be enabled
     await expect(dialog.getByRole('button', { name: /create policy/i })).toBeEnabled();
@@ -128,6 +130,6 @@ test.describe('Policies — CRUD', () => {
     await dialog.getByRole('button', { name: /create policy/i }).click();
 
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=E2E Test Policy')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Policy ${ts}`)).toBeVisible({ timeout: 10_000 });
   });
 });

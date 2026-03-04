@@ -99,7 +99,7 @@ export default function About() {
       />
 
       {/* Mission Section */}
-      <section className="py-20 bg-surface-1">
+      <section className="py-20 bg-surface-1 overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
@@ -158,7 +158,7 @@ export default function About() {
               </div>
               
               {/* Decorative elements */}
-              <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl blur-xl" />
+              <div className="absolute -z-10 -top-4 -right-4 w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl blur-xl overflow-hidden" />
             </div>
           </div>
         </div>

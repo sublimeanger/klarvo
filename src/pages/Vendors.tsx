@@ -411,13 +411,13 @@ export default function Vendors() {
                         href={vendor.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary p-1"
+                        className="text-primary p-2 rounded-lg hover:bg-primary/10 transition-colors"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     )}
                     {vendor.contact_email && (
-                      <a href={`mailto:${vendor.contact_email}`} className="text-primary p-1">
+                      <a href={`mailto:${vendor.contact_email}`} className="text-primary p-2 rounded-lg hover:bg-primary/10 transition-colors">
                         <Mail className="h-4 w-4" />
                       </a>
                     )}

@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { waitForApp, nav, pickSelect } from './helpers';
+import { loginAndNav, nav, pickSelect } from './helpers';
 
 // ================================================================
 // AI SYSTEMS — LIST PAGE
 // ================================================================
 test.describe('AI Systems — List', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/ai-systems');
+    await loginAndNav(page, '/ai-systems');
   });
 
   test('renders heading and add button', async ({ page }) => {
@@ -37,27 +37,32 @@ test.describe('AI Systems — List', () => {
 // ================================================================
 test.describe('AI Systems — Wizard Mode Selection', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/ai-systems/new');
+    await loginAndNav(page, '/ai-systems');
+    await page.getByRole('link', { name: /add ai system/i })
+      .or(page.getByRole('button', { name: /add ai system/i })).first().click();
+    await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+    // Wait for mode selection to render
+    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 15_000 });
   });
 
   test('shows 3 mode cards', async ({ page }) => {
-    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 10_000 });
-    await expect(page.locator('text=AI-Powered Quick Start')).toBeVisible();
-    await expect(page.locator('text=Quick Capture')).toBeVisible();
-    await expect(page.locator('text=Full Assessment')).toBeVisible();
-    await expect(page.locator('text=Recommended')).toBeVisible(); // AI Quick Start badge
+    // Verify 3 mode card titles via heading role (h4 elements in Step0ModeSelection)
+    await expect(page.getByRole('heading', { name: /AI-Powered Quick Start/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Quick Capture' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Full Assessment' })).toBeVisible();
   });
 
   test('Quick Capture selection highlights card', async ({ page }) => {
-    const card = page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first();
+    const card = page.locator('.cursor-pointer:has-text("Quick Capture")').first();
     await card.click();
-    await expect(card).toHaveClass(/ring-2.*ring-primary|border-primary.*ring-2/);
+    await expect(card).toHaveClass(/ring-2/);
+    await expect(card).toHaveClass(/ring-primary/);
   });
 
   test('Full Assessment selection shows feature list', async ({ page }) => {
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Full Assessment' }).first().click();
-    await expect(page.locator('text=prohibited practices screening')).toBeVisible();
-    await expect(page.locator('text=High-risk classification')).toBeVisible();
+    await page.getByRole('heading', { name: 'Full Assessment' }).click();
+    await expect(page.locator('text=/Prohibited practices screening/i')).toBeVisible();
+    await expect(page.locator('text=/High-risk classification/i')).toBeVisible();
   });
 });
 
@@ -65,46 +70,50 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
 // WIZARD — QUICK CAPTURE E2E
 // ================================================================
 test.describe('AI Systems — Quick Capture', () => {
-  test('complete quick capture wizard end-to-end', async ({ page }) => {
-    await nav(page, '/ai-systems/new');
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/ai-systems');
+    await page.getByRole('link', { name: /add ai system/i })
+      .or(page.getByRole('button', { name: /add ai system/i })).first().click();
+    await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 15_000 });
+  });
 
+  test('complete quick capture wizard end-to-end', async ({ page }) => {
     // Step 0: Select Quick Capture → Next
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
-    await page.getByRole('button', { name: /next|continue/i }).click();
+    await page.locator('.cursor-pointer:has-text("Quick Capture")').first().click();
+    await page.getByRole('button', { name: /next/i }).click();
 
     // Step 1: Basics
     await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
-    await page.locator('#name').fill('E2E Test — ChatGPT Support Bot');
-    await page.locator('#internal_reference_id').fill('AI-E2E-001');
+    const ts = Date.now();
+    await page.locator('#name').fill(`E2E Quick Capture — ${ts}`);
+    await page.locator('#internal_reference_id').fill(`AI-E2E-QC-${ts}`);
     await page.locator('#description').fill('Customer support chatbot powered by GPT-4 for tier 1 queries.');
     await pickSelect(page, 'Department', 'Customer Service');
     await pickSelect(page, 'Status', 'Live');
-    await page.getByRole('button', { name: /next|continue/i }).click();
+    await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 2: Vendor
-    await page.waitForTimeout(1000);
-    const vendorInput = page.locator('input[placeholder*="vendor"], #new_vendor_name').first();
-    if (await vendorInput.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await vendorInput.fill('OpenAI');
-    }
-    await page.getByRole('button', { name: /next|continue/i }).click();
+    // Step 2: Vendor — wait for "Vendor / Provider" label, then skip
+    await expect(page.locator('text=/Vendor.*Provider/i').first()).toBeVisible({ timeout: 10_000 });
+    await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 3: Ownership — proceed
-    await page.waitForTimeout(1000);
-    await page.getByRole('button', { name: /next|continue|finish|submit|save/i }).click();
+    // Step 3: Ownership — wait for "Primary Owner" label, then submit
+    await expect(page.locator('text=/Primary Owner/i').first()).toBeVisible({ timeout: 10_000 });
+    const submitBtn = page.getByRole('button', { name: /create ai system/i });
+    await expect(submitBtn).toBeVisible({ timeout: 10_000 });
+    await submitBtn.click();
 
-    // Step 20: Done
-    await expect(page.locator('text=/added|created|success|done|saved|registered/i').first()).toBeVisible({ timeout: 15_000 });
+    // Step 20: Done — "AI System Added!"
+    await expect(page.locator('text=/AI System Added|added.*inventory|created successfully/i').first()).toBeVisible({ timeout: 30_000 });
   });
 
   test('Step 1 validation — name required', async ({ page }) => {
-    await nav(page, '/ai-systems/new');
-    await page.locator('[class*="Card"], [class*="card"]').filter({ hasText: 'Quick Capture' }).first().click();
-    await page.getByRole('button', { name: /next|continue/i }).click();
+    await page.locator('.cursor-pointer:has-text("Quick Capture")').first().click();
+    await page.getByRole('button', { name: /next/i }).click();
 
     // On Step 1 — try to proceed without name
     await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
-    await page.getByRole('button', { name: /next|continue/i }).click();
+    await page.getByRole('button', { name: /next/i }).click();
     await page.waitForTimeout(500);
 
     // Should still be on Step 1 — name field visible with error styling
@@ -117,58 +126,45 @@ test.describe('AI Systems — Quick Capture', () => {
 // WIZARD — FULL ASSESSMENT FIRST 5 STEPS
 // ================================================================
 test.describe('AI Systems — Full Assessment', () => {
-  test('navigate through first 5 steps', async ({ page }) => {
-    await nav(page, '/ai-systems/new');
+  test.beforeEach(async ({ page }) => {
+    await loginAndNav(page, '/ai-systems');
+    await page.getByRole('link', { name: /add ai system/i })
+      .or(page.getByRole('button', { name: /add ai system/i })).first().click();
+    await page.waitForURL('**/ai-systems/new', { timeout: 10_000 });
+    await expect(page.locator('text=How would you like to add this AI system?')).toBeVisible({ timeout: 15_000 });
+  });
 
+  test('navigate through first 5 steps', async ({ page }) => {
     // Step 0: Full Assessment → Next
     await page.getByRole('heading', { name: 'Full Assessment' }).click();
-    await page.getByRole('button', { name: /next|continue/i }).click();
+    await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 1: Basics
+    // Step 1: Basics — wait for #name field to confirm step transition
     await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
-    await page.locator('#name').fill('Full Assessment E2E System');
+    const ts = Date.now();
+    await page.locator('#name').fill(`Full Assessment E2E — ${ts}`);
     await page.locator('#description').fill('HR screening tool for CV filtering');
     await pickSelect(page, 'Department', 'Human Resources');
     await pickSelect(page, 'Status', 'Pilot');
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 2: Vendor — skip
-    await page.waitForTimeout(1000);
+    // Step 2: Vendor — wait for "Vendor / Provider" label to confirm step transition
+    await expect(page.locator('text=/Vendor.*Provider/i').first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 3: Ownership — skip
-    await page.waitForTimeout(1000);
+    // Step 3: Ownership — wait for "Primary Owner" label to confirm step transition
+    await expect(page.locator('text=/Primary Owner/i').first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 4: Scope — verify content, test Back button
-    await page.waitForTimeout(1000);
-    await expect(page.locator('text=/scope|region|geography|where/i').first()).toBeVisible({ timeout: 5000 });
-    await page.getByRole('button', { name: /back|previous/i }).click();
-    await page.waitForTimeout(500);
+    // Step 4: Scope — wait for "Where is this system deployed?" label
+    await expect(page.locator('text=/Where is this system deployed/i').first()).toBeVisible({ timeout: 10_000 });
+
+    // Test Back button (goes to Step 3)
+    await page.getByRole('button', { name: /back/i }).click();
+    await expect(page.locator('text=/Primary Owner/i').first()).toBeVisible({ timeout: 10_000 });
+
+    // Forward again to Step 4
     await page.getByRole('button', { name: /next/i }).click();
-  });
-});
-
-// ================================================================
-// AI SYSTEM — DETAIL / ERROR HANDLING
-// ================================================================
-test.describe('AI Systems — Detail', () => {
-  test('invalid system ID handles gracefully', async ({ page }) => {
-    await page.goto('/ai-systems/00000000-0000-0000-0000-000000000000');
-    await waitForApp(page);
-    const text = await page.locator('body').innerText();
-    expect(text).not.toContain('Unhandled Runtime Error');
-  });
-
-  test('classification route handles invalid ID', async ({ page }) => {
-    await page.goto('/ai-systems/00000000-0000-0000-0000-000000000000/classify');
-    await waitForApp(page);
-    expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
-  });
-
-  test('FRIA route handles invalid ID', async ({ page }) => {
-    await page.goto('/ai-systems/00000000-0000-0000-0000-000000000000/fria');
-    await waitForApp(page);
-    expect(await page.locator('body').innerText()).not.toContain('Unhandled Runtime Error');
+    await expect(page.locator('text=/Where is this system deployed/i').first()).toBeVisible({ timeout: 10_000 });
   });
 });

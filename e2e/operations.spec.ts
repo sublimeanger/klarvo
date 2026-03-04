@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { waitForApp, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
+import { loginAndNav, nav, expectDialogTitle, closeDialog, pickSelect } from './helpers';
 
 // ================================================================
 // TASKS
 // ================================================================
 test.describe('Tasks — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/tasks');
+    await loginAndNav(page, '/tasks');
   });
 
   test('page renders with heading and add button', async ({ page }) => {
@@ -33,10 +33,11 @@ test.describe('Tasks — CRUD', () => {
   });
 
   test('create a task', async ({ page }) => {
+    const ts = Date.now();
     await page.getByRole('button', { name: /add task/i }).first().click();
     const dialog = page.getByRole('dialog');
 
-    await dialog.locator('input[placeholder*="Complete classification"]').fill('E2E Test Task — Review AI System');
+    await dialog.locator('input[placeholder*="Complete classification"]').fill(`E2E Task ${ts}`);
     await expect(dialog.getByRole('button', { name: /create task/i })).toBeEnabled();
     await dialog.locator('textarea[placeholder*="Additional details"]').fill('Created by Playwright E2E');
 
@@ -50,7 +51,7 @@ test.describe('Tasks — CRUD', () => {
 
     await dialog.getByRole('button', { name: /create task/i }).click();
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=E2E Test Task')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Task ${ts}`)).toBeVisible({ timeout: 10_000 });
   });
 });
 
@@ -59,15 +60,16 @@ test.describe('Tasks — CRUD', () => {
 // ================================================================
 test.describe('Incidents — CRUD', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/incidents');
+    await loginAndNav(page, '/incidents');
   });
 
   test('page renders with heading and report button', async ({ page }) => {
-    await expect(page.locator('h1, h2').filter({ hasText: /incident/i }).first()).toBeVisible();
-    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible();
+    await expect(page.locator('h1, h2').filter({ hasText: /incident/i }).first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('Report Incident dialog has all fields', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /report incident/i }).first().click();
     await expectDialogTitle(page, /report incident/i);
 
@@ -84,10 +86,12 @@ test.describe('Incidents — CRUD', () => {
   });
 
   test('create an incident', async ({ page }) => {
+    const ts = Date.now();
+    await expect(page.getByRole('button', { name: /report incident/i }).first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /report incident/i }).first().click();
     const dialog = page.getByRole('dialog');
 
-    await dialog.locator('input[placeholder*="Brief description"]').fill('E2E Test Incident — PII Exposure');
+    await dialog.locator('input[placeholder*="Brief description"]').fill(`E2E Incident ${ts}`);
     await expect(dialog.getByRole('button', { name: /report incident/i })).toBeEnabled();
     await dialog.locator('textarea[placeholder*="Detailed description"]').fill('Chatbot returned PII from different user session.');
 
@@ -104,7 +108,7 @@ test.describe('Incidents — CRUD', () => {
 
     await dialog.getByRole('button', { name: /report incident/i }).click();
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=E2E Test Incident')).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator(`text=E2E Incident ${ts}`)).toBeVisible({ timeout: 10_000 });
   });
 });
 
@@ -113,7 +117,7 @@ test.describe('Incidents — CRUD', () => {
 // ================================================================
 test.describe('Training', () => {
   test.beforeEach(async ({ page }) => {
-    await nav(page, '/training');
+    await loginAndNav(page, '/training');
   });
 
   test('page renders with heading', async ({ page }) => {

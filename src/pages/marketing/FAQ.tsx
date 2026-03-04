@@ -264,7 +264,7 @@ export default function FAQ() {
               <a
                 key={category.id}
                 href={`#${category.id}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-background border border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all text-sm font-medium"
               >
                 <category.icon className="h-4 w-4 text-primary" />
                 {category.title}

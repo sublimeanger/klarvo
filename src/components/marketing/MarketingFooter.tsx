@@ -117,7 +117,7 @@ export function MarketingFooter() {
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline py-1 inline-block"
                   >
                     {link.title}
                   </Link>
@@ -134,7 +134,7 @@ export function MarketingFooter() {
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline py-1 inline-block"
                   >
                     {link.title}
                   </Link>
@@ -151,7 +151,7 @@ export function MarketingFooter() {
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline py-1 inline-block"
                   >
                     {link.title}
                   </Link>
@@ -168,7 +168,7 @@ export function MarketingFooter() {
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline py-1 inline-block"
                   >
                     {link.title}
                   </Link>
@@ -181,7 +181,7 @@ export function MarketingFooter() {
                 <li key={link.title}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors link-underline py-1 inline-block"
                   >
                     {link.title}
                   </Link>

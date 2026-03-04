@@ -152,11 +152,11 @@ export default function ProhibitedPracticesScreening() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pl-16">
+                <CardContent className="pl-6 sm:pl-16">
                   <RadioGroup
                     value={answers[practice.id] || ""}
                     onValueChange={(value) => setAnswer(practice.id, value)}
-                    className="flex gap-6"
+                    className="flex flex-wrap gap-4 sm:gap-6"
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="no" id={`${practice.id}-no`} />
@@ -240,7 +240,7 @@ export default function ProhibitedPracticesScreening() {
                       <p className="text-muted-foreground mb-4">
                         Based on your answers, this AI system does not appear to involve prohibited practices. Document this screening for your records.
                       </p>
-                      <div className="flex gap-4">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                         <Button asChild>
                           <Link to="/tools/high-risk-checker-annex-iii">
                             Check High-Risk Status

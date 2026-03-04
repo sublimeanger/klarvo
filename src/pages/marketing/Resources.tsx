@@ -27,7 +27,8 @@ const featuredResources = [
     title: "The Complete EU AI Act Compliance Checklist",
     description: "A comprehensive step-by-step guide covering everything SMEs need to know about EU AI Act compliance, from inventory to evidence packs.",
     readTime: "15 min read",
-    badge: "Popular"
+    badge: "Popular",
+    href: "/guides/eu-ai-act-for-smes"
   },
   {
     type: "Whitepaper",
@@ -35,7 +36,8 @@ const featuredResources = [
     title: "High-Risk AI Classification: What You Need to Know",
     description: "Deep dive into Annex III categories, prohibited practices, and how to determine if your AI systems are high-risk under the EU AI Act.",
     readTime: "20 min read",
-    badge: "Essential"
+    badge: "Essential",
+    href: "/guides/high-risk-classification"
   },
   {
     type: "Template",
@@ -43,7 +45,8 @@ const featuredResources = [
     title: "FRIA Template & Implementation Guide",
     description: "Download our Fundamental Rights Impact Assessment template aligned with Article 27 requirements, complete with worked examples.",
     readTime: "Template",
-    badge: "Download"
+    badge: "Download",
+    href: "/templates/fria"
   }
 ];
 
@@ -221,9 +224,11 @@ export default function Resources() {
                       <Clock className="h-4 w-4" />
                       {resource.readTime}
                     </span>
-                    <Button variant="ghost" size="sm" className="group-hover:translate-x-1 transition-transform">
-                      {resource.type === "Template" ? "Download" : "Read"}
-                      {resource.type === "Template" ? <Download className="ml-1 h-4 w-4" /> : <ArrowRight className="ml-1 h-4 w-4" />}
+                    <Button variant="ghost" size="sm" className="group-hover:translate-x-1 transition-transform" asChild>
+                      <Link to={resource.href}>
+                        {resource.type === "Template" ? "Download" : "Read"}
+                        {resource.type === "Template" ? <Download className="ml-1 h-4 w-4" /> : <ArrowRight className="ml-1 h-4 w-4" />}
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -266,7 +271,9 @@ export default function Resources() {
                           <span className="text-muted-foreground">Speakers: </span>
                           {webinar.speakers.join(", ")}
                         </div>
-                        <Button size="sm" className="btn-premium">Register</Button>
+                        <Button size="sm" className="btn-premium" asChild>
+                          <Link to="/contact">Register</Link>
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
