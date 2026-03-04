@@ -1,13 +1,22 @@
 import { Page, expect } from '@playwright/test';
 
 export async function login(page: Page, email?: string, password?: string) {
-  await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 60_000 });
-  await expect(page.getByLabel('Email')).toBeVisible({ timeout: 30_000 });
-  await page.getByLabel('Email').fill(email || process.env.TEST_USER_EMAIL || 'test@klarvo.io');
-  await page.getByLabel('Password').fill(password || process.env.TEST_USER_PASSWORD || 'TestPassword123!');
-  await page.getByRole('button', { name: 'Sign In', exact: true }).click();
-  await page.waitForURL('**/dashboard', { timeout: 60_000 });
-  await expect(page.locator('aside')).toBeVisible({ timeout: 60_000 });
+  const maxRetries = 3;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      await page.goto('/auth/login', { waitUntil: 'domcontentloaded', timeout: 15_000 });
+      await expect(page.getByLabel('Email')).toBeVisible({ timeout: 10_000 });
+      await page.getByLabel('Email').fill(email || process.env.TEST_USER_EMAIL || 'test@klarvo.io');
+      await page.getByLabel('Password').fill(password || process.env.TEST_USER_PASSWORD || 'TestPassword123!');
+      await page.getByRole('button', { name: 'Sign In', exact: true }).click();
+      await page.waitForURL('**/dashboard', { timeout: 30_000 });
+      await expect(page.locator('aside')).toBeVisible({ timeout: 30_000 });
+      return; // success
+    } catch (e) {
+      if (attempt === maxRetries) throw e;
+      console.log(`Login attempt ${attempt} failed, retrying...`);
+    }
+  }
 }
 
 const SIDEBAR_LINKS: Record<string, string> = {

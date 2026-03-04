@@ -196,10 +196,6 @@ test.describe('Provider Track', () => {
 // REMAINING MODULES
 // ================================================================
 test.describe('Other Modules', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndNav(page, '/dashboard');
-  });
-
   const modules = [
     { path: '/assessments', heading: /assessment/i },
     { path: '/controls', heading: /control/i },
@@ -211,18 +207,18 @@ test.describe('Other Modules', () => {
 
   for (const { path, heading } of modules) {
     test(`${path} loads with heading`, async ({ page }) => {
-      await nav(page, path);
+      await loginAndNav(page, path);
       await expect(page.locator('h1, h2').filter({ hasText: heading }).first()).toBeVisible();
     });
   }
 
   test('Discovery shows connection options', async ({ page }) => {
-    await nav(page, '/discovery');
+    await loginAndNav(page, '/discovery');
     await expect(page.locator('text=/connect|workspace|google|microsoft/i').first()).toBeVisible({ timeout: 10_000 });
   });
 
   test('Exports shows export types', async ({ page }) => {
-    await nav(page, '/exports');
+    await loginAndNav(page, '/exports');
     await expect(page.locator('text=/PDF|pack|report|generate|download/i').first()).toBeVisible({ timeout: 10_000 });
   });
 });
