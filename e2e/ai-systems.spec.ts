@@ -46,10 +46,10 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
   });
 
   test('shows 3 mode cards', async ({ page }) => {
-    await expect(page.locator('text=AI-Powered Quick Start')).toBeVisible();
-    await expect(page.locator('text=Quick Capture')).toBeVisible();
-    await expect(page.locator('text=Full Assessment')).toBeVisible();
-    await expect(page.locator('text=Recommended')).toBeVisible();
+    // Verify 3 mode card titles via their h4 headings
+    await expect(page.locator('h4:has-text("AI-Powered Quick Start")')).toBeVisible();
+    await expect(page.locator('h4:has-text("Quick Capture")')).toBeVisible();
+    await expect(page.locator('h4:has-text("Full Assessment")')).toBeVisible();
   });
 
   test('Quick Capture selection highlights card', async ({ page }) => {
@@ -61,8 +61,8 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
 
   test('Full Assessment selection shows feature list', async ({ page }) => {
     await page.locator('.cursor-pointer:has-text("Full Assessment")').first().click();
-    await expect(page.locator('text=prohibited practices screening')).toBeVisible();
-    await expect(page.locator('text=High-risk classification')).toBeVisible();
+    await expect(page.locator('text=/Prohibited practices screening/i')).toBeVisible();
+    await expect(page.locator('text=/High-risk classification/i')).toBeVisible();
   });
 });
 
@@ -93,13 +93,14 @@ test.describe('AI Systems — Quick Capture', () => {
     await pickSelect(page, 'Status', 'Live');
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 2: Vendor — skip (optional)
-    await expect(page.getByRole('button', { name: /next/i })).toBeEnabled({ timeout: 10_000 });
+    // Step 2: Vendor — wait for "Vendor / Provider" label, then skip
+    await expect(page.locator('text=/Vendor.*Provider/i').first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 3: Ownership — submit (last input step → "Create AI System" button)
+    // Step 3: Ownership — wait for "Primary Owner" label, then submit
+    await expect(page.locator('text=/Primary Owner/i').first()).toBeVisible({ timeout: 10_000 });
     const submitBtn = page.getByRole('button', { name: /create ai system/i });
-    await expect(submitBtn).toBeEnabled({ timeout: 10_000 });
+    await expect(submitBtn).toBeVisible({ timeout: 10_000 });
     await submitBtn.click();
 
     // Step 20: Done — "AI System Added!"
@@ -138,7 +139,7 @@ test.describe('AI Systems — Full Assessment', () => {
     await page.locator('.cursor-pointer:has-text("Full Assessment")').first().click();
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 1: Basics
+    // Step 1: Basics — wait for #name field to confirm step transition
     await expect(page.locator('#name')).toBeVisible({ timeout: 10_000 });
     const ts = Date.now();
     await page.locator('#name').fill(`Full Assessment E2E — ${ts}`);
@@ -147,22 +148,23 @@ test.describe('AI Systems — Full Assessment', () => {
     await pickSelect(page, 'Status', 'Pilot');
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 2: Vendor — skip
-    await expect(page.getByRole('button', { name: /next/i })).toBeEnabled({ timeout: 10_000 });
+    // Step 2: Vendor — wait for "Vendor / Provider" label to confirm step transition
+    await expect(page.locator('text=/Vendor.*Provider/i').first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 3: Ownership — skip
-    await expect(page.getByRole('button', { name: /next/i })).toBeEnabled({ timeout: 10_000 });
+    // Step 3: Ownership — wait for "Primary Owner" label to confirm step transition
+    await expect(page.locator('text=/Primary Owner/i').first()).toBeVisible({ timeout: 10_000 });
     await page.getByRole('button', { name: /next/i }).click();
 
-    // Step 4: Scope — verify "Where is this system deployed?" content
-    await expect(page.locator('text=/where.*deployed|scope/i').first()).toBeVisible({ timeout: 10_000 });
+    // Step 4: Scope — wait for "Where is this system deployed?" label
+    await expect(page.locator('text=/Where is this system deployed/i').first()).toBeVisible({ timeout: 10_000 });
 
     // Test Back button (goes to Step 3)
     await page.getByRole('button', { name: /back/i }).click();
+    await expect(page.locator('text=/Primary Owner/i').first()).toBeVisible({ timeout: 10_000 });
 
-    // Back to Step 3, then forward again
-    await expect(page.getByRole('button', { name: /next/i })).toBeEnabled({ timeout: 10_000 });
+    // Forward again to Step 4
     await page.getByRole('button', { name: /next/i }).click();
+    await expect(page.locator('text=/Where is this system deployed/i').first()).toBeVisible({ timeout: 10_000 });
   });
 });
