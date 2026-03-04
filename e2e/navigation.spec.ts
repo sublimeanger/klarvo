@@ -43,7 +43,7 @@ test.describe('Settings — General', () => {
     await dialog.locator('#role, [role="combobox"]').click();
     await expect(page.getByRole('option', { name: /admin/i })).toBeVisible();
     await expect(page.getByRole('option', { name: /compliance owner/i })).toBeVisible();
-    await expect(page.getByRole('option', { name: /Viewer/i })).toBeVisible();
+    await expect(page.getByRole('option', { name: /Viewer —/i })).toBeVisible();
     await page.keyboard.press('Escape');
     await closeDialog(page);
   });
