@@ -60,7 +60,7 @@ test.describe('AI Systems — Wizard Mode Selection', () => {
   });
 
   test('Full Assessment selection shows feature list', async ({ page }) => {
-    await page.locator('.cursor-pointer:has-text("Full Assessment")').first().click();
+    await page.getByRole('heading', { name: 'Full Assessment' }).click();
     await expect(page.locator('text=/Prohibited practices screening/i')).toBeVisible();
     await expect(page.locator('text=/High-risk classification/i')).toBeVisible();
   });
@@ -136,7 +136,7 @@ test.describe('AI Systems — Full Assessment', () => {
 
   test('navigate through first 5 steps', async ({ page }) => {
     // Step 0: Full Assessment → Next
-    await page.locator('.cursor-pointer:has-text("Full Assessment")').first().click();
+    await page.getByRole('heading', { name: 'Full Assessment' }).click();
     await page.getByRole('button', { name: /next/i }).click();
 
     // Step 1: Basics — wait for #name field to confirm step transition
